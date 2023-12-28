@@ -1,0 +1,14 @@
+{
+  "name": "Lib:pf2e",
+  "version": "0.1",
+  "website": "",
+  "gitUrl": "",
+  "authors": ["Cold_Ankles"],
+  "license": "",
+  "namespace": "ca.pf2e",
+  "description": "A MapTool addon for Pathfinder 2E.",
+  "shortDescription": "A MapTool addon for Pathfinder 2E.",
+  "allowsUriAccess": true,
+  "licenseFile": "",
+  "readMeFile": ""
+}

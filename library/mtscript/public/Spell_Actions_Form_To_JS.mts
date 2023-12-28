@@ -1,0 +1,5 @@
+[h: macro.args = json.get(macro.args,0)]
+[h: ans = input(json.get(macro.args,"inputText"))]
+[h: abort(ans)]
+[h: additionalData = additionalData + json.get(macro.args,"first")]
+[h: js.pf2e.cast_spell(json.get(macro.args,"spellName"),json.get(macro.args,"castLevel"),json.get(macro.args,"casterToken"),additionalData))]

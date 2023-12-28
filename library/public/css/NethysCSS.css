@@ -1,0 +1,232 @@
+h1.title, .hd-1, h1.feel-title {
+  margin-bottom: 10px;
+  margin-left: -2px;
+  color: #cbc18f;
+  background-color: #522e2c;
+  padding: 4px 9px;
+  min-height: 26px;
+  line-height: 1em;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+h1, .hd-1 {
+  font-size: 1.75em;
+  margin-bottom: 0.00em;
+  margin-top: 1.00em;
+  text-indent: 0.00em;
+  font-weight: bold;
+  font-style: normal;
+  font-variant: small-caps;
+}
+
+h3, .hd-3 {
+  font-size: 1.50em;
+  margin-bottom: 0.00em;
+  margin-top: 1.00em;
+  text-indent: 0.00em;
+  font-weight: bold;
+  font-style: normal;
+  font-variant: small-caps;
+}
+
+h3, .hd-3 {
+  font-size: 1.25em;
+  margin-bottom: 0.00em;
+  margin-top: 1.00em;
+  text-indent: 0.00em;
+  font-weight: bold;
+  font-style: normal;
+  font-variant: small-caps;
+}
+
+.title, .feel-title {
+  display: flex;
+  justify-content: flex-start;
+  white-space: nowrap;
+  align-items: center;
+}
+
+img {
+	filter: invert(1);
+	vertical-align: middle;
+}
+
+hr {
+  border-style: solid;
+}
+
+body {
+	background-color: black;
+	color: white;
+	line-height:24px;
+	margin-right: 1.00em;
+}
+
+a:link {  
+  font-style: italic;
+  color: #00ffff;
+}
+
+.ext-link {
+  font-style: italic;
+  color: #00ffff;
+}
+
+.trait {
+  border-color: #d8c483;
+  background-color: #522e2c;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traitalignment {
+  background-color: #4287f5;
+  border-color: #d8c483;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traitsize {
+  background-color: #478c42;
+  border-color: #d8c483;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traituncommon {
+  background-color: #c45500;
+  border-color: #d8c483;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traitrare {
+  background-color: #0c1466;
+  border-color: #d8c483;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traitunique {
+  background-color: #800080;
+  border-color: #d8c483;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #ffffff;
+  position: relative;
+}
+
+tr{
+  background-color: #342C19;
+}
+
+td:first-child, th:first-child {
+  border-left: 1px solid #ffffff;
+}
+
+th {
+  background-color: #522e2c;
+  border-top: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  color: #cbc18f;
+  font-variant: small-caps;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 4px 12px 4px 4px;
+  position: sticky;
+  text-align: start;
+  top: 0px;
+}
+
+td {
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 4px 12px 4px 4px;
+}
+
+table tr:nth-child(2n+1) td {
+  background-color: #64542F;
+}
+
+th a:link{
+  font-style: normal;
+  color: #cbc18f;
+}
+
+td a:link {  
+  font-style: normal;
+  color: #ffffff;
+}
