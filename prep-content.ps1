@@ -24,18 +24,16 @@ function get-foundry-sources {
 
     $response = Invoke-RestMethod -Uri $base_pack_url
 
-    $unwantedSources = @("paizon-pregens", "rollable-tables", "vehicles", "kingmaker-features/army-war-actions-tactical", "macros", "deities", "kingmaker-bestiary/armies", "journals", "kingmaker-features/kingdom-activities", "iconics", "kingmaker-features/kingdom-feats", "kingmaker-features", "kingmaker-features/kingdom-features", "kingmaker-features/army-conditions", "criticaldeck", "kingmaker-features/army-tactics", "action-macros", "kingmaker-features/effects", "kingmaker-features/army-war-actions-basic")
-
     ForEach ($p in $response.tree){
         if ($p.type -eq "tree"){
-            if (!$unwantedSources.Contains($p.path)){
+            if (!$script:unwantedSources.Contains($p.path)){
                 $newSource = @{name=$p.path; content=@{}; enabled=$false;}
                 $sources[$p.path]=$newSource
             }
         }elseif ($p.type -eq "blob"){
             $split_array = $p.path -split "/"
             $parent = $split_array[0]
-            if (!$unwantedSources.Contains($parent)){
+            if (!$script:unwantedSources.Contains($parent)){
                 $name = $split_array[$split_array.length -1]
                 if ($sources.ContainsKey($parent)){
                     $new_data_file = @{name=$name; path=$p.path;}
@@ -49,53 +47,70 @@ function get-foundry-sources {
 }
 
 function import-all-sources {
-    $script:sources = $script:sources
+    
+    $sourceList = Get-ChildItem .\pf2e-master\*\packs\* | % { $_.FullName }
 
-    ForEach ($source in $sources.Keys){
-        Write-Host "Importing " $source
-        import-source($source)
+    ForEach ($source in $sourceList){
+        $splitArray = $source -split "\\"
+        $sourceName = $splitArray[$splitArray.length -1 ]
+        if (!$script:unwantedSources.Contains($sourceName)){
+            #Write-Host "Importing " $sourceName
+            import-source $source $sourceName
+        }else{
+            #Write-Host "Skipping" $sourceName
+        }
     }
 }
 
 function import-source {
     
     param (
-        $sourceName
+        [Parameter(Mandatory = $true)] [System.Object] $sourcePath,
+        [Parameter(Mandatory = $true)] [string] $sourceName
     )
 
-    $script:sources = $script:sources
+    $childList = Get-ChildItem $sourcePath | % { $_.FullName }
 
-    $sourceData = ""
+    $counter = 0
+    $total = $childList.Length
+    $importText = "Importing " + $sourceName
 
-    if ($sources.ContainsKey($sourceName)){
-        $sourceData = $sources[$sourceName]
-    }
-
-    $base_file_path = "https://raw.githubusercontent.com/foundryvtt/pf2e/master/packs/"
-
-    ForEach ($file in $sourceData.content.Keys){
-        $path = $sourceData.content[$file].path
-        Write-Host "Reading " $path
-        import-source-file($base_file_path + $path)
+    ForEach ($file in $childList){
+        $splitArray = $file -split "\\"
+        $childName = $splitArray[$splitArray.length -1 ]
+        #Write-Host "Reading " $childName
+        #Write-Host $file
+        import-source-file $file $sourceName $childName
+        $counter = $counter + 1
+        $percentProgress = $counter/$total * 100
+        Write-Progress -Activity $importText -Status "$percentProgress% Complete:" -PercentComplete $percentProgress
     }
 }
 
 function import-source-file {
     
     param (
-        $fileURL
+        $filePath,
+        $fileDir,
+        $fileName
     )
 
     $script:packData = $script:packData
 
-    $data = Invoke-RestMethod -Uri $fileURL
+    #$data = Invoke-RestMethod -Uri $fileURL
+    try{
+        $data = Get-Content $filePath | ConvertFrom-JSON 
+    }Catch{
+        Write-Host "Error reading" $filePath
+        return
+    }
 
     $storeData = @{}
 
     $storeData.name = $data.name
     $storeData.type = $data.type
     $storeData.id = $data._id
-    $storeData.fileURL = $fileURL
+    $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master/packs/" + $fileDir + "/" + $fileName
 
     if ($data.type -eq "npc"){
         $storeData.traits = $data.system.traits.value
@@ -157,7 +172,7 @@ function import-source-file {
 		$storeData.traits = $data.system.traits.value;
 		$storeData.rarity = $data.system.traits.rarity;
     }else{
-        Write-Host "Unknown Type: " + $data.type
+        #Write-Host "Unknown Type: " + $data.type
         return
     }
 
@@ -168,17 +183,34 @@ function import-source-file {
 
 }
 
+function write-data-files {
+
+    $script:packData = $script:packData
+
+    ForEach ($dataType in $packData.Keys){
+        $dataSet = $packData[$dataType]
+        $outFile = ".\library\public\data\"+$dataType+".json"
+
+        $dataSet | ConvertTo-Json -depth 100 -Compress | Out-File $outFile
+    }
+
+}
+
+$unwantedSources = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics",  "criticaldeck", "action-macros")
 $sources = @{}
 $packData = @{}
 
-#download-master-zip
-#Write-Host "Downloaded Foundry Data"
+download-master-zip
+Write-Host "Downloaded Foundry Data"
 
-#expand-master-zip
-#Write-Host "Expanded Data"
+expand-master-zip
+Write-Host "Expanded Data"
 
-#get-foundry-sources
-#Write-Host "Source Data Prepared"
-#
-#import-all-sources
-#Write-Host "Sources Imported"
+get-foundry-sources
+Write-Host "Source Data Prepared"
+
+import-all-sources
+Write-Host "Sources Imported"
+
+write-data-files
+Write-Host "Data Written"
