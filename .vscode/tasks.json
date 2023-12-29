@@ -4,10 +4,16 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build-all",
+            "type": "shell",
+            "command": "rm library/public/data/*.json; ./prep-content.ps1 ;rm PF2e_MT_Framework.mtlib; 7z a -tzip PF2e_MT_Framework.mtlib '@.vscode/listfile.txt'",
+            "problemMatcher": []
+        },
+		{
+            "label": "build-simple",
             "type": "shell",
             "command": "rm PF2e_MT_Framework.mtlib; 7z a -tzip PF2e_MT_Framework.mtlib '@.vscode/listfile.txt'",
             "problemMatcher": []
-        }
+		}
     ]
 }
