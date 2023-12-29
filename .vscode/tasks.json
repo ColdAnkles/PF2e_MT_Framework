@@ -6,7 +6,7 @@
         {
             "label": "build-all",
             "type": "shell",
-            "command": "rm -r pf2e-master; rm pf2e-master.zip; rm library/public/data/*.json; ./prep-content.ps1 ;rm PF2e_MT_Framework.mtlib; 7z a -tzip PF2e_MT_Framework.mtlib '@.vscode/listfile.txt'",
+            "command": "rm -r pf2e-master; rm pf2e-master.zip; rm library/public/data/*.json; ./prep-content.ps1 -runFuncs all;rm PF2e_MT_Framework.mtlib; 7z a -tzip PF2e_MT_Framework.mtlib '@.vscode/listfile.txt'",
             "problemMatcher": []
         },
 		{

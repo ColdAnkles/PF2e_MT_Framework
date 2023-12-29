@@ -1,4 +1,8 @@
-﻿function download-master-zip {
+﻿param (
+    $runFuncs
+)
+
+function download-master-zip {
     $zipURL = "https://api.github.com/repos/foundryvtt/pf2e/zipball/master"
     Invoke-RestMethod -Uri $zipURL -OutFile pf2e-master.zip
 }
@@ -43,7 +47,7 @@ function get-foundry-sources {
         }
     }
 
-    $sources | ConvertTo-Json -depth 100 | Out-File ".\library\public\data\sourceData.json"
+    $sources | ConvertTo-Json -depth 100 | Out-File -Encoding ascii ".\library\public\data\sourceData.json"
 }
 
 function import-all-sources {
@@ -191,7 +195,7 @@ function write-data-files {
         $dataSet = $packData[$dataType]
         $outFile = ".\library\public\data\"+$dataType+".json"
 
-        $dataSet | ConvertTo-Json -depth 100 -Compress | Out-File $outFile
+        $dataSet | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii $outFile
     }
 
 }
@@ -200,17 +204,21 @@ $unwantedSources = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-
 $sources = @{}
 $packData = @{}
 
-download-master-zip
-Write-Host "Downloaded Foundry Data"
+if ($runFuncs -eq "all" -or $runFuncs -eq "download"){
+    download-master-zip
+    Write-Host "Downloaded Foundry Data"
+    expand-master-zip
+    Write-Host "Expanded Data"
+}
 
-expand-master-zip
-Write-Host "Expanded Data"
+if ($runFuncs -eq "all" -or $runFuncs -eq "source"){
+    get-foundry-sources
+    Write-Host "Source Data Prepared"
+}
 
-get-foundry-sources
-Write-Host "Source Data Prepared"
-
-import-all-sources
-Write-Host "Sources Imported"
-
-write-data-files
-Write-Host "Data Written"
+if ($runFuncs -eq "all" -or $runFuncs -eq "import"){
+    import-all-sources
+    Write-Host "Sources Imported"
+    write-data-files
+    Write-Host "Data Written"
+}
