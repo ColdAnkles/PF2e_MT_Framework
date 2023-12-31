@@ -47,7 +47,7 @@ function get-foundry-sources {
         }
     }
 
-    $sources | ConvertTo-Json -depth 100 | Out-File -Encoding ascii ".\library\public\data\sourceData.json"
+    $sources | ConvertTo-Json -depth 100 | Out-File -Encoding ascii ".\library\public\data\pf2e_source.json"
 }
 
 function import-all-sources {
@@ -155,7 +155,7 @@ function import-source-file {
 		$storeData.source = $data.system.publication.title;
 		$storeData.rarity = $data.system.traits.rarity;
 		$storeData.traits = $data.system.traits.value;
-		$storeData.traditions = $data.system.traditions;
+		$storeData.traditions = $data.system.traits.traditions;
 		$storeData.level = $data.system.level.value;
     }elseif ($data.type -eq "hazard"){
 		$storeData.source = $data.system.details.publication.title;

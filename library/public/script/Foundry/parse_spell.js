@@ -18,6 +18,14 @@ function parse_spell(spellData){
 		}
 	}
 
+	if (parsedData.traits.value.includes("focus")){
+		parsedData.category = "focus";
+	}else if (parsedData.traits.value.includes("cantrip")){
+		parsedData.category = "cantrip";
+	}else{
+		parsedData.category = "spell";
+	}
+
 	//MapTool.chat.broadcast(JSON.stringify(parsedData));
 
 	return parsedData;

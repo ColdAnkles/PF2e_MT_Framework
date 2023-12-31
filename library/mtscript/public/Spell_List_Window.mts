@@ -5,7 +5,7 @@
 
 [h,if(rollNPC==1):output=if(isGM()==1,outputGM,outputPC);output="none"]
 
-[dialog5("Spell List", "width=1500; height=600; temporary=1; noframe=0; input=1"):{
+[dialog5("Spell List", "width=800; height=600; temporary=1; noframe=0; input=1"):{
 	<link rel="stylesheet" type="text/css" href="lib://ca.pf2e/css/NethysCSS.css"/>
 	<h1 class="feel-title">Spells</h1>
 	[h: spellList=getLibProperty("pf2e_spell","Lib:ca.pf2e")]
@@ -25,7 +25,7 @@
 	[r:macroLink("Name","Spell_List_Window@Lib:ca.pf2e","","sort=name;dir="+dir)]
 	<th>
 	[r:macroLink("Type","Spell_List_Window@Lib:ca.pf2e","","sort=type;dir="+dir)]
-	<th>
+	<th width=10%>
 			Traditions
 	<th>
 	[r:macroLink("Rarity","Spell_List_Window@Lib:ca.pf2e","","sort=rarity;dir="+dir)]

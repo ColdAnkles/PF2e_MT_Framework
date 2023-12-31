@@ -2,8 +2,9 @@
 
 function build_spell_view(spellName){
 	//MapTool.chat.broadcast(spellName);
-	let libToken = get_runtime("libToken");
-	let property = JSON.parse(libToken.getProperty("pf2e_spell"));
+	//let libToken = get_runtime("libToken");
+	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
+	let property = JSON.parse(read_data("pf2e_spell"));
 
 	if (!(spellName in property)){
 		return "<h2>Could not find spell " + spellName + "</h2>";
@@ -29,9 +30,9 @@ function build_spell_view(spellName){
 		HTMLString = HTMLString + "<span class='trait'>" + capitalize(spellData.traits.value[t]) + "</span>";
 	}
 	HTMLString = HTMLString + "<br />"
-	HTMLString = HTMLString + "<b>Source </b><span class='ext-link'>" + spellData.source + "</span><br />";
-	if (spellData.traditions.length>0){
-		HTMLString = HTMLString + "<b>Traditions</b> " + capitalize(spellData.traditions.join(", "));
+	HTMLString = HTMLString + "<b>Source </b><span class='ext-link'>" + spellData.publication.title + "</span><br />";
+	if (spellData.traits.traditions.length>0){
+		HTMLString = HTMLString + "<b>Traditions</b> " + capitalize(spellData.traits.traditions.join(", "));
 		HTMLString = HTMLString + "<br />";
 	}
 
@@ -76,8 +77,8 @@ function build_spell_view(spellName){
 	}else if(spellData.spellType == "save" && spellData.save.value != ""){
 		HTMLString = HTMLString + "<br />";
 	}
-	if (spellData.duration != null && spellData.duration != ""){
-		HTMLString = HTMLString + "<b>Duration</b> " + spellData.duration;
+	if (spellData.duration != null && spellData.duration != "" && spellData.duration.value !== "" && spellData.duration.value !== null){
+		HTMLString = HTMLString + "<b>Duration</b> " + spellData.duration.value;
 		HTMLString = HTMLString + "<br />";
 	}
 	
