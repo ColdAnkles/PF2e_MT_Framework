@@ -14,7 +14,7 @@ function change_hp(tokenID, changeHPData = null){
 	if(changeHPData == null){
 
 		let queryHTML = "<html>";
-		queryHTML = queryHTML + "<table><form action='macro://Change_HP_Form_To_JS@Lib:pf2e/self/impersonated?'>";
+		queryHTML = queryHTML + "<table><form action='macro://Change_HP_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 		queryHTML = queryHTML + "<input type='hidden' name='tokenID' value='"+tokenID+"'>";
 
 		queryHTML = queryHTML + "<tr><td colspan=2><b>Damage, Healing, and Temporary HP</b></td></tr>";

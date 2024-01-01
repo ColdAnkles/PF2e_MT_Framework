@@ -23,7 +23,7 @@ function core_action(actionData, actingToken){
 		canAct = true;
 	}else if (actionData.actionType=="action"){
 		failAct = "Insufficient Actions";
-	}else if (isNaN(initiative) || (actionData.actionType=="reaction" && reactionsLeft>=actionData.actionCost)){
+	}else if (isNaN(initiative) || (actionData.actionType=="reaction" && (reactionsLeft>=actionData.actionCost || actionData.actionCost == null))){
 		canAct = true;
 	}else if (actionData.actionType=="reaction"){
 		failAct = "Insufficient Reactions";

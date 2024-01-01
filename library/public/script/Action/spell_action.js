@@ -1,8 +1,9 @@
 "use strict";
 
 function spell_action(actionData, actingToken){
-	let libToken = get_runtime("libToken");
-	let property = JSON.parse(libToken.getProperty("pf2e_spell"));
+	//let libToken = get_runtime("libToken");
+	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
+	let property = JSON.parse(read_data("pf2e_spell"));
 	
 	if (!(actionData.name in property)){
 		MapTool.chat.broadcast("<h2>Could not find spell " + actionData.name + "</h2>");
@@ -36,7 +37,7 @@ function spell_action(actionData, actingToken){
 
 	let spellMod = Math.max(Number(actingToken.getProperty("int")),Number(actingToken.getProperty("wis")),Number(actingToken.getProperty("cha")));
 
-	//MapTool.chat.broadcast(JSON.stringify(tokenSpell));
+	//MapTool.chat.broadcast(JSON.stringify(spellData));
 
 
 	let attackScopes = ["spell"];
@@ -45,7 +46,7 @@ function spell_action(actionData, actingToken){
 	
 	let displayData = {"description":"","name":actingToken.getName() + " - " + actionData.name,"level":actionData.castLevel,"type":spellData.category};
 
-	if(spellData.spellType=="attack"){
+	if(spellData.traits.value.includes("attack")){
 		displayData.description = displayData.description + "<i>Attack Roll</i><br /><div style='font-size:10px'><b>";
 
 		let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
@@ -80,12 +81,12 @@ function spell_action(actionData, actingToken){
 		displayData.description = displayData.description + "</div>";
 	}
 	
-	if (spellData.spellType=="save" || spellData.save.value != ""){
+	if (spellData.defense!=null && "save" in spellData.defense && spellData.defense.save.statistic != ""){
 		displayData.description = displayData.description + "<div style='font-size:10px'><b>";
-		if (spellData.save.basic == "basic"){
+		if (spellData.defense.save.basic == "basic"){
 			displayData.description = displayData.description + "Basic "
 		}
-		displayData.description = displayData.description + capitalize(spellData.save.value) + " Save, DC " + castData.spellDC + "</div>";
+		displayData.description = displayData.description + capitalize(spellData.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
 	}
 	
 	//Special case for magic missile
@@ -103,7 +104,7 @@ function spell_action(actionData, actingToken){
 		for (var d in spellData.damage){
 			displayData.description = displayData.description + "<div style='font-size:10px'><b>";
 			let damageData = spellData.damage[d];
-			let damageRoll = damageData.value;
+			let damageRoll = damageData.formula;
 			if("heightening" in spellData && "damage" in spellData.heightening && spellData.heightening.type == "interval" && d in spellData.heightening.damage){
 				for (let i = spellData.level+1; i<=actionData.castLevel; i += spellData.heightening.interval){
 					damageRoll = damageRoll + "+" + spellData.heightening.damage[d];

@@ -18,7 +18,7 @@ function store_object_data(data) {
 		property = {};
 	}
 	property[data.name] = data;
-	MapTool.chat.broadcast(JSON.stringify(property[data.name]));
+	//MapTool.chat.broadcast(JSON.stringify(property[data.name]));
 	//libToken.setProperty("pf2e_"+data.type, JSON.stringify(property));
 	//setLibProperty("Lib:ca.pf2e","pf2e_"+data.type,JSON.stringify(property));
 	write_data("pf2e_"+data.type, JSON.stringify(property));

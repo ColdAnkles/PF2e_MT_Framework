@@ -8,8 +8,9 @@ function cast_spell(spellName, castLevel, casterToken, additionalData = null){
 
 	castLevel = Number(castLevel);
 	
-	let libToken = get_runtime("libToken");
-	let property = JSON.parse(libToken.getProperty("pf2e_spell"));
+	//let libToken = get_runtime("libToken");
+	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
+	let property = JSON.parse(read_data("pf2e_spell"));
 	
 	if (!(spellName in property)){
 		MapTool.chat.broadcast("<h2>Could not find spell " + spellName + "</h2>");

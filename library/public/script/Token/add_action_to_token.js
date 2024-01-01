@@ -85,7 +85,7 @@ function add_action_to_token(actionData, tokenID){
 		
 	}else if (actionData.type=="spell"){
 		
-		let libToken = get_runtime("libToken");
+		//let libToken = get_runtime("libToken");
 		//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
 		let property = JSON.parse(read_data("pf2e_spell"));
 		let spellName = actionData.name.replaceAll(/\(.*\)/g,"").trim();
