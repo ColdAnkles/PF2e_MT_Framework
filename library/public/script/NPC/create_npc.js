@@ -2,8 +2,9 @@
 
 function create_npc(newNPCTokenID, creatureName){
 	let newToken = MapTool.tokens.getTokenByID(newNPCTokenID);
-	let libToken = get_runtime("libToken");
-	let property = JSON.parse(libToken.getProperty("pf2e_npc"));
+	//let libToken = get_runtime("libToken");
+	//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
+	let property = JSON.parse(read_data("pf2e_npc"));
 	let creatureData = property[creatureName];
 	creatureData = rest_call(creatureData["fileURL"],"");
 	creatureData = parse_npc(creatureData);

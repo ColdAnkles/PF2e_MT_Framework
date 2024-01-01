@@ -7,23 +7,34 @@ function parse_npc(rawData, parseRaw = false){
 		rawData = JSON.parse(rawData);
 	}
 
+	//MapTool.chat.broadcast(JSON.stringify(rawData));
+
 	npcData.type = "npc";
 	npcData.name = rawData.name;
 	npcData.level = rawData.system.details.level.value;
 	npcData.ac = rawData.system.attributes.ac;
 	npcData.hp = rawData.system.attributes.hp;
-	npcData.creatureType = rawData.system.details.creatureType;
+	//npcData.creatureType = rawData.system.details.creatureType;
 
 	npcData.saves = {"fortitude":rawData.system.saves.fortitude.value,"reflex":rawData.system.saves.reflex.value,"will":rawData.system.saves.will.value};
 
 	npcData.rarity = rawData.system.traits.rarity;
-	//npcData.alignment = rawData.system.details.alignment.value; // ALIGNMENT REMOVED IN REMASTER
+	if (rawData.system.traits.value.includes("good")){
+		npcData.alignment = "good"
+	}else if(rawData.system.traits.value.includes("evil")){
+		npcData.alignment = "evil"
+	}else{
+		npcData.alignment = ""
+	}
 	npcData.size = rawData.system.traits.size.value;
 	npcData.size = {"sm":"small","med":"medium","huge":"huge","lg":"large","grg":"gargantuan","tiny":"tiny"}[npcData.size];
 	npcData.traits = rawData.system.traits.value;
 
-	npcData.perception = rawData.system.attributes.perception.value;
-	npcData.senses = rawData.system.traits.senses.value;
+	npcData.perception = rawData.system.perception.mod;
+	npcData.senses = [];
+	for (var s in rawData.system.perception.senses){
+		npcData.senses.push(rawData.system.perception.senses[s].type);
+	}
 	
 	npcData.source = rawData.system.details.publication.title;
 

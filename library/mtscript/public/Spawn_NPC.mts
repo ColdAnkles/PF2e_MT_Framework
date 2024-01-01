@@ -6,7 +6,7 @@
 [h: yCoord=getStrProp(center,"centerY")]
 [h: newToken=copyToken(id,1,"Library",'{"name":"'+tokenName+'","x":'+xCoord+',"y":'+yCoord+'}')]
 
-[h: js.pf2e.create_npc(newToken, tokenName)]
+[h: js.ca.pf2e.create_npc(newToken, tokenName)]
 [h: tokenSize = getProperty("size",newToken)]
 [h: setSize(tokenSize,newToken)]
 
@@ -14,6 +14,6 @@
 [h: visionList = json.append("[]","darkvision","low-light","greater darkvision")]
 [h, foreach(sense, senseList), code:{
 	[h, if(json.contains(visionList,sense)), code:{
-		[h: setSightType(pf2e.Capitalize(sense),newToken)]
+		[h: setSightType(js.ca.pf2e.capitalize(sense),newToken)]
 	};{}]
 }]

@@ -5,7 +5,7 @@ function write_creature_properties(creatureData, token){
 		token = MapTool.tokens.getTokenByID(token);
 	}
 
-	//MapTool.chat.broadcast(JSON.stringify(creatureData.passiveSkills));
+	//MapTool.chat.broadcast(JSON.stringify(creatureData));
 	
 	token.setProperty("myID", token.getId());
 	token.setName(creatureData.name);
@@ -43,14 +43,14 @@ function write_creature_properties(creatureData, token){
 	token.setProperty("spellRules", JSON.stringify(creatureData.spellRules));
 
 	//__MISC__
-	token.setProperty("type", creatureData.creatureType);
+	//token.setProperty("type", creatureData.creatureType);
 	token.setProperty("alignment", creatureData.alignment);
 	token.setProperty("level", creatureData.level);
 	token.setProperty("baseSpeed", creatureData.speeds.base);
 	token.setProperty("otherSpeed", JSON.stringify(creatureData.speeds.other));
 	token.setProperty("rarity", creatureData.rarity);
 	token.setProperty("traits", JSON.stringify(creatureData.traits));
-	token.setProperty("senses", creatureData.senses);
+	token.setProperty("senses", JSON.stringify(creatureData.senses));
 	token.setProperty("size", creatureData.size);
 	token.setProperty("languages", JSON.stringify(creatureData.languages));
 	token.setProperty("resources", JSON.stringify(creatureData.resources));

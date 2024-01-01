@@ -101,10 +101,16 @@ function parse_roll(rollString){
 	return rollString;
 }
 
+//TODO - <span class=\"action-glyph\">1</span> - replace with relevant image
+
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, rollDice = false){
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 
 	let cleanDescription = description;
+
+	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">1</span>",icon_img("1action", true));
+	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">2</span>",icon_img("2action", true));
+	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">3</span>",icon_img("3action", true));
 
 	if (removeP){
 		cleanDescription = cleanDescription.replaceAll("<p>","").replaceAll(".</p>",". ").replaceAll("</p>"," ");

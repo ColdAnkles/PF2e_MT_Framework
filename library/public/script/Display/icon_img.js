@@ -30,7 +30,7 @@ function icon_img(imageName, invert=false, srcLocOnly=false){
 	//MTScript.evalMacro("[h: img = getImage(imageName, imageSize)]");
 	let assetString = imageDict[imageName];
 	let returnText = "<img src='" + assetString + "' width='"+String(imageSizeW)+"' height='"+String(imageSizeH)+"'></img>";
-	MapTool.chat.broadcast(assetString);
+	//MapTool.chat.broadcast(assetString);
 	if (srcLocOnly){
 		returnText = assetString;
 	}

@@ -19,6 +19,8 @@ function build_creature_view(creatureName, tokenID = null){
 		creatureData.name = creatureData.name.replaceAll("Lib:","");
 	}
 
+	//MapTool.chat.broadcast(JSON.stringify(creatureData.senses));
+
 	let HTMLString = "";
 
 	HTMLString = HTMLString + "<h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
@@ -36,7 +38,7 @@ function build_creature_view(creatureName, tokenID = null){
 	if ("source" in creatureData){
 		HTMLString = HTMLString + "<b>Source </b><span class='ext-link'>" + creatureData.source + "</span><br />";
 	}
-	HTMLString = HTMLString + "<b>Perception</b> +" + creatureData.perception + "; " + creatureData.senses + "<br />";
+	HTMLString = HTMLString + "<b>Perception</b> +" + creatureData.perception + "; " + creatureData.senses.join(", ") + "<br />";
 	if (creatureData.languages.length>0) {
 		HTMLString = HTMLString + "<b>Languages</b> " + creatureData.languages.join(", ");
 		HTMLString = HTMLString + "<br />";
@@ -307,7 +309,7 @@ function build_creature_view(creatureName, tokenID = null){
 			}else{
 				spellString = spellString + ", ";
 			}
-			spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)",""),"Spell_View_Frame@Lib:pf2e",spellData.name.replaceAll(" (Constant)","").replaceAll(/\(.*\)/g,"").trim());	
+			spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)",""),"Spell_View_Frame@Lib:ca.pf2e",spellData.name.replaceAll(" (Constant)","").replaceAll(/\(.*\)/g,"").trim());	
 		}
 		HTMLString = HTMLString + spellString;		
 		HTMLString = HTMLString + "<br />";
