@@ -42,9 +42,9 @@ function parse_npc(rawData, parseRaw = false){
 
 	npcData.speeds = {"base":rawData.system.attributes.speed.value,"other":rawData.system.attributes.speed.otherSpeeds};
 
-	npcData.languages = rawData.system.traits.languages.value;
-	if("custom" in rawData.system.traits.languages && rawData.system.traits.languages.custom != ""){
-		npcData.languages.push(rawData.system.traits.languages.custom);
+	npcData.languages = rawData.system.details.languages.value;
+	if("custom" in rawData.system.details.languages && rawData.system.details.languages.custom != ""){
+		npcData.languages.push(rawData.system.details.languages.custom);
 	}
 	npcData.abilities = {};
 	npcData.abilities.str = rawData.system.abilities.str.mod;

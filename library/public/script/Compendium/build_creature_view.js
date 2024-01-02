@@ -294,7 +294,7 @@ function build_creature_view(creatureName, tokenID = null){
 			let spellData = theRules.spells[aSpell];
 			//MapTool.chat.broadcast(JSON.stringify(spellData));
 			if (!(firstCantrip) && (spellData.traits.value.includes("cantrip"))){
-				let cantripLevel = Math.max(Math.floor(creatureData.level/2),1);
+				let cantripLevel = spellData.castLevel;
 				spellString = spellString + "; <b>Cantrips (" + String(cantripLevel) + getOrdinal(cantripLevel) +")</b> ";
 				firstCantrip = true;
 			}else if(!(firstConstant) && spellData.name.includes("Constant")){
@@ -311,6 +311,7 @@ function build_creature_view(creatureName, tokenID = null){
 			}
 			spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)",""),"Spell_View_Frame@Lib:ca.pf2e",spellData.name.replaceAll(" (Constant)","").replaceAll(/\(.*\)/g,"").trim());	
 		}
+		
 		HTMLString = HTMLString + spellString;		
 		HTMLString = HTMLString + "<br />";
 	}

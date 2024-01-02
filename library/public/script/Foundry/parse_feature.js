@@ -53,11 +53,13 @@ function parse_feature(feature, assignDict){
 			
 		}else if (itemData.type == "spellcastingEntry"){
 			let newSpellEntry = {"name":itemData.name,"spells":[],"spellDC":itemData.system.spelldc.dc,"spellAttack":itemData.system.spelldc.value,"type":itemData.system.prepared.value}
-			if("autoHeighten" in itemData){
-				newSpellEntry["autoHeighten"]=itemData.sytem.autoHeightenLevel.value
+			//MapTool.chat.broadcast(JSON.stringify(itemData));
+			if("autoHeightenLevel" in itemData.system && "value" in itemData.system.autoHeightenLevel){
+				newSpellEntry["autoHeighten"]=itemData.system.autoHeightenLevel.value
 			}else{
-				newSpellEntry["autoHeighten"]="";
+				newSpellEntry["autoHeighten"]=1;
 			}
+			//MapTool.chat.broadcast(JSON.stringify(newSpellEntry));
 			assignDict.spellRules[itemData._id]=newSpellEntry;
 			
 		}else if(itemData.type == "spell"){
@@ -65,6 +67,8 @@ function parse_feature(feature, assignDict){
 			let newSpellEntry = parse_spell(itemData);
 			//let newSpellEntry = {"name":itemData.name,"level":itemData.system.level.value,"traits":itemData.system.traits.value};
 			if (itemData.system.traits.value.includes("cantrip")){
+				//MapTool.chat.broadcast(JSON.stringify(itemData));
+				//MapTool.chat.broadcast(JSON.stringify(assignDict.spellRules[itemData.system.location.value]));
 				newSpellEntry.castLevel = assignDict.spellRules[itemData.system.location.value].autoHeighten;
 			}else{
 				newSpellEntry.castLevel = newSpellEntry.level;
