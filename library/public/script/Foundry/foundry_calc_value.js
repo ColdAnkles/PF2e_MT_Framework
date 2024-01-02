@@ -1,13 +1,5 @@
 "use strict";
 
-function max(a, b){
-	return Math.max(a,b);
-}
-
-function min(a, b){
-	return Math.min(a,b);
-}
-
 function foundry_calc_value(value, actor, item){
 		let newValue = Number(value);
 		if (isNaN(newValue)){

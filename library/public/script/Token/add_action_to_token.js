@@ -123,17 +123,17 @@ function add_action_to_token(actionData, tokenID){
 		actionData.type = lookupSpell.category;
 		if (actionData.traits.includes("cantrip") && actionData.type == "spell"){
 			actionData.type = "Cantrip";
-			actionData.castLevel = Math.floor(actionData.creatureLevel/2);
+			//actionData.castLevel = Math.floor(actionData.creatureLevel/2);
 		}else if(actionData.traits.includes("cantrip") && actionData.type == "focus"){
 			actionData.type = "Focus Cantrip";
-			actionData.castLevel = Math.floor(actionData.creatureLevel/2);
+			//actionData.castLevel = Math.floor(actionData.creatureLevel/2);
 		}
 		actionData.level = lookupSpell.level;
 		//actionData.traits = lookupSpell.traits.value.push(lookupSpell.traits.rarity);
 
 		let spellLabel = action_icon_label(actionData.actionType, actionData.actionCost)+" "+actionData.name;
 		actionData.name = spellName;
-		let tooltipDescription = chat_display(actionData, false);
+		let tooltipDescription = chat_display(actionData, false, actionData.castLevel);
 	
 		let props = {"label":spellLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.cast_spell(\""+spellName+"\","+actionData.castLevel+",myID)]","tooltip":tooltipDescription,"sortBy":actionData.name,"group":actionData.group};
 		MTScript.setVariable("props", props);

@@ -8,6 +8,9 @@ function group_dice(diceString){
 
 	let dice = diceString.match(dieRegexp);
 	let flats = diceString.match(flatRegexp);
+	if(!isNaN(diceString)){
+		flats = [diceString];
+	}
 
 	//MapTool.chat.broadcast(JSON.stringify(dice));
 	//MapTool.chat.broadcast(JSON.stringify(flats));
@@ -31,7 +34,7 @@ function group_dice(diceString){
 	let resultString = "";
 
 	for (var d in diceCounts){
-		resultString = resultString + diceCounts[d] + "d" + d + "+";
+		resultString = resultString + diceCounts[d] + "d" + d;
 	}
 
 	let totalFlat = 0;
@@ -39,7 +42,12 @@ function group_dice(diceString){
 		totalFlat += Number(flats[c]);
 	}
 
-	resultString = resultString + String(totalFlat);
+	if(totalFlat!=0){
+		if(resultString!=""){
+			resultString += "+";
+		}
+		resultString += String(totalFlat);
+	}
 
 	//resultString = resultString.substring(0,resultString.length-1);
 

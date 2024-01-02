@@ -1,8 +1,11 @@
 "use strict";
 
 function roll_dice(diceString){
+	if(diceString==""){
+		return "";
+	}
 	MTScript.setVariable("diceString",diceString);
-	MTScript.evalMacro("[h: diceResult=eval(diceString)]");
+	MTScript.evalMacro("[h: diceResult=eval(string(diceString))]");
 	let result = MTScript.getVariable("diceResult");
 	return result;
 }

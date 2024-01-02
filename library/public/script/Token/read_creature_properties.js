@@ -49,7 +49,7 @@ function read_creature_properties(token){
 	creatureData.speeds.other = JSON.parse(token.getProperty("otherSpeed"));
 	creatureData.rarity = token.getProperty("rarity");
 	creatureData.traits = JSON.parse(token.getProperty("traits"));
-	creatureData.senses = token.getProperty("senses");
+	creatureData.senses = JSON.parse(token.getProperty("senses"));
 	creatureData.size = token.getProperty("size");
 	creatureData.languages = JSON.parse(token.getProperty("languages"));
 	creatureData.resources = JSON.parse(token.getProperty("resources"));

@@ -39,7 +39,6 @@ function spell_action(actionData, actingToken){
 
 	//MapTool.chat.broadcast(JSON.stringify(spellData));
 
-
 	let attackScopes = ["spell"];
 	let damageScopes = ["damage","spell-damage"];	
 	let damage_bonus = calculate_bonus(actingToken, damageScopes);
@@ -101,20 +100,50 @@ function spell_action(actionData, actingToken){
 
 	if ("damage" in spellData && Object.keys(spellData.damage).length>0){
 		displayData.description = displayData.description + "<i>Damage</i><br />";
+		if("heightening" in spellData && spellData.heightening.type == "fixed"){
+			let found = false;
+			let heightenVal = null;
+			let testIndex = actionData.castLevel
+			while(!found){
+				if(testIndex in spellData.heightening.levels){
+					found = true;
+					heightenVal = spellData.heightening.levels[testIndex];
+				}else if(testIndex<=0){
+					found = true;
+				}else{
+					testIndex -= 1;
+				}
+			}
+			if(heightenVal!=null){
+				spellData.damage = heightenVal.damage;
+			}
+		}
 		for (var d in spellData.damage){
 			displayData.description = displayData.description + "<div style='font-size:10px'><b>";
 			let damageData = spellData.damage[d];
-			let damageRoll = damageData.formula;
+			let damageRoll = String(damageData.formula);
 			if("heightening" in spellData && "damage" in spellData.heightening && spellData.heightening.type == "interval" && d in spellData.heightening.damage){
 				for (let i = spellData.level+1; i<=actionData.castLevel; i += spellData.heightening.interval){
 					damageRoll = damageRoll + "+" + spellData.heightening.damage[d];
 				}
 			}
 			if (damageData.applyMod){
-				damageRoll = damageRoll+"+"+String(spellMod);
+				damageRoll = damageRoll;
+				if(spellMod!=0){
+					damageRoll+="+"+String(spellMod);
+				}
 			}
 			damageRoll = group_dice(damageRoll);
-			displayData.description = displayData.description + damageRoll + " = " + roll_dice(damageRoll);
+			let rolled = roll_dice(damageRoll);
+			if(String(rolled)!=damageRoll){
+				displayData.description = displayData.description + damageRoll + " = " + String(rolled);
+			}else{
+				displayData.description = displayData.description + String(rolled);
+			}
+			if(damageData.category!=null){
+				displayData.description += " " + damageData.category;
+			}
+			displayData.description += " " + damageData.type;
 			displayData.description = displayData.description + "</div>";
 		}
 	}
@@ -130,5 +159,5 @@ function spell_action(actionData, actingToken){
 		displayData.type = "Cantrip";
 	}
 
-	chat_display(displayData);
+	chat_display(displayData, true, {"level":actionData.castLevel});
 }

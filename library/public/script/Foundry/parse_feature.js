@@ -53,14 +53,19 @@ function parse_feature(feature, assignDict){
 			
 		}else if (itemData.type == "spellcastingEntry"){
 			let newSpellEntry = {"name":itemData.name,"spells":[],"spellDC":itemData.system.spelldc.dc,"spellAttack":itemData.system.spelldc.value,"type":itemData.system.prepared.value}
+			if("autoHeighten" in itemData){
+				newSpellEntry["autoHeighten"]=itemData.sytem.autoHeightenLevel.value
+			}else{
+				newSpellEntry["autoHeighten"]="";
+			}
 			assignDict.spellRules[itemData._id]=newSpellEntry;
 			
 		}else if(itemData.type == "spell"){
 			//MapTool.chat.broadcast(JSON.stringify(itemData));
 			let newSpellEntry = parse_spell(itemData);
 			//let newSpellEntry = {"name":itemData.name,"level":itemData.system.level.value,"traits":itemData.system.traits.value};
-			if ("heightenedLevel" in itemData.system.location){
-				newSpellEntry.castLevel = itemData.system.location.heightenedLevel;
+			if (itemData.system.traits.value.includes("cantrip")){
+				newSpellEntry.castLevel = assignDict.spellRules[itemData.system.location.value].autoHeighten;
 			}else{
 				newSpellEntry.castLevel = newSpellEntry.level;
 			}

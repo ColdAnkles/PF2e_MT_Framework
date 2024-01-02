@@ -1,6 +1,6 @@
 "use strict";
 
-function chat_display(displayData, broadcast = true){
+function chat_display(displayData, broadcast = true, rollDice = false){
 	//MapTool.chat.broadcast(JSON.stringify(displayData));
 
 	
@@ -41,7 +41,7 @@ function chat_display(displayData, broadcast = true){
 	}
 
 	if (displayData.description != null && displayData.description!=""){
-		outputText = outputText + "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + clean_description(displayData.description, false, false, false) + "</div>";
+		outputText = outputText + "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + clean_description(displayData.description, false, false, false, rollDice) + "</div>";
 	}
 
 	outputText = outputText + "</div>";

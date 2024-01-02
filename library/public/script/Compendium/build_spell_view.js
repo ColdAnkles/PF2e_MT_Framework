@@ -7,7 +7,16 @@ function build_spell_view(spellName){
 	let property = JSON.parse(read_data("pf2e_spell"));
 
 	if (!(spellName in property)){
-		return "<h2>Could not find spell " + spellName + "</h2>";
+		let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
+		if(!spellName in remasterChanges){
+			return "<h2>Could not find spell " + spellName + "</h2>";
+		}else{
+			if(remasterChanges[spellName] in property){
+				spellName = remasterChanges[spellName];
+			}else{
+				return "<h2>Could not find spell " + remasterChanges[spellName] + "</h2>";
+			}
+		}
 	}
 	
 	let spellData = property[spellName];

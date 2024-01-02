@@ -88,16 +88,52 @@ function parse_localize(localizeString){
 	return "";
 }
 
-function parse_roll(rollString){
-	//MapTool.chat.broadcast(rollString);
-	let parsed = parse_foundry_strings(rollString);
-
-	if(parsed.braceContents!=null){
-		return parsed.braceContents;
-	}else{
-		return parsed.bracketContents.replace(/\/r ([0-9+ d]*).*/g,"$1")
-	}
+function parse_roll(rollString, rollDice){
+	if(rollString.includes("/br")){
+		let parsed = parse_foundry_strings(rollString);
 	
+		if(parsed.braceContents!=null){
+			return parsed.braceContents;
+		}else{
+			return parsed.bracketContents.replace(/\/r ([0-9+ d]*).*/g,"$1")
+		}
+	}else{
+		const rollRegexp = /\([^[\]]*\)/g;
+		const infoRegexp = /\[([^[\]]*)\]/g;
+		let rollMatch = [...rollString.matchAll(rollRegexp)];
+		let infoMatch = [...rollString.matchAll(infoRegexp)];
+		//MapTool.chat.broadcast(rollString);
+		//MapTool.chat.broadcast(JSON.stringify(rollMatch));
+		//MapTool.chat.broadcast(JSON.stringify(infoMatch));
+		if (rollMatch!=null && rollMatch.length>0){
+			rollMatch = rollMatch[rollMatch.length-1];
+		}
+		if (infoMatch!=null && infoMatch.length>0){
+			infoMatch = infoMatch[infoMatch.length-1];
+		}
+		if (rollMatch!=null && rollMatch.length>0){
+			rollMatch = rollMatch[rollMatch.length-1];
+		}
+		if (infoMatch!=null && infoMatch.length>0){
+			infoMatch = infoMatch[infoMatch.length-1];
+		}
+
+		if (rollMatch.includes("@level") && typeof(rollDice)=="object" && "level" in rollDice){
+			rollMatch = rollMatch.replaceAll("@level", String(rollDice.level));
+		}else if (rollMatch.includes("@item.level") && typeof(rollDice)=="object" && "level" in rollDice){
+			rollMatch = rollMatch.replaceAll("@item.level", String(rollDice.level));
+		}
+
+		if(typeof(rollDice)=="object"){
+			rollMatch = String(eval(rollMatch));
+		}
+
+		//MapTool.chat.broadcast(rollMatch);
+		//MapTool.chat.broadcast(infoMatch);
+	
+		return rollMatch + " " + infoMatch.replaceAll(","," ");
+	}
+
 	return rollString;
 }
 
@@ -154,7 +190,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	let roll_matches = cleanDescription.match(/(\[+\/b?r.*?\]+)(\{.*?\})?/gm);
 	for (var m in roll_matches){
-		let replaceString = parse_roll(roll_matches[m]);
+		let replaceString = parse_roll(roll_matches[m], rollDice);
 		cleanDescription=cleanDescription.replaceAll(roll_matches[m],replaceString);
 	}
 
