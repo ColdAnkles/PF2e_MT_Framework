@@ -30,14 +30,14 @@ function get-foundry-sources {
 
     ForEach ($p in $response.tree){
         if ($p.type -eq "tree"){
-            if (!$script:unwantedSources.Contains($p.path)){
+            if (!$script:unwantedPacks.Contains($p.path)){
                 $newSource = @{name=$p.path; content=@{}; enabled=$false;}
                 $sources[$p.path]=$newSource
             }
         }elseif ($p.type -eq "blob"){
             $split_array = $p.path -split "/"
             $parent = $split_array[0]
-            if (!$script:unwantedSources.Contains($parent)){
+            if (!$script:unwantedPacks.Contains($parent)){
                 $name = $split_array[$split_array.length -1]
                 if ($sources.ContainsKey($parent)){
                     $new_data_file = @{name=$name; path=$p.path;}
@@ -52,12 +52,12 @@ function get-foundry-sources {
 
 function import-all-sources {
     
-    $sourceList = Get-ChildItem .\pf2e-master\*\packs\* | % { $_.FullName }
+    $sourceList = Get-ChildItem .\pf2e-master\*\packs\* | ForEach-Object { $_.FullName }
 
     ForEach ($source in $sourceList){
         $splitArray = $source -split "\\"
         $sourceName = $splitArray[$splitArray.length -1 ]
-        if (!$script:unwantedSources.Contains($sourceName)){
+        if (!$script:unwantedPacks.Contains($sourceName)){
             #Write-Host "Importing " $sourceName
             import-source $source $sourceName
         }else{
@@ -110,6 +110,8 @@ function import-source-file {
     }
 
     $storeData = @{}
+
+    $script:foundSources = $script:foundSources
 
     $storeData.name = $data.name
     $storeData.type = $data.type
@@ -179,8 +181,10 @@ function import-source-file {
         #Write-Host "Unknown Type: " + $data.type
         return
     }
-
-    if (! $packData.ContainsKey("pf2e_"+$data.type)){
+    if( !$foundSources.Contains($storeData.source)){
+        $foundSources.Add($storeData.source) | Out-Null
+    }
+    if ( !$packData.ContainsKey("pf2e_"+$data.type)){
         $packData["pf2e_"+$data.type] = @{}
     }
     $packData["pf2e_"+$data.type][$storeData.name]=$storeData
@@ -190,6 +194,8 @@ function import-source-file {
 function write-data-files {
 
     $script:packData = $script:packData
+    $script:foundSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii ".\library\public\data\pf2e_publications.json"
+    $script:wantedSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii ".\library\public\data\pf2e_enabledSources.json"
 
     ForEach ($dataType in $packData.Keys){
         $dataSet = $packData[$dataType]
@@ -200,9 +206,11 @@ function write-data-files {
 
 }
 
-$unwantedSources = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics",  "criticaldeck", "action-macros")
+$unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics",  "criticaldeck", "action-macros")
+$wantedSources = @("Pathfinder Core Rulebook","Pathfinder Player Core","Pathfinder Rage of Elements","Pathfinder GM Core","Pathfinder Advanced Player's Guide","Pathfinder Treasure Vault","Pathfinder Dark Archive","Pathfinder Gamemastery Guide","Pathfinder Secrets of Magic","Pathfinder Lost Omens: Gods & Magic","Pathfinder Bestiary","Pathfinder Bestiary 2","Pathfinder Bestiary 3","Pathfinder Book of the Dead","Pathfinder Guns & Gears")
 $sources = @{}
 $packData = @{}
+$foundSources = [System.Collections.ArrayList]@()
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "download"){
     download-master-zip

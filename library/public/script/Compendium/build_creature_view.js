@@ -27,12 +27,12 @@ function build_creature_view(creatureName, tokenID = null){
 	
 	
 	if(creatureData.rarity!="common"){
-		HTMLString = HTMLString + "<span class='trait"+creatureData.rarity+"'>" + capitalize(creatureData.rarity) + "</span>";
+		HTMLString = HTMLString + "<span class='trait"+creatureData.rarity+"'>" + capitalise(creatureData.rarity) + "</span>";
 	}
-	//HTMLString = HTMLString + "<span class='traitalignment'>" + capitalize(creatureData.alignment) + "</span>";
-	HTMLString = HTMLString + "<span class='traitsize'>" + capitalize(creatureData.size) + "</span>"
+	//HTMLString = HTMLString + "<span class='traitalignment'>" + capitalise(creatureData.alignment) + "</span>";
+	HTMLString = HTMLString + "<span class='traitsize'>" + capitalise(creatureData.size) + "</span>"
 	for (var t in creatureData.traits){
-		HTMLString = HTMLString + "<span class='trait'>" + capitalize(creatureData.traits[t]) + "</span>";
+		HTMLString = HTMLString + "<span class='trait'>" + capitalise(creatureData.traits[t]) + "</span>";
 	}
 	HTMLString = HTMLString + "<br />"
 	if ("source" in creatureData){

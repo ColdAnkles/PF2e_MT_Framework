@@ -19,7 +19,7 @@ function saving_throw(saveToken, saveData = null){
 		let saveStrings = {};
 
 		for (var s in saves){
-			saveStrings[s] = {"name":saves[s],"string":(capitalize(saves[s]) + " "+pos_neg_sign(saveToken.getProperty(saves[s])))};
+			saveStrings[s] = {"name":saves[s],"string":(capitalise(saves[s]) + " "+pos_neg_sign(saveToken.getProperty(saves[s])))};
 		}
 
 		queryHTML = queryHTML + "<table><form action='macro://Saving_Throw_Form_To_JS@Lib:pf2e/self/impersonated?'>";
@@ -98,7 +98,7 @@ function saving_throw(saveToken, saveData = null){
 		let saveMod = basic_bonus+misc_bonus+effect_bonus;
 		let saveResult = dTwenty + saveMod;
 
-		let displayData = {"description":"","name":saveToken.getName() + " - " + capitalize(saveData.saveName) + " " + pos_neg_sign(saveMod)};
+		let displayData = {"description":"","name":saveToken.getName() + " - " + capitalise(saveData.saveName) + " " + pos_neg_sign(saveMod)};
 		displayData.description = saveData.flavourText+"<br/><div style='font-size:20px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> "+pos_neg_sign(basic_bonus) + " " + pos_neg_sign(effect_bonus) + " " + pos_neg_sign(misc_bonus) + " = " + String(saveResult) + "</div></b>";
 
 		chat_display(displayData);

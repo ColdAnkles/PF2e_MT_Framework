@@ -86,7 +86,7 @@ function spell_action(actionData, actingToken){
 		if (spellData.defense.save.basic == "basic"){
 			displayData.description = displayData.description + "Basic "
 		}
-		displayData.description = displayData.description + capitalize(spellData.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
+		displayData.description = displayData.description + capitalise(spellData.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
 	}
 	
 	//Special case for magic missile

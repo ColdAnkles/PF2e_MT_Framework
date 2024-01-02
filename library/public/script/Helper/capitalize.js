@@ -1,4 +1,4 @@
-function capitalize(aString){
+function capitalise(aString){
 	if(aString=="" || aString==null){
 		return "";
 	}
@@ -8,4 +8,4 @@ function capitalize(aString){
     }).join(" ");
 }
 
-MTScript.registerMacro("ca.pf2e.capitalize", capitalize);
+MTScript.registerMacro("ca.pf2e.capitalise", capitalise);

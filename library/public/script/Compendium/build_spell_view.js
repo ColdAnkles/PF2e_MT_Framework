@@ -21,18 +21,18 @@ function build_spell_view(spellName){
 
 	let HTMLString = "";
 
-	HTMLString = HTMLString + "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalize(spellData.category) + " " + spellData.level + "</span></h1>";
+	HTMLString = HTMLString + "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellData.category) + " " + spellData.level + "</span></h1>";
 	
 	if(spellData.traits.rarity!="common"){
-		HTMLString = HTMLString + "<span class='trait"+spellData.traits.rarity+"'>" + capitalize(spellData.traits.rarity) + "</span>";
+		HTMLString = HTMLString + "<span class='trait"+spellData.traits.rarity+"'>" + capitalise(spellData.traits.rarity) + "</span>";
 	}
 	for (var t in spellData.traits.value){
-		HTMLString = HTMLString + "<span class='trait'>" + capitalize(spellData.traits.value[t]) + "</span>";
+		HTMLString = HTMLString + "<span class='trait'>" + capitalise(spellData.traits.value[t]) + "</span>";
 	}
 	HTMLString = HTMLString + "<br />"
 	HTMLString = HTMLString + "<b>Source </b><span class='ext-link'>" + spellData.publication.title + "</span><br />";
 	if (spellData.traits.traditions.length>0){
-		HTMLString = HTMLString + "<b>Traditions</b> " + capitalize(spellData.traits.traditions.join(", "));
+		HTMLString = HTMLString + "<b>Traditions</b> " + capitalise(spellData.traits.traditions.join(", "));
 		HTMLString = HTMLString + "<br />";
 	}
 
@@ -70,7 +70,7 @@ function build_spell_view(spellName){
 		if (spellData.save.basic == "basic"){
 			HTMLString = HTMLString + "basic ";
 		}
-		HTMLString = HTMLString + capitalize(spellData.save.value);
+		HTMLString = HTMLString + capitalise(spellData.save.value);
 	}
 	if (spellData.spellType == "save" && spellData.save.value != "" && spellData.duration != null){
 		HTMLString = HTMLString + "; ";

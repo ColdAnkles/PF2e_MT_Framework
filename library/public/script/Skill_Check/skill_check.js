@@ -21,7 +21,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 		if(altStat){
 			for (var s in stats){
-				statStrings[s] = {"name":stats[s],"string":(capitalize(stats[s]) + " +"+checkToken.getProperty(stats[s]))};
+				statStrings[s] = {"name":stats[s],"string":(capitalise(stats[s]) + " +"+checkToken.getProperty(stats[s]))};
 			}
 		}
 

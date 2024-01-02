@@ -101,8 +101,6 @@ function parse_roll(rollString){
 	return rollString;
 }
 
-//TODO - <span class=\"action-glyph\">1</span> - replace with relevant image
-
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, rollDice = false){
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 

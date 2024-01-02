@@ -142,7 +142,7 @@ function parse_pathbuilder_export(data){
 	for (var i in data.focus){
 		for (var j in data.focus[i]){
 			let castingData = data.focus[i][j];
-			let id = capitalize(i) + " " + capitalize(j) + " Focus";
+			let id = capitalise(i) + " " + capitalise(j) + " Focus";
 			let newCastingRules = {"name":id,"spellAttack":0,"spellDC":0,"spells":[],"type":castingData.focus}
 			if (castingData.proficiency > 0){
 				newCastingRules.spellAttack = parsedData.abilities[j] + castingData.proficiency + data.level;

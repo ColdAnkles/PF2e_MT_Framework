@@ -4,7 +4,7 @@ function resistances_to_string(resistancesList){
 	//MapTool.chat.broadcast(JSON.stringify(resistancesList));
 	let resistancesString ="";
 	for (var t in resistancesList){
-		resistancesString = resistancesString + capitalize(resistancesList[t].type)+ " " + resistancesList[t].value + ", ";
+		resistancesString = resistancesString + capitalise(resistancesList[t].type)+ " " + resistancesList[t].value + ", ";
 	}
 	resistancesString = resistancesString.substring(0,resistancesString.length-2);
 	return resistancesString;

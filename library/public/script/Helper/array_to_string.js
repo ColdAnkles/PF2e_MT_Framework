@@ -4,7 +4,7 @@ function array_to_string(arrayList){
 	//MapTool.chat.broadcast(JSON.stringify(arrayList));
 	let arrayString ="";
 	for (var t in arrayList){
-		arrayString = arrayString + capitalize(arrayList[t]) + ", ";
+		arrayString = arrayString + capitalise(arrayList[t]) + ", ";
 	}
 	arrayString = arrayString.substring(0,arrayString.length-2);
 	return arrayString;

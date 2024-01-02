@@ -27,7 +27,7 @@ function chat_display(displayData, broadcast = true){
 		if ("castLevel" in displayData && displayData.castLevel != displayData.level){
 			displayData.level = displayData.level + " (" + displayData.castLevel +")";
 		}
-		outputText = outputText + "<td style='text-align:right'><h1 style='color: #cbc18f;line-height: 1em;vertical-align: middle;font-variant: small-caps;'>" + capitalize(displayData.type) + " " + displayData.level + "</h1></td>";
+		outputText = outputText + "<td style='text-align:right'><h1 style='color: #cbc18f;line-height: 1em;vertical-align: middle;font-variant: small-caps;'>" + capitalise(displayData.type) + " " + displayData.level + "</h1></td>";
 	}
 	
 	outputText = outputText +"</tr></table>";

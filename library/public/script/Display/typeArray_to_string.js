@@ -8,7 +8,7 @@ function typeArray_to_string(arrayList){
 		if ((t+1)%5==0){
 			separator = " \n";
 		}
-		arrayString = arrayString + capitalize(arrayList[t].type) + separator;
+		arrayString = arrayString + capitalise(arrayList[t].type) + separator;
 	}
 	arrayString = arrayString.substring(0,arrayString.length-2);
 	return arrayString;

@@ -19,7 +19,7 @@
 [h: visionList = json.append("[]","darkvision","low-light","greater darkvision")]
 [h, foreach(sense, senseList), code:{
 	[h, if(json.contains(visionList,sense)), code:{
-		[h: setSightType(pf2e.Capitalize(sense),newToken)]
+		[h: setSightType(js.ca.pf2e.capitalise(sense),newToken)]
 	};{}]
 }]
 [h: js.pf2e.update_pc_token(sourceTokenID, newToken)]
