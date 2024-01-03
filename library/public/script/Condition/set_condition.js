@@ -5,8 +5,9 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 		token = MapTool.tokens.getTokenByID(token);
 	}
 	
-	let libToken = get_runtime("libToken");
-	let property = JSON.parse(libToken.getProperty("pf2e_condition"));
+	//let libToken = get_runtime("libToken");
+	//let property = JSON.parse(libToken.getProperty("pf2e_condition"));
+	let property = JSON.parse(read_data("pf2e_condition"));
 	let conditionData = property[conditionName];
 
 	let oldValue = conditionData.value.value;

@@ -103,7 +103,7 @@ function import-source-file {
 
     #$data = Invoke-RestMethod -Uri $fileURL
     try{
-        $data = Get-Content $filePath | ConvertFrom-JSON 
+        $data = Get-Content -Encoding UTF8 $filePath | ConvertFrom-JSON 
     }Catch{
         Write-Host "Error reading" $filePath
         return
@@ -194,14 +194,14 @@ function import-source-file {
 function write-data-files {
 
     $script:packData = $script:packData
-    $script:foundSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii ".\library\public\data\pf2e_publications.json"
-    $script:wantedSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii ".\library\public\data\pf2e_enabledSources.json"
+    $script:foundSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_publications.json"
+    $script:wantedSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_enabledSources.json"
 
     ForEach ($dataType in $packData.Keys){
         $dataSet = $packData[$dataType]
         $outFile = ".\library\public\data\"+$dataType+".json"
 
-        $dataSet | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii $outFile
+        $dataSet | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $outFile
     }
 
 }
