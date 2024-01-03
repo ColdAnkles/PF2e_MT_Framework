@@ -12,7 +12,7 @@ function parse_feature(feature, assignDict){
 	if (itemData.type == "lore"){
 			assignDict.skillList.push({"string":itemData.name+" +"+itemData.system.mod.value,"name":itemData.name,"bonus":itemData.system.mod.value});
 			
-		}else if(itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable"){
+		}else if(itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable"|| itemData.type == "shield"|| itemData.type == "treasure"|| itemData.type == "equipment"){
 			//MapTool.chat.broadcast(JSON.stringify(itemData));
 			let newItem = {"name":itemData.name,"quantity":itemData.system.quantity,"hardness":itemData.system.hardness,"hp":itemData.system.hp.max,"type":itemData.type,"id":itemData._id};
 			if (itemData.type == "armor"){

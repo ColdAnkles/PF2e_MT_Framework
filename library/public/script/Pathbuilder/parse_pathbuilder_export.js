@@ -14,7 +14,8 @@ function parse_pathbuilder_export(data){
 	let ancestryLibrary = JSON.parse(read_data("pf2e_ancestry"));
 	let heritageLibrary = JSON.parse(read_data("pf2e_heritage"));
 	let spellLibrary = JSON.parse(read_data("pf2e_spell"));
-	
+	let itemLibrary = JSON.parse(read_data("pf2e_item"));
+
 	function find_object_data(objectName){
 		//MapTool.chat.broadcast(objectName);
 		let testVar = objectName;
@@ -34,6 +35,8 @@ function parse_pathbuilder_export(data){
 				return heritageLibrary[testVar2];
 			}else if (testVar3 in heritageLibrary){
 				return heritageLibrary[testVar3];
+			}else if(testVar in itemLibrary){
+				return itemLibrary[testVar];
 			}
 		}	
 	}
@@ -217,7 +220,26 @@ function parse_pathbuilder_export(data){
 		parsedData.senses.push("normal");
 	}
 
-	//MapTool.chat.broadcast(JSON.stringify(parsedData));
+	for (var a in data.armor){
+		let tempData = find_object_data(data.armor[a].name);
+		if ("fileURL" in tempData){
+			parse_feature(rest_call(tempData.fileURL), parsedData);
+		}
+	}
+	for (var w in data.weapons){
+		let tempData = find_object_data(data.weapons[w].name);
+		if ("fileURL" in tempData){
+			parse_feature(rest_call(tempData.fileURL), parsedData);
+		}
+	}
+	for (var e in data.equipment){
+		let tempData = find_object_data(data.equipment[e][0]);
+		if ("fileURL" in tempData){
+			parse_feature(rest_call(tempData.fileURL), parsedData);
+		}
+	}
+
+	//MapTool.chat.broadcast(JSON.stringify(parsedData.itemList));
 	return parsedData;
 }
 

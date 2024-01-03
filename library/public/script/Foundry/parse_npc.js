@@ -35,6 +35,9 @@ function parse_npc(rawData, parseRaw = false){
 	for (var s in rawData.system.perception.senses){
 		npcData.senses.push(rawData.system.perception.senses[s].type);
 	}
+	if(npcData.senses.length==0){
+		npcData.senses.push("Normal");
+	}
 	
 	npcData.source = rawData.system.details.publication.title;
 

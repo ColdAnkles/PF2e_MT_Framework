@@ -177,17 +177,25 @@ function import-source-file {
 		$storeData.rules = $data.system.rules;
 		$storeData.traits = $data.system.traits.value;
 		$storeData.rarity = $data.system.traits.rarity;
+    }elseif ($data.type -eq "weapon" -or $data.type -eq "armor" -or $data.type -eq "consumable" -or $data.type -eq "equipment" -or $data.type -eq "shield" -or $data.type -eq "treasure"){
+        $storedata.type = "item";
+		$storeData.source = $data.system.publication.title;
+		$storeData.rules = $data.system.rules;
+		$storeData.traits = $data.system.traits.value;
+		$storeData.rarity = $data.system.traits.rarity;
+        $storeData.itemType = $data.type;
+        $storeData.level = $data.level;
+        $storeData.bulk = $data.bulk;
     }else{
-        #Write-Host "Unknown Type: " + $data.type
-        return
+        #Write-Host "Unknown Type: " $data.type
     }
     if( !$foundSources.Contains($storeData.source)){
         $foundSources.Add($storeData.source) | Out-Null
     }
-    if ( !$packData.ContainsKey("pf2e_"+$data.type)){
-        $packData["pf2e_"+$data.type] = @{}
+    if ( !$packData.ContainsKey("pf2e_"+$storedata.type)){
+        $packData["pf2e_"+$storedata.type] = @{}
     }
-    $packData["pf2e_"+$data.type][$storeData.name]=$storeData
+    $packData["pf2e_"+$storedata.type][$storeData.name]=$storeData
 
 }
 
