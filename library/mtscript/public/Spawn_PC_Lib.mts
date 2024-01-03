@@ -6,8 +6,11 @@
 [h: yCoord=getStrProp(center,"centerY")]
 [h: newToken=copyToken(id,1,"Library",'{"name":"NewPC","x":'+xCoord+',"y":'+yCoord+'}')]
 
-[h: js.pf2e.create_pc_lib(pathbuilderID, newToken)]
-[h: moveTokenToMap(newToken, "Player Characters")]
+[h: js.ca.pf2e.create_pc_lib(pathbuilderID, newToken)]
+[h: tokenMaps = getTokenMap(newToken)]
+[h, if(!json.contains(tokenMaps,"Player Characters")), code:{
+	[h: moveTokenToMap(newToken, "Player Characters")]
+};{}]
 [h: setPC(newToken, "Player Characters")]
 [h: tokenSize = getProperty("size",newToken,"Player Characters")]
 [h: tokenName = getName(newToken,"Player Characters")]

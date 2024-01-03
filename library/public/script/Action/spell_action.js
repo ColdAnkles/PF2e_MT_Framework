@@ -73,7 +73,17 @@ function spell_action(actionData, actingToken){
 		let attackMod = attack_bonus+effect_bonus - map_malus;
 		let attackResult = dTwenty + attackMod;
 
-		displayData.description = displayData.description + "<span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> "+pos_neg_sign(attack_bonus) + " " + pos_neg_sign(effect_bonus) + " " + pos_neg_sign(map_malus)+ " = " + String(attackResult);
+		displayData.description = displayData.description + "<span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> ";
+		if(attack_bonus!=0){
+			displayData.description += pos_neg_sign(attack_bonus, true);
+		}
+		if(effect_bonus!=0){
+			displayData.description += " " + pos_neg_sign(effect_bonus, true);
+		}
+		if(map_malus!=0){
+			displayData.description += " " + pos_neg_sign(map_malus, true);
+		}
+		displayData.description += " = " + String(attackResult);
 
 		displayData.description = displayData.description + "</b>"
 		

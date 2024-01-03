@@ -22,7 +22,7 @@
 		[h: setSightType(js.ca.pf2e.capitalise(sense),newToken)]
 	};{}]
 }]
-[h: js.pf2e.update_pc_token(sourceTokenID, newToken)]
+[h: js.ca.pf2e.update_pc_token(sourceTokenID, newToken)]
 [h: setProperty("myID", sourceTokenID, newToken)]
 
 [h: myTokens = getProperty("pcTokens", sourceTokenID)]

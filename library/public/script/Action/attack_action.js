@@ -122,16 +122,8 @@ function attack_action(actionData, actingToken){
 			critDamage = Number(roll_dice(critRoll)) + Number(roll_dice(fatalDie));
 			critDice = "("+ critRoll + ")x2 + 1" + fatalDie + " = " + String(critDamage);
 		}else if (deadlyDie !=""){
-			if(itemData != null){
-				let diceCount = 1;
-				if (itemData.strikingRune.includes("greater")){
-					diceCount = 2;
-				}else if (itemData.strikingRune.includes("major")){
-					diceCount = 3;
-				}
-				critDamage += Number(roll_dice(String(diceCount)+deadlyDie));
-				critDice = "("+damageData.damage+")x2 + " + String(diceCount)+deadlyDie + " = " + String(critDamage);
-			}
+			critDamage += Number(roll_dice(deadlyDie));
+			critDice = "("+damageData.damage+")x2 + " + deadlyDie + " = " + String(critDamage);
 		}
 		critDamageDetails.push(critDice + " " + damageData.damageType);
 	}
@@ -146,23 +138,38 @@ function attack_action(actionData, actingToken){
 	let attackResult = dTwenty + attackMod;
 	
 	let displayData = {"description":"","name":actingToken.getName() + " - " + actionData.name + " " + pos_neg_sign(attackMod)};
-	displayData.traits = actionData.traits;
-	displayData.description = "<i>Attack Roll</i><br /><div style='font-size:10px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> "+pos_neg_sign(attack_bonus) + " " + pos_neg_sign(effect_bonus) + " " + pos_neg_sign(map_malus)+ " = " + String(attackResult) + " " + additionalAttackBonuses.join(", ");
+	displayData.traits = actionData.traits;	
+	displayData.description = "<i>Attack Roll</i><br /><div style='font-size:10px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> "
+	if(attack_bonus!=0){
+		displayData.description += pos_neg_sign(attack_bonus, true);
+	}
+	if(effect_bonus!=0){
+		displayData.description += " " + pos_neg_sign(effect_bonus, true);
+	}
+	if(map_malus!=0){
+		displayData.description += " " + pos_neg_sign(map_malus, true);
+	}
+	displayData.description += " = " + String(attackResult) + " " + additionalAttackBonuses.join(", ");
 
 	displayData.description = displayData.description + "</div></b><i>Damage</i><br />";
 	for (var s in damageDetails){
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + damageDetails[s]  + "</div>";
+		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + damageDetails[s] + "</div>";
 	}
 
 	displayData.description = displayData.description + "</b><i>Critical Damage</i><br />"
 
 	for (var s in critDamageDetails){
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + critDamageDetails[s]  + "</div>";
+		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + critDamageDetails[s] + "</div>";
 	}
 
 	if (additionalDamageList.length>0){
 		displayData.description = displayData.description + "</b><i>Additional Damage (Crit)</i><br />"
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + additionalDamageList.join(", ")  + "</div>";
+		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + additionalDamageList.join(", ") + "</div>";
+	}
+
+	if(actionData.effects.length>0){
+		displayData.description = displayData.description + "</b><i>Additional Effects</i><br />"
+		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects.join(", ").replaceAll("-", " ")) + "</div>";
 	}
 
 	if (!(isNaN(initiative))){
@@ -170,7 +177,7 @@ function attack_action(actionData, actingToken){
 		
 	}
 
-	chat_display(displayData);
+	chat_display(displayData, true, {"level":actingToken.level});
 	
 }
 

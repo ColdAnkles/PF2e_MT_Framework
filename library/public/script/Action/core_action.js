@@ -7,7 +7,7 @@ function core_action(actionData, actingToken){
 
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
 	
-	if ("requirements" in actionData && actionData.requirements.value != ""){
+	if ("requirements" in actionData && actionData.requirements != null && "value" in actionData.requirements && actionData.requirements.value != ""){
 		MapTool.chat.broadcast("Test Requirements:\n" + JSON.stringify(actionData.requirements));
 	}
 
@@ -41,6 +41,9 @@ function core_action(actionData, actingToken){
 			let doSave = false;
 			let doCheck = false;
 			let effectType = ""
+			if(!("rules"in actionData)){
+				actionData.rules=[];
+			}
 			for (var r in actionData.rules){
 				let ruleData = actionData.rules[r];
 				if (ruleData.selector=="saving-throw"){
@@ -59,7 +62,7 @@ function core_action(actionData, actingToken){
 				toggle_action_effect(effectData, actingToken, true);
 			}
 			
-			chat_display(actionData);
+			chat_display(actionData, true, {"level":actingToken.level});
 	
 			if (doSave){
 				saving_throw(actingToken);

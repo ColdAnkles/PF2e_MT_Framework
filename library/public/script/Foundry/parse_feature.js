@@ -54,7 +54,7 @@ function parse_feature(feature, assignDict){
 		}else if (itemData.type == "spellcastingEntry"){
 			let newSpellEntry = {"name":itemData.name,"spells":[],"spellDC":itemData.system.spelldc.dc,"spellAttack":itemData.system.spelldc.value,"type":itemData.system.prepared.value}
 			//MapTool.chat.broadcast(JSON.stringify(itemData));
-			if("autoHeightenLevel" in itemData.system && "value" in itemData.system.autoHeightenLevel){
+			if("autoHeightenLevel" in itemData.system && "value" in itemData.system.autoHeightenLevel && itemData.system.autoHeightenLevel.value!=null){
 				newSpellEntry["autoHeighten"]=itemData.system.autoHeightenLevel.value
 			}else{
 				newSpellEntry["autoHeighten"]=1;

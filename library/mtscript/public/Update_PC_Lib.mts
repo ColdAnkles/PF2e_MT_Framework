@@ -3,7 +3,7 @@
 };{}]
 [h: pathBuilderID = json.get(macro.args,"pbID")]
 [h: tokenID = json.get(macro.args,"tokenID")]
-[h: js.pf2e.create_pc_lib(pathbuilderID, tokenID)]
+[h: js.ca.pf2e.create_pc_lib(pathbuilderID, tokenID)]
 [h: setPC(tokenID, "Player Characters")]
 [h: tokenSize = getProperty("size",tokenID,"Player Characters")]
 [h: tokenName = getName(tokenID,"Player Characters")]

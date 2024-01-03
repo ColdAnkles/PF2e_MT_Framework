@@ -44,10 +44,21 @@ function parse_template(templateString){
 	return templateString;
 }
 
-function parse_damage(damageString){
+function parse_damage(damageString, rollDice=false){
 	let parsed = parse_foundry_strings(damageString);
-	
-	return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm,"$1 $2").replaceAll(/(.*)\[(.*)\]/gm,"$1 $2");
+	if(typeof(rollDice)=="object"){
+		let diceMatch = parsed.bracketContents.match(/([0-9d +-]*)/gm);
+		if(diceMatch.length>0){
+			diceMatch = diceMatch[0];
+			let rolledDice = roll_dice(diceMatch);
+			parsed.bracketContents = parsed.bracketContents.replace(diceMatch, String(rolledDice)+" ");
+			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm,"$1 $2").replaceAll(/(.*)\[(.*)\]/gm,"$1 $2");
+		}else{
+			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm,"$1 $2").replaceAll(/(.*)\[(.*)\]/gm,"$1 $2");
+		}
+	}else{	
+		return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm,"$1 $2").replaceAll(/(.*)\[(.*)\]/gm,"$1 $2");
+	}
 }
 
 function parse_uuid(uuidString){
@@ -89,13 +100,28 @@ function parse_localize(localizeString){
 }
 
 function parse_roll(rollString, rollDice){
-	if(rollString.includes("/br")){
+	if(rollString.includes("/br") || (!(rollString.includes("(")) || !(rollString.includes(")")))){
 		let parsed = parse_foundry_strings(rollString);
 	
 		if(parsed.braceContents!=null){
-			return parsed.braceContents;
+			if(typeof(rollDice)=="object"){
+				let diceMatch = parsed.braceContents.match(/([0-9+ d-]*)/g);
+				if(diceMatch.length>0){
+					diceMatch = diceMatch[0];
+					let rolledDice = roll_dice(diceMatch);
+					return parsed.braceContents.replace(diceMatch, String(rolledDice)+" ");
+				}else{
+					return parsed.braceContents;
+				}
+			}else{
+				return parsed.braceContents;
+			}
 		}else{
-			return parsed.bracketContents.replace(/\/r ([0-9+ d]*).*/g,"$1")
+			if(typeof(rollDice)=="object"){
+				return parsed.bracketContents.replace(/\/r ([0-9+ d-]*).*/g, String(roll_dice("$1")));
+			}else{
+				return parsed.bracketContents.replace(/\/r ([0-9+ d-]*).*/g,"$1");
+			}
 		}
 	}else{
 		const rollRegexp = /\([^[\]]*\)/g;
@@ -166,7 +192,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	let damage_matches = cleanDescription.match(/(@Damage\[.*?\]?\])({.*?})?/gm);
 	for (var m in damage_matches){
-		let replaceString = parse_damage(damage_matches[m]);
+		let replaceString = parse_damage(damage_matches[m], rollDice);
 		cleanDescription=cleanDescription.replaceAll(damage_matches[m],replaceString);
 	}
 

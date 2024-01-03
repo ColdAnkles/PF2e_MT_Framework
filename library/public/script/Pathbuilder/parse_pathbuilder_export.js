@@ -2,12 +2,18 @@
 
 function parse_pathbuilder_export(data){
 	
-	let libToken = get_runtime("libToken");
-	let featLibrary = JSON.parse(libToken.getProperty("pf2e_feat"));
-	let actionLibrary = JSON.parse(libToken.getProperty("pf2e_action"));
-	let ancestryLibrary = JSON.parse(libToken.getProperty("pf2e_ancestry"));
-	let heritageLibrary = JSON.parse(libToken.getProperty("pf2e_heritage"));
-	let spellLibrary = JSON.parse(libToken.getProperty("pf2e_spell"));
+	//let libToken = get_runtime("libToken");
+	//let featLibrary = JSON.parse(libToken.getProperty("pf2e_feat"));
+	//let actionLibrary = JSON.parse(libToken.getProperty("pf2e_action"));
+	//let ancestryLibrary = JSON.parse(libToken.getProperty("pf2e_ancestry"));
+	//let heritageLibrary = JSON.parse(libToken.getProperty("pf2e_heritage"));
+	//let spellLibrary = JSON.parse(libToken.getProperty("pf2e_spell"));
+	
+	let featLibrary = JSON.parse(read_data("pf2e_feat"));
+	let actionLibrary = JSON.parse(read_data("pf2e_action"));
+	let ancestryLibrary = JSON.parse(read_data("pf2e_ancestry"));
+	let heritageLibrary = JSON.parse(read_data("pf2e_heritage"));
+	let spellLibrary = JSON.parse(read_data("pf2e_spell"));
 	
 	function find_object_data(objectName){
 		//MapTool.chat.broadcast(objectName);
@@ -207,7 +213,9 @@ function parse_pathbuilder_export(data){
 			parse_feature(rest_call(featureData.fileURL), parsedData);
 		}
 	}
-	parsedData.senses = parsedData.senses.join(", ");
+	if(parsedData.senses.length==0){
+		parsedData.senses.push("normal");
+	}
 
 	//MapTool.chat.broadcast(JSON.stringify(parsedData));
 	return parsedData;
