@@ -242,8 +242,6 @@ function parse_pathbuilder_export(data){
 		if ("fileURL" in tempData){
 			parse_feature(rest_call(tempData.fileURL), parsedData);
 			let newWeapon = parsedData.itemList[tempData.id];
-			MapTool.chat.broadcast(JSON.stringify(thisWeapon));
-			MapTool.chat.broadcast(JSON.stringify(newWeapon));
 			newWeapon.quantity = thisWeapon.qty;
 			let newAttackData = {"actionCost":1,"actionType": "action","bonus":thisWeapon.attack,"damage":[newWeapon.damage],
 			"description": "","effects": [], "isMelee":newWeapon.isMelee,
@@ -260,7 +258,6 @@ function parse_pathbuilder_export(data){
 			}
 			newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + "+"+String(thisWeapon.damageBonus);
 			newWeapon.runes.potency = thisWeapon.pot;
-			MapTool.chat.broadcast(JSON.stringify(newWeapon.runes));
 			for(var rI of thisWeapon.runes){
 				newWeapon.runes.property.push(rI.toLowerCase());
 			}

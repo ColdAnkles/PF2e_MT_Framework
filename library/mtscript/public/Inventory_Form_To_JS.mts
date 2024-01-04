@@ -1,0 +1,1 @@
+[h: js.ca.pf2e.view_inventory(json.get(macro.args,"tokenID"),macro.args)]

@@ -14,7 +14,7 @@ function parse_feature(feature, assignDict){
 			
 		}else if(itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable"|| itemData.type == "shield"|| itemData.type == "treasure"|| itemData.type == "equipment"|| itemData.type == "backpack"){
 			//MapTool.chat.broadcast(JSON.stringify(itemData));
-			let newItem = {"name":itemData.name,"hardness":itemData.system.hardness,"hp":itemData.system.hp.max,"type":itemData.type,"id":itemData._id};
+			let newItem = {"name":itemData.name,"hardness":itemData.system.hardness,"hp":itemData.system.hp.max,"type":itemData.type,"id":itemData._id,"description":itemData.system.description.value,"level":itemData.system.level.value};
 			if (itemData.type == "armor"){
 				newItem.armorType = itemData.system.category;
 				newItem.traits = itemData.system.traits.value;
