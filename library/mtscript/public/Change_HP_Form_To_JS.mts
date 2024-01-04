@@ -1,1 +1,1 @@
-[h: js.pf2e.change_hp(json.get(macro.args,"tokenID"),macro.args)]
+[h: js.ca.pf2e.change_hp(json.get(macro.args,"tokenID"),macro.args)]

@@ -12,22 +12,37 @@ function parse_feature(feature, assignDict){
 	if (itemData.type == "lore"){
 			assignDict.skillList.push({"string":itemData.name+" +"+itemData.system.mod.value,"name":itemData.name,"bonus":itemData.system.mod.value});
 			
-		}else if(itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable"|| itemData.type == "shield"|| itemData.type == "treasure"|| itemData.type == "equipment"){
+		}else if(itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable"|| itemData.type == "shield"|| itemData.type == "treasure"|| itemData.type == "equipment"|| itemData.type == "backpack"){
 			//MapTool.chat.broadcast(JSON.stringify(itemData));
-			let newItem = {"name":itemData.name,"quantity":itemData.system.quantity,"hardness":itemData.system.hardness,"hp":itemData.system.hp.max,"type":itemData.type,"id":itemData._id};
+			let newItem = {"name":itemData.name,"hardness":itemData.system.hardness,"hp":itemData.system.hp.max,"type":itemData.type,"id":itemData._id};
 			if (itemData.type == "armor"){
 				newItem.armorType = itemData.system.category;
+				newItem.traits = itemData.system.traits.value;
 				if (itemData.system.category == "shield"){
 					newItem.acBonus = itemData.system.acBonus;
 				}
 			}else if (itemData.type == "weapon"){
 				newItem.damage = itemData.system.damage;
+				newItem.reload = itemData.system.reload;
+				newItem.runes = itemData.system.runes;
+				newItem.material = itemData.system.material;
+				newItem.traits = itemData.system.traits.value;
+				if(itemData.system.range==null){
+					newItem.isMelee = true;
+				}else{
+					newItem.isMelee = false;
+				}
 			}
 			if ("potencyRune" in itemData.system && "value" in itemData.system.potencyRune){
 				newItem.potencyRune = itemData.system.potencyRune.value;
 			}
 			if ("strikingRune" in itemData.system && "value" in itemData.system.strikingRune){
 				newItem.strikingRune = itemData.system.strikingRune.value;
+			}
+			if ("quantity" in itemData.system){
+				newItem.quantity = itemData.system.quantity;
+			}else{
+				newItem.quantity = 1;
 			}
 			assignDict.itemList[itemData._id] = newItem;
 			

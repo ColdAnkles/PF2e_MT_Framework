@@ -16,7 +16,7 @@ function find_pc_libs(){
 		}
 	}
 
-	set_runtime("pcList",pcList);
+	return pcList;
 }
 
 MTScript.registerMacro("ca.pf2e.find_pc_libs", find_pc_libs);

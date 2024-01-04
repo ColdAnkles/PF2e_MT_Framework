@@ -1,7 +1,7 @@
 "use strict";
 
 function roll_dice(diceString){
-	if(diceString==""){
+	if(diceString=="" || diceString==null){
 		return "";
 	}
 	MTScript.setVariable("diceString",diceString);

@@ -16,29 +16,38 @@ function parse_pathbuilder_export(data){
 	let spellLibrary = JSON.parse(read_data("pf2e_spell"));
 	let itemLibrary = JSON.parse(read_data("pf2e_item"));
 
-	function find_object_data(objectName){
+	function find_object_data(objectName, searchSet = "all"){
 		//MapTool.chat.broadcast(objectName);
 		let testVar = objectName;
+		let testCaps = capitalise(objectName);
 		let testVar2 = testVar.replaceAll(" ","-");
+		let testCaps2 = capitalise(testVar2);
 		let testVar3 = testVar.replaceAll(" ","-") + " " + data.ancestry;
+		let testCaps3 = capitalise(testVar3);
+		let testVar4 = testVar + " Armor";
+		let testCaps4 = capitalise(testVar4);
 
 		if (testVar == "Darkvision"){
 			parsedData.senses.push("darkvision");
+			return;
 		}else{
-			if (testVar in featLibrary){
+			if ((testVar in featLibrary || testCaps in featLibrary) && (searchSet=="all" || searchSet=="feat")){
 				return featLibrary[testVar];
-			}else if (testVar in actionLibrary){
+			}else if ((testVar in actionLibrary || testCaps in actionLibrary) && (searchSet=="all" || searchSet=="action")){
 				return actionLibrary[testVar];
-			}else if (testVar in heritageLibrary){
+			}else if ((testVar in heritageLibrary || testCaps in heritageLibrary) && (searchSet=="all" || searchSet=="heritage")){
 				return heritageLibrary[testVar];
-			}else if (testVar2 in heritageLibrary){
+			}else if ((testVar2 in heritageLibrary || testCaps2 in heritageLibrary) && (searchSet=="all" || searchSet=="heritage")){
 				return heritageLibrary[testVar2];
-			}else if (testVar3 in heritageLibrary){
+			}else if ((testVar3 in heritageLibrary || testCaps3 in heritageLibrary) && (searchSet=="all" || searchSet=="heritage")){
 				return heritageLibrary[testVar3];
-			}else if(testVar in itemLibrary){
+			}else if((testVar in itemLibrary || testCaps in itemLibrary) && (searchSet=="all" || searchSet=="item")){
 				return itemLibrary[testVar];
+			}else if((testVar4 in itemLibrary || testCaps4 in itemLibrary) && (searchSet=="all" || searchSet=="item")){
+				return itemLibrary[testVar4];
 			}
-		}	
+		}
+		MapTool.chat.broadcast("Couldn't find " + objectName);
 	}
 
 	function setup_spell(spellName){
@@ -221,21 +230,46 @@ function parse_pathbuilder_export(data){
 	}
 
 	for (var a in data.armor){
-		let tempData = find_object_data(data.armor[a].name);
+		let tempData = find_object_data(data.armor[a].name, "item");
 		if ("fileURL" in tempData){
 			parse_feature(rest_call(tempData.fileURL), parsedData);
+			parsedData.itemList[tempData.id].quantity = data.armor[a].qty;
 		}
 	}
 	for (var w in data.weapons){
-		let tempData = find_object_data(data.weapons[w].name);
+		let thisWeapon = data.weapons[w];
+		let tempData = find_object_data(thisWeapon.name, "item");
 		if ("fileURL" in tempData){
 			parse_feature(rest_call(tempData.fileURL), parsedData);
+			let newWeapon = parsedData.itemList[tempData.id];
+			MapTool.chat.broadcast(JSON.stringify(thisWeapon));
+			MapTool.chat.broadcast(JSON.stringify(newWeapon));
+			newWeapon.quantity = thisWeapon.qty;
+			let newAttackData = {"actionCost":1,"actionType": "action","bonus":thisWeapon.attack,"damage":[newWeapon.damage],
+			"description": "","effects": [], "isMelee":newWeapon.isMelee,
+			"name":newWeapon.name,"traits":newWeapon.traits}
+			if (thisWeapon.str=="striking"){
+				thisWeapon.runes.striking = 1;
+				newAttackData.damage[0].dice += 1;
+			}else if(thisWeapon.str=="greaterStriking"){
+				thisWeapon.runes.striking = 2;
+				newAttackData.damage[0].dice += 2;
+			}else if(thisWeapon.str=="majorStriking"){
+				thisWeapon.runes.striking = 3;
+				newAttackData.damage[0].dice += 3;
+			}
+			newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + "+"+String(thisWeapon.damageBonus);
+			newWeapon.runes.potentcy = thisWeapon.pot;
+
+			
+			parsedData.basicAttacks.push(newAttackData);
 		}
 	}
 	for (var e in data.equipment){
-		let tempData = find_object_data(data.equipment[e][0]);
+		let tempData = find_object_data(data.equipment[e][0], "item");
 		if ("fileURL" in tempData){
 			parse_feature(rest_call(tempData.fileURL), parsedData);
+			parsedData.itemList[tempData.id].quantity = data.equipment[e][1];
 		}
 	}
 

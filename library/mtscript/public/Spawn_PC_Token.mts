@@ -31,3 +31,4 @@
 };{}]
 [h: myTokens = json.append(myTokens, newToken)]
 [h: setProperty("pcTokens", myTokens, sourceTokenID)]
+[h: js.ca.pf2e.create_pc_token(newToken, sourceTokeNID)]

@@ -5,6 +5,8 @@ function attack_action(actionData, actingToken){
 		actingToken = MapTool.tokens.getTokenByID(actingToken);
 	}
 
+	MapTool.chat.broadcast(JSON.stringify(actionData));
+
 	let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
 	if (isNaN(currentAttackCount)){
 		currentAttackCount = 0;

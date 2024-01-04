@@ -6,3 +6,6 @@
 };{
 	[r: ca.pf2e.Update_PC_Lib(json.set("{}","pbID",pbID,"tokenID",existingID))]
 }]
+[h, if(isFrameVisible("Compendium")), code:{
+	[h: ca.pf2e.Compendium_Home()]
+};{}]
