@@ -259,10 +259,12 @@ function parse_pathbuilder_export(data){
 				newAttackData.damage[0].dice += 3;
 			}
 			newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + "+"+String(thisWeapon.damageBonus);
-			newWeapon.runes.potentcy = thisWeapon.pot;
-
-			
-			parsedData.basicAttacks.push(newAttackData);
+			newWeapon.runes.potency = thisWeapon.pot;
+			MapTool.chat.broadcast(JSON.stringify(newWeapon.runes));
+			for(var rI of thisWeapon.runes){
+				newWeapon.runes.property.push(rI.toLowerCase());
+			}
+			//parsedData.basicAttacks.push(newAttackData);
 		}
 	}
 	for (var e in data.equipment){
