@@ -1,1 +1,1 @@
-[h: js.pf2e.skill_check(json.get(macro.args,"checkTokenID"),(json.get(macro.args,"altStat")==0),macro.args)]
+[h: js.ca.pf2e.skill_check(json.get(macro.args,"checkTokenID"),(json.get(macro.args,"altStat")==0),macro.args)]

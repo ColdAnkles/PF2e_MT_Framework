@@ -15,7 +15,7 @@
 </p>
 };{}]
 
-[h: 'r:macroLink("Info","Info@Lib:pf2e","","name=;tokenName="+tokenName)'] &nbsp;
+[h: 'r:macroLink("Info","Info@Lib:ca.pf2e","","name=;tokenName="+tokenName)'] &nbsp;
 
 <body>
 <p>[r, if(tokenID=="null"), code:{

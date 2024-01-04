@@ -243,7 +243,7 @@ function parse_pathbuilder_export(data){
 			parse_feature(rest_call(tempData.fileURL), parsedData);
 			let newWeapon = parsedData.itemList[tempData.id];
 			newWeapon.quantity = thisWeapon.qty;
-			let newAttackData = {"actionCost":1,"actionType": "action","bonus":thisWeapon.attack,"damage":[newWeapon.damage],
+			let newAttackData = {"actionCost":1,"actionType":"action","bonus":thisWeapon.attack,"damage":[newWeapon.damage],
 			"description": "","effects": [], "isMelee":newWeapon.isMelee,
 			"name":newWeapon.name,"traits":newWeapon.traits}
 			if (thisWeapon.str=="striking"){
@@ -261,7 +261,13 @@ function parse_pathbuilder_export(data){
 			for(var rI of thisWeapon.runes){
 				newWeapon.runes.property.push(rI.toLowerCase());
 			}
-			//parsedData.basicAttacks.push(newAttackData);
+			parsedData.basicAttacks.push(newAttackData);
+			newAttackData = JSON.parse(JSON.stringify(newAttackData));
+			newAttackData.name+=" (Free)";
+			newAttackData.actionCost="1";
+			newAttackData.actionType="freeaction";
+			newAttackData.description += " This is a action free version for use as subordinate calls as part of feats etc.."
+			parsedData.basicAttacks.push(newAttackData);
 		}
 	}
 	for (var e in data.equipment){

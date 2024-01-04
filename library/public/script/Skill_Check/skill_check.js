@@ -39,7 +39,14 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 			for (var p in profList){
 				let profData = profList[p];
-				let attMod = Number(checkToken.getProperty(skills[profData.name].stat))
+				let attMod = profData.bonus;
+				if(profData.name in skills){
+					attMod = Number(checkToken.getProperty(skills[profData.name].stat));
+				}else if(profData.name.includes("Lore")){
+					attMod = Number(checkToken.getProperty("int"));
+				}else{
+					attMod = 0;
+				}
 				let displayNumber = profData.bonus - attMod;
 				if(!altStat){
 					displayNumber = profData.bonus;
@@ -49,7 +56,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			
 		}
 
-		queryHTML = queryHTML + "<table><form action='macro://Skill_Check_Form_To_JS@Lib:pf2e/self/impersonated?'>";
+		queryHTML = queryHTML + "<table><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 		queryHTML = queryHTML + "<input type='hidden' name='checkTokenID' value='"+checkToken.getId()+"'>";
 		queryHTML = queryHTML + "<input type='hidden' name='tokenType' value='"+tokenType+"'>";
 		queryHTML = queryHTML + "<input type='hidden' name='secretCheck' value='0'>";
@@ -94,13 +101,19 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			dTwentyColour = "green";
 		}
 
-		if (!("statName" in checkData)){
+
+		if (!("statName" in checkData) && checkData.skillName in skills){
 			checkData.statName = skills[checkData.skillName].stat;
+		}
+
+		let stat_bonus = Number(checkToken.getProperty(checkData.statName));
+		if(checkData.skillName in skills){
+			stat_bonus = Number(checkToken.getProperty(skills[checkData.skillName].stat));
+		}else if(checkData.skillName.includes("Lore")){
+			stat_bonus = Number(checkToken.getProperty("int"));
 		}
 		
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
-
-		let stat_bonus = Number(checkToken.getProperty(checkData.statName));
 		let prof_bonus = 0;
 		let misc_bonus = Number(checkData.miscBonus);
 		let effect_bonus = calculate_bonus(checkToken.getId(), [lowercase(checkData.skillName),checkData.statName+"-based"].concat(extraScopes));
@@ -111,7 +124,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			for (var p in profList){
 				let profData = profList[p];
 				if (checkData.skillName == profData.name){
-					prof_bonus = Number(profData.bonus - checkToken.getProperty(skills[profData.name].stat));
+					prof_bonus = Number(profData.bonus - stat_bonus);
 				}
 			}
 		}
@@ -120,7 +133,20 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		let checkResult = dTwenty + checkMod;
 
 		let displayData = {"description":"","name":checkToken.getName() + " - " + checkData.skillName + " " +pos_neg_sign(checkMod)};
-		displayData.description = checkData.flavourText+"<br/><div style='font-size:20px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> "+ pos_neg_sign(stat_bonus) + " " + pos_neg_sign(prof_bonus) + " " + pos_neg_sign(effect_bonus) + " " + pos_neg_sign(misc_bonus) + " = " + String(checkResult) + "</div></b>";
+		displayData.description = checkData.flavourText+"<br/><div style='font-size:20px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span>"
+		if(stat_bonus!=0){
+			displayData.description += " " + pos_neg_sign(stat_bonus, true);
+		}
+		if(prof_bonus!=0){
+			displayData.description += " " + pos_neg_sign(prof_bonus, true);
+		}
+		if(effect_bonus!=0){
+			displayData.description += " " + pos_neg_sign(effect_bonus, true);
+		}
+		if(misc_bonus!=0){
+			displayData.description += " " + pos_neg_sign(misc_bonus, true);
+		}
+		displayData.description += " = " + String(checkResult) + "</div></b>";
 
 		chat_display(displayData);
 

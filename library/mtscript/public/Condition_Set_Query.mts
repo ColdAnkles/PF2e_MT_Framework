@@ -13,7 +13,7 @@
 	[h: inputText = "conditionValue|0,1,2,3,4,5,6|Condition Value (Current="+currentConditionValue+")|RADIO|SELECT="+if(currentConditionValue==0,"1","0")]
 	[h: ans = input("junkVar|Condition Values|Enter Value for "+conditionName+"|LABEL",inputText)]
 	[h: abort(ans)]
-	[h: js.pf2e.set_condition(conditionName, tokenID, conditionValue)]	
+	[h: js.ca.pf2e.set_condition(conditionName, tokenID, conditionValue)]	
 };{
-	[h: js.pf2e.set_condition(conditionName, tokenID)]	
+	[h: js.ca.pf2e.set_condition(conditionName, tokenID)]	
 }]

@@ -9,7 +9,7 @@
 	</h1>
 
 
-	[h:'macro("Search Results@Lib:pf2e"):macro.args+";window=Tables List"']
+	[h:'macro("Search Results@Lib:ca.pf2e"):macro.args+";window=Tables List"']
 	<body>
 	[js.ca.pf2e.build_compendium_home()]
 	</body>

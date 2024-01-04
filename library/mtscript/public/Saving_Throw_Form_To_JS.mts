@@ -1,1 +1,1 @@
-[h: js.pf2e.saving_throw(json.get(macro.args,"saveTokenID"),macro.args)]
+[h: js.ca.pf2e.saving_throw(json.get(macro.args,"saveTokenID"),macro.args)]

@@ -22,7 +22,7 @@ function saving_throw(saveToken, saveData = null){
 			saveStrings[s] = {"name":saves[s],"string":(capitalise(saves[s]) + " "+pos_neg_sign(saveToken.getProperty(saves[s])))};
 		}
 
-		queryHTML = queryHTML + "<table><form action='macro://Saving_Throw_Form_To_JS@Lib:pf2e/self/impersonated?'>";
+		queryHTML = queryHTML + "<table><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 		queryHTML = queryHTML + "<input type='hidden' name='saveTokenID' value='"+saveToken.getId()+"'>";
 		queryHTML = queryHTML + "<input type='hidden' name='secretCheck' value='0'>";
 
@@ -99,7 +99,17 @@ function saving_throw(saveToken, saveData = null){
 		let saveResult = dTwenty + saveMod;
 
 		let displayData = {"description":"","name":saveToken.getName() + " - " + capitalise(saveData.saveName) + " " + pos_neg_sign(saveMod)};
-		displayData.description = saveData.flavourText+"<br/><div style='font-size:20px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> "+pos_neg_sign(basic_bonus) + " " + pos_neg_sign(effect_bonus) + " " + pos_neg_sign(misc_bonus) + " = " + String(saveResult) + "</div></b>";
+		displayData.description = saveData.flavourText+"<br/><div style='font-size:20px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span>"
+		if(basic_bonus!=0){
+			displayData.description += " " + pos_neg_sign(basic_bonus, true);
+		}
+		if(effect_bonus!=0){
+			displayData.description += " " + pos_neg_sign(effect_bonus, true);
+		}
+		if(misc_bonus!=0){
+			displayData.description += " " + pos_neg_sign(misc_bonus, true);
+		}
+		displayData.description += " = " + String(saveResult) + "</div></b>";
 
 		chat_display(displayData);
 		
