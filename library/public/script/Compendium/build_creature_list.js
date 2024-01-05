@@ -9,14 +9,14 @@ function build_creature_list(sortKey, sortDir){
     for (var s in creatureList){
         creatureSorted.push(creatureList[s]);
     }
-    creatureSorted.sort(sort_by(sortKey, sortDir=="d", (a) =>  a.toUpperCase()));
+    spellSorted.sort(sort_by(sortKey, sortDir=="d", (a) =>  ((typeof(a)=="string") ? a.toUpperCase() : a )));
     
-    returnHTML += "<table><tr><th>" + create_macroLink("Name", "Creature_List_Window@Lib:ca.pf2e", "sort=name;dir="+sortDir) + "</th>";
-    returnHTML += "<th>"+create_macroLink("Size", "Creature_List_Window@Lib:ca.pf2e", "sort=size;dir="+sortDir) + "</th>";
-    returnHTML += "<th>" + create_macroLink("Rarity", "Creature_List_Window@Lib:ca.pf2e", "sort=rarity;dir="+sortDir) + "</th>";
+    returnHTML += "<table><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"name","dir":((sortKey=="name") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
+    returnHTML += "<th>"+create_macroLink("Size", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"size","dir":((sortKey=="size") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
+    returnHTML += "<th>" + create_macroLink("Rarity", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"rarity","dir":((sortKey=="rarity") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
     returnHTML += "<th width=10% align=center>Traits</th>";
-    returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Creature_List_Window@Lib:ca.pf2e", "sort=level;dir="+sortDir) + "</th>";
-    returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Creature_List_Window@Lib:ca.pf2e", "sort=source;dir="+sortDir) + "</th>";
+    returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"level","dir":((sortKey=="level") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
+    returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"source","dir":((sortKey=="source") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
     returnHTML += "<th>Spawn Link</th>";
 
     let odd = 1;
