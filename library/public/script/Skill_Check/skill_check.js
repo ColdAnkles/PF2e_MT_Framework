@@ -27,7 +27,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 		let tokenType = get_token_type(checkToken);
 
-		if (tokenType=="NPC"){
+		if (tokenType=="NPC" || tokenType == "PC"){
 
 			for (var p in skills){
 				let skillData = skills[p];
@@ -39,6 +39,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 			for (var p in profList){
 				let profData = profList[p];
+				if(!(p in skills) && !(profData.name.includes("Lore"))){
+					continue
+				}
 				let attMod = profData.bonus;
 				if(profData.name in skills){
 					attMod = Number(checkToken.getProperty(skills[profData.name].stat));
@@ -119,7 +122,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		let effect_bonus = calculate_bonus(checkToken.getId(), [lowercase(checkData.skillName),checkData.statName+"-based"].concat(extraScopes));
 		effect_bonus = effect_bonus.bonuses.circumstance + effect_bonus.bonuses.status + effect_bonus.bonuses.item + effect_bonus.bonuses.none + effect_bonus.maluses.circumstance + effect_bonus.maluses.status + effect_bonus.maluses.item + effect_bonus.maluses.none;
 
-		if (checkData.tokenType == "NPC"){
+		if (checkData.tokenType == "NPC" || checkData.tokenType == "PC"){
 			let profList = JSON.parse(checkToken.getProperty("proficiencies"));
 			for (var p in profList){
 				let profData = profList[p];

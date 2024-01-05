@@ -15,15 +15,12 @@ function build_compendium_home(){
 	}
 	HTMLString = HTMLString + create_macroLink("Import from Pathbuilder", "Import_Pathbuilder_PC@Lib:ca.pf2e","") + "<br />";
 
-	HTMLString = HTMLString + "</p><h2>Notebooks</h2><p>";
-
-	HTMLString = HTMLString + "todo <br />";
-
 	HTMLString = HTMLString + "<h2>"+create_macroLink("Spells","Spell_List_Window@Lib:ca.pf2e","") + "</h2>";
 	
 	if (isGM){
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Creature List","Creature_List_Window@Lib:ca.pf2e","") + "</h2>";
-		HTMLString = HTMLString + "<h2>" + create_macroLink("Source Management","Source_Management_Window@Lib:ca.pf2e","") + "</h2>";
+		HTMLString = HTMLString + "<h2>" + create_macroLink("Enabled Sources","Enabled_Sources_Window@Lib:ca.pf2e","") + "</h2>";
+		HTMLString = HTMLString + "<h2>" + create_macroLink("Source Importing","Source_Management_Window@Lib:ca.pf2e","") + "</h2>";
 	}
 
 	

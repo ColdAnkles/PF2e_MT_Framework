@@ -108,14 +108,16 @@ function parse_pathbuilder_export(data){
 	parsedData.otherDefenses = [];
 
 	//__SKILLS__	
-	parsedData.skillList = {};
+	parsedData.skillList = [];
 	for (var p in data.proficiencies){
 		if (data.proficiencies[p]!=0 && p != "fortitude" && p != "reflex" && p != "will"){
-			parsedData.skillList[p]=data.proficiencies[p];
+			let newProf = {"bonus":data.proficiencies[p] + data.level, "name":capitalise(p), "string": capitalise(p) + " " + pos_neg_sign(data.proficiencies[p] + data.level)};
+			parsedData.skillList.push(newProf);
 		}
 	}
 	for (var l in data.lores){
-		parsedData.skillList["Lore: " + data.lores[l][0]] = data.lores[l][1];
+		let newProf = {"bonus":data.lores[l][1] + data.level + parsedData.abilities.int, "name":"Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(data.proficiencies[p] + data.level)};
+		parsedData.skillList.push(newProf);
 	}
 	if (data.proficiencies.perception>0){
 		parsedData.perception = data.proficiencies.perception + data.level + parsedData.abilities.wis;
