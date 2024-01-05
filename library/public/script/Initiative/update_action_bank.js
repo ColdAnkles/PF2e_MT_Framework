@@ -5,8 +5,8 @@ function update_action_bank(token){
 		token = MapTool.tokens.getTokenByID(token);
 	}
 	
-	let actionCount = token.getProperty("actionsLeft");
-	let reactionCount = token.getProperty("reactionsLeft");
+	let actionCount = Number(token.getProperty("actionsLeft"));
+	let reactionCount = Number(token.getProperty("reactionsLeft"));
 	
 	for (var i in [0,1,2,3,4,5]){
 		if (i == actionCount && i!=0){

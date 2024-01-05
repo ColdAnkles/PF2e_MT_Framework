@@ -27,6 +27,8 @@ function core_action(actionData, actingToken){
 		canAct = true;
 	}else if (actionData.actionType=="reaction"){
 		failAct = "Insufficient Reactions";
+	}else if(actionData.actionType=="passive"){
+		canAct = true;
 	}
 
 	if (canAct){
@@ -35,6 +37,22 @@ function core_action(actionData, actingToken){
 		if ("isSpell" in actionData && actionData.isSpell){
 			spell_action(actionData, actingToken);
 		}else if ("isMelee" in actionData){
+
+			if(!(isNaN(initiative)) && !("useMAP" in actionData)){
+				let queryHTML = "<html><p align=center><form action='macro://Core_Action_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>"
+				queryHTML += "<input type='hidden' name='actionData' value='"+JSON.stringify(actionData)+"'>";
+				queryHTML += "<input type='hidden' name='actingToken' value='"+actingToken.getId()+"'>";
+				queryHTML += "Use MAP:<input type='checkbox' id='useMAP' name='useMAP' value='useMAP' checked='true'><br />";
+				queryHTML += "Increase MAP:<input type='checkbox' id='increaseMAP' name='increaseMAP' value='increaseMAP' checked='true'><br />";
+				queryHTML += "Spend Action:<input type='checkbox' id='spendAction' name='spendAction' value='spendAction' checked='true'><br />";
+				queryHTML += "<input type='submit' name='submit' value='Submit'></input>";
+				queryHTML += "</form></p></html>";
+		
+				MTScript.setVariable("queryHTML", queryHTML);
+				MTScript.evalMacro("[frame5('Attack Query', 'width=250; height=250; temporary=1; noframe=0; input=1'):{[r: queryHTML]}]")
+				return;
+			}
+
 			attack_action(actionData, actingToken);
 		}else{
 			let needsEffect = false;
@@ -72,11 +90,11 @@ function core_action(actionData, actingToken){
 			}
 		}
 
-		if (!(isNaN(initiative))){
+		if (!(isNaN(initiative)) && ("spendAction" in actionData && actionData.spendAction)){
 			if (actionData.actionType=="action"){
-				actingToken.setProperty("actionsLeft", actionsLeft-actionData.actionCost);
+				actingToken.setProperty("actionsLeft", String(actionsLeft-actionData.actionCost));
 			}else if(actionData.actionType=="reaction"){
-				actingToken.setProperty("reactionsLeft", reactionsLeft-actionData.actionCost);
+				actingToken.setProperty("reactionsLeft", String(reactionsLeft-actionData.actionCost));
 			}
 			update_action_bank(actingToken);
 		}

@@ -35,6 +35,7 @@ function create_pc_token(newNPCTokenID, pcLibID){
 		}
 	}
 	
+	update_my_tokens(pcLibID);
 }
 
 MTScript.registerMacro("ca.pf2e.create_pc_token", create_pc_token);

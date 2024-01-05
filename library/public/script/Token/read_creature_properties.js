@@ -55,6 +55,13 @@ function read_creature_properties(token){
 	creatureData.resources = JSON.parse(token.getProperty("resources"));
 	creatureData.itemList = JSON.parse(token.getProperty("inventory"));
 
+	creatureData.activeEffects = JSON.parse(token.getProperty("activeEffects"));
+	creatureData.specialEffects = JSON.parse(token.getProperty("specialEffects"));
+	creatureData.conditionDetails = JSON.parse(token.getProperty("conditionDetails"));
+	creatureData.attacksThisRound = Number(token.getProperty("attacksThisRound"));
+	creatureData.actionsLeft = Number(token.getProperty("actionsLeft"));
+	creatureData.reactionsLeft = Number(token.getProperty("reactionsLeft"));
+
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));
 	return creatureData;

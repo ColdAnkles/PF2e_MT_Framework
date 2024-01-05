@@ -55,6 +55,27 @@ function write_creature_properties(creatureData, token){
 	token.setProperty("languages", JSON.stringify(creatureData.languages));
 	token.setProperty("resources", JSON.stringify(creatureData.resources));
 	token.setProperty("inventory", JSON.stringify(creatureData.itemList));
+
+	//__CALCULATION_DATA__
+	if("activeEffects" in creatureData && creatureData.activeEffects!=null){
+		token.setProperty("activeEffects", JSON.stringify(creatureData.activeEffects));
+	}
+	if("specialEffects" in creatureData && creatureData.specialEffects!=null){
+		token.setProperty("specialEffects", JSON.stringify(creatureData.specialEffects));
+	}
+	if("conditionDetails" in creatureData && creatureData.conditionDetails!=null){
+		token.setProperty("conditionDetails", JSON.stringify(creatureData.conditionDetails));
+	}
+	if("attacksThisRound" in creatureData && creatureData.attacksThisRound!=null){
+		token.setProperty("attacksThisRound", Number(creatureData.attacksThisRound));
+	}
+	if("actionsLeft" in creatureData && creatureData.actionsLeft!=null){
+		token.setProperty("actionsLeft", Number(creatureData.actionsLeft));
+	}
+	if("reactionsLeft" in creatureData && creatureData.reactionsLeft!=null){
+		token.setProperty("reactionsLeft", Number(creatureData.reactionsLeft));
+	}
+
 }
 
 MTScript.registerMacro("ca.pf2e.write_creature_properties", write_creature_properties);

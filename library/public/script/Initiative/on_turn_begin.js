@@ -67,7 +67,7 @@ function on_turn_begin(turnToken){
 	}
 	
 	turnToken.setProperty("actionsLeft",newActionCount);
-	turnToken.setProperty("reactionsLeft",newActionCount);
+	turnToken.setProperty("reactionsLeft",newReactionCount);
 	turnToken.setProperty("attacksThisRound",0);
 	
 }

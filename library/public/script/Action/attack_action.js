@@ -5,7 +5,7 @@ function attack_action(actionData, actingToken){
 		actingToken = MapTool.tokens.getTokenByID(actingToken);
 	}
 
-	MapTool.chat.broadcast(JSON.stringify(actionData));
+	//MapTool.chat.broadcast(JSON.stringify(actionData));
 
 	let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
 	if (isNaN(currentAttackCount)){
@@ -136,6 +136,10 @@ function attack_action(actionData, actingToken){
 	
 	let map_malus = currentAttackCount * MAP_Penalty;
 
+	if ("useMAP" in actionData && !actionData.useMAP){
+		map_malus = 0;
+	}
+
 	let attackMod = attack_bonus+effect_bonus - map_malus;
 	let attackResult = dTwenty + attackMod;
 	
@@ -174,7 +178,7 @@ function attack_action(actionData, actingToken){
 		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects.join(", ").replaceAll("-", " ")) + "</div>";
 	}
 
-	if (!(isNaN(initiative))){
+	if (!(isNaN(initiative)) && "increaseMAP" in actionData && actionData.increaseMAP){
 		actingToken.setProperty("attacksThisRound",String(currentAttackCount+1));
 		
 	}
