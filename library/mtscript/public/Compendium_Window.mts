@@ -40,5 +40,6 @@
     [r, if(windowType=="feats"), code:{
     }]
     [r, if(windowType=="items"), code:{
+        [r: js.ca.pf2e.build_item_list(sort, dir)]
     }]
 }]

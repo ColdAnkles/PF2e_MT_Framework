@@ -2,6 +2,7 @@
 
 function parse_feature(feature, assignDict){
 	let itemData = feature;
+	let simpleReturn = assignDict==null;
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
 
 	if (itemData.type == "feat" || (itemData.type=="heritage" && "actionType" in itemData.system)){
@@ -10,7 +11,11 @@ function parse_feature(feature, assignDict){
 
 	
 	if (itemData.type == "lore"){
-			assignDict.skillList.push({"string":itemData.name+" +"+itemData.system.mod.value,"name":itemData.name,"bonus":itemData.system.mod.value});
+			let newSkill = {"string":itemData.name+" +"+itemData.system.mod.value,"name":itemData.name,"bonus":itemData.system.mod.value};
+			if(simpleReturn){
+				return newSkill;
+			}
+			assignDict.skillList.push(newSkill);
 			
 		}else if(itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable"|| itemData.type == "shield"|| itemData.type == "treasure"|| itemData.type == "equipment"|| itemData.type == "backpack"){
 			//MapTool.chat.broadcast(JSON.stringify(itemData));
@@ -44,18 +49,33 @@ function parse_feature(feature, assignDict){
 			}else{
 				newItem.quantity = 1;
 			}
+			if(simpleReturn){
+				return newItem;
+			}
 			assignDict.itemList[itemData._id] = newItem;
 			
 		}else if(itemData.type == "action" && (itemData.system.category=="interaction" || assignDict.type != "npc")&& itemData.system.actionType.value=="passive" && itemData.system.rules.length>0){
 			let tempString = clean_description(itemData.system.description.value)
-			assignDict.passiveSkills.push({"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"requirements":itemData.system.requirements,"description":tempString,"name":itemData.name});
+			let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"requirements":itemData.system.requirements,"description":tempString,"name":itemData.name};
+			if(simpleReturn){
+				return newAction;
+			}
+			assignDict.passiveSkills.push(newAction);
 			
 		}else if(itemData.type == "action" && ((itemData.system.category=="defensive" || itemData.system.category=="interaction")  || assignDict.type != "npc") && itemData.system.actionType.value=="passive" && itemData.system.rules.length>0 && "selector" in itemData.system.rules[0] && itemData.system.rules[0].selector=="saving-throw"){
 			let tempString = clean_description(itemData.system.description.value)
-			assignDict.passiveDefenses.push({"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"requirements":itemData.system.requirements,"actionType":"passive","actionCost":0,"description":tempString,"name":itemData.name});
+			let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"requirements":itemData.system.requirements,"actionType":"passive","actionCost":0,"description":tempString,"name":itemData.name};
+			if(simpleReturn){
+				return newAction;
+			}
+			assignDict.passiveDefenses.push(newAction);
 			
 		}else if(itemData.type == "action" && (itemData.system.category=="defensive"  || assignDict.type != "npc")){
-			assignDict.otherDefenses.push({"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value,"rules":itemData.system.rules,"requirements":itemData.system.requirements});
+			let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value,"rules":itemData.system.rules,"requirements":itemData.system.requirements};
+			if(simpleReturn){
+				return newAction;
+			}
+			assignDict.otherDefenses.push(newAction);
 			
 		}else if(itemData.type == "melee"){
 			//MapTool.chat.broadcast(JSON.stringify(itemData));
@@ -63,6 +83,9 @@ function parse_feature(feature, assignDict){
 			let newItem = {"name":itemData.name,"bonus":itemData.system.bonus.value,"damage":itemData.system.damageRolls,"traits":itemData.system.traits.value, "isMelee":(itemData.system.weaponType.value=="melee"),"description":itemDescription,"effects":itemData.system.attackEffects.value,"actionType":"action","actionCost":1};
 			if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e){
 				newItem.linkedWeapon = itemData.flags.pf2e.linkedWeapon;
+			}
+			if(simpleReturn){
+				return newItem;
 			}
 			assignDict.basicAttacks.push(newItem);
 			
@@ -75,6 +98,9 @@ function parse_feature(feature, assignDict){
 				newSpellEntry["autoHeighten"]=1;
 			}
 			//MapTool.chat.broadcast(JSON.stringify(newSpellEntry));
+			if(simpleReturn){
+				return newSpellEntry;
+			}
 			assignDict.spellRules[itemData._id]=newSpellEntry;
 			
 		}else if(itemData.type == "spell"){
@@ -88,11 +114,18 @@ function parse_feature(feature, assignDict){
 			}else{
 				newSpellEntry.castLevel = newSpellEntry.level;
 			}
+			if(simpleReturn){
+				return newSpellEntry;
+			}
 			if (itemData.system.location.value in assignDict.spellRules){
 				assignDict.spellRules[itemData.system.location.value].spells.push(newSpellEntry);
 			}
 		}else if(itemData.type == "action" && (itemData.system.category=="offensive" || assignDict.type != "npc")){
-			assignDict.offensiveActions.push({"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value});
+			let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value};
+			if(simpleReturn){
+				return newAction;
+			}
+			assignDict.offensiveActions.push(newAction);
 			
 		}else{
 			//MapTool.chat.broadcast(JSON.stringify(itemData));

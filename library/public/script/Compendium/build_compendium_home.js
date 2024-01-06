@@ -15,6 +15,7 @@ function build_compendium_home(){
 	}
 	HTMLString = HTMLString + create_macroLink("Import from Pathbuilder", "Import_Pathbuilder_PC@Lib:ca.pf2e","") + "<br />";
 
+	HTMLString = HTMLString + "<h2>"+create_macroLink("Items","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"items"})) + "</h2>";
 	HTMLString = HTMLString + "<h2>"+create_macroLink("Spells","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"spells"})) + "</h2>";
 	HTMLString = HTMLString + "<h2>"+create_macroLink("Feats","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"feats"})) + "</h2>";
 	
