@@ -1,6 +1,6 @@
 "use strict";
 
-function parse_feature(feature, assignDict){
+function parse_feature(feature, assignDict=null){
 	let itemData = feature;
 	let simpleReturn = assignDict==null;
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
@@ -49,29 +49,46 @@ function parse_feature(feature, assignDict){
 			}else{
 				newItem.quantity = 1;
 			}
+			if(itemData.type != "armor" && itemData.type != "weapon" && itemData.type != "consumable"){
+				itemData.type = "item";
+			}
+			newItem.source = itemData.system.publication.title;
+			newAction.rarity = itemData.system.traits.rarity;
 			if(simpleReturn){
 				return newItem;
 			}
 			assignDict.itemList[itemData._id] = newItem;
 			
-		}else if(itemData.type == "action" && (itemData.system.category=="interaction" || assignDict.type != "npc")&& itemData.system.actionType.value=="passive" && itemData.system.rules.length>0){
+		}else if(itemData.type == "action" && ((itemData.system.category=="interaction" || itemData.system.category=="class") || (assignDict != null && assignDict.type != "npc")) && itemData.system.actionType.value=="passive" && itemData.system.rules.length>0){
 			let tempString = clean_description(itemData.system.description.value)
-			let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"requirements":itemData.system.requirements,"description":tempString,"name":itemData.name};
+			let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"description":tempString,"name":itemData.name};
+			newAction.source = itemData.system.publication.title;
+			newAction.rarity = itemData.system.traits.rarity;
+			if("requirements" in itemData){
+				itemData.requirements=itemData.system.requirements;
+			}
 			if(simpleReturn){
 				return newAction;
 			}
 			assignDict.passiveSkills.push(newAction);
 			
-		}else if(itemData.type == "action" && ((itemData.system.category=="defensive" || itemData.system.category=="interaction")  || assignDict.type != "npc") && itemData.system.actionType.value=="passive" && itemData.system.rules.length>0 && "selector" in itemData.system.rules[0] && itemData.system.rules[0].selector=="saving-throw"){
+		}else if(itemData.type == "action" && ((itemData.system.category=="defensive" || itemData.system.category=="interaction")  || (assignDict != null && assignDict.type != "npc")) && itemData.system.actionType.value=="passive" && itemData.system.rules.length>0 && "selector" in itemData.system.rules[0] && itemData.system.rules[0].selector=="saving-throw"){
 			let tempString = clean_description(itemData.system.description.value)
-			let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"requirements":itemData.system.requirements,"actionType":"passive","actionCost":0,"description":tempString,"name":itemData.name};
+			let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"actionType":"passive","actionCost":0,"description":tempString,"name":itemData.name};
+			newAction.source = itemData.system.publication.title;
+			newAction.rarity = itemData.system.traits.rarity;
+			if("requirements" in itemData){
+				itemData.requirements=itemData.system.requirements;
+			}
 			if(simpleReturn){
 				return newAction;
 			}
 			assignDict.passiveDefenses.push(newAction);
 			
-		}else if(itemData.type == "action" && (itemData.system.category=="defensive"  || assignDict.type != "npc")){
-			let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value,"rules":itemData.system.rules,"requirements":itemData.system.requirements};
+		}else if(itemData.type == "action" && ((itemData.system.category=="defensive" || itemData.system.category == "general" || itemData.system.category.includes("class")) || (assignDict != null && assignDict.type != "npc"))){
+			let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value,"rules":itemData.system.rules,"requirements":itemData.system.requirements,"type":"feat","level":itemData.system.level.value};
+			newAction.source = itemData.system.publication.title;
+			newAction.rarity = itemData.system.traits.rarity;
 			if(simpleReturn){
 				return newAction;
 			}
@@ -80,7 +97,13 @@ function parse_feature(feature, assignDict){
 		}else if(itemData.type == "melee"){
 			//MapTool.chat.broadcast(JSON.stringify(itemData));
 			let itemDescription = itemData.system.description.value;
-			let newItem = {"name":itemData.name,"bonus":itemData.system.bonus.value,"damage":itemData.system.damageRolls,"traits":itemData.system.traits.value, "isMelee":(itemData.system.weaponType.value=="melee"),"description":itemDescription,"effects":itemData.system.attackEffects.value,"actionType":"action","actionCost":1};
+			let newItem = {"name":itemData.name,"bonus":itemData.system.bonus.value,"damage":itemData.system.damageRolls,"traits":itemData.system.traits.value, "isMelee":(itemData.system.weaponType.value=="melee")}
+			newItem.description=itemDescription;
+			newItem.effects=itemData.system.attackEffects.value
+			newItem.actionType="action";
+			newItem.actionCost=1;
+			newItem.source = itemData.system.publication.title;
+			newAction.rarity = itemData.system.traits.rarity;
 			if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e){
 				newItem.linkedWeapon = itemData.flags.pf2e.linkedWeapon;
 			}
@@ -120,8 +143,10 @@ function parse_feature(feature, assignDict){
 			if (itemData.system.location.value in assignDict.spellRules){
 				assignDict.spellRules[itemData.system.location.value].spells.push(newSpellEntry);
 			}
-		}else if(itemData.type == "action" && (itemData.system.category=="offensive" || assignDict.type != "npc")){
+		}else if(itemData.type == "action" && (itemData.system.category=="offensive" || (assignDict != null && assignDict.type != "npc"))){
 			let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value};
+			newItem.source = itemData.system.publication.title;
+			newAction.rarity = itemData.system.traits.rarity;
 			if(simpleReturn){
 				return newAction;
 			}

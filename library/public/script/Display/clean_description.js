@@ -163,7 +163,7 @@ function parse_roll(rollString, rollDice){
 	return rollString;
 }
 
-//TODO: Effect Text appearing?
+//TODO: EFFECT Text appearing? Also ACTOR Stuff!
 
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, rollDice = false){
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));

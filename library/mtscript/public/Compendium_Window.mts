@@ -19,12 +19,12 @@
     [h: windowHeight=600]
     [h: windowName = "Creature List"]
 }]
-[h, if(windowType=="feats"), code:{
+[h, if(windowType=="feat"), code:{
     [h: windowWidth=800]
     [h: windowHeight=600]
     [h: windowName = "Feat List"]
 }]
-[h, if(windowType=="items"), code:{
+[h, if(windowType=="item"), code:{
     [h: windowWidth=800]
     [h: windowHeight=600]
     [h: windowName = "Item List"]
@@ -37,9 +37,10 @@
     [r, if(windowType=="creatures"), code:{
         [r: js.ca.pf2e.build_creature_list(sort, dir)]
     }]
-    [r, if(windowType=="feats"), code:{
+    [r, if(windowType=="feat"), code:{
+        [r: js.ca.pf2e.build_item_list("feat", sort, dir)]
     }]
-    [r, if(windowType=="items"), code:{
-        [r: js.ca.pf2e.build_item_list(sort, dir)]
+    [r, if(windowType=="item"), code:{
+        [r: js.ca.pf2e.build_item_list("item", sort, dir)]
     }]
 }]

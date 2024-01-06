@@ -153,6 +153,7 @@ function import-source-file {
 		$storeData.traits = $data.system.traits.value;
 		$storeData.actionCost = $data.system.actions.value;
 		$storeData.actionType = $data.system.actionType.value;
+        $storeData.level = $data.system.level.value;
     }elseif ($data.type -eq "spell"){
 		$storeData.source = $data.system.publication.title;
 		$storeData.rarity = $data.system.traits.rarity;
@@ -215,7 +216,7 @@ function write-data-files {
 }
 
 $unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics",  "criticaldeck", "action-macros")
-$wantedSources = @("Pathfinder Core Rulebook","Pathfinder Player Core","Pathfinder Rage of Elements","Pathfinder GM Core","Pathfinder Advanced Player's Guide","Pathfinder Treasure Vault","Pathfinder Dark Archive","Pathfinder Gamemastery Guide","Pathfinder Secrets of Magic","Pathfinder Lost Omens: Gods & Magic","Pathfinder Bestiary","Pathfinder Bestiary 2","Pathfinder Bestiary 3","Pathfinder Book of the Dead","Pathfinder Guns & Gears")
+$wantedSources = @("Pathfinder Core Rulebook","Pathfinder Player Core","Pathfinder Rage of Elements","Pathfinder GM Core","Pathfinder Advanced Player's Guide","Pathfinder Treasure Vault","Pathfinder Dark Archive","Pathfinder Gamemastery Guide","Pathfinder Secrets of Magic","Pathfinder Bestiary","Pathfinder Bestiary 2","Pathfinder Bestiary 3","Pathfinder Book of the Dead","Pathfinder Guns & Gears")
 $sources = @{}
 $packData = @{}
 $foundSources = [System.Collections.ArrayList]@()
