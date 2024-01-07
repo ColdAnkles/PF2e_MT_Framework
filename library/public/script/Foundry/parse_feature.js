@@ -53,7 +53,7 @@ function parse_feature(feature, assignDict=null){
 				itemData.type = "item";
 			}
 			newItem.source = itemData.system.publication.title;
-			newAction.rarity = itemData.system.traits.rarity;
+			newItem.rarity = itemData.system.traits.rarity;
 			if(simpleReturn){
 				return newItem;
 			}
@@ -114,7 +114,7 @@ function parse_feature(feature, assignDict=null){
 			newItem.actionType="action";
 			newItem.actionCost=1;
 			newItem.source = itemData.system.publication.title;
-			newAction.rarity = itemData.system.traits.rarity;
+			newItem.rarity = itemData.system.traits.rarity;
 			if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e){
 				newItem.linkedWeapon = itemData.flags.pf2e.linkedWeapon;
 			}
@@ -156,7 +156,7 @@ function parse_feature(feature, assignDict=null){
 			}
 		}else if(itemData.type == "action" && (itemData.system.category=="offensive" || (assignDict != null && assignDict.type != "npc"))){
 			let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value};
-			newItem.source = itemData.system.publication.title;
+			newAction.source = itemData.system.publication.title;
 			newAction.rarity = itemData.system.traits.rarity;
 			if(simpleReturn){
 				return newAction;

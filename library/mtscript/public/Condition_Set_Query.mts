@@ -2,7 +2,8 @@
 [h: tokenID = json.get(macro.args,1)]
 [h: tokenName = getName(tokenID)]
 [h: conditionDict = getLibProperty("pf2e_condition")]
-[h: conditionData = json.get(conditionDict, conditionName)]
+[h: tempConditionName = replace(conditionName," \\(Time\\)","")]
+[h: conditionData = json.get(conditionDict, tempConditionName)]
 [h: currentConditions = getProperty("conditionDetails", tokenID)]
 [h, if(json.contains(currentConditions, conditionName)), code:{
 	[h: currentConditionValue = json.get(json.get(json.get(currentConditions,conditionName),"value"),"value")]

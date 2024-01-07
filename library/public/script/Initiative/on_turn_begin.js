@@ -20,8 +20,8 @@ function on_turn_begin(turnToken){
 
 	let subBy = 0;
 	
-	if ("Stunned" in currentConditions){
-		let stunnedValue = currentConditions.Stunned.value.value;
+	if ("Stunned" in currentConditions || "Stunned (Time)" in currentConditions){
+		let stunnedValue = max(currentConditions.Stunned.value.value, currentConditions["Stunned (Time)"].value.value);
 		subBy = min(stunnedValue, newActionCount);
 		MapTool.chat.broadcast(String(subBy));
 		currentConditions.Stunned.value.value =  currentConditions.Stunned.value.value - subBy;
@@ -40,10 +40,10 @@ function on_turn_begin(turnToken){
 		}
 	}
 	currentConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
-	if ("Slowed" in currentConditions){
-		let slowedValue = currentConditions.Slowed.value.value;
+	if ("Slowed" in currentConditions || "Slowed (Time)" in currentConditions){
+		let slowedValue = max(currentConditions.Slowed.value.value, currentConditions["Slowed (Time)"].value.value);
 		subBy = min(slowedValue, newActionCount);
-		MapTool.chat.broadcast(String(subBy));
+		//MapTool.chat.broadcast(String(subBy));
 		currentConditions.Slowed.value.value =  currentConditions.Slowed.value.value - subBy;
 		turnToken.setProperty("conditionDetails",JSON.stringify(currentConditions));
 		if (currentConditions.Slowed.value.value<=0){

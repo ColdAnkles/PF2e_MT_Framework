@@ -9,7 +9,7 @@ function build_creature_list(sortKey, sortDir){
     for (var s in creatureList){
         creatureSorted.push(creatureList[s]);
     }
-    spellSorted.sort(sort_by(sortKey, sortDir=="d", (a) =>  ((typeof(a)=="string") ? a.toUpperCase() : a )));
+    creatureSorted.sort(sort_by(sortKey, sortDir=="d", (a) =>  ((typeof(a)=="string") ? a.toUpperCase() : a )));
     
     returnHTML += "<table><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"name","dir":((sortKey=="name") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
     returnHTML += "<th>"+create_macroLink("Size", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"size","dir":((sortKey=="size") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";

@@ -4,11 +4,17 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	if (typeof(token)=="string"){
 		token = MapTool.tokens.getTokenByID(token);
 	}
+
+	let autoDecrease = true;
+	let trueConditionName = conditionName.replaceAll(" (Time)","");
+	if(conditionName.includes("Time")){
+		autoDecrease = false;
+	}
 	
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("pf2e_condition"));
 	let property = JSON.parse(read_data("pf2e_condition"));
-	let conditionData = property[conditionName];
+	let conditionData = property[trueConditionName];
 
 	let oldValue = conditionData.value.value;
 	conditionData.value.value = Number(conditionValue);
@@ -16,6 +22,8 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	if (conditionValue != null){
 		conditionValue = Number(conditionValue);
 	}
+
+	conditionData.autoDecrease = autoDecrease;
 
 	let tokenConditions = JSON.parse(token.getProperty("conditionDetails"));
 
@@ -38,13 +46,15 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 		delete tokenConditions[conditionName];
 		//MapTool.chat.broadcast("Removing condition: " + conditionName);
 		//MTScript.evalMacro("[h: setState(stateName, 0, tokenID)]");
-		set_state(conditionName, 0, token.getId());
+		if(!((conditionName+" (Time)" in tokenConditions && trueConditionName==conditionName)) && !(trueConditionName in tokenConditions && trueConditionName != conditionName)){
+			set_state(trueConditionName, 0, token.getId());
+		}
 	}else if ((conditionValue == null && !(conditionName in tokenConditions)) || Number(conditionValue) > 0){
 		if (!silent){
 			chat_display(conditionData);
 		}
 		tokenConditions[conditionName]=conditionData;
-		set_state(conditionName, 1, token.getId());
+		set_state(trueConditionName, 1, token.getId());
 		conditionApplication = 1;
 	}
 
