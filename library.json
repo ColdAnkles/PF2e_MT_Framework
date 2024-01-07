@@ -2,7 +2,7 @@
   "name": "Lib:ca.pf2e",
   "version": "0.1",
   "website": "",
-  "gitUrl": "",
+  "gitUrl": "https://github.com/ColdAnkles/PF2e_MT_Framework",
   "authors": ["Cold_Ankles"],
   "license": "",
   "namespace": "ca.pf2e",
