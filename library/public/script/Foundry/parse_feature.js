@@ -86,7 +86,18 @@ function parse_feature(feature, assignDict=null){
 			assignDict.passiveDefenses.push(newAction);
 			
 		}else if(itemData.type == "action" && ((itemData.system.category=="defensive" || itemData.system.category == "general" || itemData.system.category.includes("class")) || (assignDict != null && assignDict.type != "npc"))){
-			let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value,"rules":itemData.system.rules,"requirements":itemData.system.requirements,"type":"feat","level":itemData.system.level.value};
+			let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value}
+			newAction.traits=itemData.system.traits.value;
+			newAction.rules=itemData.system.rules;
+			if("requirements" in itemData){
+				itemData.requirements=itemData.system.requirements;
+			}
+			newAction.type="feat";
+			if("level" in itemData.system){
+				newAction.level=itemData.system.level.value;
+			}else{
+				newAction.level = 0;
+			}
 			newAction.source = itemData.system.publication.title;
 			newAction.rarity = itemData.system.traits.rarity;
 			if(simpleReturn){

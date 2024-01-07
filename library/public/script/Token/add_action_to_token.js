@@ -4,7 +4,7 @@ function action_icon_label(actionType, actionCount){
 	//MapTool.chat.broadcast(actionType);
 	//MapTool.chat.broadcast(String(actionCount));
 	if(actionCount==null){
-		return "";
+		actionCount=0;
 	}
 	if (actionType == "action" && !(isNaN(actionCount))){
 		if (actionCount == 1){
@@ -16,7 +16,7 @@ function action_icon_label(actionType, actionCount){
 		}
 	}else if (actionType=="reaction"){
 		return "&#10227;";
-	}else if (actionType=="freeaction"){
+	}else if (actionType=="freeaction" || actionType=="free"){
 		return "&#9671;";
 	}else if (actionType=="passive"){
 		return "";
@@ -45,7 +45,7 @@ function add_action_to_token(actionData, tokenID){
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
 	if (actionData.type=="basic"){
 		
-		let libToken = get_runtime("libToken");
+		//let libToken = get_runtime("libToken");
 		//let property = JSON.parse(libToken.getProperty("pf2e_action"));
 		let property = JSON.parse(read_data("pf2e_action"));
 		let lookupAction = property[actionData.name];
@@ -64,7 +64,7 @@ function add_action_to_token(actionData, tokenID){
 		MTScript.setVariable("tokenID",tokenID);
 		MTScript.evalMacro("[h: createMacro(props,tokenID)]");
 		
-	}else if (actionData.type=="personal"){
+	}else if (actionData.type=="personal" || actionData.type=="feat"){
 		
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		let actionLabel = action_icon_label(actionData.actionType, actionData.actionCost)+" "+actionData.name;

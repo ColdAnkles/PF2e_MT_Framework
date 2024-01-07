@@ -18,6 +18,11 @@ function parse_pathbuilder_export(data){
 
 	function find_object_data(objectName, searchSet = "all"){
 		//MapTool.chat.broadcast(objectName);
+		if(objectName=="Versatile Heritage"){
+			objectName="Versatile";
+			searchSet = "heritage";
+		}
+
 		let testVar = objectName;
 		let testCaps = capitalise(objectName);
 		let testVar2 = testVar.replaceAll(" ","-");
@@ -56,10 +61,20 @@ function parse_pathbuilder_export(data){
 			fSpellData = spellLibrary[spellName];
 			fSpellData = rest_call(fSpellData.fileURL);
 			//MapTool.chat.broadcast(JSON.stringify(fSpellData));
-			return fSpellData;
+			return parse_spell(fSpellData);
 		}else{
-			MapTool.chat.broadcast("Couldn't Find " + spellName);
-			return null;
+			let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
+			if(!(spellName in remasterChanges) || !(remasterChanges[spellName] in spellLibrary)){
+				MapTool.chat.broadcast("Couldn't Find " + spellName);
+				return null;
+			}else{
+				spellName = remasterChanges[spellName];
+				fSpellData = spellLibrary[spellName];
+				if("fileURL" in fSpellData){
+					fSpellData = rest_call(fSpellData.fileURL);
+				}
+				return parse_spell(fSpellData);
+			}
 		}
 	}
 	
@@ -179,7 +194,7 @@ function parse_pathbuilder_export(data){
 				}
 			}
 			for (var l in castingData.focusSpells){
-				let spellName = castingData.focusCantrips[l].replaceAll(" (Amped)","");
+				let spellName = castingData.focusSpells[l].replaceAll(" (Amped)","");
 				let spellData = setup_spell(spellName);
 				if (spellData != null){
 					spellData.castLevel = focusLevel;
@@ -214,7 +229,9 @@ function parse_pathbuilder_export(data){
 	}
 
 	for (var s in data.specials){
-		let tempData = find_object_data(data.specials[s]);
+		let tempName = data.specials[s];
+		tempName = tempName.replaceAll("Arcane School: ","").replaceAll("Arcane Thesis: ","");
+		let tempData = find_object_data(tempName);
 		if (tempData != null){
 			features_to_parse.push(tempData);
 		}
@@ -222,7 +239,6 @@ function parse_pathbuilder_export(data){
 
 	for (var f in features_to_parse){
 		let featureData = features_to_parse[f];
-		//MapTool.chat.broadcast(featureData.name);
 		if ("fileURL" in featureData){
 			parse_feature(rest_call(featureData.fileURL), parsedData);
 		}

@@ -23,7 +23,7 @@ function create_pc_token(newNPCTokenID, pcLibID){
 
 	for (var a in allPossible){
 		let actionData = allPossible[a];
-		actionData.type = "personal";
+		//actionData.type = "personal";
 		add_action_to_token(actionData, newNPCTokenID);
 	}
 
@@ -31,7 +31,7 @@ function create_pc_token(newNPCTokenID, pcLibID){
 		let spellSource = pcData.spellRules[s];
 		for (var sp in spellSource.spells){
 			let spellData = spellSource.spells[sp];
-			add_action_to_token({"name":spellData.name,"actionType":"spell","type":"spell","group":spellSource.name,"castLevel":spellData.castLevel,"rawData":spellData,"traits":spellData.traits.value,"creatureLevel":creatureData.level},newNPCTokenID);
+			add_action_to_token({"name":spellData.name,"actionType":"spell","type":"spell","group":spellSource.name,"castLevel":spellData.castLevel,"rawData":spellData,"traits":spellData.traits.value,"creatureLevel":pcData.level},newNPCTokenID);
 		}
 	}
 	
