@@ -1,8 +1,8 @@
 "use strict";
 
 function build_compendium_home(){
-	MTScript.evalMacro("[h: isGM = isGM()]");
-	let isGM = MTScript.getVariable("isGM")
+	MTScript.evalMacro("[h: playerData=player.getInfo()]");
+	let isGM = JSON.parse(MTScript.getVariable("playerData")).role=="GM";
 	
 	let HTMLString = "";
 
@@ -19,7 +19,7 @@ function build_compendium_home(){
 	HTMLString = HTMLString + "<h2>"+create_macroLink("Spells","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"spells"})) + "</h2>";
 	HTMLString = HTMLString + "<h2>"+create_macroLink("Feats","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"feat"})) + "</h2>";
 	
-	if (isGM){
+	if (isGM==1 || isGM || isGM=="1"){
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Creature List","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"creatures"})) + "</h2>";
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Enabled Sources","Enabled_Sources_Window@Lib:ca.pf2e","") + "</h2>";
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Source Importing","Source_Management_Window@Lib:ca.pf2e","") + "</h2>";

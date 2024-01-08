@@ -231,6 +231,9 @@ function parse_pathbuilder_export(data){
 	for (var s in data.specials){
 		let tempName = data.specials[s];
 		tempName = tempName.replaceAll("Arcane School: ","").replaceAll("Arcane Thesis: ","");
+		if(tempName=="Spellbook"){
+			continue; //Spellbook not treated as a feature in foundry
+		}
 		let tempData = find_object_data(tempName);
 		if (tempData != null){
 			features_to_parse.push(tempData);

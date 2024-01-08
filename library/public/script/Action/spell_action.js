@@ -33,7 +33,16 @@ function spell_action(actionData, actingToken){
 				castData = spellCastData;
 			}
 		}
-	}	
+	}
+
+	if("overlayID" in actionData){
+		let overlayData = spellData.overlays[actionData.overlayID];
+		if (overlayData.overlayType=="override"){
+			for(var key in overlayData.system){
+				spellData[key] = overlayData.system[key];
+			}
+		}
+	}
 
 	let spellMod = Math.max(Number(actingToken.getProperty("int")),Number(actingToken.getProperty("wis")),Number(actingToken.getProperty("cha")));
 
@@ -46,7 +55,7 @@ function spell_action(actionData, actingToken){
 	let displayData = {"description":"","name":actingToken.getName() + " - " + actionData.name,"level":actionData.castLevel,"type":spellData.category};
 
 	if(spellData.traits.value.includes("attack")){
-		displayData.description = displayData.description + "<i>Attack Roll</i><br /><div style='font-size:10px'><b>";
+		displayData.description += "<i>Attack Roll</i><br /><div style='font-size:10px'><b>";
 
 		let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
 		if (isNaN(currentAttackCount)){
@@ -73,7 +82,7 @@ function spell_action(actionData, actingToken){
 		let attackMod = attack_bonus+effect_bonus - map_malus;
 		let attackResult = dTwenty + attackMod;
 
-		displayData.description = displayData.description + "<span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> ";
+		displayData.description += "<span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> ";
 		if(attack_bonus!=0){
 			displayData.description += pos_neg_sign(attack_bonus, true);
 		}
@@ -85,17 +94,17 @@ function spell_action(actionData, actingToken){
 		}
 		displayData.description += " = " + String(attackResult);
 
-		displayData.description = displayData.description + "</b>"
+		displayData.description += "</b>"
 		
-		displayData.description = displayData.description + "</div>";
+		displayData.description += "</div>";
 	}
 	
 	if (spellData.defense!=null && "save" in spellData.defense && spellData.defense.save.statistic != ""){
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>";
+		displayData.description += "<div style='font-size:10px'><b>";
 		if (spellData.defense.save.basic == "basic"){
-			displayData.description = displayData.description + "Basic "
+			displayData.description += "Basic "
 		}
-		displayData.description = displayData.description + capitalise(spellData.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
+		displayData.description += capitalise(spellData.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
 	}
 	
 	//Special case for magic missile
@@ -109,7 +118,7 @@ function spell_action(actionData, actingToken){
 	}
 
 	if ("damage" in spellData && Object.keys(spellData.damage).length>0){
-		displayData.description = displayData.description + "<i>Damage</i><br />";
+		displayData.description += "<i>Damage</i><br />";
 		if("heightening" in spellData && spellData.heightening.type == "fixed"){
 			let found = false;
 			let heightenVal = null;
@@ -129,7 +138,7 @@ function spell_action(actionData, actingToken){
 			}
 		}
 		for (var d in spellData.damage){
-			displayData.description = displayData.description + "<div style='font-size:10px'><b>";
+			displayData.description += "<div style='font-size:10px'><b>";
 			let damageData = spellData.damage[d];
 			let damageRoll = String(damageData.formula);
 			if("heightening" in spellData && "damage" in spellData.heightening && spellData.heightening.type == "interval" && d in spellData.heightening.damage){
@@ -146,19 +155,27 @@ function spell_action(actionData, actingToken){
 			damageRoll = group_dice(damageRoll);
 			let rolled = roll_dice(damageRoll);
 			if(String(rolled)!=damageRoll){
-				displayData.description = displayData.description + damageRoll + " = " + String(rolled);
+				displayData.description += damageRoll + " = " + String(rolled);
 			}else{
-				displayData.description = displayData.description + String(rolled);
+				displayData.description += String(rolled);
 			}
 			if(damageData.category!=null){
 				displayData.description += " " + damageData.category;
 			}
-			displayData.description += " " + damageData.type;
-			displayData.description = displayData.description + "</div>";
+			displayData.description += " " + damageData.type +"</b>";
+			if(String(rolled)!=damageRoll){
+				let critDamage = rolled * 2;
+				displayData.description += "<br /><i>Crit Damage</i><br /><b>2x("+damageRoll + ") = " + String(critDamage);
+				if(damageData.category!=null){
+					displayData.description += " " + damageData.category;
+				}
+				displayData.description += " " + damageData.type +"</b>";
+			}
+			displayData.description += "</div>";
 		}
 	}
 
-	displayData.description = displayData.description + spellData.description;
+	displayData.description += spellData.description;
 
 	displayData.traits = spellData.traits.value;
 	displayData.castLevel = actionData.castLevel;

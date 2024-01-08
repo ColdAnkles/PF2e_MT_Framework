@@ -3,7 +3,6 @@
 function end_encounter(){
     MTScript.evalMacro("[h: initiativeData = getInitiativeList() ]");
     let initiativeData = JSON.parse(MTScript.getVariable("initiativeData"));
-    MapTool.chat.broadcast(JSON.stringify(initiativeData));
     for( var t in initiativeData.tokens){
         let thisToken = MapTool.tokens.getTokenByID(initiativeData.tokens[t].tokenId);
         for (var i in [0,1,2,3,4]){

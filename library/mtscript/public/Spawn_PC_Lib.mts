@@ -24,3 +24,5 @@
 		[h: setSightType(js.ca.pf2e.capitalise(sense),newToken,"Player Characters")]
 	};{}]
 }]
+[h: playerData = player.getInfo()]
+[h: setOwner(json.get(playerData,"name"), newToken, "Player Characters")]

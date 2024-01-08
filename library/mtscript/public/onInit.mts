@@ -52,5 +52,3 @@
 }]
 
 [h: setLibProperty("image_dict", imageDict, "Lib:ca.pf2e")]
-
-[h: broadcast("Initialization Complete")]

@@ -40,6 +40,7 @@ function cast_spell(spellName, castLevel, casterToken, additionalData = null){
 		//Ask actions spent
 		let first = Number(spellData.time.split(" to ")[0]);
 		let second = Number(spellData.time.split(" to ")[1]);
+		let overlayIDs = {};
 		if (isNaN(second)){
 			second = 3;
 		}
@@ -47,15 +48,22 @@ function cast_spell(spellName, castLevel, casterToken, additionalData = null){
 		for (let i=first; i<=second; i++){
 			inputText = inputText + String(i) + " " + icon_img(String(i)+"action",false, true) + ",";
 		}
-		inputText = inputText.substring(0,inputText.length-1) + "|Actions to use|LIST|ICON=TRUE";
+		inputText = inputText.substring(0,inputText.length-1) + "|Actions to use|LIST|ICON=TRUE ICONSIZE=30";
 		
 		let transferData = {"spellName":spellName,"castLevel":String(castLevel),"casterToken":casterToken,"inputText":inputText,"first":first};
 		MTScript.setVariable("transferData",JSON.stringify(transferData));
-		MTScript.evalMacro("[h: pf2e.Spell_Actions_Form_To_JS(transferData)]");
+		MTScript.evalMacro("[h: ca.pf2e.Spell_Actions_Form_To_JS(transferData)]");
 		return;
 	}else if(spellData.time.includes("to") && additionalData != null){
 		actionData.actionType="action";
 		actionData.actionCost=Number(additionalData);
+		
+		for(var overlay in spellData.overlays){
+			if(spellData.overlays[overlay].system.time.value.includes(String(additionalData))){
+				actionData.overlayID = overlay;
+			}
+		}
+
 	}else if(spellData.time=="reaction"){
 		actionData.actionType="reaction";
 		actionData.actionCost=1;

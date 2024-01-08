@@ -5,17 +5,17 @@
 [h:sourceTokenID=macro.args]
 
 [h: baseToken=findToken("PCTemplate","Library")]
-[h: rawTokenName = getName(sourceTokenID)]
+[h: rawTokenName = getName(sourceTokenID,"Player Characters")]
 [h: tokenName = substring(rawTokenName,4,length(rawTokenName))]
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
 [h: yCoord=getStrProp(center,"centerY")]
 [h: newToken=copyToken(baseToken,1,"Library",'{"name":"'+tokenName+'","x":'+xCoord+',"y":'+yCoord+'}')]
 
-[h: tokenSize = getProperty("size",sourceTokenID)]
+[h: tokenSize = getProperty("size",sourceTokenID, "Player Characters")]
 [h: setSize(tokenSize,newToken)]
 
-[h: senseList = stringToList(getProperty("senses", sourceTokenID),",")]
+[h: senseList = stringToList(getProperty("senses", sourceTokenID, "Player Characters"),",")]
 [h: visionList = json.append("[]","darkvision","low-light","greater darkvision")]
 [h, foreach(sense, senseList), code:{
 	[h, if(json.contains(visionList,sense)), code:{
@@ -25,10 +25,12 @@
 [h: js.ca.pf2e.update_pc_token(sourceTokenID, newToken)]
 [h: setProperty("myID", sourceTokenID, newToken)]
 
-[h: myTokens = getProperty("pcTokens", sourceTokenID)]
+[h: myTokens = getProperty("pcTokens", sourceTokenID, "Player Characters")]
 [h, if(myTokens==""), code:{
 	[h: myTokens = "[]"]
 };{}]
 [h: myTokens = json.append(myTokens, newToken)]
-[h: setProperty("pcTokens", myTokens, sourceTokenID)]
+[h: setProperty("pcTokens", myTokens, sourceTokenID, "Player Characters")]
 [h: js.ca.pf2e.create_pc_token(newToken, sourceTokeNID)]
+[h: playerData = player.getInfo()]
+[h: setOwner(json.get(playerData,"name"), newToken)]
