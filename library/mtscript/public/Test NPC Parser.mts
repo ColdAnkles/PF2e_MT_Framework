@@ -1,1 +1,0 @@
-[h: js.pf2e.import_and_parse("Aasimar Redeemer","npc")]

@@ -1,1 +1,0 @@
-[r: pf2e.Creature_View_Frame(json.set("{}","name","Aasimar Redeemer Token","tokenID","AF42B0507626426B9542920F34616089"))]
