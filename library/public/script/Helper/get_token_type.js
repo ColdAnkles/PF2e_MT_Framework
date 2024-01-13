@@ -10,9 +10,9 @@ function get_token_type(inputToken){
 
 	MTScript.setVariable("tokenID",tokenID)
 	MTScript.evalMacro("[h: tokenType = isNPC(tokenID)]")
-	let tokenType = MTScript.getVariable("tokenType");
+	let tokenType = Number(MTScript.getVariable("tokenType"));
 
-	if (tokenType == 0){
+	if (tokenType == 0 || tokenType == "0"){
 		return "PC";
 	}else{
 		return "NPC";

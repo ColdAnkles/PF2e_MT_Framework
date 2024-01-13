@@ -7,7 +7,6 @@ function write_creature_properties(creatureData, token){
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));
 	
-	token.setProperty("myID", token.getId());
 	token.setName(creatureData.name);
 	//__STATS__
 	for (var s in creatureData.abilities){

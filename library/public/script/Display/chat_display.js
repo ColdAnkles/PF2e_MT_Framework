@@ -21,7 +21,7 @@ function chat_display(displayData, broadcast = true, rollDice = false){
 		}
 	}
 
-	outputText = outputText + displayData.name + "</h1></td>";
+	outputText = outputText + displayData.name.replaceAll("Lib:","") + "</h1></td>";
 
 	if ( "level" in displayData){
 		if ("castLevel" in displayData && displayData.castLevel != displayData.level){

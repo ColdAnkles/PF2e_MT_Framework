@@ -5,18 +5,13 @@
 [h: libContents = library.getContents("ca.pf2e")]
 
 [h: scripts = "[]"]
-[h: dataList = "[]"]
 [h: imageList = "[]"]
 [h, foreach(item, libContents), code:{
 	[h: mtscriptMatch = matches(item, "mtscript.*")]
     [h: jsMatch = matches(item, ".*\.js")]
-    [h: jsonMatch = matches(item, ".*data\/.*\.json")]
     [h: pngMatch = matches(item, ".*\.png")]
     [h, if(mtscriptMatch || jsMatch), code:{
     	[h: scripts = json.append(scripts, item)]
-    };{}]
-    [h, if(jsonMatch), code:{
-        [h: dataList = json.append(dataList, item)]
     };{}]
     [h, if(pngMatch), code:{
         [h: imageList = json.append(imageList, item)]
@@ -30,15 +25,6 @@
     [if(!matches(item, vJSRegex)):
         defineFunction(vFunctionPrefix + name, name + "@Lib:ca.pf2e");
         js.evalURI(vJSNameSpace, "lib://ca.pf2e/" + path)]
-}]
-
-[h, foreach(file, dataList), code:{
-    [h: importData = data.getStaticData('ca.pf2e', file)]
-    [h: id = strfind(file, "/([^/]*)\$")]
-    [h: fileName = getGroup(id, 1, 1)]
-    [h: id = strFind(fileName, "[^.]*")]
-    [h: varName = getGroup(id, 1, 0)]
-    [h: setLibProperty(varName, importData, 'Lib:ca.pf2e')]
 }]
 
 [h: imageDict = "{}"]
