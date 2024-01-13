@@ -1,7 +1,7 @@
 "use strict";
 
 function parse_foundry_strings(foundryString){
-	const bracketRegexp = /\[+(.*?\]?)\]/;
+	const bracketRegexp = /\[+(.*?)\]+/;
 	const braceRegexp = /\]\{(.*?)\}/;
 
 	//MapTool.chat.broadcast(foundryString);
@@ -16,6 +16,7 @@ function parse_foundry_strings(foundryString){
 		braceContents = braceContents[1]
 	}
 	let returnData = {"bracketContents":bracketContents,"braceContents":braceContents,"bracketDetail":{}}
+	//MapTool.chat.broadcast(JSON.stringify(returnData));
 	for (var d in bracketContents.split("|")){
 		let tempString = bracketContents.split("|")[d];
 		let splitString = tempString.split(":")
@@ -44,9 +45,9 @@ function parse_template(templateString){
 	return templateString;
 }
 
-function parse_damage(damageString, rollDice=false){
+function parse_damage(damageString, additionalData={"rollDice":false}){
 	let parsed = parse_foundry_strings(damageString);
-	if(typeof(rollDice)=="object"){
+	if(additionalData.rollDice){
 		let diceMatch = parsed.bracketContents.match(/([0-9d +-]*)/gm);
 		if(diceMatch.length>0){
 			diceMatch = diceMatch[0];
@@ -99,16 +100,16 @@ function parse_localize(localizeString){
 	return "";
 }
 
-function parse_roll(rollString, rollDice){
+function parse_roll(rollString, additionalData={"rollDice":false}){
 	if(rollString.includes("/br") || (!(rollString.includes("(")) || !(rollString.includes(")")))){
 		let parsed = parse_foundry_strings(rollString);
-	
+		//MapTool.chat.broadcast(JSON.stringify(parsed));
 		if(parsed.braceContents!=null){
-			if(typeof(rollDice)=="object"){
+			if(additionalData.rollDice){
 				let diceMatch = parsed.braceContents.match(/([0-9+ d-]*)/g);
 				if(diceMatch.length>0){
 					diceMatch = diceMatch[0];
-					let rolledDice = roll_dice(diceMatch);
+					let rolledDice = roll_dice(diceMatch.replaceAll("/r ","").replaceAll("/r",""));
 					return parsed.braceContents.replace(diceMatch, String(rolledDice)+" ");
 				}else{
 					return parsed.braceContents;
@@ -117,8 +118,15 @@ function parse_roll(rollString, rollDice){
 				return parsed.braceContents;
 			}
 		}else{
-			if(typeof(rollDice)=="object"){
-				return parsed.bracketContents.replace(/\/r ([0-9+ d-]*).*/g, String(roll_dice("$1")));
+			if(additionalData.rollDice){
+				let diceMatch = parsed.bracketContents.match(/\/r ([0-9+ d-]*).*/g);
+				if(diceMatch.length>0){
+					diceMatch = diceMatch[0];
+					let rolledDice = roll_dice(diceMatch.replaceAll("/r ","").replaceAll("/r",""));
+					return parsed.bracketContents.replace(diceMatch, rolledDice);
+				}else{
+					return parsed.braceContents;
+				}
 			}else{
 				return parsed.bracketContents.replace(/\/r ([0-9+ d-]*).*/g,"$1");
 			}
@@ -144,13 +152,13 @@ function parse_roll(rollString, rollDice){
 			infoMatch = infoMatch[infoMatch.length-1];
 		}
 
-		if (rollMatch.includes("@level") && typeof(rollDice)=="object" && "level" in rollDice){
-			rollMatch = rollMatch.replaceAll("@level", String(rollDice.level));
-		}else if (rollMatch.includes("@item.level") && typeof(rollDice)=="object" && "level" in rollDice){
-			rollMatch = rollMatch.replaceAll("@item.level", String(rollDice.level));
+		if (rollMatch.includes("@level") && additionalData.rollDice && "level" in additionalData){
+			rollMatch = rollMatch.replaceAll("@level", String(additionalData.level));
+		}else if (rollMatch.includes("@item.level") && additionalData.rollDice && "level" in additionalData){
+			rollMatch = rollMatch.replaceAll("@item.level", String(additionalData.level));
 		}
 
-		if(typeof(rollDice)=="object"){
+		if(additionalData.rollDice){
 			rollMatch = String(eval(rollMatch));
 		}
 
@@ -165,7 +173,7 @@ function parse_roll(rollString, rollDice){
 
 //TODO: EFFECT Text appearing? Also ACTOR Stuff!
 
-function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, rollDice = false){
+function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false}){
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 
 	let cleanDescription = description;
@@ -194,7 +202,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	let damage_matches = cleanDescription.match(/(@Damage\[.*?\]?\])({.*?})?/gm);
 	for (var m in damage_matches){
-		let replaceString = parse_damage(damage_matches[m], rollDice);
+		let replaceString = parse_damage(damage_matches[m], additionalData);
 		cleanDescription=cleanDescription.replaceAll(damage_matches[m],replaceString);
 	}
 
@@ -218,7 +226,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	let roll_matches = cleanDescription.match(/(\[+\/b?r.*?\]+)(\{.*?\})?/gm);
 	for (var m in roll_matches){
-		let replaceString = parse_roll(roll_matches[m], rollDice);
+		let replaceString = parse_roll(roll_matches[m], additionalData);
 		cleanDescription=cleanDescription.replaceAll(roll_matches[m],replaceString);
 	}
 
