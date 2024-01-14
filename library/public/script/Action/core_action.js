@@ -83,7 +83,7 @@ function core_action(actionData, actingToken){
 			chat_display(actionData, true, {"level":actingToken.level,"rollDice":true});
 	
 			if (doSave){
-				saving_throw(actingToken);
+				saving_throw(actingToken, null, {"applyEffect":actionData.name});
 			}
 			if (doCheck){
 				skill_check(actingToken);

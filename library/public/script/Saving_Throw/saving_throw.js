@@ -1,9 +1,12 @@
 "use strict";
 
-function saving_throw(saveToken, saveData = null){
+function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect":""}){
 	if (typeof(saveToken)=="string"){
 		saveToken = MapTool.tokens.getTokenByID(saveToken);
-	}	
+	}
+
+	//MapTool.chat.broadcast(JSON.stringify(saveData));
+	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 		
 	let saves = ["fortitude","reflex","will"]
 
@@ -33,10 +36,13 @@ function saving_throw(saveToken, saveData = null){
 		queryHTML = queryHTML + "</select></td></tr>";
 
 		for(var e in specialEffects){
-			//MapTool.chat.broadcast(JSON.stringify(specialEffects[e]));
+			let effectData = specialEffects[e];
 			let effectIndex = 0
+			//MapTool.chat.broadcast(JSON.stringify(effectData));
+			let effectName = effectData.name.replaceAll("Effect: ","");
 			if (specialEffects[e].type=="saving-throw"){
-				queryHTML = queryHTML + "<tr><td>Apply " + specialEffects[e].name+"?</td><td><input type='checkbox' name='specialEffect"+String(effectIndex)+"' value='"+specialEffects[e].name+"'></td></tr>";
+				queryHTML += "<tr><td>Apply " + effectName+"?</td><td><input type='checkbox' name='specialEffect"+String(effectIndex)+"' value='";
+				queryHTML += effectData.name+"'"+((additionalData.applyEffect==effectName) ? "checked" : "" ) + "></td></tr>";
 				effectIndex += 1;
 			}
 		}
