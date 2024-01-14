@@ -35,6 +35,9 @@ function build_creature_view(creatureName, tokenID = null){
 		HTMLString = HTMLString + "<span class='trait'>" + capitalise(creatureData.traits[t]) + "</span>";
 	}
 	HTMLString = HTMLString + "<br />"
+	if(tokenID!=null){
+		HTMLString += "<img style='float:right;margin:5px' src="+getTokenImage(tokenID, 200)+"></img>";
+	}
 	if ("source" in creatureData){
 		HTMLString = HTMLString + "<b>Source </b><span class='ext-link'>" + creatureData.source + "</span><br />";
 	}
