@@ -4,7 +4,9 @@
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
 [h: yCoord=getStrProp(center,"centerY")]
-[h: newToken=copyToken(id,1,"Library",'{"name":"'+tokenName+'","x":'+xCoord+',"y":'+yCoord+'}')]
+[h: val = json.set("{}", "tokenImage", "lib://ca.pf2e/image/NPCDefault.png", "name", tokenName,"x",xCoord,"y",yCoord)]
+[h: newToken = createToken(val)]
+[h: setPropertyType("PF2E_Character", newToken)]
 
 [h: js.ca.pf2e.create_npc(newToken, tokenName)]
 [h: tokenSize = getProperty("size",newToken)]

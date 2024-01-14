@@ -60,9 +60,7 @@ function add_action_to_token(actionData, tokenID){
 		if ("group" in actionData){
 			props.group = actionData.group;
 		}
-		MTScript.setVariable("props", props);
-		MTScript.setVariable("tokenID",tokenID);
-		MTScript.evalMacro("[h: createMacro(props,tokenID)]");
+		createMacro(props, tokenID);
 		
 	}else if (actionData.type=="personal" || actionData.type=="feat"){
 		
@@ -79,9 +77,7 @@ function add_action_to_token(actionData, tokenID){
 		if ("group" in actionData){
 			props.group = actionData.group;
 		}
-		MTScript.setVariable("props", props);
-		MTScript.setVariable("tokenID",tokenID);
-		MTScript.evalMacro("[h: createMacro(props,tokenID)]");
+		createMacro(props, tokenID);
 		
 	}else if (actionData.type=="spell"){
 		
@@ -136,9 +132,8 @@ function add_action_to_token(actionData, tokenID){
 		let tooltipDescription = chat_display(actionData, false, actionData.castLevel);
 	
 		let props = {"label":spellLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.cast_spell(\""+spellName+"\","+actionData.castLevel+",currentToken())]","tooltip":tooltipDescription,"sortBy":actionData.name,"group":actionData.group};
-		MTScript.setVariable("props", props);
-		MTScript.setVariable("tokenID",tokenID);
-		MTScript.evalMacro("[h: createMacro(props,tokenID)]");
+		
+		createMacro(props, tokenID);
 	}
 }
 

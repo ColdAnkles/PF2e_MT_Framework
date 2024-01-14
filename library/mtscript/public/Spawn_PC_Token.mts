@@ -10,7 +10,10 @@
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
 [h: yCoord=getStrProp(center,"centerY")]
-[h: newToken=copyToken(baseToken,1,"Library",'{"name":"'+tokenName+'","x":'+xCoord+',"y":'+yCoord+'}')]
+[h: val = json.set("{}", "tokenImage", "lib://ca.pf2e/image/PCDefault.png", "name", tokenName,"x",xCoord,"y",yCoord)]
+[h: newToken = createToken(val)]
+[h: setPC(newToken)]
+[h: setPropertyType("PF2E_Character", newToken)]
 
 [h: tokenSize = getProperty("size",sourceTokenID, "Player Characters")]
 [h: setSize(tokenSize,newToken)]

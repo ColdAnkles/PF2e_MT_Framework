@@ -11,6 +11,8 @@ function create_npc(newNPCTokenID, creatureName){
 
 	write_creature_properties(creatureData, newToken);
 
+	//__ADDING_STANDARD_MACROS
+	add_common_macros(newNPCTokenID);
 	//__ADDING_ACTION_MACROS__
 	add_common_action_macros(newNPCTokenID);
 	

@@ -4,14 +4,16 @@
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
 [h: yCoord=getStrProp(center,"centerY")]
-[h: newToken=copyToken(id,1,"Library",'{"name":"NewPC","x":'+xCoord+',"y":'+yCoord+'}')]
+[h: val = json.set("{}", "tokenImage", "lib://ca.pf2e/image/PCDefault.png", "name", "NewPC","x",xCoord,"y",yCoord)]
+[h: newToken = createToken(val)]
+[h: setPropertyType("PF2E_Character", newToken)]
+[h: setPC(newToken)]
 
 [h: js.ca.pf2e.create_pc_lib(pathbuilderID, newToken)]
 [h: tokenMaps = getTokenMap(newToken)]
 [h, if(!json.contains(tokenMaps,"Player Characters")), code:{
 	[h: moveTokenToMap(newToken, "Player Characters")]
 };{}]
-[h: setPC(newToken, "Player Characters")]
 [h: tokenSize = getProperty("size",newToken,"Player Characters")]
 [h: tokenName = getName(newToken,"Player Characters")]
 [h: setName("Lib:"+tokenName, newToken, "Player Characters")]
