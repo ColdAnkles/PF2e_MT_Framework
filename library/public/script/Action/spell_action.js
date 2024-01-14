@@ -51,14 +51,10 @@ function spell_action(actionData, actingToken){
 	let attackScopes = ["spell"];
 	let damageScopes = ["damage","spell-damage"];	
 	let damage_bonus = calculate_bonus(actingToken, damageScopes);
-
-	let hasAttackRoll = false;
-	let hasSaveRoll = false;
 	
 	let displayData = {"description":"","name":actingToken.getName() + " - " + actionData.name,"level":actionData.castLevel,"type":spellData.category};
 
 	if(spellData.traits.value.includes("attack")){
-		hasAttackRoll = true;
 		displayData.description += "<i>Attack Roll</i><br /><div style='font-size:10px'><b>";
 
 		let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
@@ -104,7 +100,6 @@ function spell_action(actionData, actingToken){
 	}
 	
 	if (spellData.defense!=null && "save" in spellData.defense && spellData.defense.save.statistic != ""){
-		hasSaveRoll = true;
 		displayData.description += "<div style='font-size:10px'><b>";
 		if (spellData.defense.save.basic == "basic"){
 			displayData.description += "Basic "
@@ -191,5 +186,5 @@ function spell_action(actionData, actingToken){
 		displayData.type = "Cantrip";
 	}
 
-	chat_display(displayData, true, {"level":actionData.castLevel, "rollDice":hasAttackRoll||hasSaveRoll});
+	chat_display(displayData, true, {"level":actionData.castLevel, "rollDice":true});
 }

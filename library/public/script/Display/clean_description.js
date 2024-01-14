@@ -1,7 +1,7 @@
 "use strict";
 
 function parse_foundry_strings(foundryString){
-	const bracketRegexp = /\[+(.*?)\]+/;
+	const bracketRegexp = /\[+(.*?\]?)\]+/;
 	const braceRegexp = /\]\{(.*?)\}/;
 
 	//MapTool.chat.broadcast(foundryString);
@@ -45,14 +45,14 @@ function parse_template(templateString){
 	return templateString;
 }
 
-function parse_damage(damageString, additionalData={"rollDice":false}){
+function parse_damage(damageString, additionalData={"rollDice":false, "gm":false, "replaceGMRolls": true}){
 	let parsed = parse_foundry_strings(damageString);
 	if(additionalData.rollDice){
 		let diceMatch = parsed.bracketContents.match(/([0-9d +-]*)/gm);
 		if(diceMatch.length>0){
 			diceMatch = diceMatch[0];
 			let rolledDice = roll_dice(diceMatch);
-			parsed.bracketContents = parsed.bracketContents.replace(diceMatch, String(rolledDice)+" ");
+			parsed.bracketContents = parsed.bracketContents.replace(diceMatch, diceMatch + " ("+String(rolledDice)+") ");
 			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm,"$1 $2").replaceAll(/(.*)\[(.*)\]/gm,"$1 $2");
 		}else{
 			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm,"$1 $2").replaceAll(/(.*)\[(.*)\]/gm,"$1 $2");
@@ -100,17 +100,34 @@ function parse_localize(localizeString){
 	return "";
 }
 
-function parse_roll(rollString, additionalData={"rollDice":false}){
+function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "replaceGMRolls": true}){
+	//MapTool.chat.broadcast(rollString);
 	if(rollString.includes("/br") || (!(rollString.includes("(")) || !(rollString.includes(")")))){
+		//MapTool.chat.broadcast("Case One");
 		let parsed = parse_foundry_strings(rollString);
 		//MapTool.chat.broadcast(JSON.stringify(parsed));
 		if(parsed.braceContents!=null){
 			if(additionalData.rollDice){
 				let diceMatch = parsed.braceContents.match(/([0-9+ d-]*)/g);
+				//MapTool.chat.broadcast(JSON.stringify(diceMatch));
 				if(diceMatch.length>0){
-					diceMatch = diceMatch[0];
-					let rolledDice = roll_dice(diceMatch.replaceAll("/r ","").replaceAll("/r",""));
-					return parsed.braceContents.replace(diceMatch, String(rolledDice)+" ");
+					diceMatch = diceMatch[0].replaceAll("/r ","").replaceAll("/r","");
+					let rolledDice = roll_dice(diceMatch);
+					let replaceString = "";
+					if (diceMatch.includes("d") && rollString.includes("/r")){
+						replaceString = diceMatch + " (" + String(rolledDice) + ") ";
+					}else if (diceMatch.includes("d") && rollString.includes("/br") && !additionalData.gm){
+						if(additionalData.replaceGMRolls){
+							replaceString = diceMatch;
+						}else{
+							return rollString;
+						}
+					}else if (diceMatch.includes("d") && rollString.includes("/br") && additionalData.gm){
+						replaceString = diceMatch + " (" + String(rolledDice) + ") ";
+					}else{
+						replaceString = diceMatch;
+					}
+					return parsed.braceContents.replace(diceMatch, replaceString);
 				}else{
 					return parsed.braceContents;
 				}
@@ -120,10 +137,16 @@ function parse_roll(rollString, additionalData={"rollDice":false}){
 		}else{
 			if(additionalData.rollDice){
 				let diceMatch = parsed.bracketContents.match(/\/r ([0-9+ d-]*).*/g);
+				//MapTool.chat.broadcast(JSON.stringify(diceMatch));
 				if(diceMatch.length>0){
-					diceMatch = diceMatch[0];
-					let rolledDice = roll_dice(diceMatch.replaceAll("/r ","").replaceAll("/r",""));
-					return parsed.bracketContents.replace(diceMatch, rolledDice);
+					diceMatch = diceMatch[0].replaceAll("/r ","").replaceAll("/r","");
+					let replaceString = "";
+					if (diceMatch.includes("d")){
+						replaceString = "[r: " + diceMatch + "]";
+					}else{
+						replaceString = diceMatch;
+					}
+					return parsed.braceContents.replace(diceMatch, replaceString);
 				}else{
 					return parsed.braceContents;
 				}
@@ -136,6 +159,7 @@ function parse_roll(rollString, additionalData={"rollDice":false}){
 		const infoRegexp = /\[([^[\]]*)\]/g;
 		let rollMatch = [...rollString.matchAll(rollRegexp)];
 		let infoMatch = [...rollString.matchAll(infoRegexp)];
+		//MapTool.chat.broadcast("Case Two");
 		//MapTool.chat.broadcast(rollString);
 		//MapTool.chat.broadcast(JSON.stringify(rollMatch));
 		//MapTool.chat.broadcast(JSON.stringify(infoMatch));
@@ -173,7 +197,7 @@ function parse_roll(rollString, additionalData={"rollDice":false}){
 
 //TODO: EFFECT Text appearing? Also ACTOR Stuff!
 
-function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false}){
+function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false, "gm":false, "replaceGMRolls": true}){
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 
 	let cleanDescription = description;

@@ -40,16 +40,28 @@ function chat_display(displayData, broadcast = true, additionalData = {"rollDice
 		outputText = outputText + "</table>"
 	}
 
+	let gmOutputText = outputText;
 	if (displayData.description != null && displayData.description!=""){
-		outputText = outputText + "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + clean_description(displayData.description, false, false, false, additionalData) + "</div>";
+		additionalData.gm = false;
+		additionalData.replaceGMRolls=false;
+		let normalDesc = clean_description(displayData.description, false, false, false, additionalData);
+		additionalData.gm = true;
+		let gmDesc = clean_description(normalDesc, false, false, false, additionalData)
+		additionalData.gm = false;
+		additionalData.replaceGMRolls=true;
+		normalDesc = clean_description(normalDesc, false, false, false, additionalData);
+		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + normalDesc + "</div>";
+		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + gmDesc + "</div>";
 	}
 
-	outputText = outputText + "</div>";
+	outputText += "</div>";
+	gmOutputText += "</div>";
 
 	//MapTool.chat.broadcast(outputText.replaceAll("<","&lt;"));
 
 	if (broadcast){
-		MapTool.chat.broadcast(outputText);
+		MapTool.chat.broadcastTo(["not-gm"], outputText);
+		MapTool.chat.broadcastTo(["gm"], gmOutputText);
 	}else{
 		return "<html>"+outputText+"</html>";
 	}
