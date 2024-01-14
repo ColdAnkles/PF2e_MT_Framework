@@ -56,7 +56,7 @@ function add_action_to_token(actionData, tokenID){
 		}
 		//MapTool.chat.broadcast(JSON.stringify(lookupAction));
 		
-		let props = {"label":action_icon_label(lookupAction.actionType, lookupAction.actionCost)+" "+actionData.name,"playerEditable":0,"command":"[r: js.ca.pf2e.simple_action(\""+actionData.name+"\",myID)]","tooltip":chat_display(lookupAction, false),"sortBy":actionData.name};
+		let props = {"label":action_icon_label(lookupAction.actionType, lookupAction.actionCost)+" "+actionData.name,"playerEditable":0,"command":"[r: js.ca.pf2e.simple_action(\""+actionData.name+"\",currentToken())]","tooltip":chat_display(lookupAction, false),"sortBy":actionData.name};
 		if ("group" in actionData){
 			props.group = actionData.group;
 		}
@@ -75,7 +75,7 @@ function add_action_to_token(actionData, tokenID){
 				actionLabel = actionLabel + " " + icon_img("ranged");
 			}
 		}
-		let props = {"label":actionLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.personal_action(\""+actionData.name+"\",myID)]","tooltip":chat_display(actionData, false),"sortBy":actionData.name};
+		let props = {"label":actionLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.personal_action(\""+actionData.name+"\",currentToken())]","tooltip":chat_display(actionData, false),"sortBy":actionData.name};
 		if ("group" in actionData){
 			props.group = actionData.group;
 		}
@@ -135,7 +135,7 @@ function add_action_to_token(actionData, tokenID){
 		actionData.name = spellName;
 		let tooltipDescription = chat_display(actionData, false, actionData.castLevel);
 	
-		let props = {"label":spellLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.cast_spell(\""+spellName+"\","+actionData.castLevel+",myID)]","tooltip":tooltipDescription,"sortBy":actionData.name,"group":actionData.group};
+		let props = {"label":spellLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.cast_spell(\""+spellName+"\","+actionData.castLevel+",currentToken())]","tooltip":tooltipDescription,"sortBy":actionData.name,"group":actionData.group};
 		MTScript.setVariable("props", props);
 		MTScript.setVariable("tokenID",tokenID);
 		MTScript.evalMacro("[h: createMacro(props,tokenID)]");
