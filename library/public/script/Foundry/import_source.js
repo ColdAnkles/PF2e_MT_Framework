@@ -30,16 +30,15 @@ function import_source_file(fileURL){
 			store_object_data(storeData);
 		}else if (data.type == "ancestry"){
 			storeData.traits = data.system.traits.value;
-			storeData.source = data.system.source.value;
 			storeData.rarity = data.system.traits.rarity;
 			storeData.source = data.system.details.publication.title;
 			store_object_data(storeData);
 		}else if (data.type == "condition"){
-			storeData.source = data.system.publication.title;
 			storeData.description = data.system.description.value;
 			storeData.overrides = data.system.overrides;
 			storeData.value = data.system.value;
 			storeData.rules = data.system.rules;
+			storeData.source = data.system.publication.title;
 			store_object_data(storeData);
 		}else if (data.type == "class"){
 			storeData.source = data.system.publication.title;
@@ -51,13 +50,14 @@ function import_source_file(fileURL){
 			storeData.traits = data.system.traits.value;
 			storeData.actionCost = data.system.actions.value;
 			storeData.actionType = data.system.actionType.value;
+			storeData.level = data.system.level.value;
 			//MapTool.chat.broadcast(JSON.stringify(storeData));
 			store_object_data(storeData);
 		}else if (data.type == "spell"){
 			storeData.source = data.system.publication.title;
 			storeData.rarity = data.system.traits.rarity;
 			storeData.traits = data.system.traits.value;
-			storeData.traditions = data.system.traditions;
+			storeData.traditions = data.system.traits.traditions;
 			storeData.level = data.system.level.value;
 			store_object_data(storeData);
 		}else if (data.type == "hazard"){
@@ -81,6 +81,15 @@ function import_source_file(fileURL){
 			storeData.traits = data.system.traits.value;
 			storeData.rarity = data.system.traits.rarity;
 			store_object_data(storeData);
+		}else if (data.type == "weapon" || data.type == "armor" || data.type == "consumable" || data.type == "equipment" || data.type == "shield" || data.type == "treasure" || $data.type == "backpack"){
+				storedata.type = "item";
+				storeData.source = data.system.publication.title;
+				storeData.rules = data.system.rules;
+				storeData.traits = data.system.traits.value;
+				storeData.rarity = data.system.traits.rarity;
+				storeData.itemType = data.system.type;
+				storeData.level = data.system.level.value;
+				storeData.bulk = data.system.bulk.value;
 		}else{
 			MapTool.chat.broadcast(JSON.stringify(data));
 		}

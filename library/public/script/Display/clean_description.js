@@ -195,8 +195,6 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 	return rollString;
 }
 
-//TODO: EFFECT Text appearing? Also ACTOR Stuff!
-
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false, "gm":false, "replaceGMRolls": true}){
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 
