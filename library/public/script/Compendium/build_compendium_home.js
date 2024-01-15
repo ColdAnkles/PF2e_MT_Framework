@@ -20,6 +20,7 @@ function build_compendium_home(){
 	HTMLString = HTMLString + "<h2>"+create_macroLink("Feats","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"feat"})) + "</h2>";
 	
 	if (isGM==1 || isGM || isGM=="1"){
+		HTMLString = HTMLString + "<h2>" + create_macroLink("Hazards","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"hazard"})) + "</h2>";
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Creature List","Compendium_Window@Lib:ca.pf2e",JSON.stringify({"window":"creatures"})) + "</h2>";
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Enabled Sources","Enabled_Sources_Window@Lib:ca.pf2e","") + "</h2>";
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Source Importing","Source_Management_Window@Lib:ca.pf2e","") + "</h2>";

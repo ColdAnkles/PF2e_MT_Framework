@@ -10,6 +10,8 @@ function build_item_view(itemType, itemName){
 		itemData = rest_call(itemData["fileURL"],"");
 	}
     itemData = parse_feature(itemData);
+
+	//MapTool.chat.broadcast(JSON.stringify(itemData));
     
     let HTMLString = "";
 

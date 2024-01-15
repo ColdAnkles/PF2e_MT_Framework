@@ -29,6 +29,11 @@
     [h: windowHeight=600]
     [h: windowName = "Item List"]
 }]
+[h, if(windowType=="hazard"), code:{
+    [h: windowWidth=800]
+    [h: windowHeight=600]
+    [h: windowName = "Hazards"]
+}]
 
 [dialog5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=1; noframe=0; input=1"):{
 	[r, if(windowType=="spells"), code:{
@@ -42,5 +47,8 @@
     }]
     [r, if(windowType=="item"), code:{
         [r: js.ca.pf2e.build_item_list("item", sort, dir)]
+    }]
+    [r, if(windowType=="hazard"), code:{
+        [r: js.ca.pf2e.build_item_list("hazard", sort, dir)]
     }]
 }]
