@@ -6,6 +6,10 @@
 <link rel="stylesheet" type="text/css" href="lib://ca.pf2e/css/NethysCSS.css"/>
 
 <body>
-<p>[js.ca.pf2e.build_item_view(itemType, itemName)]</p>
+[r, if(itemType=="hazard"), code:{
+    <p>[js.ca.pf2e.build_hazard_view(itemName)]</p>
+};{
+    <p>[js.ca.pf2e.build_item_view(itemType, itemName)]</p>
+}]
 </body>
 }]

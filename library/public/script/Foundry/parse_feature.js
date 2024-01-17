@@ -64,6 +64,7 @@ function parse_feature(feature, assignDict=null){
 		let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"description":tempString,"name":itemData.name};
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
+		newAction.traits = itemData.system.traits.value;
 		if("requirements" in itemData){
 			itemData.requirements=itemData.system.requirements;
 		}

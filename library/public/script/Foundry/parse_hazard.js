@@ -4,6 +4,7 @@ function parse_hazard(rawData, parseRaw = false){
 	if (parseRaw){
 		rawData = JSON.parse(rawData);
 	}
+	//MapTool.chat.broadcast(JSON.stringify(rawData));
     let hazardData = {"name":rawData.name, "description":rawData.system.details.description,"type":"hazard"};
 
 	hazardData.level = rawData.system.details.level.value;
@@ -22,6 +23,16 @@ function parse_hazard(rawData, parseRaw = false){
     hazardData.traits = rawData.system.traits.value;
     hazardData.size = rawData.system.traits.size.value
 	hazardData.size = {"sm":"small","med":"medium","huge":"huge","lg":"large","grg":"gargantuan","tiny":"tiny"}[hazardData.size];
+	hazardData.immunities = [];
+	for (var i in rawData.system.attributes.immunities){
+		hazardData.immunities.push(rawData.system.attributes.immunities[i].type);
+	}
+	if("weaknesses" in rawData.system.attributes){
+		hazardData.weaknesses = rawData.system.attributes.weaknesses;
+	}else{
+		hazardData.weaknesses = [];
+	}
+
 
     hazardData.skillList = [];
 	hazardData.itemList = {};

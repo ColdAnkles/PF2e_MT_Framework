@@ -23,28 +23,28 @@ function build_creature_view(creatureName, tokenID = null){
 
 	let HTMLString = "";
 
-	HTMLString = HTMLString + "<h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
+	HTMLString += "<h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
 	
 	
 	if(creatureData.rarity!="common"){
-		HTMLString = HTMLString + "<span class='trait"+creatureData.rarity+"'>" + capitalise(creatureData.rarity) + "</span>";
+		HTMLString += "<span class='trait"+creatureData.rarity+"'>" + capitalise(creatureData.rarity) + "</span>";
 	}
-	//HTMLString = HTMLString + "<span class='traitalignment'>" + capitalise(creatureData.alignment) + "</span>";
-	HTMLString = HTMLString + "<span class='traitsize'>" + capitalise(creatureData.size) + "</span>"
+	//HTMLString += "<span class='traitalignment'>" + capitalise(creatureData.alignment) + "</span>";
+	HTMLString += "<span class='traitsize'>" + capitalise(creatureData.size) + "</span>"
 	for (var t in creatureData.traits){
-		HTMLString = HTMLString + "<span class='trait'>" + capitalise(creatureData.traits[t]) + "</span>";
+		HTMLString += "<span class='trait'>" + capitalise(creatureData.traits[t]) + "</span>";
 	}
-	HTMLString = HTMLString + "<br />"
+	HTMLString += "<br />"
 	if(tokenID!=null){
 		HTMLString += "<img style='float:right;margin:5px' src="+getTokenImage(tokenID, 200)+"></img>";
 	}
 	if ("source" in creatureData){
-		HTMLString = HTMLString + "<b>Source </b><span class='ext-link'>" + creatureData.source + "</span><br />";
+		HTMLString += "<b>Source </b><span class='ext-link'>" + creatureData.source + "</span><br />";
 	}
-	HTMLString = HTMLString + "<b>Perception</b> +" + creatureData.perception + "; " + creatureData.senses.join(", ") + "<br />";
+	HTMLString += "<b>Perception</b> +" + creatureData.perception + "; " + creatureData.senses.join(", ") + "<br />";
 	if (creatureData.languages.length>0) {
-		HTMLString = HTMLString + "<b>Languages</b> " + creatureData.languages.join(", ");
-		HTMLString = HTMLString + "<br />";
+		HTMLString += "<b>Languages</b> " + creatureData.languages.join(", ");
+		HTMLString += "<br />";
 	}
 
 	let skillList = [];
@@ -53,14 +53,14 @@ function build_creature_view(creatureName, tokenID = null){
 	}
 	
 	if (creatureData.skillList.length>0){
-		HTMLString = HTMLString + "<b>Skills</b> " + skillList.join(", ") + "<br/>";
+		HTMLString += "<b>Skills</b> " + skillList.join(", ") + "<br/>";
 	}
-	HTMLString = HTMLString + "<b>Str</b> +" + creatureData.abilities.str +", ";
-	HTMLString = HTMLString + "<b>Dex</b> +" + creatureData.abilities.dex +", ";
-	HTMLString = HTMLString + "<b>Con</b> +" + creatureData.abilities.con +", ";
-	HTMLString = HTMLString + "<b>Int</b> +" + creatureData.abilities.int +", ";
-	HTMLString = HTMLString + "<b>Wis</b> +" + creatureData.abilities.wis +", ";
-	HTMLString = HTMLString + "<b>Cha</b> +" + creatureData.abilities.cha +"<br />";
+	HTMLString += "<b>Str</b> +" + creatureData.abilities.str +", ";
+	HTMLString += "<b>Dex</b> +" + creatureData.abilities.dex +", ";
+	HTMLString += "<b>Con</b> +" + creatureData.abilities.con +", ";
+	HTMLString += "<b>Int</b> +" + creatureData.abilities.int +", ";
+	HTMLString += "<b>Wis</b> +" + creatureData.abilities.wis +", ";
+	HTMLString += "<b>Cha</b> +" + creatureData.abilities.cha +"<br />";
 	
 	let itemText = "";
 	for (var i in creatureData.itemList){
@@ -76,35 +76,39 @@ function build_creature_view(creatureName, tokenID = null){
 	}
 
 	if (Object.keys(creatureData.itemList).length>0){
-		HTMLString = HTMLString + "<b>Items</b> " + itemText.substring(0,itemText.length-2);
+		HTMLString += "<b>Items</b> " + itemText.substring(0,itemText.length-2);
 	}
 
 	for (var pSkill in creatureData.passiveSkills){
 		let skillData = creatureData.passiveSkills[pSkill];
-		HTMLString = HTMLString + "<b>" + skillData.mainText + "</b> " + skillData.subText + "<br />";
+		HTMLString += "<b>" + skillData.mainText + "</b> ";
+		if(skillData.traits.length>0){
+			HTMLString += " ("+skillData.traits.join(", ")+") ";
+		}
+		HTMLString += skillData.subText + "<br />";
 	}
 	
-	HTMLString = HTMLString + "<hr />";
-	HTMLString = HTMLString + "<b>AC</b> " + creatureData.ac.value;
+	HTMLString += "<hr />";
+	HTMLString += "<b>AC</b> " + creatureData.ac.value;
 	if (creatureData.ac.details.length>0){
-		HTMLString = HTMLString + " " + creatureData.ac.details;
+		HTMLString += " " + creatureData.ac.details;
 	}
-	HTMLString = HTMLString + "; <b>Fort</b> " + creatureData.saves.fortitude + ", "
-	HTMLString = HTMLString + "<b>Ref</b> " + creatureData.saves.reflex + ", "
-	HTMLString = HTMLString + "<b>Will</b> " + creatureData.saves.will
+	HTMLString += "; <b>Fort</b> " + creatureData.saves.fortitude + ", "
+	HTMLString += "<b>Ref</b> " + creatureData.saves.reflex + ", "
+	HTMLString += "<b>Will</b> " + creatureData.saves.will
 
 	if (creatureData.passiveDefenses.length>0){
-		HTMLString = HTMLString + ";";
+		HTMLString += ";";
 		for (var d in creatureData.passiveDefenses){
-			HTMLString = HTMLString + " " + creatureData.passiveDefenses[d].mainText;
+			HTMLString += " " + creatureData.passiveDefenses[d].mainText;
 			if(creatureData.passiveDefenses[d].subText.length>0){
-				HTMLString = HTMLString + " (" + creatureData.passiveDefenses[d].subText + ")";
+				HTMLString += " (" + creatureData.passiveDefenses[d].subText + ")";
 			}
 		}
 	}
-	HTMLString = HTMLString + "<br /><b>HP </b>" + creatureData.hp.max;
+	HTMLString += "<br /><b>HP </b>" + creatureData.hp.max;
 	if ( creatureData.hp.details.length>0){
-		HTMLString = HTMLString + " (" + creatureData.hp.details + ")";
+		HTMLString += " (" + creatureData.hp.details + ")";
 	}
 
 	if (creatureData.immunities.length>0){
@@ -118,12 +122,12 @@ function build_creature_view(creatureName, tokenID = null){
 				return 1;
 			}
 		});
-		HTMLString = HTMLString + "; <b>Immunities</b> ";
+		HTMLString += "; <b>Immunities</b> ";
 		let immunityString = ""
 		for (var imm in creatureData.immunities){
 			immunityString = immunityString + creatureData.immunities[imm].type + ", ";
 		}
-		HTMLString = HTMLString + immunityString.substring(0,immunityString.length-2);
+		HTMLString += immunityString.substring(0,immunityString.length-2);
 	}
 	
 	if (creatureData.resistances.length>0){
@@ -137,7 +141,7 @@ function build_creature_view(creatureName, tokenID = null){
 				return 1;
 			}
 		});
-		HTMLString = HTMLString + "; <b>Resistances</b> ";
+		HTMLString += "; <b>Resistances</b> ";
 		let resistancesString = ""
 		for (var imm in creatureData.resistances){
 			resistancesString = resistancesString + creatureData.resistances[imm].type +  " " + creatureData.resistances[imm].value;
@@ -146,7 +150,7 @@ function build_creature_view(creatureName, tokenID = null){
 			}
 			resistancesString = resistancesString + "; ";
 		}
-		HTMLString = HTMLString + resistancesString.substring(0,resistancesString.length-2);
+		HTMLString += resistancesString.substring(0,resistancesString.length-2);
 	}
 
 	if (creatureData.weaknesses.length>0){
@@ -160,7 +164,7 @@ function build_creature_view(creatureName, tokenID = null){
 				return 1;
 			}
 		});
-		HTMLString = HTMLString + "; <b>Weaknesses</b> ";
+		HTMLString += "; <b>Weaknesses</b> ";
 		let weaknessesString = ""
 		for (var imm in creatureData.weaknesses){
 			weaknessesString = weaknessesString + creatureData.weaknesses[imm].type +  " ";
@@ -172,10 +176,10 @@ function build_creature_view(creatureName, tokenID = null){
 			}
 			weaknessesString = weaknessesString + "; ";
 		}
-		HTMLString = HTMLString + weaknessesString.substring(0,weaknessesString.length-2).replaceAll("-"," ");
+		HTMLString += weaknessesString.substring(0,weaknessesString.length-2).replaceAll("-"," ");
 	}
 
-	HTMLString = HTMLString + "<br />";
+	HTMLString += "<br />";
 
 	for (var feat in creatureData.otherDefenses){
 		let featData = creatureData.otherDefenses[feat];
@@ -193,25 +197,25 @@ function build_creature_view(creatureName, tokenID = null){
 			}
 			let featString = "<b>"+featData.name+"</b>" + traitText + " " + icon_img(iconLookup) + " " + featData.description;
 			//MapTool.chat.broadcast(featString.replace("<","&lt;"));
-			HTMLString = HTMLString + featString;
+			HTMLString += featString;
 			const testPattern = /<\/ul>$/
 			if ( !(testPattern.test(featString))){
-				HTMLString = HTMLString + "<br />";
+				HTMLString += "<br />";
 			}
 		}
 	}
-	HTMLString = HTMLString + "<hr />";
+	HTMLString += "<hr />";
 
-	HTMLString = HTMLString + "<b>Speed</b> " + creatureData.speeds.base + " feet";
+	HTMLString += "<b>Speed</b> " + creatureData.speeds.base + " feet";
 	let otherSpeeds = "";
 	for (var s in creatureData.speeds.other){
 		let speedData = creatureData.speeds.other[s];
 		otherSpeeds = otherSpeeds + speedData.type + " " + speedData.value + " feet, ";
 	}
 	if (otherSpeeds.length>0){
-		HTMLString = HTMLString + ", " + otherSpeeds.substring(0,otherSpeeds.length-2) + "<br />";
+		HTMLString += ", " + otherSpeeds.substring(0,otherSpeeds.length-2) + "<br />";
 	}else{
-		HTMLString = HTMLString + "<br />"
+		HTMLString += "<br />"
 	}
 	
 	for (var w in creatureData.basicAttacks){
@@ -250,7 +254,7 @@ function build_creature_view(creatureName, tokenID = null){
 
 		//MapTool.chat.broadcast(attackString);
 		
-		HTMLString = HTMLString + attackString + "<br />";
+		HTMLString += attackString + "<br />";
 	}
 
 	for (var s in creatureData.spellRules){
@@ -285,9 +289,9 @@ function build_creature_view(creatureName, tokenID = null){
 				return 1;
 			}
 		});
-		HTMLString = HTMLString + "<b>"+theRules.name+"</b> DC " + theRules.spellDC + ", attack +" + theRules.spellAttack;
+		HTMLString += "<b>"+theRules.name+"</b> DC " + theRules.spellDC + ", attack +" + theRules.spellAttack;
 		if (theRules.type=="focus"){
-			HTMLString = HTMLString + " (" + creatureData.resources.focus.value + " Focus Point)";
+			HTMLString += " (" + creatureData.resources.focus.value + " Focus Point)";
 		}
 		let levelsPrinted = [];
 		let firstCantrip = false;
@@ -315,22 +319,22 @@ function build_creature_view(creatureName, tokenID = null){
 			spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)",""),"Spell_View_Frame@Lib:ca.pf2e",spellData.name.replaceAll(" (Constant)","").replaceAll(/\(.*\)/g,"").trim());	
 		}
 		
-		HTMLString = HTMLString + spellString;		
-		HTMLString = HTMLString + "<br />";
+		HTMLString += spellString;		
+		HTMLString += "<br />";
 	}
 
 	for (var o in creatureData.offensiveActions){
 		let actionData = creatureData.offensiveActions[o];
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
-		HTMLString = HTMLString + "<b>" + actionData.name + "</b> ";
+		HTMLString += "<b>" + actionData.name + "</b> ";
 		if (actionData.actionCost == 1 || actionData.actionCost ==2 || actionData.actionCost ==3){
-			HTMLString = HTMLString + icon_img(String(actionData.actionCost)+"action") + " ";
+			HTMLString += icon_img(String(actionData.actionCost)+"action") + " ";
 		}
 		if (actionData.traits.length>0){
-			HTMLString = HTMLString + "(" + actionData.traits.join(", ") + ") ";
+			HTMLString += "(" + actionData.traits.join(", ") + ") ";
 		}
-		HTMLString = HTMLString + clean_description(actionData.description);
-		HTMLString = HTMLString + "<br />";
+		HTMLString += clean_description(actionData.description);
+		HTMLString += "<br />";
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(offensiveActions));
