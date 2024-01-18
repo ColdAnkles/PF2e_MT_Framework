@@ -1,17 +1,22 @@
 "use strict";
 
-function build_hazard_view(itemName){
-    let itemList = JSON.parse(read_data("pf2e_hazard"));
-    if(!(itemName in itemList)){
-        return "<b>Could not find hazard " + itemName + ".</b>";
-    }
-    let itemData = itemList[itemName];
-    if ("fileURL" in itemData){
-		itemData = rest_call(itemData["fileURL"],"");
+function build_hazard_view(itemName, tokenID = null){
+	let itemData = null;
+	if (tokenID == null){
+		let itemList = JSON.parse(read_data("pf2e_hazard"));
+    	if(!(itemName in itemList)){
+			return "<b>Could not find hazard " + itemName + ".</b>";
+		}
+		itemData = itemList[itemName];
+		if ("fileURL" in itemData){
+			itemData = rest_call(itemData["fileURL"],"");
+		}
+		itemData = parse_feature(itemData);
+	}else{
+		itemData = read_hazard_properties(tokenID);
 	}
-    itemData = parse_feature(itemData);
 
-	MapTool.chat.broadcast(JSON.stringify(itemData));
+	//MapTool.chat.broadcast(JSON.stringify(itemData));
     
     let HTMLString = "";
 

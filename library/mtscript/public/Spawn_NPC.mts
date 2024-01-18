@@ -1,6 +1,5 @@
 [h:tokenName=macro.args]
 
-[h: id=findToken("NPCTemplate","Library")]
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
 [h: yCoord=getStrProp(center,"centerY")]

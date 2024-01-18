@@ -11,15 +11,15 @@
 
 [r, if(tokenID=="null"), code:{
 <p class='topbar'>
-	[r:macroLink("Make Token","Spawn_NPC@Lib:ca.pf2e","none",tokenName)]&nbsp;
+	[r:macroLink("Make Token","Spawn_Hazard@Lib:ca.pf2e","none",tokenName)]&nbsp;
 </p>
 };{}]
 
 <body>
 <p>[r, if(tokenID=="null"), code:{
-	[js.ca.pf2e.build_creature_view(tokenName)]</p>
+	[js.ca.pf2e.build_hazard_view(tokenName)]</p>
 };{
-	[js.ca.pf2e.build_creature_view(tokenName, tokenID)]</p>
+	[js.ca.pf2e.build_hazard_view(tokenName, tokenID)]</p>
 }]
 </body>
 }]

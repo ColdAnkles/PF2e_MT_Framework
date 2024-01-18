@@ -36,7 +36,11 @@ function build_item_list(itemType, sortKey, sortDir){
             odd=1;
         }
 
-        returnHTML += "<td>"+create_macroLink(capitalise(thisItem.name),"Item_View_Frame@Lib:ca.pf2e",{"itemType":itemType, "itemName":thisItem.name}) +"</td>";
+        if(itemType=="hazard"){
+            returnHTML += "<td>"+create_macroLink(capitalise(thisItem.name),"Hazard_View_Frame@Lib:ca.pf2e",{"name":thisItem.name, "tokenID":"null"}) +"</td>";
+        }else{
+            returnHTML += "<td>"+create_macroLink(capitalise(thisItem.name),"Item_View_Frame@Lib:ca.pf2e",{"itemType":itemType, "itemName":thisItem.name}) +"</td>";
+        }
         returnHTML += "<td>"+capitalise(thisItem.type)+"</td>";
         returnHTML += "<td align=center>"+capitalise(thisItem.rarity)+"</td>";
         returnHTML += "<td>"+capitalise(thisItem.traits.join(", ")) + "</td>";

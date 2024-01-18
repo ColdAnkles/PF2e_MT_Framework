@@ -1,6 +1,5 @@
 [h: pathbuilderID=macro.args]
 
-[h: id=findToken("PCLibTemplate","Library")]
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
 [h: yCoord=getStrProp(center,"centerY")]

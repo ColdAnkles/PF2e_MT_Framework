@@ -4,7 +4,6 @@
 
 [h:sourceTokenID=macro.args]
 
-[h: baseToken=findToken("PCTemplate","Library")]
 [h: rawTokenName = getName(sourceTokenID,"Player Characters")]
 [h: tokenName = substring(rawTokenName,4,length(rawTokenName))]
 [h: center=getViewCenter(0,";")]
