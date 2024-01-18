@@ -61,12 +61,26 @@ function build_hazard_view(itemName, tokenID = null){
 		HTMLString += "<b>Hardness</b> " + String(itemData.hardness) + ", ";
 	}
 	HTMLString += "<b>HP</b> " + String(itemData.maxHP) + " (BT " + String(itemData.maxHP/2) + ")";
-	if(itemData.immunities.length>0 || itemData.weaknesses.length>0){
-		HTMLString += "; ";
+
+	if (itemData.immunities.length>0){
+		itemData.immunities.sort((a, b) => {
+			let testA = a.type.toUpperCase();
+ 			let testB = b.type.toUpperCase();
+  			if (testA < testB) {
+				return -1;
+			}
+			if (testA > testB) {
+				return 1;
+			}
+		});
+		HTMLString += "; <b>Immunities</b> ";
+		let immunityString = ""
+		for (var imm in itemData.immunities){
+			immunityString = immunityString + itemData.immunities[imm].type + ", ";
+		}
+		HTMLString += immunityString.substring(0,immunityString.length-2);
 	}
-	if(itemData.immunities.length>0){
-		HTMLString += "<b>Immunities</b> " + itemData.immunities.join(", ");
-	}
+
 	if(itemData.weaknesses.length>0){
 		if(itemData.immunities.length>0){
 			HTMLString += ",";

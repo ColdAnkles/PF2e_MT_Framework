@@ -23,14 +23,21 @@ function parse_hazard(rawData, parseRaw = false){
     hazardData.traits = rawData.system.traits.value;
     hazardData.size = rawData.system.traits.size.value
 	hazardData.size = {"sm":"small","med":"medium","huge":"huge","lg":"large","grg":"gargantuan","tiny":"tiny"}[hazardData.size];
-	hazardData.immunities = [];
-	for (var i in rawData.system.attributes.immunities){
-		hazardData.immunities.push(rawData.system.attributes.immunities[i].type);
+	
+	if("immunities" in rawData.system.attributes){
+		hazardData.immunities = rawData.system.attributes.immunities;
+	}else{
+		hazardData.immunities = [];
 	}
 	if("weaknesses" in rawData.system.attributes){
 		hazardData.weaknesses = rawData.system.attributes.weaknesses;
 	}else{
 		hazardData.weaknesses = [];
+	}
+	if("resistances" in rawData.system.attributes){
+		hazardData.resistances = rawData.system.attributes.resistances;
+	}else{
+		hazardData.resistances = [];
 	}
 
 

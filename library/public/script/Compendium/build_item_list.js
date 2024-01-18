@@ -17,6 +17,9 @@ function build_item_list(itemType, sortKey, sortDir){
     returnHTML += "<th width=10% align=center>Traits</th>";
     returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":itemType,"sort":"level","dir":((sortKey=="level") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
     returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":itemType,"sort":"source","dir":((sortKey=="source") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
+    if(itemType=="hazard"){
+        returnHTML += "<th>Spawn Link</th>";
+    }
     
     let odd = 1;
 
@@ -46,6 +49,9 @@ function build_item_list(itemType, sortKey, sortDir){
         returnHTML += "<td>"+capitalise(thisItem.traits.join(", ")) + "</td>";
         returnHTML += "<td align=center>"+String(thisItem.level)+"</td>";
         returnHTML += "<td align=center>"+thisItem.source+"</td>";
+        if(itemType=="hazard"){
+            returnHTML += "<td width=0%>"+create_macroLink("Make Token","Spawn_Hazard@Lib:ca.pf2e",thisItem.name);
+        }
         returnHTML += "</tr>";
     }
 
