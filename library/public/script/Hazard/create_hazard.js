@@ -30,7 +30,7 @@ function create_hazard(newHazardID, hazardName){
 		}
 	}
 
-    createMacro({"label":"Character Sheet","playerEditable":0,"command":"[r: ca.pf2e.Creature_View_Frame(json.set(\"{}\",\"name\",getName(),\"tokenID\",myID))]","tooltip":"View Character Sheet","sortBy":"","group":"Common"}, newHazardID);
+    createMacro({"label":"Character Sheet","playerEditable":0,"command":"[r: ca.pf2e.Hazard_View_Frame(json.set(\"{}\",\"name\",getName(),\"tokenID\",myID))]","tooltip":"View Character Sheet","sortBy":"","group":"Common"}, newHazardID);
 }
 
 MTScript.registerMacro("ca.pf2e.create_hazard", create_hazard);

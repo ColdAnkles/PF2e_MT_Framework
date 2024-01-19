@@ -50,10 +50,26 @@ function parse_hazard(rawData, parseRaw = false){
 	hazardData.spellRules = {};
 	hazardData.offensiveActions = [];
 	
+	if(hazardData.disable){
+		let disableAction = {"description":hazardData.disable, "mainText":"Disable", "name":"Disable","rarity":"common","traits":"","rules":[],"source":"","subtext":hazardData.disable,"actionType":"passive","actionCost":0};
+		hazardData.passiveDefenses.push(disableAction);
+	}	
+	if(hazardData.reset){
+		let resetAction = {"description":hazardData.reset, "mainText":"Reset", "name":"Reset","rarity":"common","traits":"","rules":[],"source":"","subtext":hazardData.reset,"actionType":"passive","actionCost":0};
+		hazardData.passiveDefenses.push(resetAction);
+	}	
+	if(hazardData.routine){
+		let routineAction = {"description":hazardData.routine, "mainText":"Routine", "name":"Routine","rarity":"common","traits":"","rules":[],"source":"","subtext":hazardData.routine,"actionType":"passive","actionCost":0};
+		hazardData.passiveDefenses.push(routineAction);
+	}
+	
 	for (var i in rawData.items){
 		let itemData = rawData.items[i];
 		parse_feature(itemData, hazardData);
 	}
+
+	hazardData.passiveDefenses = hazardData.passiveDefenses.concat(hazardData.passiveSkills);
+
 
     return hazardData;
 }

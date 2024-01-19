@@ -28,7 +28,9 @@ function build_hazard_view(itemName, tokenID = null){
 		HTMLString += "<span class='trait'>" + capitalise(itemData.traits[t]) + "</span>";
 	}
 	HTMLString += "<br />"
-	HTMLString += "<b>Source </b><span class='ext-link'>" + itemData.source + "</span><br />";
+	if(itemData.source!=""){
+		HTMLString += "<b>Source </b><span class='ext-link'>" + itemData.source + "</span><br />";
+	}
 
 	HTMLString += "<b>Complexity</b> " + ((itemData.isComplex) ? "Complex" : "Simple") + "<br />";
 	HTMLString += "<b>Stealth</b> DC " + String(itemData.stealth.dc) + " " + clean_description(itemData.stealth.details, true, true, true) + "<br />";

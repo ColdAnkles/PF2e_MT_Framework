@@ -61,7 +61,7 @@ function parse_feature(feature, assignDict=null){
 			
 	}else if(itemData.type == "action" && ((itemData.system.category=="interaction" || itemData.system.category=="class") || (assignDict != null && assignDict.type != "npc")) && itemData.system.actionType.value=="passive" && itemData.system.rules.length>0){
 		let tempString = clean_description(itemData.system.description.value)
-		let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"description":tempString,"name":itemData.name};
+		let newAction = {"mainText":itemData.name,"subText":tempString,"rules":itemData.system.rules,"description":tempString,"name":itemData.name,"actionType":"passive","actionCost":0};
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
 		newAction.traits = itemData.system.traits.value;
