@@ -299,6 +299,13 @@ function parse_pathbuilder_export(data){
 		}
 	}
 
+	for(var c in data.pets){
+		let petData = data.pets[c];
+		if (petData.type=="Animal Companion"){
+			setup_animal_companion(petData);
+		}
+	}
+
 	//MapTool.chat.broadcast(JSON.stringify(parsedData.itemList));
 	return parsedData;
 }
