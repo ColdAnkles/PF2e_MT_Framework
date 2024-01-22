@@ -283,12 +283,12 @@ function parse_pathbuilder_export(data){
 				newWeapon.runes.property.push(rI.toLowerCase());
 			}
 			parsedData.basicAttacks.push(newAttackData);
-			newAttackData = JSON.parse(JSON.stringify(newAttackData));
-			newAttackData.name+=" (Free)";
-			newAttackData.actionCost="1";
-			newAttackData.actionType="freeaction";
-			newAttackData.description += " This is a action free version for use as subordinate calls as part of feats etc.."
-			parsedData.basicAttacks.push(newAttackData);
+			//newAttackData = JSON.parse(JSON.stringify(newAttackData));
+			//newAttackData.name+=" (Free)";
+			//newAttackData.actionCost="1";
+			//newAttackData.actionType="freeaction";
+			//newAttackData.description += " This is a action free version for use as subordinate calls as part of feats etc.."
+			//parsedData.basicAttacks.push(newAttackData);
 		}
 	}
 	for (var e in data.equipment){
@@ -302,7 +302,8 @@ function parse_pathbuilder_export(data){
 	for(var c in data.pets){
 		let petData = data.pets[c];
 		if (petData.type=="Animal Companion"){
-			setup_animal_companion(petData);
+			let newPetData = setup_animal_companion(petData);
+			MapTool.chat.broadcast(newPetData);
 		}
 	}
 

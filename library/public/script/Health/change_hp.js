@@ -33,7 +33,7 @@ function change_hp(tokenID, changeHPData = null){
 		queryHTML = queryHTML + "<tr><td colspan='2' style='text-align:right;'><input type='submit' name='changeHPSubmit' value='Submit'><input type='submit' name='changeHPSubmit' value='Cancel'></td></tr>";
 
 		MTScript.setVariable("queryHTML",queryHTML);
-		MTScript.evalMacro("[dialog5('Saving Throw','width=600;height=420;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
+		MTScript.evalMacro("[dialog5('Change HP','width=600;height=420;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 	
 		
 	}else{
