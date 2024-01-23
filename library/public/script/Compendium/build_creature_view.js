@@ -26,7 +26,7 @@ function build_creature_view(creatureName, tokenID = null){
 	HTMLString += "<h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
 	
 	
-	if(creatureData.rarity!="common"){
+	if(creatureData.rarity!="common" && creatureData.rarity != ""){
 		HTMLString += "<span class='trait"+creatureData.rarity+"'>" + capitalise(creatureData.rarity) + "</span>";
 	}
 	//HTMLString += "<span class='traitalignment'>" + capitalise(creatureData.alignment) + "</span>";

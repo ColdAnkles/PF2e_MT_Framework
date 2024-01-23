@@ -10,22 +10,22 @@ function write_creature_properties(creatureData, token){
 	token.setName(creatureData.name);
 	//__STATS__
 	for (var s in creatureData.abilities){
-		token.setProperty(s, creatureData.abilities[s]);
+		token.setProperty(s, parseInt(creatureData.abilities[s]));
 	}
 
 	//__HEALTH__
-	token.setProperty("HP", creatureData.hp.max);
-	token.setProperty("MaxHP", creatureData.hp.max);
+	token.setProperty("HP", parseInt(creatureData.hp.max));
+	token.setProperty("MaxHP", parseInt(creatureData.hp.max));
 
 	//__OFFENSE__
 	token.setProperty("basicAttacks", JSON.stringify(creatureData.basicAttacks));
 	token.setProperty("offensiveActions", JSON.stringify(creatureData.offensiveActions));
 
 	//__DEFENSES__
-	token.setProperty("AC", creatureData.ac.value);
+	token.setProperty("AC", parseInt(creatureData.ac.value));
 	for (var s in creatureData.saves){
-		token.setProperty(s, creatureData.saves[s]);
-		token.setProperty(s+"DC", creatureData.saves[s]+10);
+		token.setProperty(s, parseInt(creatureData.saves[s]));
+		token.setProperty(s+"DC", parseInt(creatureData.saves[s]+10));
 	}
 	token.setProperty("weaknesses", JSON.stringify(creatureData.weaknesses));
 	token.setProperty("resistances", JSON.stringify(creatureData.resistances));
@@ -35,7 +35,7 @@ function write_creature_properties(creatureData, token){
 
 	//__SKILLS__
 	token.setProperty("proficiencies", JSON.stringify(creatureData.skillList));
-	token.setProperty("perception", creatureData.perception);
+	token.setProperty("perception", parseInt(creatureData.perception));
 	token.setProperty("passiveSkills", JSON.stringify(creatureData.passiveSkills));
 
 	//__MAGIC__
@@ -44,8 +44,8 @@ function write_creature_properties(creatureData, token){
 	//__MISC__
 	//token.setProperty("type", creatureData.creatureType);
 	token.setProperty("alignment", creatureData.alignment);
-	token.setProperty("level", creatureData.level);
-	token.setProperty("baseSpeed", creatureData.speeds.base);
+	token.setProperty("level", parseInt(creatureData.level));
+	token.setProperty("baseSpeed", parseInt(creatureData.speeds.base));
 	token.setProperty("otherSpeed", JSON.stringify(creatureData.speeds.other));
 	token.setProperty("rarity", creatureData.rarity);
 	token.setProperty("traits", JSON.stringify(creatureData.traits));
@@ -54,6 +54,10 @@ function write_creature_properties(creatureData, token){
 	token.setProperty("languages", JSON.stringify(creatureData.languages));
 	token.setProperty("resources", JSON.stringify(creatureData.resources));
 	token.setProperty("inventory", JSON.stringify(creatureData.itemList));
+
+	if("pets" in creatureData && creatureData.pets!=null){
+		token.setProperty("pets", JSON.stringify(creatureData.pets));
+	}
 
 	//__CALCULATION_DATA__
 	if("activeEffects" in creatureData && creatureData.activeEffects!=null){

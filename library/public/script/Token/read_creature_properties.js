@@ -54,13 +54,37 @@ function read_creature_properties(token){
 	creatureData.languages = JSON.parse(token.getProperty("languages"));
 	creatureData.resources = JSON.parse(token.getProperty("resources"));
 	creatureData.itemList = JSON.parse(token.getProperty("inventory"));
+	creatureData.pets = JSON.parse(token.getProperty("pets"));
+	if(creatureData.pets==null){
+		creatureData.pets = {};
+	}
 
+	//__CALCULATION_DATA__
 	creatureData.activeEffects = JSON.parse(token.getProperty("activeEffects"));
 	creatureData.specialEffects = JSON.parse(token.getProperty("specialEffects"));
 	creatureData.conditionDetails = JSON.parse(token.getProperty("conditionDetails"));
 	creatureData.attacksThisRound = Number(token.getProperty("attacksThisRound"));
 	creatureData.actionsLeft = Number(token.getProperty("actionsLeft"));
 	creatureData.reactionsLeft = Number(token.getProperty("reactionsLeft"));
+
+	if(creatureData.activeEffects==null){
+		creatureData.activeEffects = {};
+	}
+	if(creatureData.specialEffects==null){
+		creatureData.specialEffects = {};
+	}
+	if(creatureData.conditionDetails==null){
+		creatureData.conditionDetails = {};
+	}
+	if(creatureData.attacksThisRound==null){
+		creatureData.attacksThisRound = 0;
+	}
+	if(creatureData.actionsLeft==null){
+		creatureData.actionsLeft = 0;
+	}
+	if(creatureData.reactionsLeft==null){
+		creatureData.reactionsLeft = 0;
+	}
 
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));

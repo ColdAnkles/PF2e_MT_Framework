@@ -218,8 +218,6 @@ function parse_pathbuilder_export(data){
 	parsedData.resources = {};
 	parsedData.itemList = {};
 
-
-
 	let features_to_parse = [];
 	for (var f in data.feats){
 		let tempData = find_object_data(data.feats[f][0]);
@@ -299,13 +297,7 @@ function parse_pathbuilder_export(data){
 		}
 	}
 
-	for(var c in data.pets){
-		let petData = data.pets[c];
-		if (petData.type=="Animal Companion"){
-			let newPetData = setup_animal_companion(petData);
-			MapTool.chat.broadcast(newPetData);
-		}
-	}
+	parsedData.pets = data.pets;
 
 	//MapTool.chat.broadcast(JSON.stringify(parsedData.itemList));
 	return parsedData;
