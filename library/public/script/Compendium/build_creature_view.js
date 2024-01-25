@@ -76,7 +76,7 @@ function build_creature_view(creatureName, tokenID = null){
 	}
 
 	if (Object.keys(creatureData.itemList).length>0){
-		HTMLString += "<b>Items</b> " + itemText.substring(0,itemText.length-2);
+		HTMLString += "<b>Items</b> " + itemText.substring(0,itemText.length-2) + "<br />";
 	}
 
 	for (var pSkill in creatureData.passiveSkills){

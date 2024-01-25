@@ -146,7 +146,7 @@ function parse_pathbuilder_export(data){
 	for (var i in data.spellCasters){
 		let castingData = data.spellCasters[i];
 		let id = castingData.name;
-		let newCastingRules = {"name":castingData.name,"spellAttack":0,"spellDC":0,"spells":[],"type":castingData.spellcastingType}
+		let newCastingRules = {"name":castingData.name,"spellAttack":0,"spellDC":0,"spells":[],"type":castingData.spellcastingType,"castingAbility":castingData.ability}
 		if (castingData.proficiency > 0){
 			newCastingRules.spellAttack = parsedData.abilities[castingData.ability] + castingData.proficiency + data.level;
 		}else{
@@ -178,7 +178,7 @@ function parse_pathbuilder_export(data){
 		for (var j in data.focus[i]){
 			let castingData = data.focus[i][j];
 			let id = capitalise(i) + " " + capitalise(j) + " Focus";
-			let newCastingRules = {"name":id,"spellAttack":0,"spellDC":0,"spells":[],"type":castingData.focus}
+			let newCastingRules = {"name":id,"spellAttack":0,"spellDC":0,"spells":[],"type":castingData.focus,"castingAbility":j}
 			if (castingData.proficiency > 0){
 				newCastingRules.spellAttack = parsedData.abilities[j] + castingData.proficiency + data.level;
 			}else{
@@ -229,6 +229,7 @@ function parse_pathbuilder_export(data){
 	for (var s in data.specials){
 		let tempName = data.specials[s];
 		tempName = tempName.replaceAll("Arcane School: ","").replaceAll("Arcane Thesis: ","");
+		tempName = tempName.replaceAll(" Patron","");
 		if(tempName=="Spellbook"){
 			continue; //Spellbook not treated as a feature in foundry
 		}
@@ -298,6 +299,20 @@ function parse_pathbuilder_export(data){
 	}
 
 	parsedData.pets = data.pets;
+	parsedData.familiars = data.familiars;
+
+	for(var f in parsedData.familiars){
+		parsedData.familiars[f].familiarAbilities=[];
+		for(var a in parsedData.familiars[f].abilities){
+			let ability = parsedData.familiars[f].abilities[a];
+			let tempData = find_object_data(ability);
+			if(tempData!=null){
+				parsedData.familiars[f].familiarAbilities.push(tempData);
+			}else if(ability!="Darkvision"){
+				MapTool.chat.broadcast("Couldn't find familiar ability " + ability);
+			}
+		}
+	}
 
 	//MapTool.chat.broadcast(JSON.stringify(parsedData.itemList));
 	return parsedData;

@@ -22,7 +22,7 @@ function display_speeds(token){
 
 	otherSpeedString = otherSpeedString.join(", ");
 	
-	let speedString = "Speed: " + String(Math.max(baseSpeed+speedBonus,5))  + " ft"
+	let speedString = "Speed: " + String(Math.max(baseSpeed+speedBonus,0))  + " ft"
 	if (otherSpeedString.length>0){
 		speedString = speedString + ", " + otherSpeedString;
 	}

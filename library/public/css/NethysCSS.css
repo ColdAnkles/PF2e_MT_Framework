@@ -181,6 +181,10 @@ a:link {
   margin: 0.1em 0;
 }
 
+tbody:first-child tr:first-child td{
+  border-top: 1px solid #ffffff;
+}
+
 table {
   border-collapse: separate;
   border-spacing: 0;
@@ -213,7 +217,6 @@ th {
 
 td {
   border-right: 1px solid #ffffff;
-  border-top: 1px solid #ffffff;
   border-bottom: 1px solid #ffffff;
   padding: 4px 12px 4px 4px;
 }

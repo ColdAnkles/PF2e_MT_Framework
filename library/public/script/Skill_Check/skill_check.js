@@ -7,7 +7,23 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		checkToken = MapTool.tokens.getTokenByID(checkToken);
 	}	
 	
-	let skills = {"Acrobatics":{"name":"Acrobatics","stat":"dex"},"Arcana":{"name":"Arcana","stat":"int"},"Athletics":{"name":"Athletics","stat":"str"},"Crafting":{"name":"Crafting","stat":"int"},"Deception":{"name":"Deception","stat":"cha"},"Diplomacy":{"name":"Diplomacy","stat":"cha"},"Intimidation":{"name":"Intimidation","stat":"cha"},"Medicine":{"name":"Medicine","stat":"wis"},"Nature":{"name":"Nature","stat":"wis"},"Occultism":{"name":"Occultism","stat":"int"},"Perception":{"name":"Perception","stat":"wis"},"Performance":{"name":"Performance","stat":"cha"},"Religion":{"name":"Religion","stat":"wis"},"Society":{"name":"Society","stat":"int"},"Stealth":{"name":"Stealth","stat":"dex"},"Survival":{"name":"Survival","stat":"wis"},"Thievery":{"name":"Thievery","stat":"dex"}}
+	let skills = {"Acrobatics":{"name":"Acrobatics","stat":"dex"},
+	"Arcana":{"name":"Arcana","stat":"int"},
+	"Athletics":{"name":"Athletics","stat":"str"},
+	"Crafting":{"name":"Crafting","stat":"int"},
+	"Deception":{"name":"Deception","stat":"cha"},
+	"Diplomacy":{"name":"Diplomacy","stat":"cha"},
+	"Intimidation":{"name":"Intimidation","stat":"cha"},
+	"Medicine":{"name":"Medicine","stat":"wis"},
+	"Nature":{"name":"Nature","stat":"wis"},
+	"Occultism":{"name":"Occultism","stat":"int"},
+	"Perception":{"name":"Perception","stat":"wis"},
+	"Performance":{"name":"Performance","stat":"cha"},
+	"Religion":{"name":"Religion","stat":"wis"},
+	"Society":{"name":"Society","stat":"int"},
+	"Stealth":{"name":"Stealth","stat":"dex"},
+	"Survival":{"name":"Survival","stat":"wis"},
+	"Thievery":{"name":"Thievery","stat":"dex"}};
 
 	let stats = ["str","dex","con","int","wis","cha"];
 	

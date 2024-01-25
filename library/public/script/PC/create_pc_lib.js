@@ -6,6 +6,7 @@ function create_pc_lib(pathbuilderID, tokenID){
 	for(var c in PCData.pets){
 		let petData = PCData.pets[c];
 		petData.ownerID = tokenID;
+		petData.level = PCData.level;
 		if (petData.type=="Animal Companion"){
 			setup_animal_companion(petData);
 		}
@@ -13,6 +14,10 @@ function create_pc_lib(pathbuilderID, tokenID){
 	PCData.pets = {};
 
 	write_creature_properties(PCData, tokenID);
+	
+	for(var f in PCData.familiars){
+		setup_familiar({"PCData":PCData, "familiarData":PCData.familiars[f], "ownerID":tokenID});
+	}
 	
 }
 
