@@ -206,7 +206,7 @@ function clean_calculations(calculationString, additionalData={"rollDice":false,
 }
 
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false, "gm":false, "replaceGMRolls": true}){
-	MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
+	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 
 	let cleanDescription = description;
 
