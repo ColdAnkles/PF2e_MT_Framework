@@ -16,6 +16,7 @@
 
 [h: tokenSize = getProperty("size",sourceTokenID, "Player Characters")]
 [h: setSize(tokenSize,newToken)]
+[h: setHasSight(1, newToken)]
 
 [h: senseList = stringToList(getProperty("senses", sourceTokenID, "Player Characters"),",")]
 [h: visionList = json.append("[]","darkvision","low-light","greater darkvision")]

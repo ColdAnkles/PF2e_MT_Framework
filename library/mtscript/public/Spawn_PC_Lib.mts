@@ -7,6 +7,7 @@
 [h: newToken = createToken(val)]
 [h: setPropertyType("PF2E_Character", newToken)]
 [h: setPC(newToken)]
+[h: setHasSight(1, newToken)]
 
 [h: js.ca.pf2e.create_pc_lib(pathbuilderID, newToken)]
 [h: tokenMaps = getTokenMap(newToken)]

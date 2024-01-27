@@ -76,7 +76,8 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 		//return "Effect: " + effectName;
 		return "";
 	}else if(parsed.bracketContents.includes("Spell Effect") && additionalData.rollDice){
-		let effectName = parsed.bracketContents.replaceAll(/.*\:/g,"");
+		let tempArray = parsed.bracketContents.split(".");
+		let effectName = tempArray[tempArray.length -1];
 		return create_macroLink("Apply " + effectName,"Apply_Effect_Query@Lib:ca.pf2e",effectName);
 	}else if(!additionalData.rollDice){
 		//let tempArray = parsed.bracketContents.split(".");
@@ -84,8 +85,9 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 		return "";
 	}else if(additionalData.rollDice){
 		let tempArray = parsed.bracketContents.split(".");
-		tempArray = tempArray[tempArray.length -1].split(":")
-		return create_macroLink("Apply " + tempArray[tempArray.length -1],"Apply_Effect_Query@Lib:ca.pf2e",tempArray[tempArray.length -1]);
+		let effectName = tempArray[tempArray.length -1];
+		tempArray = tempArray[tempArray.length -1].split(":");
+		return create_macroLink("Apply " + effectName,"Apply_Effect_Query@Lib:ca.pf2e",effectName);
 	}
 	return uuidString;
 	
