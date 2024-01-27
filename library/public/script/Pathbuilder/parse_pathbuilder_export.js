@@ -177,6 +177,7 @@ function parse_pathbuilder_export(data){
 	for (var i in data.focus){
 		for (var j in data.focus[i]){
 			let castingData = data.focus[i][j];
+			//MapTool.chat.broadcast(JSON.stringify(castingData));
 			let id = capitalise(i) + " " + capitalise(j) + " Focus";
 			let newCastingRules = {"name":id,"spellAttack":0,"spellDC":0,"spells":[],"type":castingData.focus,"castingAbility":j}
 			if (castingData.proficiency > 0){
@@ -192,6 +193,7 @@ function parse_pathbuilder_export(data){
 				if (spellData != null){
 					spellData.castLevel = focusLevel;
 				}
+				newCastingRules.spells.push(spellData)
 			}
 			for (var l in castingData.focusSpells){
 				let spellName = castingData.focusSpells[l].replaceAll(" (Amped)","");
@@ -199,8 +201,10 @@ function parse_pathbuilder_export(data){
 				if (spellData != null){
 					spellData.castLevel = focusLevel;
 				}
+				newCastingRules.spells.push(spellData)
 			}
-			
+		
+			parsedData.spellRules[id]=newCastingRules;
 		}
 	}
 

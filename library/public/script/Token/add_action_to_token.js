@@ -129,10 +129,11 @@ function add_action_to_token(actionData, tokenID){
 
 		let spellLabel = action_icon_label(actionData.actionType, actionData.actionCost)+" "+actionData.name;
 		actionData.name = spellName;
-		let tooltipDescription = chat_display(actionData, false, actionData.castLevel);
+		let tooltipDescription = chat_display(actionData, false, {"level":actionData.castLevel});
 	
 		let props = {"label":spellLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.cast_spell(\""+spellName+"\","+actionData.castLevel+",currentToken())]","tooltip":tooltipDescription,"sortBy":actionData.name,"group":actionData.group};
-		
+
+		//MapTool.chat.broadcast(JSON.stringify(props));
 		createMacro(props, tokenID);
 	}
 }

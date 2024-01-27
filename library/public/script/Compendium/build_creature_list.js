@@ -38,7 +38,7 @@ function build_creature_list(sortKey, sortDir, searchKey = ""){
 
         if(searchKey!=""){
             var re = new RegExp(searchKey, 'gi');
-            if(!(thisItem.name.match(re))){
+            if(!(thisCreature.name.match(re))){
                 continue;
             }
         }

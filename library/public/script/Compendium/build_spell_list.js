@@ -37,7 +37,7 @@ function build_spell_list(sortKey, sortDir, searchKey = ""){
 
         if(searchKey!=""){
             var re = new RegExp(searchKey, 'gi');
-            if(!(thisItem.name.match(re))){
+            if(!(thisSpell.name.match(re))){
                 continue;
             }
         }
