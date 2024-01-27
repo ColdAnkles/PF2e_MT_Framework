@@ -101,7 +101,7 @@ function parse_localize(localizeString){
 }
 
 function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "replaceGMRolls": true}){
-	//MapTool.chat.broadcast(rollString);
+	MapTool.chat.broadcast(rollString);
 	if(rollString.includes("/br") || (!(rollString.includes("(")) || !(rollString.includes(")")))){
 		//MapTool.chat.broadcast("Case One");
 		let parsed = parse_foundry_strings(rollString);
@@ -176,13 +176,13 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 			infoMatch = infoMatch[infoMatch.length-1];
 		}
 
-		if (rollMatch.includes("@level") && additionalData.rollDice && "level" in additionalData){
+		if (rollMatch.includes("@level") && "level" in additionalData){
 			rollMatch = rollMatch.replaceAll("@level", String(additionalData.level));
-		}else if (rollMatch.includes("@item.level") && additionalData.rollDice && "level" in additionalData){
+		}else if (rollMatch.includes("@item.level") && "level" in additionalData){
 			rollMatch = rollMatch.replaceAll("@item.level", String(additionalData.level));
 		}
 
-		if(additionalData.rollDice){
+		if(additionalData.rollDice || !(rollMatch.includes("d"))){
 			rollMatch = String(eval(rollMatch));
 		}
 
@@ -195,8 +195,18 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 	return rollString;
 }
 
+function clean_calculations(calculationString, additionalData={"rollDice":false, "gm":false, "replaceGMRolls": true}){
+	//MapTool.chat.broadcast(calculationString);
+	if (calculationString.includes("@level") && "level" in additionalData){
+		calculationString = calculationString.replaceAll("@level", String(additionalData.level));
+	}else if (calculationString.includes("@item.level") && "level" in additionalData){
+		calculationString = calculationString.replaceAll("@item.level", String(additionalData.level));
+	}
+	return String(eval(calculationString));
+}
+
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false, "gm":false, "replaceGMRolls": true}){
-	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
+	MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 
 	let cleanDescription = description;
 
@@ -251,6 +261,13 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		let replaceString = parse_roll(roll_matches[m], additionalData);
 		cleanDescription=cleanDescription.replaceAll(roll_matches[m],replaceString);
 	}
+
+	let calculation_matches = cleanDescription.match(/((floor|ceil|max|min)\(.*\))/gm);
+	for (var m in calculation_matches){
+		let replaceString = clean_calculations(calculation_matches[m], additionalData);
+		cleanDescription=cleanDescription.replaceAll(calculation_matches[m],replaceString);
+	}
+
 
 	cleanDescription = cleanDescription.replaceAll("emanation Aura","Aura");
 

@@ -1,5 +1,6 @@
 [h,if(!json.contains(macro.args,"sort")):sort="name";sort=json.get(macro.args,"sort")]
 [h,if(!json.contains(macro.args,"dir")):dir="a";dir=json.get(macro.args,"dir")]
+[h,if(!json.contains(macro.args,"searchKey")):searchKey="";searchKey=json.get(macro.args,"searchKey")]
 [h: windowType = json.get(macro.args,"window")]
 
 [h: rollNPC = 0 ]
@@ -37,18 +38,18 @@
 
 [dialog5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=1; noframe=0; input=1"):{
 	[r, if(windowType=="spells"), code:{
-        [r: js.ca.pf2e.build_spell_list(sort, dir)]
+        [r: js.ca.pf2e.build_spell_list(sort, dir, searchKey)]
     }]
     [r, if(windowType=="creatures"), code:{
-        [r: js.ca.pf2e.build_creature_list(sort, dir)]
+        [r: js.ca.pf2e.build_creature_list(sort, dir, searchKey)]
     }]
     [r, if(windowType=="feat"), code:{
-        [r: js.ca.pf2e.build_item_list("feat", sort, dir)]
+        [r: js.ca.pf2e.build_item_list("feat", sort, dir, searchKey)]
     }]
     [r, if(windowType=="item"), code:{
-        [r: js.ca.pf2e.build_item_list("item", sort, dir)]
+        [r: js.ca.pf2e.build_item_list("item", sort, dir, searchKey)]
     }]
     [r, if(windowType=="hazard"), code:{
-        [r: js.ca.pf2e.build_item_list("hazard", sort, dir)]
+        [r: js.ca.pf2e.build_item_list("hazard", sort, dir, searchKey)]
     }]
 }]

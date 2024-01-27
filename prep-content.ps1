@@ -170,6 +170,7 @@ function import-source-file {
 		$storeData.source = $data.system.publication.title;
 		$storeData.duration = $data.system.duration;
 		$storeData.rules = $data.system.rules;
+        $storeData.start = $data.system.start;
     }elseif ($data.type -eq "heritage"){
 		$storeData.source = $data.system.publication.title;
 		$storeData.description = $data.system.description.value;

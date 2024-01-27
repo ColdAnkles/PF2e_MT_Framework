@@ -1,6 +1,6 @@
 "use strict";  
 
-function build_creature_list(sortKey, sortDir){
+function build_creature_list(sortKey, sortDir, searchKey = ""){
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/NethysCSS.css'/><h1 class='feel-title'>Spells</h1>";
     let creatureList = JSON.parse(read_data("pf2e_npc"));
     let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
@@ -10,6 +10,13 @@ function build_creature_list(sortKey, sortDir){
         creatureSorted.push(creatureList[s]);
     }
     creatureSorted.sort(sort_by(sortKey, sortDir=="d", (a) =>  ((typeof(a)=="string") ? a.toUpperCase() : a )));
+
+    returnHTML += "<form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
+    <div><input name='searchKey' placeholder='Search' value='"+searchKey+"'></input>\
+    <input type='submit' name='searchButton' value='Search'></input>\
+    <input type='hidden' name='window' value='creatures'></input>\
+    <input type='hidden' name='sort' value='"+sortKey+"'></input>\
+    <input type='hidden' name='dir' value='"+sortDir+"'></input></div></form>";
     
     returnHTML += "<table><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"name","dir":((sortKey=="name") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
     returnHTML += "<th>"+create_macroLink("Size", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"creatures","sort":"size","dir":((sortKey=="size") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
@@ -26,6 +33,10 @@ function build_creature_list(sortKey, sortDir){
         let thisCreature = creatureSorted[i];
 
         if(!enabledSources.includes(thisCreature.source)){
+            continue;
+        }
+
+        if(searchKey!="" && !(thisCreature.name.includes(searchKey))){
             continue;
         }
 

@@ -93,7 +93,7 @@ function build_spell_view(spellName){
 	
 	HTMLString = HTMLString + "<hr />";
 
-	HTMLString = HTMLString + clean_description(spellData.description, false, false, false);
+	HTMLString = HTMLString + clean_description(spellData.description, false, false, false, {"rollDice":false,"level":spellData.level});
 	
 		
 	return HTMLString;

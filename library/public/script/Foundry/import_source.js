@@ -72,6 +72,7 @@ function import_source_file(fileURL){
 			storeData.source = data.system.publication.title;
 			storeData.duration = data.system.duration;
 			storeData.rules = data.system.rules;
+			storeData.start = data.system.start;
 			store_object_data(storeData);
 		}else if (data.type == "heritage"){
 			storeData.source = data.system.publication.title;

@@ -1,6 +1,6 @@
 "use strict";  
 
-function build_spell_list(sortKey, sortDir){
+function build_spell_list(sortKey, sortDir, searchKey = ""){
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/NethysCSS.css'/><h1 class='feel-title'>Spells</h1>";
     let spellList = JSON.parse(read_data("pf2e_spell"));
     let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
@@ -10,6 +10,13 @@ function build_spell_list(sortKey, sortDir){
         spellSorted.push(spellList[s]);
     }
     spellSorted.sort(sort_by(sortKey, sortDir=="d", (a) =>  ((typeof(a)=="string") ? a.toUpperCase() : a )));
+
+    returnHTML += "<form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
+    <div><input name='searchKey' placeholder='Search' value='"+searchKey+"'></input>\
+    <input type='submit' name='searchButton' value='Search'></input>\
+    <input type='hidden' name='window' value='spells'></input>\
+    <input type='hidden' name='sort' value='"+sortKey+"'></input>\
+    <input type='hidden' name='dir' value='"+sortDir+"'></input></div></form>";
     
     returnHTML += "<table><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"spells","sort":"name","dir":((sortKey=="name") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
     returnHTML += "<th>"+create_macroLink("Type", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({"window":"spells","sort":"type","dir":((sortKey=="type") ? ((sortDir=="d") ? "a":"d"): sortDir)})) + "</th>";
@@ -25,6 +32,10 @@ function build_spell_list(sortKey, sortDir){
         let thisSpell = spellSorted[i];
 
         if(!enabledSources.includes(thisSpell.source)){
+            continue;
+        }
+
+        if(searchKey!="" && !(thisSpell.name.includes(searchKey))){
             continue;
         }
 
