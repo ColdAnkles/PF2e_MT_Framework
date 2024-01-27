@@ -166,8 +166,22 @@ function parse_feature(feature, assignDict=null){
 		
 	}else if(itemData.type=="hazard"){
 		let newItem = parse_hazard(itemData);
-			if(simpleReturn){
+		if(simpleReturn){
 			return newItem;
+		}
+	}else if(itemData.type=="effect"){
+		let newEffect = {"name":itemData.name,"type":"effect"}
+		newEffect.rules = itemData.system.rules;
+		newEffect.level = itemData.system.level.value;
+		newEffect.start = itemData.system.start;
+		newEffect.traits = itemData.system.traits.value;
+		newEffect.rarity = itemData.system.traits.rarity;
+		newEffect.source = itemData.system.publication.title;
+		newEffect.duration = itemData.system.duration;
+		newEffect.description = itemData.system.description.value;
+		
+		if(simpleReturn){
+			return newEffect;
 		}
 	}else{
 		//MapTool.chat.broadcast(JSON.stringify(itemData));

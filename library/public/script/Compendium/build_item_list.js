@@ -38,8 +38,11 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = ""){
             continue;
         }
 
-        if(searchKey!="" && !(thisItem.name.includes(searchKey))){
-            continue;
+        if(searchKey!=""){
+            var re = new RegExp(searchKey, 'gi');
+            if(!(thisItem.name.match(re))){
+                continue;
+            }
         }
 
         if(odd==1){
@@ -56,9 +59,21 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = ""){
             returnHTML += "<td>"+create_macroLink(capitalise(thisItem.name),"Item_View_Frame@Lib:ca.pf2e",{"itemType":itemType, "itemName":thisItem.name}) +"</td>";
         }
         returnHTML += "<td>"+capitalise(thisItem.type)+"</td>";
-        returnHTML += "<td align=center>"+capitalise(thisItem.rarity)+"</td>";
-        returnHTML += "<td>"+capitalise(thisItem.traits.join(", ")) + "</td>";
-        returnHTML += "<td align=center>"+String(thisItem.level)+"</td>";
+        if("rarity" in thisItem){
+            returnHTML += "<td align=center>"+capitalise(thisItem.rarity)+"</td>";
+        }else{
+            returnHTML += "<td align=center>Common</td>";
+        }
+        if("traits" in thisItem){
+            returnHTML += "<td>"+capitalise(thisItem.traits.join(", ")) + "</td>";
+        }else{
+            returnHTML += "<td></td>";
+        }
+        if("level" in thisItem){
+            returnHTML += "<td align=center>"+String(thisItem.level)+"</td>";
+        }else{
+            returnHTML += "<td align=center>0</td>";
+        }
         returnHTML += "<td align=center>"+thisItem.source+"</td>";
         if(itemType=="hazard"){
             returnHTML += "<td width=0%>"+create_macroLink("Make Token","Spawn_Hazard@Lib:ca.pf2e",thisItem.name);

@@ -36,8 +36,11 @@ function build_creature_list(sortKey, sortDir, searchKey = ""){
             continue;
         }
 
-        if(searchKey!="" && !(thisCreature.name.includes(searchKey))){
-            continue;
+        if(searchKey!=""){
+            var re = new RegExp(searchKey, 'gi');
+            if(!(thisItem.name.match(re))){
+                continue;
+            }
         }
 
         if(odd==1){

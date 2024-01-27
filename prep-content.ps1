@@ -171,6 +171,9 @@ function import-source-file {
 		$storeData.duration = $data.system.duration;
 		$storeData.rules = $data.system.rules;
         $storeData.start = $data.system.start;
+		$storeData.rarity = $data.system.traits.rarity;
+		$storeData.traits = $data.system.traits.value;
+		$storeData.level = $data.system.level.value;
     }elseif ($data.type -eq "heritage"){
 		$storeData.source = $data.system.publication.title;
 		$storeData.description = $data.system.description.value;

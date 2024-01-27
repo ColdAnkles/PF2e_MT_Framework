@@ -30,6 +30,11 @@
     [h: windowHeight=600]
     [h: windowName = "Item List"]
 }]
+[h, if(windowType=="effect"), code:{
+    [h: windowWidth=800]
+    [h: windowHeight=600]
+    [h: windowName = "Effect List"]
+}]
 [h, if(windowType=="hazard"), code:{
     [h: windowWidth=800]
     [h: windowHeight=600]
@@ -43,13 +48,7 @@
     [r, if(windowType=="creatures"), code:{
         [r: js.ca.pf2e.build_creature_list(sort, dir, searchKey)]
     }]
-    [r, if(windowType=="feat"), code:{
-        [r: js.ca.pf2e.build_item_list("feat", sort, dir, searchKey)]
-    }]
-    [r, if(windowType=="item"), code:{
-        [r: js.ca.pf2e.build_item_list("item", sort, dir, searchKey)]
-    }]
-    [r, if(windowType=="hazard"), code:{
-        [r: js.ca.pf2e.build_item_list("hazard", sort, dir, searchKey)]
+    [r, if(windowType=="feat" || windowType=="item" || windowType=="hazard" || windowType=="effect"), code:{
+        [r: js.ca.pf2e.build_item_list(windowType, sort, dir, searchKey)]
     }]
 }]

@@ -35,8 +35,11 @@ function build_spell_list(sortKey, sortDir, searchKey = ""){
             continue;
         }
 
-        if(searchKey!="" && !(thisSpell.name.includes(searchKey))){
-            continue;
+        if(searchKey!=""){
+            var re = new RegExp(searchKey, 'gi');
+            if(!(thisItem.name.match(re))){
+                continue;
+            }
         }
 
         if(odd==1){
