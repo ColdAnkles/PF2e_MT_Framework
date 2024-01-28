@@ -135,7 +135,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
 		let prof_bonus = 0;
 		let misc_bonus = Number(checkData.miscBonus);
-		let effect_bonus = calculate_bonus(checkToken.getId(), [lowercase(checkData.skillName),checkData.statName+"-based"].concat(extraScopes));
+		let effect_bonus = calculate_bonus(checkToken.getId(), [lowercase(checkData.skillName),checkData.statName+"-based","skill-check"].concat(extraScopes));
 		effect_bonus = effect_bonus.bonuses.circumstance + effect_bonus.bonuses.status + effect_bonus.bonuses.item + effect_bonus.bonuses.none + effect_bonus.maluses.circumstance + effect_bonus.maluses.status + effect_bonus.maluses.item + effect_bonus.maluses.none;
 
 		if (checkData.tokenType == "NPC" || checkData.tokenType == "PC"){
