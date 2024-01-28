@@ -15,7 +15,7 @@ function set_state(stateName, stateVal, tokenID){
 			let subTokens = JSON.parse(token.getProperty("pcTokens"));
 			updateTokens = updateTokens.concat(subTokens);
 		}else{
-			set_state(token.getProperty("myID"), stateVal, tokenID);
+			set_state(stateName, stateVal, token.getProperty("myID"));
 			return;
 		}
 	}

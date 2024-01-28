@@ -10,6 +10,9 @@ function apply_effect_query(effectName){
         tokenNames.push(tokens[i].getName());
     }
     
+    if(tokenNames.length==0){
+        return;
+    }
     //User chooses a token
     MTScript.evalMacro("[h: ans=input(\"tokenChoice|"+tokenNames.join(",")+"|Apply " + effectName + " to|List\")]");
     let abort = MTScript.getVariable("ans");
@@ -19,7 +22,7 @@ function apply_effect_query(effectName){
     let tokenChoice = Number(MTScript.getVariable("tokenChoice"));
 
     //Apply effect to token
-    toggle_named_effect(effectName, tokens[tokenChoice]);
+    toggle_named_effect(effectName, tokens[tokenChoice], 1);
 }
 
 MTScript.registerMacro("ca.pf2e.apply_effect_query", apply_effect_query);
