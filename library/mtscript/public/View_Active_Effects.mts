@@ -1,7 +1,6 @@
 [h, if(json.type(macro.args)=="ARRAY"), code:{
 	[h: macro.args = json.get(macro.args,0)]
 };{}]
-[h: broadcast(macro.args)]
 [h: tokenID = json.get(macro.args,"tokenID")]
 [h: tokenName = getName(tokenID)]
 
