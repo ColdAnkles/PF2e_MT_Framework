@@ -110,6 +110,9 @@ function add_action_to_token(actionData, tokenID){
 		}else if(lookupSpell.time=="reaction"){
 			actionData.actionType = "reaction";
 			actionData.actionCost = 1;
+		}else if(lookupSpell.time=="free"){
+			actionData.actionType = "free";
+			actionData.actionCost = 1;
 		}else{
 			actionData.actionType = "long";
 			actionData.actionCost = lookupSpell.time;
