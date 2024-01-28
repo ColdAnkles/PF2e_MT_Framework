@@ -1,7 +1,6 @@
 "use strict";
 
 function apply_effect_query(effectName){
-    MapTool.chat.broadcast(effectName);
     //Get visible tokens
     let tokens = get_tokens({"visible":true,"unsetStates":["Dead"],"layer":["TOKEN"]});
     let tokenNames = [];
