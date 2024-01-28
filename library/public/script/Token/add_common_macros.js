@@ -10,8 +10,8 @@ function add_common_macros(tokenID){
         {"label":"End Turn","playerEditable":0,"command":"[h: js.ca.pf2e.end_turn(currentToken())]","tooltip":"End Turn","sortBy":"","group":"Encounter"},
         {"label":"Initiative","playerEditable":0,"command":"[h: ca.pf2e.Roll_Initiative(currentToken())]","tooltip":"Roll Initiative","sortBy":"","group":"Encounter"},
         {"label":"Initiative (Perception)","playerEditable":0,"command":"[h: ca.pf2e.Roll_Initiative(currentToken(),\"Perception\")]","tooltip":"Roll Initiative with Perception","sortBy":"","group":"Encounter"},
-        {"label":"Use Action","playerEditable":0,"command":"[h: js.ca.pf2e.generic_use_action(myID)]","tooltip":"Use An Action","sortBy":"","group":"Common"},
-        {"label":"Refund Action","playerEditable":0,"command":"[h: js.ca.pf2e.generic_refund_action(myID)]","tooltip":"Regain An Action","sortBy":"","group":"Common"},
+        {"label":"Use Action","playerEditable":0,"command":"[h: js.ca.pf2e.generic_use_action(currentToken())]","tooltip":"Use An Action","sortBy":"","group":"Common"},
+        {"label":"Refund Action","playerEditable":0,"command":"[h: js.ca.pf2e.generic_refund_action(currentToken())]","tooltip":"Regain An Action","sortBy":"","group":"Common"},
         {"label":"View Active Effects","playerEditable":0,"command":"[h: ca.pf2e.View_Active_Effects(json.set(\"{}\",\"tokenID\",currentToken()))]","tooltip":"View current active effects.","sortBy":"","group":"Common"}
         ]
     for (var m in commonMacros){
