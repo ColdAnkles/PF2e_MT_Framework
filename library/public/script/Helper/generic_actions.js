@@ -5,11 +5,11 @@ function generic_use_action(token){
 		token = MapTool.tokens.getTokenByID(token);
 	}
 
-	let initiative = get_initiative(actingToken.getId());
-	let actionsLeft = Number(actingToken.getProperty("actionsLeft"));
+	let initiative = get_initiative(token.getId());
+	let actionsLeft = Number(token.getProperty("actionsLeft"));
     if (!(isNaN(initiative))){
-        actingToken.setProperty("actionsLeft", String(actionsLeft-1));
-        update_action_bank(actingToken);
+        token.setProperty("actionsLeft", String(actionsLeft-1));
+        update_action_bank(token);
     }
 
 }
@@ -21,11 +21,11 @@ function generic_refund_action(token){
 		token = MapTool.tokens.getTokenByID(token);
 	}
 
-	let initiative = get_initiative(actingToken.getId());
-	let actionsLeft = Number(actingToken.getProperty("actionsLeft"));
+	let initiative = get_initiative(token.getId());
+	let actionsLeft = Number(token.getProperty("actionsLeft"));
     if (!(isNaN(initiative))){
-        actingToken.setProperty("actionsLeft", String(actionsLeft+1));
-        update_action_bank(actingToken);
+        token.setProperty("actionsLeft", String(actionsLeft+1));
+        update_action_bank(token);
     }
 
 }
