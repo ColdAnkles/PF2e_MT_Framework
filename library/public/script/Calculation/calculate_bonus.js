@@ -20,15 +20,34 @@ function calculate_bonus(token, bonusScopes, consume=true){
 		let effectData = JSON.parse(JSON.stringify(activeEffects[e]));
 		let effectBonuses = get_effect_bonus(effectData, bonusScopes);
 		effectData.bonus = effectBonuses;
+		let hasAsked = false;
+		let askResponse = true;
 		for (var type in effectBonuses){
+			if(type=="query"){
+				continue;
+			}
 			let typeDict = effectBonuses[type];
 			for (var k in typeDict){
 				if (type=="bonuses" && typeDict[k]>returnData[type][k]){
-					returnData[type][k] = typeDict[k];
-					selectedModifiers[type][k]=effectData;
+					if(!hasAsked && effectBonuses.query && consume){
+						MTScript.evalMacro("[h: ans=input(\"junkVar|Apply "+effectData.name+"?|blah|LABEL|SPAN=TRUE\")]");
+						askResponse = (Number(MTScript.getVariable("ans"))==1);
+						hasAsked=true;
+					}
+					if(askResponse || !consume){
+						returnData[type][k] = typeDict[k];
+						selectedModifiers[type][k]=effectData;
+					}
 				}else if (type=="maluses" && typeDict[k]<returnData[type][k]){
+					if(!hasAsked && effectBonuses.query && consume){
+						MTScript.evalMacro("[h: ans=input(\"junkVar|Apply "+effectData.name+"?|blah|LABEL|SPAN=TRUE\")]");
+						askResponse = (MTScript.getVariable("ans")==1);
+						hasAsked=true;
+					}
+					if(askResponse || !consume){
 					returnData[type][k] = typeDict[k];
 					selectedModifiers[type][k]=effectData;
+					}
 				}
 			}
 		}
@@ -41,6 +60,9 @@ function calculate_bonus(token, bonusScopes, consume=true){
 		conditionData.bonus = effectBonuses;
 		//MapTool.chat.broadcast(JSON.stringify(conditionBonuses));
 		for (var type in conditionBonuses){
+			if(type=="query"){
+				continue;
+			}
 			let typeDict = conditionBonuses[type];
 			for (var k in typeDict){
 				if (type=="bonuses" && typeDict[k]>returnData[type][k]){
