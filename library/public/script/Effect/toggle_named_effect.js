@@ -20,8 +20,20 @@ function toggle_named_effect(effectName, token, state=-1){
 		}
 	}
 
+	MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()]")
+	let currentInitiative = Number(MTScript.getVariable("currInit"));
+	let currentRound = Number(MTScript.getVariable("currRound"));
+	if(currentInitiative==-1){
+		currentInitiative=0;
+	}
+	if(currentRound==-1){
+		currentRound=0;
+	}
+
 	let property = JSON.parse(read_data("pf2e_effect"));
-	let effectData = property[effectName];
+	let effectData = JSON.parse(JSON.stringify(property[effectName]));
+
+	effectData.applyTime={"round":currentRound,"initiative":currentInitiative};
 
 	if (effectData == null){
 		MapTool.chat.broadcast("Cannot find effect: " + effectName);

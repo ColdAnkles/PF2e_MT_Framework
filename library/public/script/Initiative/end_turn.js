@@ -26,6 +26,11 @@ function end_turn(turnToken, forwards=true){
 		}
 	}
 
+	MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()]")
+	let currentInitiative = Number(MTScript.getVariable("currInit"));
+	let currentRound = Number(MTScript.getVariable("currRound"));
+	expire_effect_test({"initiative":currentInitiative,"round":currentRound}, "turn-end");
+
 	if(forwards){
 		MTScript.evalMacro("[h: nextInitiative()]");
 	}else{

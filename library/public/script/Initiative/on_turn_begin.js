@@ -1,6 +1,6 @@
 "use strict";
 
-function on_turn_begin(turnToken){	
+function on_turn_begin(turnToken, turnData={}){
 	if (typeof(turnToken)=="string"){
 		turnToken = MapTool.tokens.getTokenByID(turnToken);
 	}
@@ -83,6 +83,8 @@ function on_turn_begin(turnToken){
 	turnToken.setProperty("actionsLeft",newActionCount);
 	turnToken.setProperty("reactionsLeft",newReactionCount);
 	turnToken.setProperty("attacksThisRound",0);
+	
+	expire_effect_test(turnData, "turn-begin");
 	
 }
 
