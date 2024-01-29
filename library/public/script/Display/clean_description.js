@@ -72,22 +72,26 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 	}else if("Compendium.pf2e.bestiary-effects.Item.Effect" in parsed.bracketDetail){
 		return "";
 	}else if(parsed.bracketContents.includes("Spell Effect") && !additionalData.rollDice){
-		//let effectName = parsed.bracketContents.replaceAll(/.*\:/g,"");
-		//return "Effect: " + effectName;
-		return "";
+		let tempArray = parsed.bracketContents.split(".");
+		let effectName = tempArray[tempArray.length -1];
+		return create_macroLink(capitalise(effectName),"Item_View_Frame@Lib:ca.pf2e",{"itemType":"effect", "itemName":effectName});
 	}else if(parsed.bracketContents.includes("Spell Effect") && additionalData.rollDice){
 		let tempArray = parsed.bracketContents.split(".");
 		let effectName = tempArray[tempArray.length -1];
 		return create_macroLink("Apply " + effectName,"Apply_Effect_Query@Lib:ca.pf2e",effectName);
-	}else if(!additionalData.rollDice){
-		//let tempArray = parsed.bracketContents.split(".");
-		//return tempArray[tempArray.length -1];
-		return "";
-	}else if(additionalData.rollDice){
+	}else if(parsed.bracketContents.includes("Effect") && !additionalData.rollDice){
+		let tempArray = parsed.bracketContents.split(".");
+		let effectName = tempArray[tempArray.length -1];
+		return create_macroLink(capitalise(effectName),"Item_View_Frame@Lib:ca.pf2e",{"itemType":"effect", "itemName":effectName});
+	}else if(parsed.bracketContents.includes("Effect") && additionalData.rollDice){
 		let tempArray = parsed.bracketContents.split(".");
 		let effectName = tempArray[tempArray.length -1];
 		tempArray = tempArray[tempArray.length -1].split(":");
 		return create_macroLink("Apply " + effectName,"Apply_Effect_Query@Lib:ca.pf2e",effectName);
+	}else if(parsed.bracketContents.includes("spells-srd")){
+		let tempArray = parsed.bracketContents.split(".");
+		let spellName = tempArray[tempArray.length -1];
+		return create_macroLink(capitalise(spellName),"Spell_View_Frame@Lib:ca.pf2e",spellName);
 	}
 	return uuidString;
 	
