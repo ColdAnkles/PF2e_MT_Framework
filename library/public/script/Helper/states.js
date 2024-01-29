@@ -24,7 +24,12 @@ function set_state(stateName, stateVal, tokenID){
 	MTScript.setVariable("stateVal", stateVal);
 	for(var t in updateTokens){
 		MTScript.setVariable("tokenID", updateTokens[t]);
-		MTScript.evalMacro("[h: setState(stateName, stateVal, tokenID)]");
+		let tokenName = MapTool.tokens.getTokenByID(updateTokens[t]).getName();
+		if(tokenName.includes("Lib:")){
+			MTScript.evalMacro("[h: setState(stateName, stateVal, tokenID, \"Player Characters\")]")
+		}else{
+			MTScript.evalMacro("[h: setState(stateName, stateVal, tokenID)]");
+		}
 	}
 }
 
@@ -39,12 +44,18 @@ function get_state(stateName, tokenID){
 	if(get_token_type(tokenID)=="PC"){
 		if(!tokenName.includes("Lib:")){
 			return get_state(token.getProperty("myID"), tokenID);
+		}else{
+			MTScript.setVariable("stateName", stateName);
+			MTScript.setVariable("tokenID", tokenID);
+			MTScript.evalMacro("[h: state = getState(stateName, tokenID, \"Player Characters\")]");
+			let result = Boolean((String(MTScript.getVariable("state"))=="1"));
+			return result;
 		}
+	}else{
+		MTScript.setVariable("stateName", stateName);
+		MTScript.setVariable("tokenID", tokenID);
+		MTScript.evalMacro("[h: state = getState(stateName, tokenID)]");
+		let result = Boolean((String(MTScript.getVariable("state"))=="1"));
+		return result;
 	}
-	
-	MTScript.setVariable("stateName", stateName);
-	MTScript.setVariable("tokenID", tokenID);
-	MTScript.evalMacro("[h: state = getState(stateName, tokenID)]");
-	let result = Boolean((String(MTScript.getVariable("state"))=="1"));
-	return result;
 }
