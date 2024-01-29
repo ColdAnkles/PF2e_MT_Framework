@@ -16,8 +16,8 @@ function core_action(actionData, actingToken){
 
 	let initiative = get_initiative(actingToken.getId());
 
-	let actionsLeft = actingToken.getProperty("actionsLeft");
-	let reactionsLeft = actingToken.getProperty("reactionsLeft");
+	let actionsLeft = Number(actingToken.getProperty("actionsLeft"));
+	let reactionsLeft = Number(actingToken.getProperty("reactionsLeft"));
 
 	if (isNaN(initiative) || (actionData.actionType=="action" && actionsLeft>=actionData.actionCost)){
 		canAct = true;

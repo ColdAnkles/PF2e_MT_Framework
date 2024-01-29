@@ -31,7 +31,7 @@ function cast_spell(spellName, castLevel, casterToken, additionalData = null){
 	}
 	spellData = parse_spell(spellData);
 
-	let actionData = {"name":spellData.name,"isSpell":true,"castLevel":castLevel};
+	let actionData = {"name":spellData.name,"isSpell":true,"castLevel":castLevel,"spendAction":true};
 
 	if(!(isNaN(spellData.time))){
 		actionData.actionType="action";
