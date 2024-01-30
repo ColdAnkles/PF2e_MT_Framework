@@ -6,11 +6,11 @@ function expire_effect_test(initiativeData, cause){
 
 	let allTokens = MapTool.tokens.getMapTokens();
 
-	MapTool.chat.broadcast(String(currentInitiative) + ", " + String(currentRound));
+	//MapTool.chat.broadcast(String(currentInitiative) + ", " + String(currentRound));
 	for (var t in allTokens){
 		let effectToken = allTokens[t];
-		if(turnToken.getName().includes("Lib:")){
-			effectToken = MapTool.getTokenByID(turnToken.getProperty("myID"));
+		if(effectToken.getName().includes("Lib:")){
+			effectToken = MapTool.getTokenByID(effectToken.getProperty("myID"));
 		}
 		let activeEffects = JSON.parse(effectToken.getProperty("activeEffects"));
 

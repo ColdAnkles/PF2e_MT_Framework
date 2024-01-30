@@ -1,7 +1,7 @@
 "use strict";
 
-function toggle_action_effect(effectData, affectedCreature, forceSetting = null){
-	if (typeof(affectedCreature)=="String"){
+function toggle_action_effect(effectData, affectedCreature, state = -1){
+	if (typeof(affectedCreature)=="string"){
 		affectedCreature = MapTool.tokens.getTokenByID(affectedCreature);
 	}
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
@@ -11,9 +11,9 @@ function toggle_action_effect(effectData, affectedCreature, forceSetting = null)
 		specialEffects = {};
 	}
 
-	if (effectData.name in specialEffects && forceSetting != true){
+	if (effectData.name in specialEffects && (state == -1 || state == 0)){
 		delete specialEffects[effectData.name];
-	}else if(forceSetting != false){
+	}else if((state == -1 || state == 1)){
 		specialEffects[effectData.name] = effectData;
 	}
 	affectedCreature.setProperty("specialEffects",JSON.stringify(specialEffects));

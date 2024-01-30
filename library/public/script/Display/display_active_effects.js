@@ -6,7 +6,7 @@ function display_active_effects(token){
 	}
 	let outputString = ""
 	
-	let tokenEffects = JSON.parse(token.getProperty("activeEffects"));
+	let tokenEffects = Object.assign({},JSON.parse(token.getProperty("activeEffects")),JSON.parse(token.getProperty("specialEffects")));
 
 	var sorted = [];
 	for(var key in tokenEffects) {
