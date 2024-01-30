@@ -183,6 +183,18 @@ function parse_feature(feature, assignDict=null){
 		if(simpleReturn){
 			return newEffect;
 		}
+	}else if(itemData.type=="condition"){
+		let newCond = {}
+		newCond.name = itemData.name;
+		newCond.description = itemData.system.description.value;
+		newCond.source = itemData.system.publication.title;
+		newCond.overrides = itemData.system.overrides;
+		newCond.rules = itemData.system.rules;
+		newCond.value = itemData.system.value;
+
+		if(simpleReturn){
+			return newCond;
+		}
 	}else{
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
 	}
