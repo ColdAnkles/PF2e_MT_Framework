@@ -5,8 +5,12 @@
 [h: tokenName = getName(tokenID)]
 
 [h, foreach(k, macro.args, ""), code:{
-    [h, if(startsWith(k, "remove_")), code:{
+    [h: isPersistent = matches(k,".*Persistent.*")]
+    [h, if(startsWith(k, "remove_") && !isPersistent), code:{
         [h: js.ca.pf2e.toggle_named_effect(substring(k,7), tokenID, 0)]
+    };{}]
+    [h, if(startsWith(k, "remove_") && isPersistent), code:{
+        [h: js.ca.pf2e.toggle_action_effect(json.set("{}","name",substring(k,7)), tokenID, 0)]
     };{}]
 }]
 

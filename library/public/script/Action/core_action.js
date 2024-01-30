@@ -33,6 +33,7 @@ function core_action(actionData, actingToken){
 
 	if (canAct){
 		//MapTool.chat.broadcast("Performing Action: "+ actionData.name);
+		setLibProperty("lib:ca.pf2e","lastAction",actionData.name);
 
 		if ("isSpell" in actionData && actionData.isSpell){
 			spell_action(actionData, actingToken);

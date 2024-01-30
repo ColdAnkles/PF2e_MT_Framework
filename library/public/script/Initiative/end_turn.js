@@ -31,6 +31,29 @@ function end_turn(turnToken, forwards=true){
 	let currentRound = Number(MTScript.getVariable("currRound"));
 	expire_effect_test({"initiative":currentInitiative,"round":currentRound}, "turn-end");
 
+	let tokenEffects = Object.assign({},JSON.parse(turnToken.getProperty("activeEffects")),JSON.parse(turnToken.getProperty("specialEffects")));
+	for(var e in tokenEffects){
+		if(e.includes("Persistent")){
+			let effectData = tokenEffects[e];
+
+			let displayData = {"name":e,"description":""};
+			let recoveryRoll = roll_dice("1d20");
+
+			displayData.description += "<p><b>Damage:</b> " + roll_dice(effectData.damage.dice) + " " + effectData.damage.type+"</p>";
+			displayData.description += "<p><b>Recovery Check:</b> " + String(recoveryRoll);
+			if(recoveryRoll>=15){
+				displayData.description += " <b><span style='color:green'>Recovered!</span></b>";
+			}
+			displayData.description += "</p>";
+
+			chat_display(displayData, true, {"rollDice":true})
+
+			if(recoveryRoll>=15){
+				toggle_action_effect(effectData, turnToken, 0);
+			}
+		}
+	}
+
 	if(forwards){
 		MTScript.evalMacro("[h: nextInitiative()]");
 	}else{
