@@ -2,8 +2,6 @@
 
 function simple_action(actionName, actingToken){
 	actingToken = MapTool.tokens.getTokenByID(actingToken);
-	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pf2e_action"));
 	let property = JSON.parse(read_data("pf2e_action"));
 	let actionData = property[actionName];
 
@@ -15,6 +13,10 @@ function simple_action(actionName, actingToken){
 	if ("fileURL" in actionData){
 		actionData = parse_feature(rest_call(actionData["fileURL"],""));
 	}
+
+	actionData.spendAction = true;
+
+	//MapTool.chat.broadcast(JSON.stringify(actionData));
 
 	core_action(actionData, actingToken)
 
