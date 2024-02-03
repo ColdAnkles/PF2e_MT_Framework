@@ -23,6 +23,10 @@ function parse_pathbuilder_export(data){
 			searchSet = "heritage";
 		}
 
+		if (objectName=="Oil"){
+			objectName = "Oil (1 pint)";
+		}
+
 		let testVar = objectName;
 		let testCaps = capitalise(objectName);
 		let testVar2 = testVar.replaceAll(" ","-");
