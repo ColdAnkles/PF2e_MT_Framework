@@ -153,7 +153,7 @@ function attack_action(actionData, actingToken){
 		displayData.description += " " + pos_neg_sign(effect_bonus, true);
 	}
 	if(map_malus!=0){
-		displayData.description += " " + pos_neg_sign(map_malus, true);
+		displayData.description += " " + pos_neg_sign(-map_malus, true);
 	}
 	displayData.description += " = " + String(attackResult) + " " + additionalAttackBonuses.join(", ");
 
@@ -173,9 +173,15 @@ function attack_action(actionData, actingToken){
 		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + additionalDamageList.join(", ") + "</div>";
 	}
 
-	if(actionData.effects.length>0){
+	if(actionData.effects.length>1 && typeof(actionData.effects=="object")){
 		displayData.description = displayData.description + "</b><i>Additional Effects</i><br />"
 		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects.join(", ").replaceAll("-", " ")) + "</div>";
+	}else if(actionData.effects.length==1 && typeof(actionData.effects)=="object"){
+		displayData.description = displayData.description + "</b><i>Additional Effects</i><br />"
+		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects[0].replaceAll("-", " ")) + "</div>";
+	}else if(actionData.effects.length>0 && (typeof(attackData.effects)=="string")){
+		displayData.description = displayData.description + "</b><i>Additional Effects</i><br />"
+		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects.replaceAll("-", " ")) + "</div>";
 	}
 
 	if (!(isNaN(initiative)) && "increaseMAP" in actionData && actionData.increaseMAP){
