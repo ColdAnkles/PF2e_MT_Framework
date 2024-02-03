@@ -215,7 +215,10 @@ function build_creature_view(creatureName, tokenID = null){
 		let otherSpeeds = "";
 		for (var s in creatureData.speeds.other){
 			let speedData = creatureData.speeds.other[s];
-			otherSpeeds = otherSpeeds + speedData.type + " " + String(Number(speedData.value)+calculate_bonus(tokenID, ["speed",s])) + " feet, ";
+			let otherSpeedBase = Number(speedData.value);
+			let speedBonus = calculate_bonus(tokenID, ["speed",s]);
+			speedBonus = speedBonus.bonuses.circumstance + speedBonus.bonuses.status + speedBonus.bonuses.item + speedBonus.bonuses.none + speedBonus.maluses.circumstance + speedBonus.maluses.status + speedBonus.maluses.item + speedBonus.maluses.none;
+			otherSpeeds = otherSpeeds + speedData.type + " " + String(baseSpeed+speedBonus) + " feet, ";
 		}
 		if (otherSpeeds.length>0){
 			HTMLString += ", " + otherSpeeds.substring(0,otherSpeeds.length-2) + "<br />";
@@ -262,8 +265,12 @@ function build_creature_view(creatureName, tokenID = null){
 		}
 		attackString = attackString + dmgStrings.join(" plus ");
 
-		if (attackData.effects.length>0){
-			attackString = attackString + " plus " + attackData.effects.join(" and ").replaceAll("-"," ");
+		if (attackData.effects.length>1 && typeof(attackData.effects)=="object") {
+			attackString += " plus " + attackData.effects.join(" and ").replaceAll("-"," ");
+		} else if(attackData.effects.length==1 && typeof(attackData.effects)=="object"){
+			attackString += " plus " + attackData.effects[0].replaceAll("-"," ");
+		}else if(typeof(attackData.effects)=="string"){
+			attackString += "plus" + attackData.effects.replaceAll("-"," ");
 		}
 
 		if(attackData.description.length>0){
