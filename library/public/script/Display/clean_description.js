@@ -220,8 +220,10 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 			rollMatch = rollMatch.replaceAll("@actor.level", String(additionalData.level));
 		}
 
-		if(additionalData.rollDice || !(rollMatch.includes("d"))){
+		if((additionalData.rollDice && !(rollMatch.includes("d"))) || !(rollMatch.includes("d"))){
 			rollMatch = String(eval(rollMatch));
+		}else{
+			MapTool.chat.broadcast(rollMatch);
 		}
 
 		//MapTool.chat.broadcast(rollMatch);
@@ -239,6 +241,8 @@ function clean_calculations(calculationString, additionalData={"rollDice":false,
 		calculationString = calculationString.replaceAll("@level", String(additionalData.level));
 	}else if (calculationString.includes("@item.level") && "level" in additionalData){
 		calculationString = calculationString.replaceAll("@item.level", String(additionalData.level));
+	}else if (calculationString.includes("@actor.level") && "level" in additionalData){
+		calculationString = calculationString.replaceAll("@actor.level", String(additionalData.level));
 	}
 	return String(eval(calculationString));
 }
@@ -304,7 +308,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription=cleanDescription.replaceAll(roll_matches[m],replaceString);
 	}
 
-	let calculation_matches = cleanDescription.match(/((floor|ceil|max|min)\(.*\))/gm);
+	let calculation_matches = cleanDescription.match(/((floor|ceil|max|min)\([^d]*\))/gm);
 	for (var m in calculation_matches){
 		let replaceString = clean_calculations(calculation_matches[m], additionalData);
 		cleanDescription=cleanDescription.replaceAll(calculation_matches[m],replaceString);

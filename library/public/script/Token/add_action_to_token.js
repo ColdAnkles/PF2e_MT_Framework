@@ -56,7 +56,7 @@ function add_action_to_token(actionData, tokenID, tokenLevel = 0){
 		}
 		//MapTool.chat.broadcast(JSON.stringify(lookupAction));
 		
-		let actionDesc = chat_display(lookupAction, false, {"level":tokenLevel});
+		let actionDesc = chat_display(lookupAction, false, {"level":tokenLevel, "rollDice":false});
 		let props = {"label":action_icon_label(lookupAction.actionType, lookupAction.actionCost)+" "+actionData.name,"playerEditable":0,"command":"[r: js.ca.pf2e.simple_action(\""+actionData.name+"\",currentToken())]","tooltip":actionDesc,"sortBy":actionData.name};
 		if ("group" in actionData){
 			props.group = actionData.group;
@@ -74,7 +74,8 @@ function add_action_to_token(actionData, tokenID, tokenLevel = 0){
 				actionLabel = actionLabel + " " + icon_img("ranged");
 			}
 		}
-		let props = {"label":actionLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.personal_action(\""+actionData.name+"\",currentToken())]","tooltip":chat_display(actionData, false, {"level":tokenLevel}),"sortBy":actionData.name};
+		let actionDesc = chat_display(actionData, false, {"level":tokenLevel, "rollDice":false});
+		let props = {"label":actionLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.personal_action(\""+actionData.name+"\",currentToken())]","tooltip":actionDesc,"sortBy":actionData.name};
 		if ("group" in actionData){
 			props.group = actionData.group;
 		}
@@ -133,7 +134,7 @@ function add_action_to_token(actionData, tokenID, tokenLevel = 0){
 
 		let spellLabel = action_icon_label(actionData.actionType, actionData.actionCost)+" "+actionData.name;
 		actionData.name = spellName;
-		let tooltipDescription = chat_display(actionData, false, {"level":actionData.castLevel});
+		let tooltipDescription = chat_display(actionData, false, {"level":actionData.castLevel, "rollDice":false});
 	
 		let props = {"label":spellLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.cast_spell(\""+spellName+"\","+actionData.castLevel+",currentToken())]","tooltip":tooltipDescription,"sortBy":actionData.name,"group":actionData.group};
 
