@@ -11,11 +11,11 @@ function get_token_type(inputToken){
 		token = MapTool.tokens.getTokenByID(tokenID);
 	}
 
-	MTScript.setVariable("tokenID",tokenID)
+	MTScript.setVariable("tokenID",tokenID);
 	if(token.getName().includes("Lib:")){
-		MTScript.evalMacro("[h: tokenType = isNPC(tokenID,\"Player Characters\")]")
+		MTScript.evalMacro("[h: tokenType = isNPC(tokenID,\"Player Characters\")]");
 	}else{
-		MTScript.evalMacro("[h: tokenType = isNPC(tokenID)]")
+		MTScript.evalMacro("[h: tokenType = isNPC(tokenID)]");
 	}
 	let tokenType = Number(MTScript.getVariable("tokenType"));
 
