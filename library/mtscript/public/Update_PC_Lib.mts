@@ -3,6 +3,11 @@
 };{}]
 [h: pathBuilderID = json.get(macro.args,"pbID")]
 [h: tokenID = json.get(macro.args,"tokenID")]
+[h: existing = findToken(tokenID,"Player Characters")]
+[h, if(existing == ""), code:{
+	[h: broadcast("Player Token Removed!")]
+	[h: return(0)]
+};{}]
 [h: js.ca.pf2e.create_pc_lib(pathbuilderID, tokenID)]
 [h: setPC(tokenID, "Player Characters")]
 [h: tokenSize = getProperty("size",tokenID,"Player Characters")]
