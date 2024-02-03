@@ -267,35 +267,37 @@ function parse_pathbuilder_export(data){
 	for (var w in data.weapons){
 		let thisWeapon = data.weapons[w];
 		let tempData = find_object_data(thisWeapon.name, "item");
-		if ("fileURL" in tempData){
-			parse_feature(rest_call(tempData.fileURL), parsedData);
-			let newWeapon = parsedData.itemList[tempData.id];
-			newWeapon.quantity = thisWeapon.qty;
-			let newAttackData = {"actionCost":1,"actionType":"action","bonus":thisWeapon.attack,"damage":[newWeapon.damage],
-			"description": "","effects": [], "isMelee":newWeapon.isMelee,
-			"name":newWeapon.name,"traits":newWeapon.traits}
-			if (thisWeapon.str=="striking"){
-				thisWeapon.runes.striking = 1;
-				newAttackData.damage[0].dice += 1;
-			}else if(thisWeapon.str=="greaterStriking"){
-				thisWeapon.runes.striking = 2;
-				newAttackData.damage[0].dice += 2;
-			}else if(thisWeapon.str=="majorStriking"){
-				thisWeapon.runes.striking = 3;
-				newAttackData.damage[0].dice += 3;
+		if (tempData != null) {
+			if ("fileURL" in tempData){
+				parse_feature(rest_call(tempData.fileURL), parsedData);
+				let newWeapon = parsedData.itemList[tempData.id];
+				newWeapon.quantity = thisWeapon.qty;
+				let newAttackData = {"actionCost":1,"actionType":"action","bonus":thisWeapon.attack,"damage":[newWeapon.damage],
+				"description": "","effects": [], "isMelee":newWeapon.isMelee,
+				"name":newWeapon.name,"traits":newWeapon.traits}
+				if (thisWeapon.str=="striking"){
+					thisWeapon.runes.striking = 1;
+					newAttackData.damage[0].dice += 1;
+				}else if(thisWeapon.str=="greaterStriking"){
+					thisWeapon.runes.striking = 2;
+					newAttackData.damage[0].dice += 2;
+				}else if(thisWeapon.str=="majorStriking"){
+					thisWeapon.runes.striking = 3;
+					newAttackData.damage[0].dice += 3;
+				}
+				newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + "+"+String(thisWeapon.damageBonus);
+				newWeapon.runes.potency = thisWeapon.pot;
+				for(var rI of thisWeapon.runes){
+					newWeapon.runes.property.push(rI.toLowerCase());
+				}
+				parsedData.basicAttacks.push(newAttackData);
+				//newAttackData = JSON.parse(JSON.stringify(newAttackData));
+				//newAttackData.name+=" (Free)";
+				//newAttackData.actionCost="1";
+				//newAttackData.actionType="freeaction";
+				//newAttackData.description += " This is a action free version for use as subordinate calls as part of feats etc.."
+				//parsedData.basicAttacks.push(newAttackData);
 			}
-			newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + "+"+String(thisWeapon.damageBonus);
-			newWeapon.runes.potency = thisWeapon.pot;
-			for(var rI of thisWeapon.runes){
-				newWeapon.runes.property.push(rI.toLowerCase());
-			}
-			parsedData.basicAttacks.push(newAttackData);
-			//newAttackData = JSON.parse(JSON.stringify(newAttackData));
-			//newAttackData.name+=" (Free)";
-			//newAttackData.actionCost="1";
-			//newAttackData.actionType="freeaction";
-			//newAttackData.description += " This is a action free version for use as subordinate calls as part of feats etc.."
-			//parsedData.basicAttacks.push(newAttackData);
 		}
 	}
 	for (var e in data.equipment){
