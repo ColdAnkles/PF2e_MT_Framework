@@ -48,7 +48,7 @@ h3, .hd-3 {
 }
 
 img {
-	filter: invert(1);
+	/*filter: invert(1);*/
 	vertical-align: middle;
 }
 

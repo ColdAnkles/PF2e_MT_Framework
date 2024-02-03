@@ -195,7 +195,7 @@ function build_creature_view(creatureName, tokenID = null){
 			if (featData.traits.length>0){
 				traitText = " (" + featData.traits.join(", ") + ")";
 			}
-			let featString = "<b>"+featData.name+"</b>" + traitText + " " + icon_img(iconLookup) + " " + featData.description;
+			let featString = "<b>"+featData.name+"</b>" + traitText + " " + icon_img(iconLookup, true) + " " + featData.description;
 			//MapTool.chat.broadcast(featString.replace("<","&lt;"));
 			HTMLString += featString;
 			const testPattern = /<\/ul>$/
@@ -227,7 +227,7 @@ function build_creature_view(creatureName, tokenID = null){
 		}else{
 			attackString = "<b>Ranged</b> ";
 		}
-		attackString = attackString + icon_img("1action") + " " + attackData.name + " +" + attackData.bonus;
+		attackString = attackString + icon_img("1action", true) + " " + attackData.name + " +" + attackData.bonus;
 		if("agile" in attackData.traits){
 			attackString = attackString + " ["+pos_neg_sign(attackData.bonus-4)+"/"+pos_neg_sign(attackData.bonus-8)+"] ";
 		}else{
@@ -328,7 +328,7 @@ function build_creature_view(creatureName, tokenID = null){
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		HTMLString += "<b>" + actionData.name + "</b> ";
 		if (actionData.actionCost == 1 || actionData.actionCost ==2 || actionData.actionCost ==3){
-			HTMLString += icon_img(String(actionData.actionCost)+"action") + " ";
+			HTMLString += icon_img(String(actionData.actionCost)+"action", true) + " ";
 		}
 		if (actionData.traits.length>0){
 			HTMLString += "(" + actionData.traits.join(", ") + ") ";
