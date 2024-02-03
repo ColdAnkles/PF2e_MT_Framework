@@ -4,6 +4,7 @@ function parse_feature(feature, assignDict=null){
 	let itemData = feature;
 	let simpleReturn = assignDict==null;
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
+	//MapTool.chat.broadcast(String(simpleReturn));
 
 	if (itemData.type == "feat" || (itemData.type=="heritage" && "actionType" in itemData.system)){
 		itemData.type = "action";
@@ -194,6 +195,13 @@ function parse_feature(feature, assignDict=null){
 
 		if(simpleReturn){
 			return newCond;
+		}
+	}else if(itemData.type=="action"){
+		let newAction = {"description":itemData.system.description.value,"name":itemData.name,"actionType":itemData.system.actionType.value,"actionCost":itemData.system.actions.value,"traits":itemData.system.traits.value};
+		newAction.source = itemData.system.publication.title;
+		newAction.rarity = itemData.system.traits.rarity;
+		if(simpleReturn){
+			return newAction;
 		}
 	}else{
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
