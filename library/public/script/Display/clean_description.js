@@ -115,20 +115,16 @@ function parse_check(checkString){
 }
 
 function parse_localize(localizeString, additionalData){
-	return "";
 	let parsed = parse_foundry_strings(localizeString);
 	//MapTool.chat.broadcast(JSON.stringify(parsed));
 
 	if(parsed.bracketContents.includes("NPC.Abilities")){
 		let tempArray = parsed.bracketContents.split(".");
 		let abilityName = tempArray[tempArray.length -1];
-		let actionList = JSON.parse(read_data("pf2e_action"));
+		let actionList = JSON.parse(read_data("pf2e_glossary")).npcAbility;
 		if(abilityName in actionList){
-			let actionData = actionList[abilityName];
-			if ("fileURL" in actionData){
-				actionData = parse_feature(rest_call(actionData["fileURL"],""));
-			}
-			//return(clean_description(actionData.description, additionalData.removeLineBreaks, additionalData.removeHR, additionalData.removeP, additionalData));
+			let actionDesc = actionList[abilityName];
+			return "<br />" + clean_description(actionDesc, additionalData.removeLineBreaks, additionalData.removeHR, additionalData.removeP, additionalData);
 		}
 	}
 	
