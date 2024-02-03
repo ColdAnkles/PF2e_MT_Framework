@@ -3,6 +3,9 @@
 function foundry_calc_value(value, actor, item){
 		let newValue = Number(value);
 		if (isNaN(newValue)){
+			if(typeof(value)=="object"){
+				return 0;
+			}
 			//MapTool.chat.broadcast(value);
 			let foundMatches = value.match(/@[a-zA-Z\.]+/g);
 			for(var m in foundMatches){
