@@ -78,7 +78,7 @@ function core_action(actionData, actingToken){
 				effectData.duration = {"expiry":"turn-start","sustained":"false","unit":"rounds","value":1}
 				effectData.type = effectType;
 				effectData.name = "Effect: " + actionData.name
-				toggle_action_effect(effectData, actingToken, true);
+				//toggle_action_effect(effectData, actingToken, true);
 			}
 			
 			chat_display(actionData, true, {"level":actingToken.level,"rollDice":true});
