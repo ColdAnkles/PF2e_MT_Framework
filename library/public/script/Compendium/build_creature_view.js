@@ -190,7 +190,7 @@ function build_creature_view(creatureName, tokenID = null){
 			if (featData.actionCost != null){
 				iconLookup = String(featData.actionCost) + iconLookup;
 			}
-			featData.description = clean_description(featData.description);
+			featData.description = clean_description(featData.description,true,true,true,{"rollDice":false,"level":creatureData.level});
 			let traitText = "";
 			if (featData.traits.length>0){
 				traitText = " (" + featData.traits.join(", ") + ")";

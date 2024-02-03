@@ -223,7 +223,7 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 		if((additionalData.rollDice && !(rollMatch.includes("d"))) || !(rollMatch.includes("d"))){
 			rollMatch = String(eval(rollMatch));
 		}else{
-			MapTool.chat.broadcast(rollMatch);
+			//MapTool.chat.broadcast(rollMatch);
 		}
 
 		//MapTool.chat.broadcast(rollMatch);
@@ -237,6 +237,7 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 
 function clean_calculations(calculationString, additionalData={"rollDice":false, "gm":false, "replaceGMRolls": true}){
 	//MapTool.chat.broadcast(calculationString);
+	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 	if (calculationString.includes("@level") && "level" in additionalData){
 		calculationString = calculationString.replaceAll("@level", String(additionalData.level));
 	}else if (calculationString.includes("@item.level") && "level" in additionalData){
@@ -244,6 +245,7 @@ function clean_calculations(calculationString, additionalData={"rollDice":false,
 	}else if (calculationString.includes("@actor.level") && "level" in additionalData){
 		calculationString = calculationString.replaceAll("@actor.level", String(additionalData.level));
 	}
+	//MapTool.chat.broadcast(calculationString);
 	return String(eval(calculationString));
 }
 
