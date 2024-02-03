@@ -2,7 +2,7 @@
     $runFuncs
 )
 
-function download-master-zip {
+function get-master-zip {
     $zipURL = "https://api.github.com/repos/foundryvtt/pf2e/zipball/master"
     Invoke-RestMethod -Uri $zipURL -OutFile pf2e-master.zip
 }
@@ -73,7 +73,7 @@ function import-source {
         [Parameter(Mandatory = $true)] [string] $sourceName
     )
 
-    $childList = Get-ChildItem $sourcePath | % { $_.FullName }
+    $childList = Get-ChildItem $sourcePath | ForEach-Object { $_.FullName }
 
     $counter = 0
     $total = $childList.Length
@@ -118,7 +118,9 @@ function import-source-file {
     $storeData.id = $data._id
     $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master/packs/" + $fileDir + "/" + $fileName
 
-    if ($data.type -eq "npc"){
+    if ($null -eq $data.type){
+        $storeData.type = "null"
+    }elseif ($data.type -eq "npc"){
         $storeData.traits = $data.system.traits.value
         $storeData.level = $data.system.details.level.value
         $storeData.npcType = $data.system.details.creatureType
@@ -203,6 +205,20 @@ function import-source-file {
 
 }
 
+function import-lang-file {
+    $script:langData = $script:langData
+    $langSource = Get-ChildItem .\pf2e-master\*\static\lang\en.json
+    $rawData = Get-Content -Encoding UTF8 $langSource
+    #Windows PS doesn't does case sensitive keys in JSON - 
+    $data = $rawData.replace("""condition""", "conditionList").replace("""ui""", "_ui") | ConvertFrom-JSON 
+
+    $langData.npcAbility = $data.PF2E.NPC.Abilities.Glossary
+
+    $outFile = ".\library\public\data\pf2e_glossary.json"
+
+    $langData | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $outFile
+}
+
 function write-data-files {
 
     $script:packData = $script:packData
@@ -222,13 +238,18 @@ $unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-fe
 $wantedSources = @("Pathfinder Core Rulebook","Pathfinder Player Core","Pathfinder Rage of Elements","Pathfinder GM Core","Pathfinder Advanced Player's Guide","Pathfinder Treasure Vault","Pathfinder Dark Archive","Pathfinder Gamemastery Guide","Pathfinder Secrets of Magic","Pathfinder Bestiary","Pathfinder Bestiary 2","Pathfinder Bestiary 3","Pathfinder Book of the Dead","Pathfinder Guns & Gears")
 $sources = @{}
 $packData = @{}
+$langData = @{}
 $foundSources = [System.Collections.ArrayList]@()
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "download"){
-    download-master-zip
+    get-master-zip
     Write-Host "Downloaded Foundry Data"
     expand-master-zip
     Write-Host "Expanded Data"
+}
+
+if ($runFuncs -eq "all" -or $runFuncs -eq "lang"){
+    import-lang-file
 }
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "source"){
