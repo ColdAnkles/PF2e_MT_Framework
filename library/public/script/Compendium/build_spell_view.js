@@ -47,17 +47,17 @@ function build_spell_view(spellName){
 
 	HTMLString = HTMLString + "<b>Cast</b> ";
 	if(!isNaN(spellData.time)){
-		HTMLString = HTMLString + icon_img(spellData.time+"action");
+		HTMLString = HTMLString + icon_img(spellData.time+"action", true);
 	}else if (spellData.time.includes("to")){
 		let first = spellData.time.split(" to ")[0];
 		let second = spellData.time.split(" to ")[1];
 		if (isNaN(second)){
-			HTMLString = HTMLString + icon_img(first+"action") + " to " + second;
+			HTMLString = HTMLString + icon_img(first+"action", true) + " to " + second;
 		}else{
-			HTMLString = HTMLString + icon_img(first+"action") + " to " + icon_img(second+"action");
+			HTMLString = HTMLString + icon_img(first+"action", true) + " to " + icon_img(second+"action");
 		}
 	}else if(spellData.time=="reaction"){
-		HTMLString = HTMLString + icon_img("reaction");
+		HTMLString = HTMLString + icon_img("reaction", true);
 	}else{
 		HTMLString = HTMLString + spellData.time;
 	}
