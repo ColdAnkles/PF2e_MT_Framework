@@ -304,16 +304,16 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription=cleanDescription.replaceAll(localize_matches[m],replaceString);
 	}
 
-	let roll_matches = cleanDescription.match(/(\[+\/b?r.*?\]+)(\{.*?\})?/gm);
-	for (var m in roll_matches){
-		let replaceString = parse_roll(roll_matches[m], additionalData);
-		cleanDescription=cleanDescription.replaceAll(roll_matches[m],replaceString);
-	}
-
 	let calculation_matches = cleanDescription.match(/((floor|ceil|max|min)\([^d]*\))/gm);
 	for (var m in calculation_matches){
 		let replaceString = clean_calculations(calculation_matches[m], additionalData);
 		cleanDescription=cleanDescription.replaceAll(calculation_matches[m],replaceString);
+	}
+
+	let roll_matches = cleanDescription.match(/(\[+\/b?r.*?\]+)(\{.*?\})?/gm);
+	for (var m in roll_matches){
+		let replaceString = parse_roll(roll_matches[m], additionalData);
+		cleanDescription=cleanDescription.replaceAll(roll_matches[m],replaceString);
 	}
 
 
