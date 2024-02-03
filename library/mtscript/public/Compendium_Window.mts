@@ -41,7 +41,7 @@
     [h: windowName = "Hazards"]
 }]
 
-[dialog5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=1; noframe=0; input=1"):{
+[frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=1; noframe=0; input=1"):{
 	[r, if(windowType=="spells"), code:{
         [r: js.ca.pf2e.build_spell_list(sort, dir, searchKey)]
     }]

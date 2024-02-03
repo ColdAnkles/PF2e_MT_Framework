@@ -4,7 +4,7 @@
 [h:tokenName=json.get(macro.args,"name")]
 [h:tokenID=json.get(macro.args,"tokenID")]
 
-[dialog5(tokenName, "width=1000; height=700; temporary=1; noframe=0; input=1"):{
+[frame5(tokenName, "width=1000; height=700; temporary=1; noframe=0; input=1"):{
 
 <link rel="stylesheet" type="text/css" href="lib://ca.pf2e/css/NethysCSS.css"/>
 
