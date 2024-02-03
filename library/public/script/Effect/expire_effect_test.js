@@ -18,9 +18,9 @@ function expire_effect_test(initiativeData, cause){
 		for(var e in activeEffects){
 			let effectData = activeEffects[e];
 			let effectDuration = effectData.duration;
-			MapTool.chat.broadcast(JSON.stringify(effectData));
-			MapTool.chat.broadcast(String(effectDuration.unit == "rounds"));
-			MapTool.chat.broadcast(String(Number(effectData.applyTime.initiative)>=currentInitiative));
+			//MapTool.chat.broadcast(JSON.stringify(effectData));
+			//MapTool.chat.broadcast(String(effectDuration.unit == "rounds"));
+			//MapTool.chat.broadcast(String(Number(effectData.applyTime.initiative)>=currentInitiative));
 			if(effectDuration.expiry==cause && (effectDuration.unit == "rounds" || effectDuration.unit == "turns")){
 				if(effectDuration.unit == "turns" || (effectDuration.unit == "rounds" && currentRound!=Number(effectData.applyTime.round) && Number(effectData.applyTime.initiative)>=currentInitiative)){
 					if(Number(effectDuration.value)==1){
