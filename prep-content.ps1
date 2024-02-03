@@ -9,7 +9,7 @@ function download-master-zip {
 
 function expand-master-zip {
     #Expand-Archive -LiteralPath pf2e-master.zip -DestinationPath pf2e-master
-    7z x pf2e-master.zip -o"pf2e-master" */packs/* -r
+    7z x pf2e-master.zip -o"pf2e-master" */packs/* */static/lang/en.json -r
 }
 
 function get-foundry-sources {

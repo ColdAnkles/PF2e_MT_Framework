@@ -92,6 +92,10 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 		let tempArray = parsed.bracketContents.split(".");
 		let spellName = tempArray[tempArray.length -1];
 		return create_macroLink(capitalise(spellName),"Spell_View_Frame@Lib:ca.pf2e",spellName);
+	}else if(parsed.bracketContents.includes("conditionitems")){
+		let tempArray = parsed.bracketContents.split(".");
+		let conditionName = tempArray[tempArray.length -1];
+		return create_macroLink(capitalise(conditionName),"Item_View_Frame@Lib:ca.pf2e",{"itemType":"condition", "itemName":conditionName});
 	}
 	return uuidString;
 	
@@ -110,8 +114,23 @@ function parse_check(checkString){
 	return checkString;
 }
 
-function parse_localize(localizeString){
-	//let parsed = parse_foundry_strings(localizeString);
+function parse_localize(localizeString, additionalData){
+	return "";
+	let parsed = parse_foundry_strings(localizeString);
+	//MapTool.chat.broadcast(JSON.stringify(parsed));
+
+	if(parsed.bracketContents.includes("NPC.Abilities")){
+		let tempArray = parsed.bracketContents.split(".");
+		let abilityName = tempArray[tempArray.length -1];
+		let actionList = JSON.parse(read_data("pf2e_action"));
+		if(abilityName in actionList){
+			let actionData = actionList[abilityName];
+			if ("fileURL" in actionData){
+				actionData = parse_feature(rest_call(actionData["fileURL"],""));
+			}
+			//return(clean_description(actionData.description, additionalData.removeLineBreaks, additionalData.removeHR, additionalData.removeP, additionalData));
+		}
+	}
 	
 	return "";
 }
@@ -224,6 +243,10 @@ function clean_calculations(calculationString, additionalData={"rollDice":false,
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false, "gm":false, "replaceGMRolls": true}){
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 
+	additionalData.removeP = removeP;
+	additionalData.removeHR = removeHR;
+	additionalData.removeLineBreaks = removeLineBreaks;
+
 	let cleanDescription = description;
 
 	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">1</span>",icon_img("1action", true));
@@ -268,7 +291,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 	
 	let localize_matches = cleanDescription.match(/@Localize\[.*\]/gm);
 	for (var m in localize_matches){
-		let replaceString = parse_localize(localize_matches[m]);
+		let replaceString = parse_localize(localize_matches[m], additionalData);
 		cleanDescription=cleanDescription.replaceAll(localize_matches[m],replaceString);
 	}
 
