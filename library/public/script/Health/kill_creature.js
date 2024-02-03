@@ -1,7 +1,7 @@
 "use strict";
 
 function zero_hp(tokenID){
-	if(get_token_type(tokenID)==PC){
+	if(get_token_type(tokenID)=="PC"){
 		set_state("Unconscious", 1, tokenID);
 		
 		let token = tokenID;
