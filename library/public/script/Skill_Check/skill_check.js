@@ -120,16 +120,15 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			dTwentyColour = "green";
 		}
 
-
-		if (!("statName" in checkData) && checkData.skillName in skills){
-			checkData.statName = skills[checkData.skillName].stat;
-		}
-
 		let stat_bonus = Number(checkToken.getProperty(checkData.statName));
-		if(checkData.skillName in skills){
+		if(checkData.skillName in skills && !("statName" in checkData)){
 			stat_bonus = Number(checkToken.getProperty(skills[checkData.skillName].stat));
 		}else if(checkData.skillName.includes("Lore")){
 			stat_bonus = Number(checkToken.getProperty("int"));
+		}
+
+		if (!("statName" in checkData) && checkData.skillName in skills){
+			checkData.statName = skills[checkData.skillName].stat;
 		}
 		
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
