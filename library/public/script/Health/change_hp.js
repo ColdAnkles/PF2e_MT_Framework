@@ -67,7 +67,7 @@ function change_hp(tokenID, changeHPData = null){
 				}
 				token.setProperty("HP", String(tokenCurrentHP));
 				if(tokenCurrentHP<=0){
-					kill_creature(tokenID);
+					zero_hp(tokenID);
 				}
 			}else if(changeHPData.hpChangeType=="nonlethal"){
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
