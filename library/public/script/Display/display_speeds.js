@@ -8,7 +8,7 @@ function display_speeds(token){
 	let baseSpeed = Number(token.getProperty("baseSpeed"));
 	let otherSpeed = JSON.parse(token.getProperty("otherSpeed"));
 
-	let speedBonus = calculate_bonus(token, "speed");
+	let speedBonus = calculate_bonus(token, ["speed","land-speed"]);
 	speedBonus = speedBonus.bonuses.circumstance + speedBonus.bonuses.status + speedBonus.bonuses.item + speedBonus.bonuses.none + speedBonus.maluses.circumstance + speedBonus.maluses.status + speedBonus.maluses.item + speedBonus.maluses.none;
 
 	let otherSpeedString = [];
