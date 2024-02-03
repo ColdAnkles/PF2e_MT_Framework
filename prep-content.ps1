@@ -20,27 +20,28 @@ function get-foundry-sources {
     $response = Invoke-RestMethod -Uri $base_content_url
 
     ForEach ($item in $response) {
-        if ($item.name -eq "packs"){
-            $base_pack_url = $item.git_url+"?recursive=true"
+        if ($item.name -eq "packs") {
+            $base_pack_url = $item.git_url + "?recursive=true"
             continue
         }
     }
 
     $response = Invoke-RestMethod -Uri $base_pack_url
 
-    ForEach ($p in $response.tree){
-        if ($p.type -eq "tree"){
-            if (!$script:unwantedPacks.Contains($p.path)){
-                $newSource = @{name=$p.path; content=@{}; enabled=$false;}
-                $sources[$p.path]=$newSource
+    ForEach ($p in $response.tree) {
+        if ($p.type -eq "tree") {
+            if (!$script:unwantedPacks.Contains($p.path)) {
+                $newSource = @{name = $p.path; content = @{}; enabled = $false; }
+                $sources[$p.path] = $newSource
             }
-        }elseif ($p.type -eq "blob"){
+        }
+        elseif ($p.type -eq "blob") {
             $split_array = $p.path -split "/"
             $parent = $split_array[0]
-            if (!$script:unwantedPacks.Contains($parent)){
-                $name = $split_array[$split_array.length -1]
-                if ($sources.ContainsKey($parent)){
-                    $new_data_file = @{name=$name; path=$p.path;}
+            if (!$script:unwantedPacks.Contains($parent)) {
+                $name = $split_array[$split_array.length - 1]
+                if ($sources.ContainsKey($parent)) {
+                    $new_data_file = @{name = $name; path = $p.path; }
                     $sources[$parent]["content"][$name] = $new_data_file
                 }
             }
@@ -54,13 +55,14 @@ function import-all-sources {
     
     $sourceList = Get-ChildItem .\pf2e-master\*\packs\* | ForEach-Object { $_.FullName }
 
-    ForEach ($source in $sourceList){
+    ForEach ($source in $sourceList) {
         $splitArray = $source -split "\\"
-        $sourceName = $splitArray[$splitArray.length -1 ]
-        if (!$script:unwantedPacks.Contains($sourceName)){
+        $sourceName = $splitArray[$splitArray.length - 1 ]
+        if (!$script:unwantedPacks.Contains($sourceName)) {
             #Write-Host "Importing " $sourceName
             import-source $source $sourceName
-        }else{
+        }
+        else {
             #Write-Host "Skipping" $sourceName
         }
     }
@@ -79,14 +81,14 @@ function import-source {
     $total = $childList.Length
     $importText = "Importing " + $sourceName
 
-    ForEach ($file in $childList){
+    ForEach ($file in $childList) {
         $splitArray = $file -split "\\"
-        $childName = $splitArray[$splitArray.length -1 ]
+        $childName = $splitArray[$splitArray.length - 1 ]
         #Write-Host "Reading " $childName
         #Write-Host $file
         import-source-file $file $sourceName $childName
         $counter = $counter + 1
-        $percentProgress = $counter/$total * 100
+        $percentProgress = $counter / $total * 100
         Write-Progress -Activity $importText -Status "$percentProgress% Complete:" -PercentComplete $percentProgress
     }
 }
@@ -102,9 +104,10 @@ function import-source-file {
     $script:packData = $script:packData
 
     #$data = Invoke-RestMethod -Uri $fileURL
-    try{
+    try {
         $data = Get-Content -Encoding UTF8 $filePath | ConvertFrom-JSON 
-    }Catch{
+    }
+    Catch {
         Write-Host "Error reading" $filePath
         return
     }
@@ -118,16 +121,18 @@ function import-source-file {
     $storeData.id = $data._id
     $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master/packs/" + $fileDir + "/" + $fileName
 
-    if ($null -eq $data.type){
+    if ($null -eq $data.type) {
         $storeData.type = "null"
-    }elseif ($data.type -eq "npc"){
+    }
+    elseif ($data.type -eq "npc") {
         $storeData.traits = $data.system.traits.value
         $storeData.level = $data.system.details.level.value
         $storeData.npcType = $data.system.details.creatureType
         $storeData.rarity = $data.system.traits.rarity
         $storeData.size = $data.system.traits.size.value
         $storeData.source = $data.system.details.publication.title
-    }elseif ($data.type -eq "action"){
+    }
+    elseif ($data.type -eq "action") {
         $storeData.traits = $data.system.traits.value
         $storeData.actionCost = $data.system.actions.value
         $storeData.actionType = $data.system.actionType.value
@@ -135,73 +140,83 @@ function import-source-file {
         $storeData.requirements = $data.system.requirements
         $storeData.description = $data.system.description.value
         $storeData.source = $data.system.details.publication.title;
-    }elseif ($data.type -eq "ancestry"){
+    }
+    elseif ($data.type -eq "ancestry") {
         $storeData.traits = $data.system.traits.value
         $storeData.rarity = $data.system.traits.rarity
         $storeData.source = $data.system.details.publication.title
-    }elseif ($data.type -eq "condition"){
+    }
+    elseif ($data.type -eq "condition") {
         $storeData.description = $data.system.description.value
         $storeData.overrides = $data.system.overrides
         $storeData.value = $data.system.value
         $storeData.rules = $data.system.rules
         $storeData.source = $data.system.publication.title
-    }elseif ($data.type -eq "class"){
-		$storeData.source = $data.system.publication.title;
-		$storeData.rarity = $data.system.traits.rarity;
-    }elseif ($data.type -eq "feat"){
-		$storeData.source = $data.system.publication.title;
-		$storeData.rarity = $data.system.traits.rarity;
-		$storeData.traits = $data.system.traits.value;
-		$storeData.actionCost = $data.system.actions.value;
-		$storeData.actionType = $data.system.actionType.value;
+    }
+    elseif ($data.type -eq "class") {
+        $storeData.source = $data.system.publication.title;
+        $storeData.rarity = $data.system.traits.rarity;
+    }
+    elseif ($data.type -eq "feat") {
+        $storeData.source = $data.system.publication.title;
+        $storeData.rarity = $data.system.traits.rarity;
+        $storeData.traits = $data.system.traits.value;
+        $storeData.actionCost = $data.system.actions.value;
+        $storeData.actionType = $data.system.actionType.value;
         $storeData.level = $data.system.level.value;
-    }elseif ($data.type -eq "spell"){
-		$storeData.source = $data.system.publication.title;
-		$storeData.rarity = $data.system.traits.rarity;
-		$storeData.traits = $data.system.traits.value;
-		$storeData.traditions = $data.system.traits.traditions;
-		$storeData.level = $data.system.level.value;
-    }elseif ($data.type -eq "hazard"){
-		$storeData.source = $data.system.details.publication.title;
-		$storeData.rarity = $data.system.traits.rarity;
-		$storeData.traits = $data.system.traits.value;
-		$storeData.level = $data.system.details.level.value;
-		$storeData.isComplex = $data.system.isComplex;
-		$storeData.hazardType = $data.system.value;
-    }elseif ($data.type -eq "effect"){
-		$storeData.source = $data.system.publication.title;
-		$storeData.duration = $data.system.duration;
-		$storeData.rules = $data.system.rules;
+    }
+    elseif ($data.type -eq "spell") {
+        $storeData.source = $data.system.publication.title;
+        $storeData.rarity = $data.system.traits.rarity;
+        $storeData.traits = $data.system.traits.value;
+        $storeData.traditions = $data.system.traits.traditions;
+        $storeData.level = $data.system.level.value;
+    }
+    elseif ($data.type -eq "hazard") {
+        $storeData.source = $data.system.details.publication.title;
+        $storeData.rarity = $data.system.traits.rarity;
+        $storeData.traits = $data.system.traits.value;
+        $storeData.level = $data.system.details.level.value;
+        $storeData.isComplex = $data.system.isComplex;
+        $storeData.hazardType = $data.system.value;
+    }
+    elseif ($data.type -eq "effect") {
+        $storeData.source = $data.system.publication.title;
+        $storeData.duration = $data.system.duration;
+        $storeData.rules = $data.system.rules;
         $storeData.start = $data.system.start;
-		$storeData.rarity = $data.system.traits.rarity;
-		$storeData.traits = $data.system.traits.value;
-		$storeData.level = $data.system.level.value;
-    }elseif ($data.type -eq "heritage"){
-		$storeData.source = $data.system.publication.title;
-		$storeData.description = $data.system.description.value;
-		$storeData.ancestry = $data.system.ancestry;
-		$storeData.rules = $data.system.rules;
-		$storeData.traits = $data.system.traits.value;
-		$storeData.rarity = $data.system.traits.rarity;
-    }elseif ($data.type -eq "weapon" -or $data.type -eq "armor" -or $data.type -eq "consumable" -or $data.type -eq "equipment" -or $data.type -eq "shield" -or $data.type -eq "treasure" -or $data.type -eq "backpack"){
+        $storeData.rarity = $data.system.traits.rarity;
+        $storeData.traits = $data.system.traits.value;
+        $storeData.level = $data.system.level.value;
+    }
+    elseif ($data.type -eq "heritage") {
+        $storeData.source = $data.system.publication.title;
+        $storeData.description = $data.system.description.value;
+        $storeData.ancestry = $data.system.ancestry;
+        $storeData.rules = $data.system.rules;
+        $storeData.traits = $data.system.traits.value;
+        $storeData.rarity = $data.system.traits.rarity;
+    }
+    elseif ($data.type -eq "weapon" -or $data.type -eq "armor" -or $data.type -eq "consumable" -or $data.type -eq "equipment" -or $data.type -eq "shield" -or $data.type -eq "treasure" -or $data.type -eq "backpack") {
         $storedata.type = "item";
-		$storeData.source = $data.system.publication.title;
-		$storeData.rules = $data.system.rules;
-		$storeData.traits = $data.system.traits.value;
-		$storeData.rarity = $data.system.traits.rarity;
+        $storeData.source = $data.system.publication.title;
+        $storeData.rules = $data.system.rules;
+        $storeData.traits = $data.system.traits.value;
+        $storeData.rarity = $data.system.traits.rarity;
         $storeData.itemType = $data.system.type;
         $storeData.level = $data.system.level.value;
         $storeData.bulk = $data.system.bulk.value;
-    }else{
+    }
+    else {
         #Write-Host "Unknown Type: " $data.type
     }
-    if( !$foundSources.Contains($storeData.source)){
+    if ( !$foundSources.Contains($storeData.source)) {
         $foundSources.Add($storeData.source) | Out-Null
     }
-    if ( !$packData.ContainsKey("pf2e_"+$storedata.type)){
-        $packData["pf2e_"+$storedata.type] = @{}
+    if ( !$packData.ContainsKey("pf2e_" + $storedata.type)) {
+        $packData["pf2e_" + $storedata.type] = @{}
     }
-    $packData["pf2e_"+$storedata.type][$storeData.name]=$storeData
+    $packData["pf2e_" + $storedata.type][$storeData.name] = $storeData
 
 }
 
@@ -225,39 +240,39 @@ function write-data-files {
     $script:foundSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_publications.json"
     $script:wantedSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_enabledSources.json"
 
-    ForEach ($dataType in $packData.Keys){
+    ForEach ($dataType in $packData.Keys) {
         $dataSet = $packData[$dataType]
-        $outFile = ".\library\public\data\"+$dataType+".json"
+        $outFile = ".\library\public\data\" + $dataType + ".json"
 
         $dataSet | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $outFile
     }
 
 }
 
-$unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics",  "criticaldeck", "action-macros")
-$wantedSources = @("Pathfinder Core Rulebook","Pathfinder Player Core","Pathfinder Rage of Elements","Pathfinder GM Core","Pathfinder Advanced Player's Guide","Pathfinder Treasure Vault","Pathfinder Dark Archive","Pathfinder Gamemastery Guide","Pathfinder Secrets of Magic","Pathfinder Bestiary","Pathfinder Bestiary 2","Pathfinder Bestiary 3","Pathfinder Book of the Dead","Pathfinder Guns & Gears")
+$unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics", "criticaldeck", "action-macros")
+$wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder Rage of Elements", "Pathfinder GM Core", "Pathfinder Advanced Player's Guide", "Pathfinder Treasure Vault", "Pathfinder Dark Archive", "Pathfinder Gamemastery Guide", "Pathfinder Secrets of Magic", "Pathfinder Bestiary", "Pathfinder Bestiary 2", "Pathfinder Bestiary 3", "Pathfinder Book of the Dead", "Pathfinder Guns & Gears")
 $sources = @{}
 $packData = @{}
 $langData = @{}
 $foundSources = [System.Collections.ArrayList]@()
 
-if ($runFuncs -eq "all" -or $runFuncs -eq "download"){
+if ($runFuncs -eq "all" -or $runFuncs -eq "download") {
     get-master-zip
     Write-Host "Downloaded Foundry Data"
     expand-master-zip
     Write-Host "Expanded Data"
 }
 
-if ($runFuncs -eq "all" -or $runFuncs -eq "lang"){
+if ($runFuncs -eq "all" -or $runFuncs -eq "lang") {
     import-lang-file
 }
 
-if ($runFuncs -eq "all" -or $runFuncs -eq "source"){
+if ($runFuncs -eq "all" -or $runFuncs -eq "source") {
     get-foundry-sources
     Write-Host "Source Data Prepared"
 }
 
-if ($runFuncs -eq "all" -or $runFuncs -eq "import"){
+if ($runFuncs -eq "all" -or $runFuncs -eq "import") {
     import-all-sources
     Write-Host "Sources Imported"
     write-data-files
