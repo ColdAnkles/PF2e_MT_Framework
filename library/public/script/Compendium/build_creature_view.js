@@ -206,16 +206,34 @@ function build_creature_view(creatureName, tokenID = null){
 	}
 	HTMLString += "<hr />";
 
-	HTMLString += "<b>Speed</b> " + creatureData.speeds.base + " feet";
-	let otherSpeeds = "";
-	for (var s in creatureData.speeds.other){
-		let speedData = creatureData.speeds.other[s];
-		otherSpeeds = otherSpeeds + speedData.type + " " + speedData.value + " feet, ";
-	}
-	if (otherSpeeds.length>0){
-		HTMLString += ", " + otherSpeeds.substring(0,otherSpeeds.length-2) + "<br />";
+	if(tokenID!=null){
+		let baseSpeed = Number(creatureData.speeds.base);
+		let speedBonus = calculate_bonus(tokenID, ["speed","land-speed"]);
+		speedBonus = speedBonus.bonuses.circumstance + speedBonus.bonuses.status + speedBonus.bonuses.item + speedBonus.bonuses.none + speedBonus.maluses.circumstance + speedBonus.maluses.status + speedBonus.maluses.item + speedBonus.maluses.none;
+
+		HTMLString += "<b>Speed</b> " + String(Math.max(baseSpeed+speedBonus,0)) + " feet";
+		let otherSpeeds = "";
+		for (var s in creatureData.speeds.other){
+			let speedData = creatureData.speeds.other[s];
+			otherSpeeds = otherSpeeds + speedData.type + " " + String(Number(speedData.value)+calculate_bonus(tokenID, ["speed",s])) + " feet, ";
+		}
+		if (otherSpeeds.length>0){
+			HTMLString += ", " + otherSpeeds.substring(0,otherSpeeds.length-2) + "<br />";
+		}else{
+			HTMLString += "<br />"
+		}
 	}else{
-		HTMLString += "<br />"
+		HTMLString += "<b>Speed</b> " + creatureData.speeds.base + " feet";
+		let otherSpeeds = "";
+		for (var s in creatureData.speeds.other){
+			let speedData = creatureData.speeds.other[s];
+			otherSpeeds = otherSpeeds + speedData.type + " " + speedData.value + " feet, ";
+		}
+		if (otherSpeeds.length>0){
+			HTMLString += ", " + otherSpeeds.substring(0,otherSpeeds.length-2) + "<br />";
+		}else{
+			HTMLString += "<br />"
+		}
 	}
 	
 	for (var w in creatureData.basicAttacks){
