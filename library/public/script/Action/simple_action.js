@@ -12,6 +12,10 @@ function simple_action(actionName, actingToken){
 		return;
 	}
 
+	if ("fileURL" in actionData){
+		actionData = parse_feature(rest_call(actionData["fileURL"],""));
+	}
+
 	core_action(actionData, actingToken)
 
 }
