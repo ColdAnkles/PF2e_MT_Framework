@@ -142,8 +142,10 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			let profList = JSON.parse(checkToken.getProperty("proficiencies"));
 			for (var p in profList){
 				let profData = profList[p];
-				if (checkData.skillName == profData.name){
+				if (checkData.skillName == profData.name && checkData.tokenType == "NPC"){
 					prof_bonus = Number(profData.bonus - stat_bonus);
+				}else if(checkData.skillName == profData.name && checkData.tokenType == "PC"){
+					prof_bonus = Number(profData.bonus);
 				}
 			}
 		}
