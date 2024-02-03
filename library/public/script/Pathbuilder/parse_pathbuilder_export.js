@@ -296,9 +296,11 @@ function parse_pathbuilder_export(data){
 	}
 	for (var e in data.equipment){
 		let tempData = find_object_data(data.equipment[e][0], "item");
-		if ("fileURL" in tempData){
-			parse_feature(rest_call(tempData.fileURL), parsedData);
-			parsedData.itemList[tempData.id].quantity = data.equipment[e][1];
+		if (tempData != null) {
+			if ("fileURL" in tempData) {
+				parse_feature(rest_call(tempData.fileURL), parsedData);
+				parsedData.itemList[tempData.id].quantity = data.equipment[e][1];
+			}
 		}
 	}
 
