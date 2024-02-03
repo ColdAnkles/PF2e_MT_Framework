@@ -96,6 +96,10 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 		let tempArray = parsed.bracketContents.split(".");
 		let conditionName = tempArray[tempArray.length -1];
 		return create_macroLink(capitalise(conditionName),"Item_View_Frame@Lib:ca.pf2e",{"itemType":"condition", "itemName":conditionName});
+	}else if(parsed.bracketContents.includes("actionspf2e")){
+		let tempArray = parsed.bracketContents.split(".");
+		let actionName = tempArray[tempArray.length -1];
+		return actionName;
 	}
 	return uuidString;
 	
