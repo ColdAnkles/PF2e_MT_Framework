@@ -100,6 +100,10 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 		let tempArray = parsed.bracketContents.split(".");
 		let actionName = tempArray[tempArray.length -1];
 		return actionName;
+	}else if(parsed.bracketContents.includes("feats-srd")){
+		let tempArray = parsed.bracketContents.split(".");
+		let featName = tempArray[tempArray.length -1];
+		return create_macroLink(capitalise(featName),"Item_View_Frame@Lib:ca.pf2e",{"itemType":"feat", "itemName":featName});
 	}
 	return uuidString;
 	
