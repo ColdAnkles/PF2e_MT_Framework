@@ -18,6 +18,7 @@ function calculate_bonus(token, bonusScopes, consume=true){
 
 	for (var e in activeEffects){
 		let effectData = JSON.parse(JSON.stringify(activeEffects[e]));
+		//MapTool.chat.broadcast(JSON.stringify(effectData));
 		let effectBonuses = get_effect_bonus(effectData, bonusScopes);
 		effectData.bonus = effectBonuses;
 		let hasAsked = false;
@@ -57,7 +58,7 @@ function calculate_bonus(token, bonusScopes, consume=true){
 		let conditionData = JSON.parse(JSON.stringify(activeConditions[c]));
 		//MapTool.chat.broadcast(JSON.stringify(conditionData));
 		let conditionBonuses = get_effect_bonus(conditionData, bonusScopes);
-		conditionData.bonus = effectBonuses;
+		conditionData.bonus = conditionBonuses;
 		//MapTool.chat.broadcast(JSON.stringify(conditionBonuses));
 		for (var type in conditionBonuses){
 			if(type=="query"){

@@ -1,6 +1,9 @@
 "use strict";
 
 function get_effect_bonus(effectData, bonusScopes){
+	if(typeof(bonusScopes=="string")){
+		bonusScopes = [bonusScopes];
+	}
 	bonusScopes.push("all");
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
@@ -19,7 +22,7 @@ function get_effect_bonus(effectData, bonusScopes){
 		}
 		//MapTool.chat.broadcast(JSON.stringify(ruleData));
 		if ("mode" in ruleData && ruleData.mode == "override"){
-			if (ruleData.path.includes("shield") && bonusScope == "ac"){
+			if (ruleData.path.includes("shield") && bonusScopes.includes("ac")){
 				let shieldData = get_equipped_shield(tokenID);
 				if (shieldData.acBonus > bonuses.circumstance){
 					returnData.bonuses.circumstance = shieldData.acBonus;
