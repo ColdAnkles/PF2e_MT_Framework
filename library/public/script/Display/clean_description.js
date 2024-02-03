@@ -137,6 +137,7 @@ function parse_localize(localizeString, additionalData){
 
 function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "replaceGMRolls": true}){
 	//MapTool.chat.broadcast(rollString);
+	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 	if(rollString.includes("/br") || (!(rollString.includes("(")) || !(rollString.includes(")")))){
 		//MapTool.chat.broadcast("Case One");
 		let parsed = parse_foundry_strings(rollString);
@@ -215,6 +216,8 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 			rollMatch = rollMatch.replaceAll("@level", String(additionalData.level));
 		}else if (rollMatch.includes("@item.level") && "level" in additionalData){
 			rollMatch = rollMatch.replaceAll("@item.level", String(additionalData.level));
+		}else if(rollMatch.includes("@actor.level") && "level" in additionalData){
+			rollMatch = rollMatch.replaceAll("@actor.level", String(additionalData.level));
 		}
 
 		if(additionalData.rollDice || !(rollMatch.includes("d"))){

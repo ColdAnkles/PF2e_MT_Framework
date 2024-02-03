@@ -41,7 +41,7 @@ function action_icon_label(actionType, actionCount){
 	return "Error";
 }
 
-function add_action_to_token(actionData, tokenID){
+function add_action_to_token(actionData, tokenID, tokenLevel = 0){
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
 	if (actionData.type=="basic"){
 		
@@ -56,7 +56,8 @@ function add_action_to_token(actionData, tokenID){
 		}
 		//MapTool.chat.broadcast(JSON.stringify(lookupAction));
 		
-		let props = {"label":action_icon_label(lookupAction.actionType, lookupAction.actionCost)+" "+actionData.name,"playerEditable":0,"command":"[r: js.ca.pf2e.simple_action(\""+actionData.name+"\",currentToken())]","tooltip":chat_display(lookupAction, false),"sortBy":actionData.name};
+		let actionDesc = chat_display(lookupAction, false, {"level":tokenLevel});
+		let props = {"label":action_icon_label(lookupAction.actionType, lookupAction.actionCost)+" "+actionData.name,"playerEditable":0,"command":"[r: js.ca.pf2e.simple_action(\""+actionData.name+"\",currentToken())]","tooltip":actionDesc,"sortBy":actionData.name};
 		if ("group" in actionData){
 			props.group = actionData.group;
 		}
@@ -73,7 +74,7 @@ function add_action_to_token(actionData, tokenID){
 				actionLabel = actionLabel + " " + icon_img("ranged");
 			}
 		}
-		let props = {"label":actionLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.personal_action(\""+actionData.name+"\",currentToken())]","tooltip":chat_display(actionData, false),"sortBy":actionData.name};
+		let props = {"label":actionLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.personal_action(\""+actionData.name+"\",currentToken())]","tooltip":chat_display(actionData, false, {"level":tokenLevel}),"sortBy":actionData.name};
 		if ("group" in actionData){
 			props.group = actionData.group;
 		}

@@ -26,7 +26,7 @@ function create_pc_token(newPCTokenID, pcLibID){
 	for (var a in allPossible){
 		let actionData = allPossible[a];
 		//actionData.type = "personal";
-		add_action_to_token(actionData, newPCTokenID);
+		add_action_to_token(actionData, newPCTokenID, pcData.level);
 	}
 
 	for (var s in pcData.spellRules){
