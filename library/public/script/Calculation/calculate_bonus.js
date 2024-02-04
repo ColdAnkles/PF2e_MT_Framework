@@ -1,6 +1,6 @@
 "use strict";
 
-function calculate_bonus(token, bonusScopes, consume=true){
+function calculate_bonus(token, bonusScopes, consume=false){
 	if (typeof(token)=="string"){
 		token = MapTool.tokens.getTokenByID(token);
 	}
@@ -13,13 +13,14 @@ function calculate_bonus(token, bonusScopes, consume=true){
 
 	let activeConditions = JSON.parse(token.getProperty("conditionDetails"));
 	
-	let selectedModifiers = {"bonuses":{"circumstance":null,"status":null,"item":null,"none":null},"maluses":{"circumstance":null,"status":null,"item":null,"none":null}};
-	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0}};
+	let selectedModifiers = {"bonuses":{"circumstance":null,"status":null,"item":null,"none":null,"proficiency":null},"maluses":{"circumstance":null,"status":null,"item":null,"none":null,"proficiency":null}};
+	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0}};
 
 	for (var e in activeEffects){
 		let effectData = JSON.parse(JSON.stringify(activeEffects[e]));
 		//MapTool.chat.broadcast(JSON.stringify(effectData));
-		let effectBonuses = get_effect_bonus(effectData, bonusScopes);
+		let effectBonuses = get_effect_bonus(effectData, bonusScopes, token);
+		//MapTool.chat.broadcast(JSON.stringify(effectBonuses));
 		effectData.bonus = effectBonuses;
 		let hasAsked = false;
 		let askResponse = true;
@@ -57,7 +58,7 @@ function calculate_bonus(token, bonusScopes, consume=true){
 	for (var c in activeConditions){
 		let conditionData = JSON.parse(JSON.stringify(activeConditions[c]));
 		//MapTool.chat.broadcast(JSON.stringify(conditionData));
-		let conditionBonuses = get_effect_bonus(conditionData, bonusScopes);
+		let conditionBonuses = get_effect_bonus(conditionData, bonusScopes, token);
 		conditionData.bonus = conditionBonuses;
 		//MapTool.chat.broadcast(JSON.stringify(conditionBonuses));
 		for (var type in conditionBonuses){
@@ -68,10 +69,10 @@ function calculate_bonus(token, bonusScopes, consume=true){
 			for (var k in typeDict){
 				if (type=="bonuses" && typeDict[k]>returnData[type][k]){
 					returnData[type][k] = typeDict[k];
-					selectedModifiers[type][k]=effectData;
+					selectedModifiers[type][k]=conditionData;
 				}else if (type=="maluses" && typeDict[k]<returnData[type][k]){
 					returnData[type][k] = typeDict[k];
-					selectedModifiers[type][k]=effectData;
+					selectedModifiers[type][k]=conditionData;
 				}
 			}
 		}
@@ -94,6 +95,9 @@ function calculate_bonus(token, bonusScopes, consume=true){
 			}
 		}
 	}
+
+	//MapTool.chat.broadcast(JSON.stringify(returnData));
+	//MapTool.chat.broadcast(JSON.stringify(selectedModifiers));
 	
 	return returnData;
 }

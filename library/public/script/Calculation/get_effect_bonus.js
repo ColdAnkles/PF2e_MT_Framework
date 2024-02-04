@@ -1,13 +1,12 @@
 "use strict";
 
-function get_effect_bonus(effectData, bonusScopes){
-	if(typeof(bonusScopes=="string")){
-		bonusScopes = [bonusScopes];
+function get_effect_bonus(effectData, bonusScopes, actor = null){
+	if(!("all" in bonusScopes)){
+		bonusScopes.push("all");
 	}
-	bonusScopes.push("all");
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
-	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0},"query":false};
+	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"query":false};
 	for (var r in effectData.rules){
 		let ruleData = effectData.rules[r];
 		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll=="if-enabled");
@@ -20,18 +19,27 @@ function get_effect_bonus(effectData, bonusScopes){
 				continue;
 			}
 		}
-		//MapTool.chat.broadcast(JSON.stringify(ruleData));
+		//
 		if ("mode" in ruleData && ruleData.mode == "override"){
-			if (ruleData.path.includes("shield") && bonusScopes.includes("ac")){
-				let shieldData = get_equipped_shield(tokenID);
-				if (shieldData.acBonus > bonuses.circumstance){
+			if (ruleData.path == "system.attributes.shield" && bonusScopes.includes("ac")){
+				//MapTool.chat.broadcast(JSON.stringify(ruleData));
+				let shieldData = null;
+				if("name" in ruleData.value && ruleData.value.name=="PF2E.ShieldLabel"){
+					shieldData = ruleData.value;
+				}else if(actor!=null){
+					shieldData = get_equipped_shield(actor);
+				}
+				//MapTool.chat.broadcast(JSON.stringify(shieldData));
+				if (("acBonus" in shieldData && shieldData.acBonus > returnData.bonuses.circumstance)){
 					returnData.bonuses.circumstance = shieldData.acBonus;
+				}else if(("ac" in shieldData && shieldData.acBonus > returnData.bonuses.circumstance)){
+					returnData.bonuses.circumstance = shieldData.ac;
 				}
 			}
 			//MapTool.chat.broadcast(JSON.stringify(ruleData));
 		}else{
 			if (ruleData.key == "FlatModifier"){
-				ruleData.value = foundry_calc_value(ruleData.value, null, effectData);
+				ruleData.value = foundry_calc_value(ruleData.value, actor, effectData);
 				if (ruleData.value <0){
 					if (!("type" in ruleData)){
 						returnData.maluses.none = returnData.maluses.none + ruleData.value;

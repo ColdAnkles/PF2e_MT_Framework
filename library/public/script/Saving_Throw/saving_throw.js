@@ -75,7 +75,7 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 
 		let basic_bonus = Number(saveToken.getProperty(saveData.saveName));
 		let misc_bonus = Number(saveData.miscBonus);
-		let effect_bonus = calculate_bonus(saveToken.getId(), saveData.saveName);
+		let effect_bonus = calculate_bonus(saveToken.getId(), saveData.saveName, true);
 
 		for (var k in saveData){
 			if (k.includes("specialEffect")){

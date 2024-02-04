@@ -38,8 +38,8 @@ function attack_action(actionData, actingToken){
 		dTwentyColour = "green";
 	}
 
-	let effect_bonus = calculate_bonus(actingToken, attackScopes);	
-	let damage_bonus = calculate_bonus(actingToken, damageScopes);
+	let effect_bonus = calculate_bonus(actingToken, attackScopes, true);	
+	let damage_bonus = calculate_bonus(actingToken, damageScopes, true);
 
 	let deadlyDie = "";
 	let fatalDie = "";

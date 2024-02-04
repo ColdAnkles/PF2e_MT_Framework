@@ -1,7 +1,9 @@
 "use strict";
 
-function get_equipped_shield(tokenID){
-	let token = MapTool.tokens.getTokenByID(tokenID);
+function get_equipped_shield(token){
+	if (typeof(token)=="string"){
+		token = MapTool.tokens.getTokenByID(token);
+	}
 	let inventory = JSON.parse(token.getProperty("inventory"));
 	for (var i in inventory){
 		let itemData = inventory[i];

@@ -134,8 +134,11 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
 		let prof_bonus = 0;
 		let misc_bonus = Number(checkData.miscBonus);
-		let effect_bonus = calculate_bonus(checkToken.getId(), [lowercase(checkData.skillName),checkData.statName+"-based","skill-check"].concat(extraScopes));
-		effect_bonus = effect_bonus.bonuses.circumstance + effect_bonus.bonuses.status + effect_bonus.bonuses.item + effect_bonus.bonuses.none + effect_bonus.maluses.circumstance + effect_bonus.maluses.status + effect_bonus.maluses.item + effect_bonus.maluses.none;
+		let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName),checkData.statName+"-based","skill-check"].concat(extraScopes), true);
+		let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + effect_bonus_raw.bonuses.item + effect_bonus_raw.bonuses.none
+		 + effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
+
+		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
 		if (checkData.tokenType == "NPC" || checkData.tokenType == "PC"){
 			let profList = JSON.parse(checkToken.getProperty("proficiencies"));
@@ -147,6 +150,10 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 					prof_bonus = Number(profData.bonus);
 				}
 			}
+		}
+
+		if (effect_bonus_raw.bonuses.proficiency>0 && effect_bonus_raw.bonuses.proficiency>prof_bonus){
+			prof_bonus = effect_bonus_raw.bonuses.proficiency;
 		}
 
 		let checkMod = stat_bonus+prof_bonus+misc_bonus+effect_bonus;
