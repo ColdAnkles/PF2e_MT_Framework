@@ -18,6 +18,26 @@ function parse_spell(spellData){
 		}
 	}
 
+	//MapTool.chat.broadcast(JSON.stringify(parsedData));
+
+	if("defense" in parsedData && parsedData.defense != null && "save" in parsedData.defense){
+		parsedData.spellType = "save";
+		parsedData.save = parsedData.defense.save;
+	}else if(parsedData.traits.value.includes("attack")){
+		parsedData.spellType = "attack";
+	}else{
+		parsedData.spellType = "unknown";
+	}
+
+	if("area" in parsedData && "type" in parsedData.area){
+		let areaString = "";
+		if("value" in parsedData.area){
+			areaString += String(parsedData.area.value) + " ft. ";
+		}
+		areaString += parsedData.area.type;
+		parsedData.area.details = areaString;
+	}
+
 	if (parsedData.traits.value.includes("focus")){
 		parsedData.category = "focus";
 	}else if (parsedData.traits.value.includes("cantrip")){

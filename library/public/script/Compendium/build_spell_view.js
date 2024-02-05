@@ -30,36 +30,36 @@ function build_spell_view(spellName){
 
 	let HTMLString = "";
 
-	HTMLString = HTMLString + "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellData.category) + " " + spellData.level + "</span></h1>";
+	HTMLString += "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellData.category) + " " + spellData.level + "</span></h1>";
 	
 	if(spellData.traits.rarity!="common"){
-		HTMLString = HTMLString + "<span class='trait"+spellData.traits.rarity+"'>" + capitalise(spellData.traits.rarity) + "</span>";
+		HTMLString += "<span class='trait"+spellData.traits.rarity+"'>" + capitalise(spellData.traits.rarity) + "</span>";
 	}
 	for (var t in spellData.traits.value){
-		HTMLString = HTMLString + "<span class='trait'>" + capitalise(spellData.traits.value[t]) + "</span>";
+		HTMLString += "<span class='trait'>" + capitalise(spellData.traits.value[t]) + "</span>";
 	}
-	HTMLString = HTMLString + "<br />"
-	HTMLString = HTMLString + "<b>Source </b><span class='ext-link'>" + spellData.publication.title + "</span><br />";
+	HTMLString += "<br />"
+	HTMLString += "<b>Source </b><span class='ext-link'>" + spellData.publication.title + "</span><br />";
 	if (spellData.traits.traditions.length>0){
-		HTMLString = HTMLString + "<b>Traditions</b> " + capitalise(spellData.traits.traditions.join(", "));
-		HTMLString = HTMLString + "<br />";
+		HTMLString += "<b>Traditions</b> " + capitalise(spellData.traits.traditions.join(", "));
+		HTMLString += "<br />";
 	}
 
-	HTMLString = HTMLString + "<b>Cast</b> ";
+	HTMLString += "<b>Cast</b> ";
 	if(!isNaN(spellData.time)){
-		HTMLString = HTMLString + icon_img(spellData.time+"action", true);
+		HTMLString += icon_img(spellData.time+"action", true);
 	}else if (spellData.time.includes("to")){
 		let first = spellData.time.split(" to ")[0];
 		let second = spellData.time.split(" to ")[1];
 		if (isNaN(second)){
-			HTMLString = HTMLString + icon_img(first+"action", true) + " to " + second;
+			HTMLString += icon_img(first+"action", true) + " to " + second;
 		}else{
-			HTMLString = HTMLString + icon_img(first+"action", true) + " to " + icon_img(second+"action");
+			HTMLString += icon_img(first+"action", true) + " to " + icon_img(second+"action");
 		}
 	}else if(spellData.time=="reaction"){
-		HTMLString = HTMLString + icon_img("reaction", true);
+		HTMLString += icon_img("reaction", true);
 	}else{
-		HTMLString = HTMLString + spellData.time;
+		HTMLString += spellData.time;
 	}
 
 	let components = [];
@@ -68,32 +68,35 @@ function build_spell_view(spellName){
 			components.push(k);
 		}
 	}
-	HTMLString = HTMLString + " " + components.join(", ") + "<br />";
+	HTMLString += " " + components.join(", ") + "<br />";
 
 	if (spellData.area != null){
-		HTMLString = HTMLString + "<b>Area</b> " + spellData.area.details + "; <b>Targets</b> " + spellData.target + "<br />";
+		HTMLString += "<b>Area</b> " + spellData.area.details + "; <b>Targets</b> " + spellData.target + "<br />";
+	}else if(spellData.range!=null && spellData.range!=""){
+		HTMLString += "<b>Range</b> " + spellData.range + "; <b>Targets</b> " + spellData.target + "<br />";
 	}
 
 	if (spellData.spellType == "save" && spellData.save.value != ""){
-		HTMLString = HTMLString + "<b>Saving Throw</b> ";
-		if (spellData.save.basic == "basic"){
-			HTMLString = HTMLString + "basic ";
+		HTMLString += "<b>Saving Throw</b> ";
+		if (spellData.save.basic){
+			HTMLString += "basic ";
 		}
-		HTMLString = HTMLString + capitalise(spellData.save.value);
+		HTMLString += capitalise(spellData.save.statistic);
 	}
-	if (spellData.spellType == "save" && spellData.save.value != "" && spellData.duration != null){
-		HTMLString = HTMLString + "; ";
-	}else if(spellData.spellType == "save" && spellData.save.value != ""){
-		HTMLString = HTMLString + "<br />";
+	let hasDuration = spellData.duration != null && spellData.duration != "" && spellData.duration.value != "" && spellData.duration.value != null;
+	if (spellData.spellType == "save" && spellData.save.statistic != "" && hasDuration){
+		HTMLString += "; ";
+	}else if(spellData.spellType == "save" && spellData.save.statistic != ""){
+		HTMLString += "<br />";
 	}
-	if (spellData.duration != null && spellData.duration != "" && spellData.duration.value !== "" && spellData.duration.value !== null){
-		HTMLString = HTMLString + "<b>Duration</b> " + spellData.duration.value;
-		HTMLString = HTMLString + "<br />";
+	if (hasDuration){
+		HTMLString += "<b>Duration</b> " + spellData.duration.value;
+		HTMLString += "<br />";
 	}
 	
-	HTMLString = HTMLString + "<hr />";
+	HTMLString += "<hr />";
 
-	HTMLString = HTMLString + clean_description(spellData.description, false, false, false, {"rollDice":false,"level":spellData.level});
+	HTMLString += clean_description(spellData.description, false, false, false, {"rollDice":false,"level":spellData.level});
 	
 		
 	return HTMLString;
