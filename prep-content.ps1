@@ -164,6 +164,9 @@ function import-source-file {
         $storeData.actionCost = $data.system.actions.value;
         $storeData.actionType = $data.system.actionType.value;
         $storeData.level = $data.system.level.value;
+        if ($storeData.name -eq "Aquatic Adaptation" -and $storeData.traits.Contains("lizardfolk")) {
+            $storeData.name = "Aquatic Adaptation (Lizardfolk)";
+        }
     }
     elseif ($data.type -eq "spell") {
         $storeData.source = $data.system.publication.title;

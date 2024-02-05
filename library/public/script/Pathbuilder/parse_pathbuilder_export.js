@@ -238,6 +238,9 @@ function parse_pathbuilder_export(data){
 		let tempName = data.specials[s];
 		tempName = tempName.replaceAll("Arcane School: ","").replaceAll("Arcane Thesis: ","");
 		tempName = tempName.replaceAll(" Patron","");
+		if(tempName=="Aquatic Adaptation" && data.ancestry == "Lizardfolk"){
+			tempName = "Aquatic Adaptation (Lizardfolk)";
+		}
 		if(tempName=="Spellbook"){
 			continue; //Spellbook not treated as a feature in foundry
 		}

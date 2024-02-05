@@ -51,6 +51,9 @@ function import_source_file(fileURL){
 			storeData.actionCost = data.system.actions.value;
 			storeData.actionType = data.system.actionType.value;
 			storeData.level = data.system.level.value;
+			if (storeData.name == "Aquatic Adaptation" && storeData.traits.includes("lizardfolk")) {
+				storeData.name = "Aquatic Adaptation (Lizardfolk)";
+			}
 			//MapTool.chat.broadcast(JSON.stringify(storeData));
 			store_object_data(storeData);
 		}else if (data.type == "spell"){
