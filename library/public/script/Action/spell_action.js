@@ -39,13 +39,18 @@ function spell_action(actionData, actingToken){
 		let overlayData = spellData.overlays[actionData.overlayID];
 		if (overlayData.overlayType=="override"){
 			for(var key in overlayData.system){
-				spellData[key] = overlayData.system[key];
+				if("key" == "target" && "value" in overlayData.system[key]){
+					spellData[key] = overlayData.system[key].value;
+				}else{
+					spellData[key] = overlayData.system[key];
+				}
 			}
 		}
 	}
 
-	let spellMod = Math.max(Number(actingToken.getProperty("int")),Number(actingToken.getProperty("wis")),Number(actingToken.getProperty("cha")));
-
+	let spellMod = Number(actingToken.getProperty(actionData.castingAbility));
+	
+	//MapTool.chat.broadcast(JSON.stringify(actionData));
 	//MapTool.chat.broadcast(JSON.stringify(spellData));
 
 	let attackScopes = ["spell"];
@@ -53,8 +58,27 @@ function spell_action(actionData, actingToken){
 	let damage_bonus = calculate_bonus(actingToken, damageScopes);
 	
 	let displayData = {"description":"","name":actingToken.getName() + " - " + actionData.name,"level":actionData.castLevel,"type":spellData.category};
+	if (spellData.area != null){
+		displayData.description += "<b>Area</b> " + spellData.area.details;
+		if(spellData.target!=null && spellData.target != ""){
+			displayData.description += "; <b>Targets</b> " + spellData.target;
+		}
+		displayData.description += "<br />";
+	}else if(spellData.range!=null && spellData.range!=""){
+		displayData.description += "<b>Range</b> " + spellData.range;
+		if(spellData.target!=null && spellData.target != ""){
+			displayData.description += "; <b>Targets</b> " + spellData.target;
+		}
+	}
+	
+	let hasDuration = spellData.duration != null && spellData.duration != "" && spellData.duration.value != "" && spellData.duration.value != null;
+	if (hasDuration){
+		displayData.description += "<b>Duration</b> " + spellData.duration.value;
+		displayData.description += "<br />";
+	}
 
 	if(spellData.traits.value.includes("attack")){
+
 		displayData.description += "<i>Attack Roll</i><br /><div style='font-size:10px'><b>";
 
 		let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
@@ -63,6 +87,7 @@ function spell_action(actionData, actingToken){
 		}
 		let map_malus = currentAttackCount * -5;
 		let attack_bonus = castData.spellAttack;
+		let attackIncrease = 1;
 		
 		MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 		let dTwenty = Number(MTScript.getVariable("dTwenty"));
@@ -97,6 +122,41 @@ function spell_action(actionData, actingToken){
 		displayData.description += "</b>"
 		
 		displayData.description += "</div>";
+
+		if(spellData.name=="Blazing Bolt" && actionData.actionCost>1){
+			for(var i=2;i<=actionData.actionCost;i++){
+				displayData.description += "<i>Attack Roll "+String(i)+"</i><br /><div style='font-size:10px'><b>";
+				MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
+				let additionalDtwenty = Number(MTScript.getVariable("dTwenty"));
+				let dTwentyColour = "black";
+				if (additionalDtwenty == 1){
+					dTwentyColour = "red";
+				}else if (additionalDtwenty == 20){
+					dTwentyColour = "green";
+				}
+				let additionalAttackResult = additionalDtwenty + attackMod;
+				displayData.description += "<span style='color:"+dTwentyColour+"'>" +String(additionalDtwenty)+"</span> ";
+				if(attack_bonus!=0){
+					displayData.description += pos_neg_sign(attack_bonus, true);
+				}
+				if(effect_bonus!=0){
+					displayData.description += " " + pos_neg_sign(effect_bonus, true);
+				}
+				if(map_malus!=0){
+					displayData.description += " " + pos_neg_sign(map_malus, true);
+				}
+				displayData.description += " = " + String(additionalAttackResult);
+				displayData.description += "</b>"
+				displayData.description += "</div>";
+
+				attackIncrease += 1;
+			}
+		}
+
+		let initiative = get_initiative(actingToken.getId());
+		if (!(isNaN(initiative))){
+			actingToken.setProperty("attacksThisRound",String(currentAttackCount+attackIncrease));
+		}
 	}
 	
 	if (spellData.defense!=null && "save" in spellData.defense && spellData.defense.save.statistic != ""){
@@ -108,7 +168,7 @@ function spell_action(actionData, actingToken){
 	}
 	
 	//Special case for magic missile
-	if(spellData.name == "Magic Missile"){
+	if(spellData.name == "Magic Missile" || spellData.name == "Force Barrage"){
 		let totalDarts = (Math.floor((actionData.castLevel-1)/2)+1) * actionData.actionCost;
 		//MapTool.chat.broadcast((Math.floor((actionData.castLevel-1)/2)+1) + " * " + actionData.actionCost + " = " + String(totalDarts));
 		for (let i = 1; i< totalDarts; i+= 1){

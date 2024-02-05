@@ -2,4 +2,4 @@
 [h: ans = input(json.get(macro.args,"inputText"))]
 [h: return(ans)]
 [h: additionalData = additionalData + json.get(macro.args,"first")]
-[h: js.ca.pf2e.cast_spell(json.get(macro.args,"spellName"),json.get(macro.args,"castLevel"),json.get(macro.args,"casterToken"),additionalData)]
+[h: js.ca.pf2e.cast_spell(json.get(macro.args,"spellName"),json.get(macro.args,"castLevel"),json.get(macro.args,"castGroup"),json.get(macro.args,"casterToken"),additionalData)]

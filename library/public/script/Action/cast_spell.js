@@ -1,12 +1,17 @@
 "use strict";
 
-function cast_spell(spellName, castLevel, casterToken, additionalData = null){
+function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData = null){
 	//MapTool.chat.broadcast(spellName);
 	//MapTool.chat.broadcast(String(castLevel));
 	//MapTool.chat.broadcast(casterToken);
 	//MapTool.chat.broadcast(String(additionalData));
+	if (typeof(casterToken)=="string"){
+		casterToken = MapTool.tokens.getTokenByID(casterToken);
+	}
 
 	castLevel = Number(castLevel);
+
+	let castingData = JSON.parse(casterToken.getProperty("spellRules"))[castGroup];
 	
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
@@ -31,7 +36,7 @@ function cast_spell(spellName, castLevel, casterToken, additionalData = null){
 	}
 	spellData = parse_spell(spellData);
 
-	let actionData = {"name":spellData.name,"isSpell":true,"castLevel":castLevel,"spendAction":true};
+	let actionData = {"name":spellData.name,"isSpell":true,"castLevel":castLevel,"spendAction":true,"castingAbility":castingData.castingAbility};
 
 	if(!(isNaN(spellData.time))){
 		actionData.actionType="action";
@@ -50,7 +55,7 @@ function cast_spell(spellName, castLevel, casterToken, additionalData = null){
 		}
 		inputText = inputText.substring(0,inputText.length-1) + "|Actions to use|LIST|ICON=TRUE ICONSIZE=30";
 		
-		let transferData = {"spellName":spellName,"castLevel":String(castLevel),"casterToken":casterToken,"inputText":inputText,"first":first};
+		let transferData = {"spellName":spellName,"castLevel":String(castLevel),"casterToken":casterToken.getId(),"inputText":inputText,"first":first,"castGroup":castGroup};
 		MTScript.setVariable("transferData",JSON.stringify(transferData));
 		MTScript.evalMacro("[h: ca.pf2e.Spell_Actions_Form_To_JS(transferData)]");
 		return;
