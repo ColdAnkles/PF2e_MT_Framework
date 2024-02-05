@@ -12,9 +12,9 @@ function create_pc_token(newPCTokenID, pcLibID){
 	for (var s in pcData.speeds.other){
 		let speedData = pcData.speeds.other[s];
 		if(speedData.type=="fly"){
-			add_action_to_token({"name":"Fly","actionType":"action","actionCount":1,"type":"basic","group":"Movement"},newPCTokenID)
+			add_action_to_token({"name":"Fly","actionType":"action","actionCount":1,"type":"basic","group":"Movement"},newPCTokenID, MapTool.tokens.getTokenByID(pcLibID));
 		}else if (speedData.type=="burrow"){
-			add_action_to_token({"name":"Burrow","actionType":"action","actionCount":1,"type":"basic","group":"Movement"},newPCTokenID)
+			add_action_to_token({"name":"Burrow","actionType":"action","actionCount":1,"type":"basic","group":"Movement"},newPCTokenID, MapTool.tokens.getTokenByID(pcLibID));
 		}
 	}
 	
@@ -26,14 +26,14 @@ function create_pc_token(newPCTokenID, pcLibID){
 	for (var a in allPossible){
 		let actionData = allPossible[a];
 		//actionData.type = "personal";
-		add_action_to_token(actionData, newPCTokenID, pcData.level);
+		add_action_to_token(actionData, newPCTokenID, pcData);
 	}
 
 	for (var s in pcData.spellRules){
 		let spellSource = pcData.spellRules[s];
 		for (var sp in spellSource.spells){
 			let spellData = spellSource.spells[sp];
-			add_action_to_token({"name":spellData.name,"actionType":"spell","type":"spell","group":spellSource.name,"castLevel":spellData.castLevel,"rawData":spellData,"traits":spellData.traits.value,"creatureLevel":pcData.level},newPCTokenID);
+			add_action_to_token({"name":spellData.name,"actionType":"spell","type":"spell","group":spellSource.name,"castLevel":spellData.castLevel,"rawData":spellData,"traits":spellData.traits.value,"creatureLevel":pcData.level},newPCTokenID, MapTool.tokens.getTokenByID(pcLibID));
 		}
 	}
 	

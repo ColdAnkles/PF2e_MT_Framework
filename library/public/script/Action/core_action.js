@@ -81,7 +81,7 @@ function core_action(actionData, actingToken){
 				//toggle_action_effect(effectData, actingToken, true);
 			}
 			
-			chat_display(actionData, true, {"level":actingToken.level,"rollDice":true});
+			chat_display(actionData, true, {"rollDice":true, "actor":actingToken, "action":actionData});
 	
 			if (doSave){
 				saving_throw(actingToken, null, {"applyEffect":actionData.name});

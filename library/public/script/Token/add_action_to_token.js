@@ -41,8 +41,14 @@ function action_icon_label(actionType, actionCount){
 	return "Error";
 }
 
-function add_action_to_token(actionData, tokenID, tokenLevel = 0){
+function add_action_to_token(actionData, tokenID, token){
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
+	if(!("description" in actionData)){
+		actionData.description = "";
+	}
+	if(token==null){
+		token = MapTool.tokens.getTokenByID(tokenID);
+	}
 	if (actionData.type=="basic"){
 		
 		//let libToken = get_runtime("libToken");
@@ -56,7 +62,7 @@ function add_action_to_token(actionData, tokenID, tokenLevel = 0){
 		}
 		//MapTool.chat.broadcast(JSON.stringify(lookupAction));
 		
-		let actionDesc = chat_display(lookupAction, false, {"level":tokenLevel, "rollDice":false});
+		let actionDesc = chat_display(lookupAction, false, {"level":token.getProperty("level"), "rollDice":false, "actor":token});
 		let props = {"label":action_icon_label(lookupAction.actionType, lookupAction.actionCost)+" "+actionData.name,"playerEditable":0,"command":"[r: js.ca.pf2e.simple_action(\""+actionData.name+"\",currentToken())]","tooltip":actionDesc,"sortBy":actionData.name};
 		if ("group" in actionData){
 			props.group = actionData.group;
@@ -74,7 +80,7 @@ function add_action_to_token(actionData, tokenID, tokenLevel = 0){
 				actionLabel = actionLabel + " " + icon_img("ranged");
 			}
 		}
-		let actionDesc = chat_display(actionData, false, {"level":tokenLevel, "rollDice":false});
+		let actionDesc = chat_display(actionData, false, {"level":token.level, "rollDice":false, "actor":token});
 		let props = {"label":actionLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.personal_action(\""+actionData.name+"\",currentToken())]","tooltip":actionDesc,"sortBy":actionData.name};
 		if ("group" in actionData){
 			props.group = actionData.group;
@@ -119,7 +125,31 @@ function add_action_to_token(actionData, tokenID, tokenLevel = 0){
 			actionData.actionType = "long";
 			actionData.actionCost = lookupSpell.time;
 		}
-		actionData.description = lookupSpell.description;
+		
+		if (lookupSpell.area != null){
+			actionData.description += "<b>Area</b> " + lookupSpell.area.details + "; <b>Targets</b> " + lookupSpell.target + "<br />";
+		}else if(lookupSpell.range!=null && lookupSpell.range!=""){
+			actionData.description += "<b>Range</b> " + lookupSpell.range + "; <b>Targets</b> " + lookupSpell.target + "<br />";
+		}
+	
+		if (lookupSpell.spellType == "save" && lookupSpell.save.value != ""){
+			actionData.description += "<b>Saving Throw</b> ";
+			if (lookupSpell.save.basic){
+				actionData.description += "basic ";
+			}
+			actionData.description += capitalise(lookupSpell.save.statistic);
+		}
+		let hasDuration = lookupSpell.duration != null && lookupSpell.duration != "" && lookupSpell.duration.value != "" && lookupSpell.duration.value != null;
+		if (lookupSpell.spellType == "save" && lookupSpell.save.statistic != "" && hasDuration){
+			actionData.description += "; ";
+		}else if(lookupSpell.spellType == "save" && lookupSpell.save.statistic != ""){
+			actionData.description += "<br />";
+		}
+		if (hasDuration){
+			actionData.description += "<b>Duration</b> " + lookupSpell.duration.value;
+			actionData.description += "<br />";
+		}
+		actionData.description += lookupSpell.description;
 
 		actionData.type = lookupSpell.category;
 		if (actionData.traits.includes("cantrip") && actionData.type == "spell"){
@@ -136,7 +166,7 @@ function add_action_to_token(actionData, tokenID, tokenLevel = 0){
 		actionData.name = spellName;
 		let tooltipDescription = chat_display(actionData, false, {"level":actionData.castLevel, "rollDice":false});
 	
-		let props = {"label":spellLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.cast_spell(\""+spellName+"\","+actionData.castLevel+",currentToken())]","tooltip":tooltipDescription,"sortBy":actionData.name,"group":actionData.group};
+		let props = {"label":spellLabel,"playerEditable":0,"command":"[r: js.ca.pf2e.cast_spell(\""+spellName+"\","+actionData.castLevel+",\""+actionData.group+"\",currentToken())]","tooltip":tooltipDescription,"sortBy":actionData.name,"group":actionData.group};
 
 		//MapTool.chat.broadcast(JSON.stringify(props));
 		createMacro(props, tokenID);
