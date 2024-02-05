@@ -10,7 +10,7 @@ function knockout_creature(tokenID){
 		MTScript.evalMacro("[h: setInitiative("+String(newInit)+", "+tokenID+")]")
 	}
 
-	MapTool.chat.broadcast(token.getName() + " has been knocked unconscious!");
+	chat_display({"name":token.getName() + " unconscious!","description":token.getName() + " knocked unconscious!"},true);
 }
 
 MTScript.registerMacro("ca.pf2e.knockout_creature", knockout_creature);

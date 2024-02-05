@@ -47,16 +47,21 @@ function change_hp(tokenID, changeHPData = null){
 			token.setProperty("HP",String(changeHPData.currentHPChange));
 			if(changeHPData.currentHPChange<=0){
 				kill_creature(tokenID);
+			}else{
+				chat_display({"name":token.getName() + " HP Set!","description":token.getName() + " HP set to " + String(changeHPData.currentHPChange) + "!"},true);
 			}
 		}else if(changeHPData.currentMaxHPChange!=tokenCurrentMaxHP){
 			token.setProperty("MaxHP",String(changeHPData.currentMaxHPChange));
 		}else if(changeHPData.currentTempHPChange!=tokenCurrentTempHP){
 			token.setProperty("TempHP",String(changeHPData.currentTempHPChange));
+			chat_display({"name":token.getName() + " changed Temp HP!","description":token.getName() + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!"},true);
 		}else if(changeHPData.hpChangeType=="tempHP"){
 			tokenCurrentTempHP = Math.max(tokenCurrentTempHP, changeHPData.hpChangeVal);
 			token.setProperty("TempHP",String(tokenCurrentTempHP));
+			chat_display({"name":token.getName() + " changed Temp HP!","description":token.getName() + " temp HP set to " + String(tokenCurrentTempHP) + "!"},true);
 		}else{
 			if(changeHPData.hpChangeType=="lethal"){
+				chat_display({"name":token.getName() + " takes damage!","description":token.getName() + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!"},true);
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
 				tokenCurrentHP = tokenCurrentHP + tokenCurrentTempHP;
 				if(tokenCurrentHP<=0){
@@ -70,6 +75,7 @@ function change_hp(tokenID, changeHPData = null){
 					zero_hp(tokenID);
 				}
 			}else if(changeHPData.hpChangeType=="nonlethal"){
+				chat_display({"name":token.getName() + " takes damage!","description":token.getName() + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!"},true);
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
 				tokenCurrentHP = tokenCurrentHP + tokenCurrentTempHP;
 				if(tokenCurrentHP<=0){
@@ -88,6 +94,12 @@ function change_hp(tokenID, changeHPData = null){
 					tokenCurrentHP = tokenCurrentMaxHP;
 				}
 				token.setProperty("HP", String(tokenCurrentHP));
+				if(get_state("Dead",token)){
+					set_state("Dead",0,token);
+					chat_display({"name":token.getName() + " resurrected!","description":token.getName() + " resurrected to " + String(tokenCurrentHP) + " HP!"},true);
+				}else{
+					chat_display({"name":token.getName() + " healed!","description":token.getName() + " heals " + String(changeHPData.hpChangeVal-tokenCurrentHP) + "!"},true);
+				}
 			}
 		}
 	}
