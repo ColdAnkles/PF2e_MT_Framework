@@ -12,7 +12,7 @@ function icon_img(imageName, invert=false, srcLocOnly=false){
 		imageSizeW += 10;
 	}else if (imageName == "3action"){
 		imageSizeW += 18;
-	}else if (imageName.includes("freeAction")){
+	}else if (imageName.includes("freeAction") || imageName == "free"){
 		imageName = "freeAction";
 	}else if (imageName.includes("reaction")){
 		imageName = "reaction";
