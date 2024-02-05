@@ -2,6 +2,7 @@
 
 function build_creature_view(creatureName, tokenID = null){
 	let creatureData = null;
+	let token = null;
 	
 	if (tokenID == null){
 		//let libToken = get_runtime("libToken");
@@ -12,11 +13,17 @@ function build_creature_view(creatureName, tokenID = null){
 
 		creatureData = parse_npc(creatureData);
 	}else{
+		token = MapTool.tokens.getTokenByID(tokenID);
 		creatureData = read_creature_properties(tokenID);
 	}
 
 	if (creatureData.name.includes("Lib:")){
 		creatureData.name = creatureData.name.replaceAll("Lib:","");
+	}
+
+	let additionalData = {"rollDice":false,"level":creatureData.level};
+	if(token!=null){
+		additionalData.actor = token;
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData.senses));
@@ -85,7 +92,8 @@ function build_creature_view(creatureName, tokenID = null){
 		if(skillData.traits.length>0){
 			HTMLString += " ("+skillData.traits.join(", ")+") ";
 		}
-		HTMLString += skillData.subText + "<br />";
+		additionalData.action = skillData;
+		HTMLString += clean_description(skillData.subText, true,true,true,additionalData) + "<br />";
 	}
 	
 	HTMLString += "<hr />";
@@ -190,7 +198,8 @@ function build_creature_view(creatureName, tokenID = null){
 			if (featData.actionCost != null){
 				iconLookup = String(featData.actionCost) + iconLookup;
 			}
-			featData.description = clean_description(featData.description,true,true,true,{"rollDice":false,"level":creatureData.level});
+			additionalData.action = featData;
+			featData.description = clean_description(featData.description,true,true,true,additionalData);
 			let traitText = "";
 			if (featData.traits.length>0){
 				traitText = " (" + featData.traits.join(", ") + ")";
@@ -272,9 +281,10 @@ function build_creature_view(creatureName, tokenID = null){
 		}else if(typeof(attackData.effects)=="string"){
 			attackString += "plus" + attackData.effects.replaceAll("-"," ");
 		}
+		additionalData.action = attackData;
 
 		if(attackData.description.length>0){
-			attackString = attackString + " " + clean_description(attackData.description);
+			attackString = attackString + " " + clean_description(attackData.description, true, true, true, additionalData);
 		}
 
 		//MapTool.chat.broadcast(attackString);
@@ -358,7 +368,8 @@ function build_creature_view(creatureName, tokenID = null){
 		if (actionData.traits.length>0){
 			HTMLString += "(" + actionData.traits.join(", ") + ") ";
 		}
-		HTMLString += clean_description(actionData.description);
+		additionalData.action = actionData;
+		HTMLString += clean_description(actionData.description, true, true, true, additionalData);
 		HTMLString += "<br />";
 	}
 
