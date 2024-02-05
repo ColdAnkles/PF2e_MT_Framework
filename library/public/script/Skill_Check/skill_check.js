@@ -74,39 +74,45 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 			
 		}
+		queryHTML += "<table><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+		queryHTML += "<input type='hidden' name='checkTokenID' value='"+checkToken.getId()+"'>";
+		queryHTML += "<input type='hidden' name='tokenType' value='"+tokenType+"'>";
+		queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
+		queryHTML += "<input type='hidden' name='altStat' value='"+Number(altStat)+"'>";
 
-		queryHTML = queryHTML + "<table><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
-		queryHTML = queryHTML + "<input type='hidden' name='checkTokenID' value='"+checkToken.getId()+"'>";
-		queryHTML = queryHTML + "<input type='hidden' name='tokenType' value='"+tokenType+"'>";
-		queryHTML = queryHTML + "<input type='hidden' name='secretCheck' value='0'>";
-		queryHTML = queryHTML + "<input type='hidden' name='altStat' value='"+Number(altStat)+"'>";
-
-		queryHTML = queryHTML + "<tr><td>Skill:</td><td><select name='skillName'>";
+		queryHTML += "<tr><td>Skill:</td><td><select name='skillName'>";
 		for (var s in skillStrings){
-			queryHTML = queryHTML + "<option value='"+s+"'>"+skillStrings[s]+"</option>";
+			queryHTML += "<option value='"+s+"'>"+skillStrings[s]+"</option>";
 		}
-		queryHTML = queryHTML + "</select></td></tr>";
+		queryHTML += "</select></td>";
 
 		if(altStat){
-			queryHTML = queryHTML + "<tr><td>Attribute:</td><td><select name='statName'>";
+			queryHTML += "<td>Attribute:</td><td><select name='statName'>";
 			for (var s in statStrings){
-				queryHTML = queryHTML + "<option value='"+statStrings[s].name+"'>"+statStrings[s].string+"</option>";
+				queryHTML += "<option value='"+statStrings[s].name+"'>"+statStrings[s].string+"</option>";
 			}
-			queryHTML = queryHTML + "</select></td></tr>";
+			queryHTML += "</select></td>";
 		}
+		queryHTML += "</tr>";
 
-		queryHTML = queryHTML + "<tr><td>Misc Bonus:</td><td><input type='text' name='miscBonus' size='' maxlength='' value='0'></td></tr>";
+		queryHTML += "<tr><td>Misc Bonus:</td><td><input type='text' name='miscBonus' size='' maxlength='' value='0'></td>\
+		<td>Circumstance:</b></td><td>+<input type='text' name='cBonus' value='0' size='2'></input></td>\
+		<td>-<input type='text' name='cMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td>Secret Check?</td><td><input type='checkbox' name='secretCheck' value='1'></td></tr>";
+		queryHTML += "<tr><td>Secret Check?</td><td><input type='checkbox' name='secretCheck' value='1'></td>\
+		<td>Status:</b></td><td>+<input type='text' name='sBonus' value='0' size='2'></input></td>\
+		<td>-<input type='text' name='sMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >"+checkToken.getName()+" tries to be skillful.</textarea></td></tr>";
+		queryHTML += "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >"+checkToken.getName()+" tries to be skillful.</textarea></td>\
+		<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
+		<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td colspan='2'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
+		queryHTML += "<tr><td colspan='2'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
 
-		queryHTML = queryHTML + "</form></table></html>"
+		queryHTML += "</form></table></html>"
 
 		MTScript.setVariable("queryHTML",queryHTML);
-		MTScript.evalMacro("[dialog5('Skill Check','width=300;height=300;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
+		MTScript.evalMacro("[dialog5('Skill Check','width=510;height=300;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 	
 	}else{
 
@@ -135,8 +141,8 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		let prof_bonus = 0;
 		let misc_bonus = Number(checkData.miscBonus);
 		let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName),checkData.statName+"-based","skill-check"].concat(extraScopes), true);
-		let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + effect_bonus_raw.bonuses.item + effect_bonus_raw.bonuses.none
-		 + effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
+		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance,checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status,checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item,checkData.iBonus) + effect_bonus_raw.bonuses.none
+		 + Math.max(effect_bonus_raw.maluses.circumstance,checkData.cMalus) + Math.max(effect_bonus_raw.maluses.status,checkData.sMalus) + Math.max(effect_bonus_raw.maluses.item,checkData.iMalus) + effect_bonus_raw.maluses.none;
 
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
