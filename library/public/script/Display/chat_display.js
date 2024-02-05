@@ -3,6 +3,7 @@
 function chat_display(displayData, broadcast = true, additionalData = {"rollDice":false}){
 	//MapTool.chat.broadcast(JSON.stringify(displayData));
 
+	additionalData.invertImages = false;
 	
 	let outputText = "<div style='padding:2px 5px 5px 5px; background-color:black;width:500px'>";
 	outputText = outputText + "<table style='width:100%;padding: 4px 0px;'><tr height=20px style='background-color: #522e2c;'><td><h1 style='color: #cbc18f;line-height: 1em;vertical-align: middle;font-variant: small-caps;'>";
