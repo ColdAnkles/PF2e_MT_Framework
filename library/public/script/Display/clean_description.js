@@ -104,6 +104,10 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 		let tempArray = parsed.bracketContents.split(".");
 		let featName = tempArray[tempArray.length -1];
 		return create_macroLink(capitalise(featName),"Item_View_Frame@Lib:ca.pf2e",{"itemType":"feat", "itemName":featName});
+	}else if(parsed.bracketContents.includes("classfeatures")){
+		let tempArray = parsed.bracketContents.split(".");
+		let featName = tempArray[tempArray.length -1];
+		return featName;
 	}
 	return uuidString;
 	
@@ -195,7 +199,7 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 			}
 		}
 	}else{
-		const rollRegexp = /\([^[\]]*\)/g;
+		const rollRegexp = /\(([^[\]]*)\)/g;
 		const infoRegexp = /\[([^[\]]*)\]/g;
 		let rollMatch = [...rollString.matchAll(rollRegexp)];
 		let infoMatch = [...rollString.matchAll(infoRegexp)];
@@ -226,8 +230,8 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 
 		if((additionalData.rollDice && !(rollMatch.includes("d"))) || !(rollMatch.includes("d"))){
 			rollMatch = String(eval(rollMatch));
-		}else{
-			//MapTool.chat.broadcast(rollMatch);
+		}else if(additionalData.rollDice){
+			rollMatch = String(roll_dice(rollMatch));
 		}
 
 		//MapTool.chat.broadcast(rollMatch);
@@ -237,6 +241,49 @@ function parse_roll(rollString, additionalData={"rollDice":false, "gm":false, "r
 	}
 
 	return rollString;
+}
+
+function parse_resolve(resolveString, additionalData){
+	let resolved = resolveString;
+	let parsed = [...resolveString.matchAll(/\((.*)\)/g)]
+
+	//MapTool.chat.broadcast(resolveString);
+	//MapTool.chat.broadcast(JSON.stringify(parsed));
+	
+	if (parsed!=null && parsed.length>0){
+		parsed = parsed[parsed.length-1];
+	}
+	if (parsed!=null && parsed.length>0){
+		parsed = parsed[parsed.length-1];
+	}
+
+	if(parsed == "@actor.attributes.spellDC.value"){
+		if("actor" in additionalData && "action" in additionalData && "traits" in additionalData.action){
+			let castingAbilities = JSON.parse(additionalData.actor.getProperty("spellRules"));
+			let castingAbility = null;
+			for (var ca in castingAbilities){
+				if(additionalData.action.traits.includes(ca.toLowerCase())){
+					castingAbility = Number(additionalData.actor.getProperty(castingAbilities[ca].castingAbility));
+				}
+			}
+			let castStats = ["arcana","occult","nature","religion"];
+			for(var c in castStats){
+				if(additionalData.action.traits.includes(castStats[c])){
+					let castName = "Casting"+capitalise(castStats[c]);
+					let actorProfs = JSON.parse(additionalData.actor.getProperty("proficiencies"));
+					for(var p in actorProfs){
+						if(actorProfs[p].name == castName){
+							return String(Number(actorProfs[p].bonus + 10 + castingAbility));
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+
+	return resolved;
 }
 
 function clean_calculations(calculationString, additionalData={"rollDice":false, "gm":false, "replaceGMRolls": true}){
@@ -253,18 +300,35 @@ function clean_calculations(calculationString, additionalData={"rollDice":false,
 	return String(eval(calculationString));
 }
 
-function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false, "gm":false, "replaceGMRolls": true}){
+function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = {"rollDice":false, "gm":false, "replaceGMRolls": true, "invertImages":true}){
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
+	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 
 	additionalData.removeP = removeP;
 	additionalData.removeHR = removeHR;
 	additionalData.removeLineBreaks = removeLineBreaks;
 
+	if(!("removeP" in additionalData)){
+		additionalData.removeP = true;
+	}
+	if(!("removeHR" in additionalData)){
+		additionalData.removeHR = true;
+	}
+	if(!("removeLineBreaks" in additionalData)){
+		additionalData.removeLineBreaks = true;
+	}
+	if(!("invertImages" in additionalData)){
+		additionalData.invertImages = true;
+	}
+	if("actor" in additionalData && !("level" in additionalData)){
+		additionalData.level = additionalData.actor.getProperty("level");
+	}
+
 	let cleanDescription = description;
 
-	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">1</span>",icon_img("1action", true));
-	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">2</span>",icon_img("2action", true));
-	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">3</span>",icon_img("3action", true));
+	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">1</span>",icon_img("1action",additionalData.invertImages));
+	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">2</span>",icon_img("2action",additionalData.invertImages));
+	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">3</span>",icon_img("3action",additionalData.invertImages));
 
 	if (removeP){
 		cleanDescription = cleanDescription.replaceAll("<p>","").replaceAll(".</p>",". ").replaceAll("</p>"," ");
@@ -276,6 +340,12 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 	}
 	if (removeHR){
 		cleanDescription = cleanDescription.replaceAll("<hr />","");
+	}
+
+	let resolve_matches = cleanDescription.match(/resolve\([^()]*\)/gm);
+	for (var m in resolve_matches){
+		let replaceString = parse_resolve(resolve_matches[m], additionalData);
+		cleanDescription=cleanDescription.replaceAll(resolve_matches[m],replaceString);
 	}
 
 	let template_matches = cleanDescription.match(/(@Template\[[^\[\]]*\])({[^\[\]]*})?/gm);
@@ -319,7 +389,6 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		let replaceString = parse_roll(roll_matches[m], additionalData);
 		cleanDescription=cleanDescription.replaceAll(roll_matches[m],replaceString);
 	}
-
 
 	cleanDescription = cleanDescription.replaceAll("emanation Aura","Aura");
 
