@@ -12,6 +12,14 @@ function personal_action(actionName, actingToken){
 	for (var o in allPossible){
 		let actionData = allPossible[o];
 		actionData.spendAction = true;
+		if(actionData.name=="Signature Spells"){
+			MTScript.evalMacro("[h: returnVar = input(\"labelVar|Configure Signature Spells?|prompt|LABEL|SPAN=TRUE\")]");
+			let answer = Number(MTScript.getVariable("returnVar"))==1;
+			if(answer){
+				configure_signature_spells(actingToken.getProperty("myID"));
+				return;
+			}
+		}
 		if (actionData.name == actionName){
 			core_action(actionData, actingToken);
 			return;
