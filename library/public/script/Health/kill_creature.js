@@ -14,7 +14,7 @@ function zero_hp(tokenID){
 		MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()]")
 		let currentInitiative = Number(MTScript.getVariable("currInit"));
 		let newInit = round(currentInitiative + 1);
-		MTScript.evalMacro("[h: setInitiative("+String(newInit)+", "+tokenID+")]")
+		MTScript.evalMacro("[h: setInitiative("+String(newInit)+", \""+tokenID+"\")]")
 
 		MTScript.evalMacro("[h: ans=input(\"junkVar|Was the damage a crit?|blah|LABEL|SPAN=TRUE\")]");
 		let askResponse = (MTScript.getVariable("ans")==1);
@@ -41,6 +41,7 @@ function zero_hp(tokenID){
 	}else{
 		set_state("Dead", 1, tokenID);
 		chat_display({"name":token.getName() + " dies!","description":token.getName() + " dies!"},true);
+		MTScript.evalMacro("[h: removeFromInitiative(\""+tokenID+"\")]");
 	}
 }
 
