@@ -150,7 +150,7 @@ function parse_pathbuilder_export(data){
 	for (var i in data.spellCasters){
 		let castingData = data.spellCasters[i];
 		let id = castingData.name;
-		let newCastingRules = {"name":castingData.name,"spellAttack":0,"spellDC":0,"spells":[],"type":castingData.spellcastingType,"castingAbility":castingData.ability}
+		let newCastingRules = {"name":castingData.name,"spellAttack":0,"spellDC":0,"spells":[],"type":castingData.spellcastingType,"castingAbility":castingData.ability,"castLevels":[]}
 		if (castingData.proficiency > 0){
 			newCastingRules.spellAttack = parsedData.abilities[castingData.ability] + castingData.proficiency + data.level;
 		}else{
@@ -160,6 +160,9 @@ function parse_pathbuilder_export(data){
 
 		for (var l in castingData.spells){
 			let castLevel = castingData.spells[l].spellLevel;
+			if(!(newCastingRules.castLevels.includes(castLevel))){
+				newCastingRules.castLevels.push(castLevel);
+			}
 			if (castLevel == 0){
 				castLevel = Math.max(1,Math.floor(data.level/2))
 			}
