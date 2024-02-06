@@ -22,6 +22,7 @@ function create_pc_token(newPCTokenID, pcLibID){
 	allPossible = allPossible.concat(pcData.offensiveActions);
 	allPossible = allPossible.concat(pcData.otherDefenses);
 	allPossible = allPossible.concat(pcData.passiveDefenses);
+	allPossible = allPossible.concat(pcData.passiveSkills);
 
 	for (var a in allPossible){
 		let actionData = allPossible[a];
