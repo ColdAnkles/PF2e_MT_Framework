@@ -35,8 +35,28 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		spellData = rest_call(spellData["fileURL"],"");
 	}
 	spellData = parse_spell(spellData);
+	//MapTool.chat.broadcast(JSON.stringify(spellData));
 
-	let actionData = {"name":spellData.name,"isSpell":true,"castLevel":castLevel,"spendAction":true,"castingAbility":castingData.castingAbility};
+	let actionData = {"name":spellData.name,"isSpell":true,"castLevel":castLevel,"spendAction":true,"castingAbility":castingData.castingAbility,"overlays":[]};
+	
+	for(var s in castingData.spells){
+		let thisSpell = castingData.spells[s];
+		if(thisSpell.name==spellData.name){
+			if("signature" in thisSpell){
+				actionData.signature = thisSpell.signature
+			}
+		}
+	}
+
+	if(!("signature" in actionData)){
+		actionData.signature = false;
+	}
+
+	if(actionData.signature && !(spellData.time.includes("to") && additionalData == null)){
+		MTScript.evalMacro("[h: signatureUpcast="+String(castLevel)+"][h: input(\"signatureUpcast|"+castingData.castLevels.join(',')+"|Select Upcast Level|LIST|VALUE=STRING\")]");
+		actionData.castLevel = MTScript.getVariable("signatureUpcast");
+		castLevel = actionData.castLevel;
+	}
 
 	if(!(isNaN(spellData.time))){
 		actionData.actionType="action";
@@ -45,7 +65,6 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		//Ask actions spent
 		let first = Number(spellData.time.split(" to ")[0]);
 		let second = Number(spellData.time.split(" to ")[1]);
-		let overlayIDs = {};
 		if (isNaN(second)){
 			second = 3;
 		}
@@ -65,7 +84,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		
 		for(var overlay in spellData.overlays){
 			if(spellData.overlays[overlay].system.time.value.includes(String(additionalData))){
-				actionData.overlayID = overlay;
+				actionData.overlays.push(overlay);
 			}
 		}
 

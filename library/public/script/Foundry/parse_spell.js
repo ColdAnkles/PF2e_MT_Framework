@@ -29,7 +29,7 @@ function parse_spell(spellData){
 		parsedData.spellType = "unknown";
 	}
 
-	if("area" in parsedData && "type" in parsedData.area){
+	if("area" in parsedData && parsedData.area != null && "type" in parsedData.area){
 		let areaString = "";
 		if("value" in parsedData.area){
 			areaString += String(parsedData.area.value) + " ft. ";

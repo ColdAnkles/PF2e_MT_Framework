@@ -35,22 +35,41 @@ function spell_action(actionData, actingToken){
 		}
 	}
 
-	if("overlayID" in actionData){
-		let overlayData = spellData.overlays[actionData.overlayID];
-		if (overlayData.overlayType=="override"){
-			for(var key in overlayData.system){
-				if("key" == "target" && "value" in overlayData.system[key]){
-					spellData[key] = overlayData.system[key].value;
-				}else{
-					spellData[key] = overlayData.system[key];
+	let hh_targetType = null;
+	if((spellData.name=="Heal" || spellData.name=="Harm") && actionData.actionCost=="2"){
+		MTScript.evalMacro("[h: targetChoice=\"Living\"][h: input(\"targetChoice|Living,Dead|Target Type|LIST|VALUE=STRING\")]");
+
+		hh_targetType = MTScript.getVariable("targetChoice");
+	}
+
+	//MapTool.chat.broadcast(JSON.stringify(actionData));
+
+	if("overlays" in actionData){
+		for(var o in actionData.overlays){
+			let overlayData = spellData.overlays[actionData.overlays[o]];
+			if (overlayData.overlayType=="override"){
+				if(hh_targetType!=null && "name" in overlayData && overlayData.name!=null && !(overlayData.name.includes(hh_targetType))){
+					continue;
+				};
+				for(var key in overlayData.system){
+					if(typeof(overlayData.system[key])=="object" && overlayData.system[key]!=null && "value" in overlayData.system[key] && Object.keys(overlayData.system[key]).length==1 && key!="traits"){
+						spellData[key] = overlayData.system[key].value;
+					}else if (key=="damage" || key=="heightening"){
+						for(var e in overlayData.system[key]){
+							for(var k2 in overlayData.system[key][e]){
+								spellData[key][e][k2] = overlayData.system[key][e][k2];
+							}
+						}
+					}else{
+						spellData[key] = overlayData.system[key];
+					}
 				}
 			}
-		}
+		}								
 	}
 
 	let spellMod = Number(actingToken.getProperty(actionData.castingAbility));
 	
-	//MapTool.chat.broadcast(JSON.stringify(actionData));
 	//MapTool.chat.broadcast(JSON.stringify(spellData));
 
 	let attackScopes = ["spell"];
@@ -59,7 +78,11 @@ function spell_action(actionData, actingToken){
 	
 	let displayData = {"description":"","name":actingToken.getName() + " - " + actionData.name,"level":actionData.castLevel,"type":spellData.category};
 	if (spellData.area != null){
-		displayData.description += "<b>Area</b> " + spellData.area.details;
+		if("details" in spellData.area){
+			displayData.description += "<b>Area</b> " + spellData.area.details;
+		}else{
+			displayData.description += "<b>Area</b> " + String(spellData.area.value) + " ft. " + spellData.area.type;
+		}
 		if(spellData.target!=null && spellData.target != ""){
 			displayData.description += "; <b>Targets</b> " + spellData.target;
 		}
@@ -69,6 +92,7 @@ function spell_action(actionData, actingToken){
 		if(spellData.target!=null && spellData.target != ""){
 			displayData.description += "; <b>Targets</b> " + spellData.target;
 		}
+		displayData.description += "<br />";
 	}
 	
 	let hasDuration = spellData.duration != null && spellData.duration != "" && spellData.duration.value != "" && spellData.duration.value != null;
