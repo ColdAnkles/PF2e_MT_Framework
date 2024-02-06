@@ -107,7 +107,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
 		<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML += "<tr><td colspan='2'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
+		queryHTML += "<tr><td colspan='3' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td></tr>";
+
+		queryHTML += "<tr><td colspan='3' style='text-align:center'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
 
 		queryHTML += "</form></table></html>"
 
@@ -115,9 +117,39 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		MTScript.evalMacro("[dialog5('Skill Check','width=510;height=300;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 	
 	}else{
+		MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
+
+		if(!("cBonus" in checkData)){
+			checkData.cBonus = 0;
+		}
+		if(!("sBonus" in checkData)){
+			checkData.sBonus = 0;
+		}
+		if(!("iBonus" in checkData)){
+			checkData.iBonus = 0;
+		}
+		if(!("cMalus" in checkData)){
+			checkData.cMalus = 0;
+		}
+		if(!("sMalus" in checkData)){
+			checkData.sMalus = 0;
+		}
+		if(!("iMalus" in checkData)){
+			checkData.iMalus = 0;
+		}
+		if(!("fortuneSelect" in checkData)){
+			checkData.fortuneSelect = "normal";
+		}
 
 		MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 		let dTwenty = Number(MTScript.getVariable("dTwenty"));
+		if(checkData.fortuneSelect=="fortune"){
+			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
+			dTwenty = Math.max(dTwenty, Number(MTScript.getVariable("dTwenty")));
+		}else if(checkData.fortuneSelect=="misfortune"){
+			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
+			dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
+		}
 
 		let dTwentyColour = "black";
 		if (dTwenty == 1){

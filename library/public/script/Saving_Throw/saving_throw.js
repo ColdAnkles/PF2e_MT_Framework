@@ -47,13 +47,21 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 			}
 		}
 
-		queryHTML = queryHTML + "<tr><td>Misc Bonus:</td><td><input type='text' name='miscBonus' size='' maxlength='' value='0'></td></tr>";
+		queryHTML = queryHTML + "<tr><td>Misc Bonus:</td><td><input type='text' name='miscBonus' size='' maxlength='' value='0'></td>\
+		<td>Circumstance:</b></td><td>+<input type='text' name='cBonus' value='0' size='2'></input></td>\
+		<td>-<input type='text' name='cMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td>Secret Check?</td><td><input type='checkbox' name='secretCheck' value='1'></td></tr>";
+		queryHTML = queryHTML + "<tr><td>Secret Check?</td><td><input type='checkbox' name='secretCheck' value='1'></td>\
+		<td>Status:</b></td><td>+<input type='text' name='sBonus' value='0' size='2'></input></td>\
+		<td>-<input type='text' name='sMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >"+saveToken.getName()+" attempts to save.</textarea></td></tr>";
+		queryHTML = queryHTML + "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >"+saveToken.getName()+" attempts to save.</textarea></td>\
+		<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
+		<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td colspan='2'><input type='submit' name='savingThrowSubmit' value='Submit'></td></tr>";
+		queryHTML += "<tr><td colspan='3' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td></tr>";
+
+		queryHTML = queryHTML + "<tr><td colspan='3' style='text-align:center'><input type='submit' name='savingThrowSubmit' value='Submit'></td></tr>";
 
 		queryHTML = queryHTML + "</form></table></html>"
 
@@ -62,9 +70,38 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 	
 	}else{
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(saveData));
+		
+		if(!("cBonus" in saveData)){
+			saveData.cBonus = 0;
+		}
+		if(!("sBonus" in saveData)){
+			saveData.sBonus = 0;
+		}
+		if(!("iBonus" in saveData)){
+			saveData.iBonus = 0;
+		}
+		if(!("cMalus" in saveData)){
+			saveData.cMalus = 0;
+		}
+		if(!("sMalus" in saveData)){
+			saveData.sMalus = 0;
+		}
+		if(!("iMalus" in saveData)){
+			saveData.iMalus = 0;
+		}
+		if(!("fortuneSelect" in checkData)){
+			checkData.fortuneSelect = "normal";
+		}
 
 		MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 		let dTwenty = Number(MTScript.getVariable("dTwenty"));
+		if(saveData.fortuneSelect=="fortune"){
+			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
+			dTwenty = Math.max(dTwenty, Number(MTScript.getVariable("dTwenty")));
+		}else if(saveData.fortuneSelect=="misfortune"){
+			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
+			dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
+		}
 
 		let dTwentyColour = "black";
 		if (dTwenty == 1){
