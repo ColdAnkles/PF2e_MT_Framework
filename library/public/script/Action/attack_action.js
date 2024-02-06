@@ -12,6 +12,13 @@ function attack_action(actionData, actingToken){
 		currentAttackCount = 0;
 	}
 
+	let activeConditions = JSON.parse(actingToken.getProperty("conditionDetails"));
+
+	if("Dazzled" in activeConditions){
+		flat_check(actingToken);
+	}
+
+
 	let inventory = JSON.parse(actingToken.getProperty("inventory"));
 	let itemData = inventory[actionData.linkedWeapon];
 	
