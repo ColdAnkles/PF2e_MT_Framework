@@ -16,6 +16,8 @@ function parse_pathbuilder_export(data){
 	let spellLibrary = JSON.parse(read_data("pf2e_spell"));
 	let itemLibrary = JSON.parse(read_data("pf2e_item"));
 
+	let unfoundData = [];
+
 	function find_object_data(objectName, searchSet = "all"){
 		//MapTool.chat.broadcast(objectName);
 		if(objectName=="Versatile Heritage"){
@@ -56,7 +58,7 @@ function parse_pathbuilder_export(data){
 				return itemLibrary[testVar4];
 			}
 		}
-		MapTool.chat.broadcast("Couldn't find " + objectName);
+		unfoundData.push(objectName);
 	}
 
 	function setup_spell(spellName){
@@ -85,6 +87,8 @@ function parse_pathbuilder_export(data){
 	//MapTool.chat.broadcast(JSON.stringify(data));
 	//MapTool.chat.broadcast(JSON.stringify(data.specials));
 	let parsedData = {};
+
+	message_window("Importing " + data.name, "Importing Basics");
 
 	//__STATS__	
 	parsedData.abilities = {};
@@ -146,6 +150,7 @@ function parse_pathbuilder_export(data){
 	parsedData.passiveSkills = [];
 
 	//__MAGIC__
+	message_window("Importing " + data.name, "Importing Spellcasting");
 	parsedData.spellRules = {};
 	for (var i in data.spellCasters){
 		let castingData = data.spellCasters[i];
@@ -181,6 +186,7 @@ function parse_pathbuilder_export(data){
 		//MapTool.chat.broadcast(JSON.stringify(newCastingRules));
 	}
 
+	message_window("Importing " + data.name, "Importing Focus Spells");
 	for (var i in data.focus){
 		for (var j in data.focus[i]){
 			let castingData = data.focus[i][j];
@@ -237,6 +243,7 @@ function parse_pathbuilder_export(data){
 		}
 	}
 
+	message_window("Importing " + data.name, "Importing Specials");
 	for (var s in data.specials){
 		let tempName = data.specials[s];
 		tempName = tempName.replaceAll("Arcane School: ","").replaceAll("Arcane Thesis: ","");
@@ -263,6 +270,7 @@ function parse_pathbuilder_export(data){
 		parsedData.senses.push("normal");
 	}
 
+	message_window("Importing " + data.name, "Importing Armor");
 	for (var a in data.armor){
 		let tempData = find_object_data(data.armor[a].name, "item");
 		if ("fileURL" in tempData){
@@ -270,6 +278,8 @@ function parse_pathbuilder_export(data){
 			parsedData.itemList[tempData.id].quantity = data.armor[a].qty;
 		}
 	}
+
+	message_window("Importing " + data.name, "Importing Weapons");
 	for (var w in data.weapons){
 		let thisWeapon = data.weapons[w];
 		let tempData = find_object_data(thisWeapon.name, "item");
@@ -306,6 +316,8 @@ function parse_pathbuilder_export(data){
 			}
 		}
 	}
+
+	message_window("Importing " + data.name, "Importing Gear");
 	for (var e in data.equipment){
 		let tempData = find_object_data(data.equipment[e][0], "item");
 		if (tempData != null) {
@@ -319,6 +331,7 @@ function parse_pathbuilder_export(data){
 	parsedData.pets = data.pets;
 	parsedData.familiars = data.familiars;
 
+	message_window("Importing " + data.name, "Importing Familiars");
 	for(var f in parsedData.familiars){
 		parsedData.familiars[f].familiarAbilities=[];
 		for(var a in parsedData.familiars[f].abilities){
@@ -333,6 +346,12 @@ function parse_pathbuilder_export(data){
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(parsedData.itemList));
+
+	if(unfoundData.length>0){
+		message_window("Importing " + data.name, "<b>The following features/items could not be located/assigned.</b><br />"+unfoundData.join("<br />"));
+	}else{
+		close_message_window("Importing " + data.name);
+	}
 	return parsedData;
 }
 
