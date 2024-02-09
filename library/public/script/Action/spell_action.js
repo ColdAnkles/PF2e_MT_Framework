@@ -270,5 +270,5 @@ function spell_action(actionData, actingToken){
 		displayData.type = "Cantrip";
 	}
 
-	chat_display(displayData, true, {"level":actionData.castLevel, "rollDice":true});
+	chat_display(displayData, true, {"level":actionData.castLevel, "rollDice":true, "item":spellData});
 }
