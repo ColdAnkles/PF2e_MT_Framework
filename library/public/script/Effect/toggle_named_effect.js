@@ -1,6 +1,6 @@
 "use strict";
 
-function toggle_named_effect(effectName, token, state=-1){
+function toggle_named_effect(effectName, token, state=-1, effectSource = null){
 	let affectedCreature = null;
 	if (typeof(token)!="string"){
 		affectedCreature = token;
@@ -15,7 +15,7 @@ function toggle_named_effect(effectName, token, state=-1){
 			let subTokens = JSON.parse(affectedCreature.getProperty("pcTokens"));
 			updateTokens = updateTokens.concat(subTokens);
 		}else{
-			toggle_named_effect(effectName, affectedCreature.getProperty("myID"), state);
+			toggle_named_effect(effectName, affectedCreature.getProperty("myID"), state, effectSource);
 			return;
 		}
 	}
@@ -39,12 +39,17 @@ function toggle_named_effect(effectName, token, state=-1){
 		MapTool.chat.broadcast("Cannot find effect: " + effectName);
 		return;
 	}
+
+	effectData.sourceItem = effectSource;
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
 
 	//MapTool.chat.broadcast(String(affectedCreature));
 
 	for(var t in updateTokens){
 		let thisCreature = MapTool.tokens.getTokenByID(updateTokens[t]);
+		if(thisCreature==null){
+			continue;
+		}
 		let activeEffects = JSON.parse(thisCreature.getProperty("activeEffects"));
 
 		if (activeEffects == null){

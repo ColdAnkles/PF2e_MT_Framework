@@ -1,7 +1,8 @@
 "use strict";
 
-function apply_effect_query(effectName){
+function apply_effect_query(inputData){
     //Get visible tokens
+    let effectName = inputData.effectName;
     let tokens = get_tokens({"visible":true,"unsetStates":["Dead"],"layer":["TOKEN"]});
     let tokenNames = [];
     for(var i=0;i<tokens.length;i++){
@@ -21,7 +22,7 @@ function apply_effect_query(effectName){
     let tokenChoice = Number(MTScript.getVariable("tokenChoice"));
 
     //Apply effect to token
-    toggle_named_effect(effectName, tokens[tokenChoice], 1);
+    toggle_named_effect(effectName, tokens[tokenChoice], 1, inputData.effectSource);
 }
 
 MTScript.registerMacro("ca.pf2e.apply_effect_query", apply_effect_query);

@@ -66,6 +66,7 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 	let parsed = parse_foundry_strings(uuidString);
 
 	//MapTool.chat.broadcast(JSON.stringify(parsed));
+	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 	
 	if(parsed.braceContents!=null){
 		return parsed.braceContents;
@@ -78,7 +79,7 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 	}else if(parsed.bracketContents.includes("Spell Effect") && additionalData.rollDice){
 		let tempArray = parsed.bracketContents.split(".");
 		let effectName = tempArray[tempArray.length -1];
-		return create_macroLink("Apply " + effectName,"Apply_Effect_Query@Lib:ca.pf2e",effectName);
+		return create_macroLink("Apply " + effectName,"Apply_Effect_Query@Lib:ca.pf2e",{"effectName":effectName,"effectSource":additionalData.item});
 	}else if(parsed.bracketContents.includes("Effect") && !additionalData.rollDice){
 		let tempArray = parsed.bracketContents.split(".");
 		let effectName = tempArray[tempArray.length -1];
@@ -87,7 +88,7 @@ function parse_uuid(uuidString, additionalData={"rollDice":false}){
 		let tempArray = parsed.bracketContents.split(".");
 		let effectName = tempArray[tempArray.length -1];
 		tempArray = tempArray[tempArray.length -1].split(":");
-		return create_macroLink("Apply " + effectName,"Apply_Effect_Query@Lib:ca.pf2e",effectName);
+		return create_macroLink("Apply " + effectName,"Apply_Effect_Query@Lib:ca.pf2e",{"effectName":effectName,"effectSource":additionalData.item});
 	}else if(parsed.bracketContents.includes("spells-srd")){
 		let tempArray = parsed.bracketContents.split(".");
 		let spellName = tempArray[tempArray.length -1];
