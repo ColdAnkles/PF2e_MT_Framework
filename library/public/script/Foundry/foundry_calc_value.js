@@ -42,7 +42,7 @@ function foundry_calc_value(value, actor, item) {
 					return null;
 				}
 				value = value.replaceAll(foundMatches[m], actor.getProperty(splitStrings[1]));
-			} else if (splitStrings[0] == "@item") {
+			} else if (splitStrings[0] == "@item" && splitStrings[1] == "value") {
 				if (item == null) {
 					MapTool.chat.broadcast("Error! No item when parsing value " + value);
 					return null;
@@ -53,6 +53,18 @@ function foundry_calc_value(value, actor, item) {
 					}
 				} else {
 					value = value.replaceAll(foundMatches[m], item.value);
+				}
+			} else if (splitStrings[0] == "@item" && splitStrings[1] == "level") {
+				if (item == null) {
+					MapTool.chat.broadcast("Error! No item when parsing value " + value);
+					return null;
+				}
+				if (isNaN(Number(item.level))) {
+					if ("value" in item.level) {
+						value = value.replaceAll(foundMatches[m], item.level.value);
+					}
+				} else {
+					value = value.replaceAll(foundMatches[m], item.level);
 				}
 			} else {
 				MapTool.chat.broadcast("Error! No match for " + splitStrings[0]);
