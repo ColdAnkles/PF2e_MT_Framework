@@ -28,7 +28,12 @@ function selector_inheritance(selector){
 		}
 		if(selector[e]=="perception-initiative"){
 			finalSelector = finalSelector.concat(["perception","initiative"]);
-
+		}
+		if(selector[e]=="{item|flags.pf2e.rulesSelections.weapon}-damage"){
+			finalSelector = finalSelector.concat(["weapon-attack"]);
+		}
+		if(selector[e]=="{item|flags.pf2e.rulesSelections.weapon}-attack"){
+			finalSelector = finalSelector.concat(["weapon-attack"]);
 		}
 	}
 
