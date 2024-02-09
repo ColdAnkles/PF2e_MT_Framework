@@ -117,7 +117,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		MTScript.evalMacro("[dialog5('Skill Check','width=510;height=300;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 	
 	}else{
-		MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
+		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
 
 		if(!("cBonus" in checkData)){
 			checkData.cBonus = 0;
