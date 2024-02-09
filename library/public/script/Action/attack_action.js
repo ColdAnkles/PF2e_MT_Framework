@@ -22,10 +22,15 @@ function attack_action(actionData, actingToken){
 	let inventory = JSON.parse(actingToken.getProperty("inventory"));
 	let itemData = inventory[actionData.linkedWeapon];
 	
+	if(itemData==null){
+		MapTool.chat.broadcast("Linked Weapon Missing!");
+		return
+	}
+	
 	let attack_bonus = actionData.bonus;
 	let initiative = get_initiative(actingToken.getId());
 
-	let attackScopes = ["attack-roll"];
+	let attackScopes = ["attack", "attack-roll", "weapon-attack"];
 	let damageScopes = ["damage"];
 	if(actionData.isMelee){
 		attackScopes.push("melee-attack");
@@ -45,7 +50,22 @@ function attack_action(actionData, actingToken){
 		dTwentyColour = "green";
 	}
 
-	let effect_bonus = calculate_bonus(actingToken, attackScopes, true);	
+	let effect_bonus = calculate_bonus(actingToken, attackScopes, true);
+
+
+	if("WeaponPotency" in effect_bonus.otherEffects){
+		let currBonus = effect_bonus.bonuses.item;
+		effect_bonus.bonuses.item = Math.max(currBonus, Number(effect_bonus.otherEffects.WeaponPotency));
+		itemData.runes.potency = effect_bonus.otherEffects.WeaponPotency;
+	}
+
+	if("Striking" in effect_bonus.otherEffects){
+		actionData.damage[0].dice = Math.max(actionData.damage[0].dice, effect_bonus.otherEffects.Striking+1);
+		itemData.damage.dice = actionData.damage[0].dice;
+		itemData.runes.striking = effect_bonus.otherEffects.Striking;
+		actionData.damage[0].damage = String(actionData.damage[0].dice)+actionData.damage[0].die+((itemData!=null && itemData.damageBonus!=null && itemData.damageBonus>0)?"+"+String(itemData.damageBonus):"");
+	}
+
 	let damage_bonus = calculate_bonus(actingToken, damageScopes, true);
 
 	let deadlyDie = "";
@@ -65,7 +85,7 @@ function attack_action(actionData, actingToken){
 			
 		}else if (traitName == "backstabber"){
 			if (itemData != null){
-				if (itemData.potentcyRune == 3){
+				if (itemData.runes.potentcy == 3){
 					additionalDamageList.push("+2 (4) precision damage");
 				}else{
 					additionalDamageList.push("+1 (2) precision damage");

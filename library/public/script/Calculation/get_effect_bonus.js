@@ -6,7 +6,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null){
 	}
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
-	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"query":false};
+	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"query":false,"otherEffects":{}};
 	for (var r in effectData.rules){
 		let ruleData = effectData.rules[r];
 		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll=="if-enabled");
@@ -19,7 +19,6 @@ function get_effect_bonus(effectData, bonusScopes, actor = null){
 				continue;
 			}
 		}
-		//
 		if ("mode" in ruleData && ruleData.mode == "override"){
 			if (ruleData.path == "system.attributes.shield" && bonusScopes.includes("ac")){
 				//MapTool.chat.broadcast(JSON.stringify(ruleData));
@@ -53,6 +52,9 @@ function get_effect_bonus(effectData, bonusScopes, actor = null){
 						returnData.bonuses[ruleData.type] = ruleData.value;
 					}
 				}
+			}else if((ruleData.key=="WeaponPotency" || ruleData.key=="Striking") && (bonusScopes.includes("weapon-attack") || bonusScopes.includes("all"))){
+				returnData.otherEffects[ruleData.key]=foundry_calc_value(ruleData.value, actor, effectData.sourceItem);
+			}else{
 			}
 		}
 	}

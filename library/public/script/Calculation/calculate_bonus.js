@@ -14,7 +14,7 @@ function calculate_bonus(token, bonusScopes, consume=false){
 	let activeConditions = JSON.parse(token.getProperty("conditionDetails"));
 	
 	let selectedModifiers = {"bonuses":{"circumstance":null,"status":null,"item":null,"none":null,"proficiency":null},"maluses":{"circumstance":null,"status":null,"item":null,"none":null,"proficiency":null}};
-	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0}};
+	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"otherEffects":{}};
 
 	for (var e in activeEffects){
 		let effectData = JSON.parse(JSON.stringify(activeEffects[e]));
@@ -27,6 +27,8 @@ function calculate_bonus(token, bonusScopes, consume=false){
 		for (var type in effectBonuses){
 			if(type=="query"){
 				continue;
+			}else if(type=="otherEffects"){
+				returnData.otherEffects = Object.assign({},returnData.otherEffects,effectBonuses.otherEffects);
 			}
 			let typeDict = effectBonuses[type];
 			for (var k in typeDict){
