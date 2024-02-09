@@ -35,6 +35,13 @@ function parse_npc(rawData, parseRaw = false){
 	for (var s in rawData.system.perception.senses){
 		npcData.senses.push(rawData.system.perception.senses[s].type);
 	}
+	if(npcData.senses.includes("low-light-vision")){
+		npcData.senses.push("low-light");
+		var index = npcData.senses.indexOf("low-light-vision");
+		if (index > -1) {
+			npcData.senses.splice(index, 1);
+		}
+	}
 	if(npcData.senses.length==0){
 		npcData.senses.push("Normal");
 	}
