@@ -16,3 +16,23 @@ function ceil(a){
 function floor(a){
     return Math.floor(a);
 }
+
+function ternary(decider, ifT, ifF){
+    return (decider)?ifT:ifF;
+}
+
+function gte(a, b){
+    return a>=b;
+}
+
+function gt(a, b){
+    return a>b;
+}
+
+function lte(a, b){
+    return a<=b;
+}
+
+function lt(a, b){
+    return a<b;
+}
