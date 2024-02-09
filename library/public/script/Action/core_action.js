@@ -80,6 +80,10 @@ function core_action(actionData, actingToken){
 				effectData.name = "Effect: " + actionData.name
 				//toggle_action_effect(effectData, actingToken, true);
 			}
+
+			if(actionData.name=="Recall Knowledge"){
+				doCheck = true;
+			}
 			
 			chat_display(actionData, true, {"rollDice":true, "actor":actingToken, "action":actionData});
 	

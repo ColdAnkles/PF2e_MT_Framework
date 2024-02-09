@@ -20,7 +20,8 @@ function add_common_macros(tokenID){
     }
 
     if(get_token_type(tokenID)=="PC"){
-        let PCMacros = [{"label":"Inventory","playerEditable":0,"command":"[h: js.ca.pf2e.view_inventory(myID)]","tooltip":"View Inventory","sortBy":"","group":"1. Common"}]
+        let PCMacros = [{"label":"Inventory","playerEditable":0,"command":"[h: js.ca.pf2e.view_inventory(myID)]","tooltip":"View Inventory","sortBy":"","group":"1. Common"},
+                        {"label":"Recall Knowledge","playerEditable":0,"command":"[h: js.ca.pf2e.simple_action(\"Recall Knowledge\",currentToken())]","tooltip":"Recall Knowledge","sortBy":"","group":"1. Common"}]
         for (var m in PCMacros){
             createMacro(PCMacros[m], tokenID);
         }
