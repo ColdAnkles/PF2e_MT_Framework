@@ -301,7 +301,8 @@ function parse_pathbuilder_export(data){
 					thisWeapon.runes.striking = 3;
 					newAttackData.damage[0].dice += 3;
 				}
-				newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + "+"+String(thisWeapon.damageBonus);
+				newAttackData.linkedWeapon = newWeapon.id;
+				newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + "+"+((thisWeapon.damageBonus>0)?"":String(thisWeapon.damageBonus));
 				newWeapon.runes.potency = thisWeapon.pot;
 				for(var rI of thisWeapon.runes){
 					newWeapon.runes.property.push(rI.toLowerCase());
