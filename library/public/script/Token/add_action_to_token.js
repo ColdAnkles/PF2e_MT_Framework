@@ -43,6 +43,19 @@ function action_icon_label(actionType, actionCount){
 
 function add_action_to_token(actionData, tokenID, token){
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
+	if(!("type" in actionData)){
+		if("actionType" in actionData){
+			actionData.type = actionData.actionType;
+		}else{
+			let property = JSON.parse(read_data("pf2e_action"));
+			let lookupAction = property[actionData.name];
+			if(lookupAction==null){
+				actionData.type = "basic";
+			}else{
+				actionData.type = "feat";
+			}
+		}
+	}
 	if(!("description" in actionData)){
 		actionData.description = "";
 	}
@@ -69,9 +82,7 @@ function add_action_to_token(actionData, tokenID, token){
 		}
 		createMacro(props, tokenID);
 		
-	}else if (actionData.type=="personal" || actionData.type=="feat"){
-		
-		//MapTool.chat.broadcast(JSON.stringify(actionData));
+	}else if (actionData.type=="personal" || actionData.type=="feat" || actionData.type=="action"){
 		let actionLabel = action_icon_label(actionData.actionType, actionData.actionCost)+" "+actionData.name;
 		if ("isMelee" in actionData){
 			if(actionData.isMelee){
