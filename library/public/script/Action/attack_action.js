@@ -85,7 +85,7 @@ function attack_action(actionData, actingToken){
 			
 		}else if (traitName == "backstabber"){
 			if (itemData != null){
-				if (itemData.runes.potentcy == 3){
+				if (itemData.runes.potency == 3){
 					additionalDamageList.push("+2 (4) precision damage");
 				}else{
 					additionalDamageList.push("+1 (2) precision damage");
