@@ -66,7 +66,7 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 		queryHTML = queryHTML + "</form></table></html>"
 
 		MTScript.setVariable("queryHTML",queryHTML);
-		MTScript.evalMacro("[dialog5('Saving Throw','width=400;height=400;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
+		MTScript.evalMacro("[dialog5('Saving Throw','width=510;height=290;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 	
 	}else{
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(saveData));
