@@ -55,6 +55,11 @@ function chat_display(displayData, broadcast = true, additionalData = {"rollDice
 		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + gmDesc + "</div>";
 	}
 
+	if(displayData.appliedEffects != null && displayData.appliedEffects.length>0){
+		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Applied Effects</i><br />"+displayData.appliedEffects.join(", ")+"</div>";
+		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Applied Effects</i><br />"+displayData.appliedEffects.join(", ")+"</div>";
+	}
+
 	outputText += "</div>";
 	gmOutputText += "</div>";
 
