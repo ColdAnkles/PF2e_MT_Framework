@@ -13,8 +13,8 @@ function calculate_bonus(token, bonusScopes, consume=false){
 
 	let activeConditions = JSON.parse(token.getProperty("conditionDetails"));
 	
-	let selectedModifiers = {"bonuses":{"circumstance":null,"status":null,"item":null,"none":null,"proficiency":null},"maluses":{"circumstance":null,"status":null,"item":null,"none":null,"proficiency":null}};
-	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"otherEffects":{}};
+	let selectedModifiers = {"bonuses":{"circumstance":null,"status":null,"item":null,"none":null,"proficiency":null},"maluses":{"circumstance":null,"status":null,"item":null,"none":null,"proficiency":null},"other":[]};
+	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"otherEffects":{},"appliedEffects":[]};
 
 	for (var e in activeEffects){
 		let effectData = JSON.parse(JSON.stringify(activeEffects[e]));
@@ -27,8 +27,9 @@ function calculate_bonus(token, bonusScopes, consume=false){
 		for (var type in effectBonuses){
 			if(type=="query"){
 				continue;
-			}else if(type=="otherEffects"){
+			}else if(type=="otherEffects" && Object.keys(effectBonuses.otherEffects).length>0){
 				returnData.otherEffects = Object.assign({},returnData.otherEffects,effectBonuses.otherEffects);
+				selectedModifiers.other.push(effectData)
 			}
 			let typeDict = effectBonuses[type];
 			for (var k in typeDict){
@@ -82,10 +83,13 @@ function calculate_bonus(token, bonusScopes, consume=false){
 
 	if(consume){
 		for(var t in selectedModifiers){
+			//bonus or malus
 			let modDict = selectedModifiers[t];
 			for(var m in modDict){
+				//each type of bonus/malus
 				let modData = modDict[m];
 				if(modData!=null && modData.type=="effect"){
+					returnData.appliedEffects.push(modData.name);
 					//MapTool.chat.broadcast(JSON.stringify(modData));
 					for(var r in modData.rules){
 						let removeAfter = modData.rules[r].removeAfterRoll;
@@ -93,10 +97,25 @@ function calculate_bonus(token, bonusScopes, consume=false){
 							toggle_named_effect(modData.name, token, 0);
 						}
 					}
+				}else if(modData!=null){
+					returnData.appliedEffects.push(modData.name);
+				}
+			}
+		}
+	}else{
+		for(var t in selectedModifiers){
+			//bonus or malus
+			let modDict = selectedModifiers[t];
+			for(var m in modDict){
+				//each type of bonus/malus
+				let modData = modDict[m];
+				if(modData!=null){
+					returnData.appliedEffects.push(modData.name);
 				}
 			}
 		}
 	}
+
 
 	//MapTool.chat.broadcast(JSON.stringify(returnData));
 	//MapTool.chat.broadcast(JSON.stringify(selectedModifiers));
