@@ -9,7 +9,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null){
 	let returnData = {"bonuses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"maluses":{"circumstance":0,"status":0,"item":0,"none":0,"proficiency":0},"query":false,"otherEffects":{}};
 	for (var r in effectData.rules){
 		let ruleData = effectData.rules[r];
-		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll=="if-enabled");
+		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll=="if-enabled") || ("choices" in ruleData) || returnData.query;
 		if ("selector" in ruleData){
 			let selector = selector_inheritance(ruleData.selector);
 			//MapTool.chat.broadcast(JSON.stringify(selector));

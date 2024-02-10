@@ -28,8 +28,15 @@ function calculate_bonus(token, bonusScopes, consume=false){
 			if(type=="query"){
 				continue;
 			}else if(type=="otherEffects" && Object.keys(effectBonuses.otherEffects).length>0){
-				returnData.otherEffects = Object.assign({},returnData.otherEffects,effectBonuses.otherEffects);
-				selectedModifiers.other.push(effectData)
+				if(!hasAsked && effectBonuses.query && consume){
+					MTScript.evalMacro("[h: ans=input(\"junkVar|Apply "+effectData.name+"?|blah|LABEL|SPAN=TRUE\")]");
+					askResponse = (Number(MTScript.getVariable("ans"))==1);
+					hasAsked=true;
+				}
+				if(askResponse || !consume){
+					returnData.otherEffects = Object.assign({},returnData.otherEffects,effectBonuses.otherEffects);
+					selectedModifiers.other.push(effectData);
+				}
 			}
 			let typeDict = effectBonuses[type];
 			for (var k in typeDict){
