@@ -55,26 +55,33 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 		for (var p in profList) {
 			let profData = profList[p];
-			if (!(p in skills) && !(profData.name.includes("Lore"))) {
+			if (!(profData.name in skills) && !(profData.name.includes("Lore"))) {
 				continue
 			}
-			let attMod = profData.bonus;
+			let attMod = 0;
 			if (profData.name in skills) {
 				attMod = Number(checkToken.getProperty(skills[profData.name].stat));
 			} else if (profData.name.includes("Lore")) {
 				attMod = Number(checkToken.getProperty("int"));
-			} else {
-				attMod = 0;
 			}
-			let displayNumber = profData.bonus - attMod;
+
+			let displayNumber = profData.bonus;
 			if (tokenType == "PC") {
-				displayNumber = profData.bonus
-			}
-			if (!altStat) {
-				displayNumber = profData.bonus;
+				if(!altStat){
+					displayNumber = profData.bonus + attMod;
+				}else{
+					displayNumber = profData.bonus;
+				}
+			}else{
+				if (altStat) {
+					displayNumber = profData.bonus - attMod;
+				}
 			}
 			skillStrings[profData.name] = profData.name + " " + pos_neg_sign(displayNumber);
 		}
+
+
+
 		queryHTML += "<table><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 		queryHTML += "<input type='hidden' name='checkTokenID' value='" + checkToken.getId() + "'>";
 		queryHTML += "<input type='hidden' name='tokenType' value='" + tokenType + "'>";
@@ -175,7 +182,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		let misc_bonus = Number(checkData.miscBonus);
 		let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName), checkData.statName + "-based", "skill-check"].concat(extraScopes), true);
 		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + effect_bonus_raw.bonuses.none
-			+ Math.max(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.max(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.max(effect_bonus_raw.maluses.item, checkData.iMalus) + effect_bonus_raw.maluses.none;
+			+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + effect_bonus_raw.maluses.none;
 
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
@@ -191,7 +198,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 		}
 
-		if (effect_bonus_raw.bonuses.proficiency > 0 && effect_bonus_raw.bonuses.proficiency > prof_bonus) {
+		if (effect_bonus_raw.bonuses.proficiency > 0 && prof_bonus==0) {
 			prof_bonus = effect_bonus_raw.bonuses.proficiency;
 		}
 
@@ -213,6 +220,8 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			displayData.description += " " + pos_neg_sign(misc_bonus, true);
 		}
 		displayData.description += " = " + String(checkResult) + "</div></b>";
+
+		displayData.appliedEffects = effect_bonus_raw.appliedEffects;
 
 		chat_display(displayData);
 
