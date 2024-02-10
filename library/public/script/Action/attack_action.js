@@ -50,19 +50,19 @@ function attack_action(actionData, actingToken){
 		dTwentyColour = "green";
 	}
 
-	let effect_bonus = calculate_bonus(actingToken, attackScopes, true);
+	let effect_bonus_raw = calculate_bonus(actingToken, attackScopes, true);
 
 
-	if("WeaponPotency" in effect_bonus.otherEffects){
-		let currBonus = effect_bonus.bonuses.item;
-		effect_bonus.bonuses.item = Math.max(currBonus, Number(effect_bonus.otherEffects.WeaponPotency));
-		itemData.runes.potency = effect_bonus.otherEffects.WeaponPotency;
+	if("WeaponPotency" in effect_bonus_raw.otherEffects){
+		let currBonus = effect_bonus_raw.bonuses.item;
+		effect_bonus_raw.bonuses.item = Math.max(currBonus, Number(effect_bonus_raw.otherEffects.WeaponPotency));
+		itemData.runes.potency = effect_bonus_raw.otherEffects.WeaponPotency;
 	}
 
-	if("Striking" in effect_bonus.otherEffects){
-		actionData.damage[0].dice = Math.max(actionData.damage[0].dice, effect_bonus.otherEffects.Striking+1);
+	if("Striking" in effect_bonus_raw.otherEffects){
+		actionData.damage[0].dice = Math.max(actionData.damage[0].dice, effect_bonus_raw.otherEffects.Striking+1);
 		itemData.damage.dice = actionData.damage[0].dice;
-		itemData.runes.striking = effect_bonus.otherEffects.Striking;
+		itemData.runes.striking = effect_bonus_raw.otherEffects.Striking;
 		actionData.damage[0].damage = String(actionData.damage[0].dice)+actionData.damage[0].die+((itemData!=null && itemData.damageBonus!=null && itemData.damageBonus>0)?"+"+String(itemData.damageBonus):"");
 	}
 
@@ -92,7 +92,7 @@ function attack_action(actionData, actingToken){
 				}
 			}
 			
-		}else if (traitName == "backswing" && effect_bonus.bonuses.circumstance==0 && currentAttackCount>0){
+		}else if (traitName == "backswing" && effect_bonus_raw.bonuses.circumstance==0 && currentAttackCount>0){
 			additionalAttackBonuses.push("+1 (Backswing (c))")
 			
 		}else if (traitName == "forceful" && itemData!=null && currentAttackCount>0){
@@ -120,7 +120,7 @@ function attack_action(actionData, actingToken){
 		}else if (traitName == "propulsive" && get_token_type(actingToken)=="PC"){
 			MapTool.chat.broadcast("Propulsive Trait not Implemented");
 			
-		}else if (traitName == "sweep" && effect_bonus.bonuses.circumstance==0 && currentAttackCount>0){
+		}else if (traitName == "sweep" && effect_bonus_raw.bonuses.circumstance==0 && currentAttackCount>0){
 			additionalAttackBonuses.push("+1 (Sweep (c))");
 			
 		}else if (traitName == "twin" && currentAttackCount>0){
@@ -129,14 +129,6 @@ function attack_action(actionData, actingToken){
 			}
 		}
 	}
-
-	//MapTool.chat.broadcast(JSON.stringify(actionData));
-	//MapTool.chat.broadcast(JSON.stringify(itemData));
-	//MapTool.chat.broadcast(JSON.stringify(additionalDamageList));
-	//MapTool.chat.broadcast(JSON.stringify(additionalAttackBonuses));
-	//MapTool.chat.broadcast(String(currentAttackCount));
-	//MapTool.chat.broadcast(JSON.stringify(effect_bonus));
-	//MapTool.chat.broadcast(JSON.stringify(damage_bonus));
 
 	let damageDetails = [];
 	let critDamageDetails = [];
@@ -159,7 +151,8 @@ function attack_action(actionData, actingToken){
 	
 	damage_bonus = damage_bonus.bonuses.circumstance + damage_bonus.bonuses.status + damage_bonus.bonuses.item + damage_bonus.bonuses.none + damage_bonus.maluses.circumstance + damage_bonus.maluses.status + damage_bonus.maluses.item + damage_bonus.maluses.none;
 	
-	effect_bonus = effect_bonus.bonuses.circumstance + effect_bonus.bonuses.status + effect_bonus.bonuses.item + effect_bonus.bonuses.none + effect_bonus.maluses.circumstance + effect_bonus.maluses.status + effect_bonus.maluses.item + effect_bonus.maluses.none;
+	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + effect_bonus_raw.bonuses.item + effect_bonus_raw.bonuses.none +
+	effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
 	
 	let map_malus = currentAttackCount * MAP_Penalty;
 
@@ -171,6 +164,7 @@ function attack_action(actionData, actingToken){
 	let attackResult = dTwenty + attackMod;
 	
 	let displayData = {"description":"","name":actingToken.getName() + " - " + actionData.name + " " + pos_neg_sign(attackMod)};
+	displayData.appliedEffects = effect_bonus_raw.appliedEffects;
 	displayData.traits = actionData.traits;	
 	displayData.description = "<i>Attack Roll</i><br /><div style='font-size:10px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span> "
 	if(attack_bonus!=0){

@@ -89,8 +89,8 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 		if(!("iMalus" in saveData)){
 			saveData.iMalus = 0;
 		}
-		if(!("fortuneSelect" in checkData)){
-			checkData.fortuneSelect = "normal";
+		if(!("fortuneSelect" in saveData)){
+			saveData.fortuneSelect = "normal";
 		}
 
 		MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
@@ -112,7 +112,7 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 
 		let basic_bonus = Number(saveToken.getProperty(saveData.saveName));
 		let misc_bonus = Number(saveData.miscBonus);
-		let effect_bonus = calculate_bonus(saveToken.getId(), saveData.saveName, true);
+		let effect_bonus_raw = calculate_bonus(saveToken.getId(), saveData.saveName, true);
 
 		for (var k in saveData){
 			if (k.includes("specialEffect")){
@@ -121,10 +121,10 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 				for (var type in tempBonus){
 					let typeDict = tempBonus[type];
 					for (var k in typeDict){
-						if (type=="bonuses" && typeDict[k]>effect_bonus[type][k]){
-							effect_bonus[type][k] = typeDict[k];
-						}else if (type=="maluses" && typeDict[k]<effect_bonus[type][k]){
-							effect_bonus[type][k] = typeDict[k];
+						if (type=="bonuses" && typeDict[k]>effect_bonus_raw[type][k]){
+							effect_bonus_raw[type][k] = typeDict[k];
+						}else if (type=="maluses" && typeDict[k]<effect_bonus_raw[type][k]){
+							effect_bonus_raw[type][k] = typeDict[k];
 						}
 					}
 				}
@@ -134,7 +134,10 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus));
 
-		effect_bonus = effect_bonus.bonuses.circumstance + effect_bonus.bonuses.status + effect_bonus.bonuses.item + effect_bonus.bonuses.none + effect_bonus.maluses.circumstance + effect_bonus.maluses.status + effect_bonus.maluses.item + effect_bonus.maluses.none;
+
+
+		let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + effect_bonus_raw.bonuses.item + effect_bonus_raw.bonuses.none +
+		 effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
 		
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus));
 
@@ -142,6 +145,7 @@ function saving_throw(saveToken, saveData = null, additionalData = {"applyEffect
 		let saveResult = dTwenty + saveMod;
 
 		let displayData = {"description":"","name":saveToken.getName() + " - " + capitalise(saveData.saveName) + " " + pos_neg_sign(saveMod)};
+		displayData.appliedEffects = effect_bonus_raw.appliedEffects;
 		displayData.description = saveData.flavourText+"<br/><div style='font-size:20px'><b><span style='color:"+dTwentyColour+"'>" +String(dTwenty)+"</span>"
 		if(basic_bonus!=0){
 			displayData.description += " " + pos_neg_sign(basic_bonus, true);
