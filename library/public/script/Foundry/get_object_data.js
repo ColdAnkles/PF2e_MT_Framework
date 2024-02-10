@@ -7,7 +7,7 @@ function get_object_data(key, type) {
 	let property = "";
 	try {
 		//property = JSON.parse(libToken.getProperty("pf2e_"+type));
-		property = JSON.parse(read_data("pf2e_"+type));
+		property = JSON.parse(read_data("pf2e_" + type));
 		//MapTool.chat.broadcast(String(JSON.stringify(property)));
 	} catch (error) {
 		MapTool.chat.broadcast(String(error));

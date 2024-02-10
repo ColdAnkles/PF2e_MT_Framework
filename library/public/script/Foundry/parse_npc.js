@@ -1,9 +1,9 @@
 "use strict";
 
-function parse_npc(rawData, parseRaw = false){
+function parse_npc(rawData, parseRaw = false) {
 	let npcData = {};
-	
-	if (parseRaw){
+
+	if (parseRaw) {
 		rawData = JSON.parse(rawData);
 	}
 
@@ -16,44 +16,44 @@ function parse_npc(rawData, parseRaw = false){
 	npcData.hp = rawData.system.attributes.hp;
 	//npcData.creatureType = rawData.system.details.creatureType;
 
-	npcData.saves = {"fortitude":rawData.system.saves.fortitude.value,"reflex":rawData.system.saves.reflex.value,"will":rawData.system.saves.will.value};
+	npcData.saves = { "fortitude": rawData.system.saves.fortitude.value, "reflex": rawData.system.saves.reflex.value, "will": rawData.system.saves.will.value };
 
 	npcData.rarity = rawData.system.traits.rarity;
-	if (rawData.system.traits.value.includes("good")){
+	if (rawData.system.traits.value.includes("good")) {
 		npcData.alignment = "good"
-	}else if(rawData.system.traits.value.includes("evil")){
+	} else if (rawData.system.traits.value.includes("evil")) {
 		npcData.alignment = "evil"
-	}else{
+	} else {
 		npcData.alignment = ""
 	}
 	npcData.size = rawData.system.traits.size.value;
-	npcData.size = {"sm":"small","med":"medium","huge":"huge","lg":"large","grg":"gargantuan","tiny":"tiny"}[npcData.size];
+	npcData.size = { "sm": "small", "med": "medium", "huge": "huge", "lg": "large", "grg": "gargantuan", "tiny": "tiny" }[npcData.size];
 	npcData.traits = rawData.system.traits.value;
 
 	npcData.perception = rawData.system.perception.mod;
 	npcData.senses = [];
-	for (var s in rawData.system.perception.senses){
+	for (var s in rawData.system.perception.senses) {
 		npcData.senses.push(rawData.system.perception.senses[s].type);
 	}
-	if(npcData.senses.includes("low-light-vision")){
+	if (npcData.senses.includes("low-light-vision")) {
 		npcData.senses.push("low-light");
 		var index = npcData.senses.indexOf("low-light-vision");
 		if (index > -1) {
 			npcData.senses.splice(index, 1);
 		}
 	}
-	if(npcData.senses.length==0){
+	if (npcData.senses.length == 0) {
 		npcData.senses.push("Normal");
 	}
-	
+
 	npcData.source = rawData.system.details.publication.title;
 
 	npcData.resources = rawData.system.resources;
 
-	npcData.speeds = {"base":rawData.system.attributes.speed.value,"other":rawData.system.attributes.speed.otherSpeeds};
+	npcData.speeds = { "base": rawData.system.attributes.speed.value, "other": rawData.system.attributes.speed.otherSpeeds };
 
 	npcData.languages = rawData.system.details.languages.value;
-	if("custom" in rawData.system.details.languages && rawData.system.details.languages.custom != ""){
+	if ("custom" in rawData.system.details.languages && rawData.system.details.languages.custom != "") {
 		npcData.languages.push(rawData.system.details.languages.custom);
 	}
 	npcData.abilities = {};
@@ -63,7 +63,7 @@ function parse_npc(rawData, parseRaw = false){
 	npcData.abilities.int = rawData.system.abilities.int.mod;
 	npcData.abilities.wis = rawData.system.abilities.wis.mod;
 	npcData.abilities.cha = rawData.system.abilities.cha.mod;
-	
+
 	npcData.skillList = [];
 	npcData.itemList = {};
 	npcData.passiveSkills = [];
@@ -72,27 +72,27 @@ function parse_npc(rawData, parseRaw = false){
 	npcData.basicAttacks = [];
 	npcData.spellRules = {};
 	npcData.offensiveActions = [];
-	
-	for (var i in rawData.items){
+
+	for (var i in rawData.items) {
 		let itemData = rawData.items[i];
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
 		parse_feature(itemData, npcData);
 	}
 
-	for (var t in npcData.traits){
+	for (var t in npcData.traits) {
 		let traitInherit = trait_inheritance(npcData.traits[t]);
-		if (!("immunities" in rawData.system.attributes)){
+		if (!("immunities" in rawData.system.attributes)) {
 			rawData.system.attributes["immunities"] = [];
 		}
-		if (!("resistances" in rawData.system.attributes)){
+		if (!("resistances" in rawData.system.attributes)) {
 			rawData.system.attributes.resistances = [];
 		}
-		if (!("weaknesses" in rawData.system.attributes)){
+		if (!("weaknesses" in rawData.system.attributes)) {
 			rawData.system.attributes.weaknesses = [];
 		}
-		rawData.system.attributes.immunities=rawData.system.attributes.immunities.concat(traitInherit.immunities);
-		rawData.system.attributes.resistances=rawData.system.attributes.resistances.concat(traitInherit.resistances);
-		rawData.system.attributes.weaknesses=rawData.system.attributes.weaknesses.concat(traitInherit.weaknesses);
+		rawData.system.attributes.immunities = rawData.system.attributes.immunities.concat(traitInherit.immunities);
+		rawData.system.attributes.resistances = rawData.system.attributes.resistances.concat(traitInherit.resistances);
+		rawData.system.attributes.weaknesses = rawData.system.attributes.weaknesses.concat(traitInherit.weaknesses);
 	}
 
 	npcData.immunities = rawData.system.attributes.immunities;
@@ -100,7 +100,7 @@ function parse_npc(rawData, parseRaw = false){
 	npcData.weaknesses = rawData.system.attributes.weaknesses;
 
 	//MapTool.chat.broadcast(JSON.stringify(npcData.passiveSkills));
-	
+
 	return npcData;
 }
 

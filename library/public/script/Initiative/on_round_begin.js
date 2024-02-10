@@ -1,6 +1,6 @@
 "use strict";
 
-function on_round_begin(){	
+function on_round_begin() {
 
 }
 

@@ -1,6 +1,6 @@
 "use strict";
 
-function create_macroLink(text, link, args){
+function create_macroLink(text, link, args) {
 	MTScript.setVariable("text", text);
 	MTScript.setVariable("link", link);
 	MTScript.setVariable("args", args);

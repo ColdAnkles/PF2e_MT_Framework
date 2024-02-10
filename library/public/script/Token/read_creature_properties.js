@@ -1,20 +1,20 @@
 "use strict";
 
-function read_creature_properties(token){
-	if (typeof(token)=="string"){
-			token = MapTool.tokens.getTokenByID(token);
-		if(token==null){
+function read_creature_properties(token) {
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+		if (token == null) {
 			MapTool.chat.broadcast("Couldn't find token!");
 		}
 	}
 
-	let creatureData = {"name":token.getName(),"hp":{"max":0,"details":""},"abilities":{"str":0,"dex":0,"con":0,"int":0,"wis":0,"cha":0},"ac":{"value":0,"details":""},"saves":{"fortitude":0,"reflex":0,"will":0},"speeds":{"base":null,"other":null}};
+	let creatureData = { "name": token.getName(), "hp": { "max": 0, "details": "" }, "abilities": { "str": 0, "dex": 0, "con": 0, "int": 0, "wis": 0, "cha": 0 }, "ac": { "value": 0, "details": "" }, "saves": { "fortitude": 0, "reflex": 0, "will": 0 }, "speeds": { "base": null, "other": null } };
 
 	//__STATS__
-	for (var s in creatureData.abilities){
+	for (var s in creatureData.abilities) {
 		creatureData.abilities[s] = token.getProperty(s);
 	}
-	
+
 	//__HEALTH__
 	creatureData.hp.max = token.getProperty("MaxHP");
 
@@ -24,7 +24,7 @@ function read_creature_properties(token){
 
 	//__DEFENSES__
 	creatureData.ac.value = token.getProperty("AC");
-	for (var s in creatureData.saves){
+	for (var s in creatureData.saves) {
 		creatureData.saves[s] = token.getProperty(s);
 	}
 	creatureData.weaknesses = JSON.parse(token.getProperty("weaknesses"));
@@ -37,7 +37,7 @@ function read_creature_properties(token){
 	creatureData.skillList = JSON.parse(token.getProperty("proficiencies"));
 	creatureData.perception = token.getProperty("perception");
 	creatureData.passiveSkills = JSON.parse(token.getProperty("passiveSkills"));
-	
+
 	//__MAGIC__
 	creatureData.spellRules = JSON.parse(token.getProperty("spellRules"));
 
@@ -55,7 +55,7 @@ function read_creature_properties(token){
 	creatureData.resources = JSON.parse(token.getProperty("resources"));
 	creatureData.itemList = JSON.parse(token.getProperty("inventory"));
 	creatureData.pets = JSON.parse(token.getProperty("pets"));
-	if(creatureData.pets==null){
+	if (creatureData.pets == null) {
 		creatureData.pets = {};
 	}
 
@@ -67,29 +67,29 @@ function read_creature_properties(token){
 	creatureData.actionsLeft = Number(token.getProperty("actionsLeft"));
 	creatureData.reactionsLeft = Number(token.getProperty("reactionsLeft"));
 
-	if(creatureData.activeEffects==null){
+	if (creatureData.activeEffects == null) {
 		creatureData.activeEffects = {};
 	}
-	if(creatureData.specialEffects==null){
+	if (creatureData.specialEffects == null) {
 		creatureData.specialEffects = {};
 	}
-	if(creatureData.conditionDetails==null){
+	if (creatureData.conditionDetails == null) {
 		creatureData.conditionDetails = {};
 	}
-	if(creatureData.attacksThisRound==null){
+	if (creatureData.attacksThisRound == null) {
 		creatureData.attacksThisRound = 0;
 	}
-	if(creatureData.actionsLeft==null){
+	if (creatureData.actionsLeft == null) {
 		creatureData.actionsLeft = 0;
 	}
-	if(creatureData.reactionsLeft==null){
+	if (creatureData.reactionsLeft == null) {
 		creatureData.reactionsLeft = 0;
 	}
 
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));
 	return creatureData;
-	
+
 }
 
 MTScript.registerMacro("ca.pf2e.read_creature_properties", read_creature_properties);

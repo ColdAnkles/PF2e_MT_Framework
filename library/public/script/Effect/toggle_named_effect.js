@@ -1,20 +1,20 @@
 "use strict";
 
-function toggle_named_effect(effectName, token, state=-1, effectSource = null){
+function toggle_named_effect(effectName, token, state = -1, effectSource = null) {
 	let affectedCreature = null;
-	if (typeof(token)!="string"){
+	if (typeof (token) != "string") {
 		affectedCreature = token;
 		token = token.getId();
-	}else{
+	} else {
 		affectedCreature = MapTool.tokens.getTokenByID(token);
 	}
 
 	let updateTokens = [token];
-	if(get_token_type(token)=="PC"){
-		if(affectedCreature.getName().includes("Lib:")){
+	if (get_token_type(token) == "PC") {
+		if (affectedCreature.getName().includes("Lib:")) {
 			let subTokens = JSON.parse(affectedCreature.getProperty("pcTokens"));
 			updateTokens = updateTokens.concat(subTokens);
-		}else{
+		} else {
 			toggle_named_effect(effectName, affectedCreature.getProperty("myID"), state, effectSource);
 			return;
 		}
@@ -23,19 +23,19 @@ function toggle_named_effect(effectName, token, state=-1, effectSource = null){
 	MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()]")
 	let currentInitiative = Number(MTScript.getVariable("currInit"));
 	let currentRound = Number(MTScript.getVariable("currRound"));
-	if(currentInitiative==-1){
-		currentInitiative=0;
+	if (currentInitiative == -1) {
+		currentInitiative = 0;
 	}
-	if(currentRound==-1){
-		currentRound=0;
+	if (currentRound == -1) {
+		currentRound = 0;
 	}
 
 	let property = JSON.parse(read_data("pf2e_effect"));
 	let effectData = JSON.parse(JSON.stringify(property[effectName]));
 
-	effectData.applyTime={"round":currentRound,"initiative":currentInitiative};
+	effectData.applyTime = { "round": currentRound, "initiative": currentInitiative };
 
-	if (effectData == null){
+	if (effectData == null) {
 		MapTool.chat.broadcast("Cannot find effect: " + effectName);
 		return;
 	}
@@ -45,28 +45,28 @@ function toggle_named_effect(effectName, token, state=-1, effectSource = null){
 
 	//MapTool.chat.broadcast(String(affectedCreature));
 
-	for(var t in updateTokens){
+	for (var t in updateTokens) {
 		let thisCreature = MapTool.tokens.getTokenByID(updateTokens[t]);
-		if(thisCreature==null){
+		if (thisCreature == null) {
 			continue;
 		}
 		let activeEffects = JSON.parse(thisCreature.getProperty("activeEffects"));
 
-		if (activeEffects == null){
+		if (activeEffects == null) {
 			activeEffects = {};
 		}
 
-		if (effectName in activeEffects && (state == -1 || state==0) ){
+		if (effectName in activeEffects && (state == -1 || state == 0)) {
 			delete activeEffects[effectName];
-		}else if(!(effectName in activeEffects) && (state == -1 || state==1) ) {
+		} else if (!(effectName in activeEffects) && (state == -1 || state == 1)) {
 			activeEffects[effectName] = effectData;
 		}
 
 		//MapTool.chat.broadcast(JSON.stringify(activeEffects));
 
-		thisCreature.setProperty("activeEffects",JSON.stringify(activeEffects));
+		thisCreature.setProperty("activeEffects", JSON.stringify(activeEffects));
 	}
-	
+
 }
 
 MTScript.registerMacro("ca.pf2e.toggle_named_effect", toggle_named_effect);

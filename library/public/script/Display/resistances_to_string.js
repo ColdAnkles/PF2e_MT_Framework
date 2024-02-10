@@ -1,12 +1,12 @@
 "use strict";
 
-function resistances_to_string(resistancesList){
+function resistances_to_string(resistancesList) {
 	//MapTool.chat.broadcast(JSON.stringify(resistancesList));
-	let resistancesString ="";
-	for (var t in resistancesList){
-		resistancesString = resistancesString + capitalise(resistancesList[t].type)+ " " + resistancesList[t].value + ", ";
+	let resistancesString = "";
+	for (var t in resistancesList) {
+		resistancesString = resistancesString + capitalise(resistancesList[t].type) + " " + resistancesList[t].value + ", ";
 	}
-	resistancesString = resistancesString.substring(0,resistancesString.length-2);
+	resistancesString = resistancesString.substring(0, resistancesString.length - 2);
 	return resistancesString;
 }
 

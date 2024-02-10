@@ -8,21 +8,21 @@ function foundry_calc_value(value, actor, item) {
 				let bracketSplit = value.field.split("|");
 				//MapTool.chat.broadcast(JSON.stringify(value.brackets));
 				let splitVal = 0;
-				if (bracketSplit[0] == "actor" && actor!=null) {
+				if (bracketSplit[0] == "actor" && actor != null) {
 					splitVal = actor.getProperty(bracketSplit[1]);
 				}
 				//MapTool.chat.broadcast(String(splitVal));
-				for(var s in value.brackets){
+				for (var s in value.brackets) {
 					let startVal = 0;
 					let endVal = 0;
 					let bracket = value.brackets[s];
-					if("start" in bracket){
+					if ("start" in bracket) {
 						startVal = bracket.start;
 					}
-					if("end" in bracket){
+					if ("end" in bracket) {
 						endVal = bracket.end;
 					}
-					if(splitVal >=startVal && splitVal<=endVal){
+					if (splitVal >= startVal && splitVal <= endVal) {
 						value = bracket.value;
 						break;
 					}
@@ -41,7 +41,7 @@ function foundry_calc_value(value, actor, item) {
 					return null;
 				}
 				value = value.replaceAll(foundMatches[m], actor.getProperty(splitStrings[1]));
-			} else if (splitStrings[0] == "@item" && splitStrings[splitStrings.length -1] == "value") {
+			} else if (splitStrings[0] == "@item" && splitStrings[splitStrings.length - 1] == "value") {
 				if (item == null) {
 					MapTool.chat.broadcast("Error! No item when parsing value " + value);
 					return null;

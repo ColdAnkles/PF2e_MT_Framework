@@ -67,12 +67,12 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 			let displayNumber = profData.bonus;
 			if (tokenType == "PC") {
-				if(!altStat){
+				if (!altStat) {
 					displayNumber = profData.bonus + attMod;
-				}else{
+				} else {
 					displayNumber = profData.bonus;
 				}
-			}else{
+			} else {
 				if (altStat) {
 					displayNumber = profData.bonus - attMod;
 				}
@@ -198,7 +198,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 		}
 
-		if (effect_bonus_raw.bonuses.proficiency > 0 && prof_bonus==0) {
+		if (effect_bonus_raw.bonuses.proficiency > 0 && prof_bonus == 0) {
 			prof_bonus = effect_bonus_raw.bonuses.proficiency;
 		}
 

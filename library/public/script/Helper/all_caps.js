@@ -1,4 +1,4 @@
-function all_caps(aString){
+function all_caps(aString) {
 	return aString.toUpperCase();
 }
 

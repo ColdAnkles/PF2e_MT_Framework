@@ -1,6 +1,6 @@
 "use strict";
 
-let pathfinderRuntimeValues = {"runtimeDict":"setup"};
+let pathfinderRuntimeValues = { "runtimeDict": "setup" };
 
 function get_runtime(key) {
 	return pathfinderRuntimeValues[key];

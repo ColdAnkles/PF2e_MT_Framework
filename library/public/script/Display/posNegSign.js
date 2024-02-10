@@ -1,16 +1,16 @@
 "use strict";
 
-function pos_neg_sign(number, space=false){
-	if (number<0){
-		if(space){
+function pos_neg_sign(number, space = false) {
+	if (number < 0) {
+		if (space) {
 			return "- " + String(Math.abs(number));
-		}else{
+		} else {
 			return "-" + String(Math.abs(number));
 		}
-	}else{
-		if(space){
+	} else {
+		if (space) {
 			return "+ " + String(number);
-		}else{
+		} else {
 			return "+" + String(number);
 		}
 	}

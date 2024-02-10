@@ -1,15 +1,15 @@
 "use strict";
 
-function write_creature_properties(creatureData, token){
-	if (typeof(token)=="string"){
+function write_creature_properties(creatureData, token) {
+	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));
-	
+
 	token.setName(creatureData.name);
 	//__STATS__
-	for (var s in creatureData.abilities){
+	for (var s in creatureData.abilities) {
 		token.setProperty(s, parseInt(creatureData.abilities[s]));
 	}
 
@@ -23,9 +23,9 @@ function write_creature_properties(creatureData, token){
 
 	//__DEFENSES__
 	token.setProperty("AC", parseInt(creatureData.ac.value));
-	for (var s in creatureData.saves){
+	for (var s in creatureData.saves) {
 		token.setProperty(s, parseInt(creatureData.saves[s]));
-		token.setProperty(s+"DC", parseInt(Number(creatureData.saves[s])+10));
+		token.setProperty(s + "DC", parseInt(Number(creatureData.saves[s]) + 10));
 	}
 	token.setProperty("weaknesses", JSON.stringify(creatureData.weaknesses));
 	token.setProperty("resistances", JSON.stringify(creatureData.resistances));
@@ -55,27 +55,27 @@ function write_creature_properties(creatureData, token){
 	token.setProperty("resources", JSON.stringify(creatureData.resources));
 	token.setProperty("inventory", JSON.stringify(creatureData.itemList));
 
-	if("pets" in creatureData && creatureData.pets!=null){
+	if ("pets" in creatureData && creatureData.pets != null) {
 		token.setProperty("pets", JSON.stringify(creatureData.pets));
 	}
 
 	//__CALCULATION_DATA__
-	if("activeEffects" in creatureData && creatureData.activeEffects!=null){
+	if ("activeEffects" in creatureData && creatureData.activeEffects != null) {
 		token.setProperty("activeEffects", JSON.stringify(creatureData.activeEffects));
 	}
-	if("specialEffects" in creatureData && creatureData.specialEffects!=null){
+	if ("specialEffects" in creatureData && creatureData.specialEffects != null) {
 		token.setProperty("specialEffects", JSON.stringify(creatureData.specialEffects));
 	}
-	if("conditionDetails" in creatureData && creatureData.conditionDetails!=null){
+	if ("conditionDetails" in creatureData && creatureData.conditionDetails != null) {
 		token.setProperty("conditionDetails", JSON.stringify(creatureData.conditionDetails));
 	}
-	if("attacksThisRound" in creatureData && creatureData.attacksThisRound!=null){
+	if ("attacksThisRound" in creatureData && creatureData.attacksThisRound != null) {
 		token.setProperty("attacksThisRound", Number(creatureData.attacksThisRound));
 	}
-	if("actionsLeft" in creatureData && creatureData.actionsLeft!=null){
+	if ("actionsLeft" in creatureData && creatureData.actionsLeft != null) {
 		token.setProperty("actionsLeft", Number(creatureData.actionsLeft));
 	}
-	if("reactionsLeft" in creatureData && creatureData.reactionsLeft!=null){
+	if ("reactionsLeft" in creatureData && creatureData.reactionsLeft != null) {
 		token.setProperty("reactionsLeft", Number(creatureData.reactionsLeft));
 	}
 
