@@ -31,7 +31,6 @@ function foundry_calc_value(value, actor, item) {
 				return 0;
 			}
 		}
-		//MapTool.chat.broadcast(value);
 		let foundMatches = value.match(/@[a-zA-Z\.]+/g);
 		for (var m in foundMatches) {
 			//MapTool.chat.broadcast(String(foundMatches[m]));
@@ -42,7 +41,7 @@ function foundry_calc_value(value, actor, item) {
 					return null;
 				}
 				value = value.replaceAll(foundMatches[m], actor.getProperty(splitStrings[1]));
-			} else if (splitStrings[0] == "@item" && splitStrings[1] == "value") {
+			} else if (splitStrings[0] == "@item" && splitStrings[splitStrings.length -1] == "value") {
 				if (item == null) {
 					MapTool.chat.broadcast("Error! No item when parsing value " + value);
 					return null;
