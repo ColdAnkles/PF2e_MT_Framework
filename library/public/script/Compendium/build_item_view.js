@@ -2,6 +2,7 @@
 
 function build_item_view(itemType, itemName) {
 	let itemList = JSON.parse(read_data("pf2e_" + itemType));
+	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).traitDescriptions;
 	if (!(itemName in itemList)) {
 		return "<b>Could not find " + itemType + " " + itemName + ".</b>";
 	}
@@ -17,11 +18,22 @@ function build_item_view(itemType, itemName) {
 
 	HTMLString = HTMLString + "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + (("level" in itemData) ? itemData.level : "") + "</span></h1>";
 	if (itemData.rarity != "common") {
-		HTMLString = HTMLString + "<span class='trait" + itemData.rarity + "'>" + capitalise(itemData.rarity) + "</span>";
+		let normalRarity = capitalise(itemData.rarity).split('-')[0];
+		if( normalRarity in traitGlossary && traitGlossary[normalRarity]!=null ){
+			HTMLString += "<span class='trait" + itemData.rarity + "' title=\""+traitGlossary[normalRarity]+"\">" + capitalise(itemData.rarity) + "</span>";
+		}else{
+			HTMLString += "<span class='trait" + itemData.rarity + "'>" + capitalise(itemData.rarity) + "</span>";
+		}
 	}
 	if ("traits" in itemData) {
 		for (var t in itemData.traits) {
-			HTMLString = HTMLString + "<span class='trait'>" + capitalise(itemData.traits[t]) + "</span>";
+			let traitName = itemData.traits[t];
+			let traitNormal = capitalise(traitName).split('-')[0];
+			if( traitNormal in traitGlossary && traitGlossary[traitNormal]!=null){
+				HTMLString += "<span class='trait' title=\""+traitGlossary[traitNormal]+"\">" + capitalise(traitName) + "</span>";
+			}else{
+				HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
+			}
 		}
 	}
 	HTMLString = HTMLString + "<br />"

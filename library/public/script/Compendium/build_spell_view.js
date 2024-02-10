@@ -5,6 +5,7 @@ function build_spell_view(spellName) {
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
 	let property = JSON.parse(read_data("pf2e_spell"));
+	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).traitDescriptions;
 
 	if (!(spellName in property)) {
 		let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
@@ -33,10 +34,21 @@ function build_spell_view(spellName) {
 	HTMLString += "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellData.category) + " " + spellData.level + "</span></h1>";
 
 	if (spellData.traits.rarity != "common") {
-		HTMLString += "<span class='trait" + spellData.traits.rarity + "'>" + capitalise(spellData.traits.rarity) + "</span>";
+		let normalRarity = capitalise(spellData.traits.rarity).split('-')[0];
+		if( normalRarity in traitGlossary && traitGlossary[normalRarity]!=null ){
+			HTMLString += "<span class='trait" + spellData.traits.rarity + "' title=\""+traitGlossary[normalRarity]+"\">" + capitalise(spellData.traits.rarity) + "</span>";
+		}else{
+			HTMLString += "<span class='trait" + spellData.traits.rarity + "'>" + capitalise(spellData.traits.rarity) + "</span>";
+		}
 	}
 	for (var t in spellData.traits.value) {
-		HTMLString += "<span class='trait'>" + capitalise(spellData.traits.value[t]) + "</span>";
+		let traitName = spellData.traits.value[t];
+		let traitNormal = capitalise(traitName).split('-')[0];
+		if( traitNormal in traitGlossary && traitGlossary[traitNormal]!=null){
+			HTMLString += "<span class='trait' title=\""+traitGlossary[traitNormal]+"\">" + capitalise(traitName) + "</span>";
+		}else{
+			HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
+		}
 	}
 	HTMLString += "<br />"
 	HTMLString += "<b>Source </b><span class='ext-link'>" + spellData.publication.title + "</span><br />";
