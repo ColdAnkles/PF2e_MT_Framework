@@ -228,9 +228,18 @@ function import-lang-file {
     $langSource = Get-ChildItem .\pf2e-master\*\static\lang\en.json
     $rawData = Get-Content -Encoding UTF8 $langSource
     #Windows PS doesn't does case sensitive keys in JSON - 
-    $data = $rawData.replace("""condition""", "conditionList").replace("""ui""", "_ui") | ConvertFrom-JSON 
+    $data = $rawData.replace("""condition""", "conditionList").replace("""ui""", "_ui") | ConvertFrom-JSON
 
     $langData.npcAbility = $data.PF2E.NPC.Abilities.Glossary
+    $langData.traitDescriptions = @{}
+
+    ForEach ($entry in $data.PF2E.PSObject.Properties){
+        if ($entry.name -match "^TraitDescription"){
+            $key = $entry.name.substring(16)
+            $value = $entry.value
+            $langData.traitDescriptions[$key] = $value
+        }
+    }
 
     $outFile = ".\library\public\data\pf2e_glossary.json"
 
