@@ -121,6 +121,7 @@ function spell_action(actionData, actingToken) {
 		let effect_bonus_raw = calculate_bonus(actingToken, attackScopes);
 		let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + effect_bonus_raw.bonuses.item + effect_bonus_raw.bonuses.none +
 			effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
+		displayData.appliedEffects = effect_bonus_raw.appliedEffects;
 
 		let dTwentyColour = "black";
 		if (dTwenty == 1) {
@@ -261,7 +262,6 @@ function spell_action(actionData, actingToken) {
 	}
 
 	displayData.description += spellData.description;
-	displayData.appliedEffects = effect_bonus_raw.appliedEffects;
 
 	displayData.traits = spellData.traits.value;
 	displayData.castLevel = actionData.castLevel;
