@@ -183,6 +183,15 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName), checkData.statName + "-based", "skill-check"].concat(extraScopes), true);
 		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + effect_bonus_raw.bonuses.none
 			+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + effect_bonus_raw.maluses.none;
+		
+		if(effect_bonus_raw.appliedEffects.includes("Assurance")){
+			dTwenty = 10;
+			dTwentyColour = "black";
+			effect_bonus = 0;
+			misc_bonus = 0;
+			stat_bonus = 0;
+			effect_bonus_raw.appliedEffects = ["Assurance"];
+		}
 
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 

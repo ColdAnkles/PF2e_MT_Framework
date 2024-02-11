@@ -54,6 +54,11 @@ function get_effect_bonus(effectData, bonusScopes, actor = null) {
 				}
 			} else if ((ruleData.key == "WeaponPotency" || ruleData.key == "Striking") && (bonusScopes.includes("weapon-attack") || bonusScopes.includes("all"))) {
 				returnData.otherEffects[ruleData.key] = foundry_calc_value(ruleData.value, actor, effectData.sourceItem);
+			} else if (ruleData.key == "SubstituteRoll") {
+				returnData.otherEffects[ruleData.key] = ruleData.value;
+				returnData.otherEffects["adjustCause"] = ruleData.slug;
+			} else if (ruleData.key == "AdjustModifier") {
+				//Nothing yet
 			} else {
 			}
 		}

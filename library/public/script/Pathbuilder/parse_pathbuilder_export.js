@@ -236,9 +236,16 @@ function parse_pathbuilder_export(data) {
 	parsedData.itemList = {};
 
 	let features_to_parse = [];
+	let featureNotes = {};
 	for (var f in data.feats) {
 		let tempData = find_object_data(data.feats[f][0]);
 		if (tempData != null) {
+			if(tempData.name=="Assurance"){
+				if(!("assuranceChoices" in featureNotes)){
+					featureNotes.assuranceChoices = [];
+				}
+				featureNotes.assuranceChoices.push(data.feats[f][1].toLowerCase());
+			}
 			features_to_parse.push(tempData);
 		}
 	}
@@ -266,6 +273,25 @@ function parse_pathbuilder_export(data) {
 			parse_feature(rest_call(featureData.fileURL), parsedData);
 		}
 	}
+
+	if("assuranceChoices" in featureNotes){
+		let assuranceData = null;
+		for(var s in parsedData.passiveSkills){
+			if(parsedData.passiveSkills[s].mainText=="Assurance"){
+				assuranceData = parsedData.passiveSkills[s];
+				break;
+			}
+		}
+		if(assuranceData!=null){
+			for(var r in assuranceData.rules){
+				let ruleData = assuranceData.rules[r];
+				if(ruleData.key=="SubstituteRoll" || ruleData.key=="AdjustModifier"){
+					ruleData.selector = featureNotes.assuranceChoices;
+				}
+			}
+		}
+	}
+
 	if (parsedData.senses.length == 0) {
 		parsedData.senses.push("normal");
 	}
