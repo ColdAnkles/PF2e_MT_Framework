@@ -205,9 +205,13 @@ function attack_action(actionData, actingToken) {
 		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects.replaceAll("-", " ")) + "</div>";
 	}
 
+	displayData.runes = [];
+	for (var r in itemData.runes.property) {
+		displayData.runes.push(itemData.runes.property[r].name);
+	}
+
 	if (!(isNaN(initiative)) && "increaseMAP" in actionData && actionData.increaseMAP) {
 		actingToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
-
 	}
 
 	chat_display(displayData, true, { "level": actingToken.level });

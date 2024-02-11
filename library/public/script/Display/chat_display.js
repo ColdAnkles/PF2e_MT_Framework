@@ -40,9 +40,9 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		for (var t in displayData.traits) {
 			let traitName = displayData.traits[t];
 			let traitNormal = capitalise(traitName).split('-')[0];
-			if( traitNormal in traitGlossary && traitGlossary[traitNormal]!=null){
-				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'><span title=\""+traitGlossary[traitNormal]+"\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
-			}else{
+			if (traitNormal in traitGlossary && traitGlossary[traitNormal] != null) {
+				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'><span title=\"" + traitGlossary[traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
+			} else {
 				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
 			}
 		}
@@ -63,9 +63,19 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + gmDesc + "</div>";
 	}
 
-	if (displayData.appliedEffects != null && displayData.appliedEffects.length > 0) {
+	if ("appliedEffects" in displayData && displayData.appliedEffects != null && displayData.appliedEffects.length > 0) {
 		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Applied Effects</i><br />" + displayData.appliedEffects.join(", ") + "</div>";
 		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Applied Effects</i><br />" + displayData.appliedEffects.join(", ") + "</div>";
+	}
+
+	if ("runes" in displayData && displayData.runes != null && displayData.runes.length > 0) {
+		let runeStrings = [];
+		for (var r in displayData.runes) {
+			runeStrings.push(
+				create_macroLink(displayData.runes[r], "Item_View_Frame@Lib:ca.pf2e", { "itemType": "item", "itemName": displayData.runes[r] }));
+		}
+		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
+		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
 	}
 
 	outputText += "</div>";
