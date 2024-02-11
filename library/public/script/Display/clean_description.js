@@ -327,9 +327,10 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	let cleanDescription = description;
 
-	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">1</span>", icon_img("1action", additionalData.invertImages));
-	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">2</span>", icon_img("2action", additionalData.invertImages));
-	cleanDescription = cleanDescription.replaceAll("<span class=\"action-glyph\">3</span>", icon_img("3action", additionalData.invertImages));
+	cleanDescription = cleanDescription.replaceAll(/<span class=\"action-glyph\">1.?<\/span>/g, icon_img("1action", additionalData.invertImages) + " ");
+	cleanDescription = cleanDescription.replaceAll(/<span class=\"action-glyph\">2.?<\/span>/g, icon_img("2action", additionalData.invertImages) + " ");
+	cleanDescription = cleanDescription.replaceAll(/<span class=\"action-glyph\">3.?<\/span>/g, icon_img("3action", additionalData.invertImages) + " ");
+	cleanDescription = cleanDescription.replaceAll(/<span class=\"action-glyph\">R.?<\/span>/g, icon_img("reaction", additionalData.invertImages) + " ");
 
 	if (removeP) {
 		cleanDescription = cleanDescription.replaceAll("<p>", "").replaceAll(".</p>", ". ").replaceAll("</p>", " ");
