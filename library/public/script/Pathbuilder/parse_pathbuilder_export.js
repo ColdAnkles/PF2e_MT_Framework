@@ -240,8 +240,8 @@ function parse_pathbuilder_export(data) {
 	for (var f in data.feats) {
 		let tempData = find_object_data(data.feats[f][0]);
 		if (tempData != null) {
-			if(tempData.name=="Assurance"){
-				if(!("assuranceChoices" in featureNotes)){
+			if (tempData.name == "Assurance") {
+				if (!("assuranceChoices" in featureNotes)) {
 					featureNotes.assuranceChoices = [];
 				}
 				featureNotes.assuranceChoices.push(data.feats[f][1].toLowerCase());
@@ -274,18 +274,18 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
-	if("assuranceChoices" in featureNotes){
+	if ("assuranceChoices" in featureNotes) {
 		let assuranceData = null;
-		for(var s in parsedData.passiveSkills){
-			if(parsedData.passiveSkills[s].mainText=="Assurance"){
+		for (var s in parsedData.passiveSkills) {
+			if (parsedData.passiveSkills[s].mainText == "Assurance") {
 				assuranceData = parsedData.passiveSkills[s];
 				break;
 			}
 		}
-		if(assuranceData!=null){
-			for(var r in assuranceData.rules){
+		if (assuranceData != null) {
+			for (var r in assuranceData.rules) {
 				let ruleData = assuranceData.rules[r];
-				if(ruleData.key=="SubstituteRoll" || ruleData.key=="AdjustModifier"){
+				if (ruleData.key == "SubstituteRoll" || ruleData.key == "AdjustModifier") {
 					ruleData.selector = featureNotes.assuranceChoices;
 				}
 			}
@@ -330,10 +330,12 @@ function parse_pathbuilder_export(data) {
 					newAttackData.damage[0].dice += 3;
 				}
 				newAttackData.linkedWeapon = newWeapon.id;
-				newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + "+" + ((thisWeapon.damageBonus > 0) ? "" : String(thisWeapon.damageBonus));
+				newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
 				newWeapon.runes.potency = thisWeapon.pot;
 				for (var rI of thisWeapon.runes) {
-					newWeapon.runes.property.push(rI.toLowerCase());
+					let runeData = find_object_data(rI, "item");
+					runeData = parse_feature(rest_call(runeData.fileURL), null);
+					newWeapon.runes.property.push(runeData);
 				}
 				parsedData.basicAttacks.push(newAttackData);
 				//newAttackData = JSON.parse(JSON.stringify(newAttackData));
