@@ -18,6 +18,7 @@ function build_compendium_home() {
 	HTMLString = HTMLString + "<h2>" + create_macroLink("Items", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "item" })) + "</h2>";
 	HTMLString = HTMLString + "<h2>" + create_macroLink("Spells", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells" })) + "</h2>";
 	HTMLString = HTMLString + "<h2>" + create_macroLink("Feats", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "feat" })) + "</h2>";
+	HTMLString = HTMLString + "<h2>" + create_macroLink("Actions", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "action" })) + "</h2>";
 
 	if (isGM == 1 || isGM || isGM == "1") {
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Effects", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "effect" })) + "</h2>";
