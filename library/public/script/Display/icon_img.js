@@ -23,7 +23,9 @@ function icon_img(imageName, invert = false, srcLocOnly = false) {
 	} else if (imageName == "ranged") {
 		//Nothing
 	} else {
-		return "<b>NO IMAGE</b>";
+		if (!(imageName + "B" in imageDict)) {
+			return "<b>NO IMAGE</b>";
+		}
 	}
 	if (invert) {
 		imageName = imageName + "W";
