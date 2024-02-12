@@ -4,7 +4,7 @@
 
 	
 	<h1 style="padding-bottom:0px;margin-bottom:8px">
-	<img src="asset://b81be3e229fef261cea4a457753be739" style="width:40;height:40;"/>&nbsp;
+	<img src=[r: js.ca.pf2e.icon_img("compendium", true, true)] style="width:40;height:40;"/>&nbsp;
 	[r:macroLink("<font size=6>Compendium</font>","Compendium_Home@Lib:ca.pf2e")]
 	</h1>
 
