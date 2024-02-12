@@ -296,6 +296,7 @@ function parse_pathbuilder_export(data) {
 		parsedData.senses.push("normal");
 	}
 
+	//Armor
 	message_window("Importing " + data.name, "Importing Armor");
 	for (var a in data.armor) {
 		let tempData = find_object_data(data.armor[a].name, "item");
@@ -305,6 +306,7 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
+	//Weapons
 	message_window("Importing " + data.name, "Importing Weapons");
 	for (var w in data.weapons) {
 		let thisWeapon = data.weapons[w];
@@ -312,7 +314,8 @@ function parse_pathbuilder_export(data) {
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
 				parse_feature(rest_call(tempData.fileURL), parsedData);
-				let newWeapon = parsedData.itemList[tempData.id];
+				let trueID = tempData.id+String(Object.keys(parsedData.itemList).length -1);
+				let newWeapon = parsedData.itemList[trueID];
 				newWeapon.quantity = thisWeapon.qty;
 				let newAttackData = {
 					"actionCost": 1, "actionType": "action", "bonus": thisWeapon.attack, "damage": [newWeapon.damage],
@@ -329,7 +332,7 @@ function parse_pathbuilder_export(data) {
 					thisWeapon.runes.striking = 3;
 					newAttackData.damage[0].dice += 3;
 				}
-				newAttackData.linkedWeapon = newWeapon.id;
+				newAttackData.linkedWeapon = trueID;
 				newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
 				newWeapon.runes.potency = thisWeapon.pot;
 				for (var rI of thisWeapon.runes) {
@@ -348,6 +351,7 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
+	//Other Items
 	message_window("Importing " + data.name, "Importing Gear");
 	for (var e in data.equipment) {
 		let tempData = find_object_data(data.equipment[e][0], "item");
@@ -362,6 +366,7 @@ function parse_pathbuilder_export(data) {
 	parsedData.pets = data.pets;
 	parsedData.familiars = data.familiars;
 
+	//Familiars
 	message_window("Importing " + data.name, "Importing Familiars");
 	for (var f in parsedData.familiars) {
 		parsedData.familiars[f].familiarAbilities = [];

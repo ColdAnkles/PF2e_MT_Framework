@@ -58,7 +58,9 @@ function parse_feature(feature, assignDict = null) {
 		if (simpleReturn) {
 			return newItem;
 		}
-		assignDict.itemList[itemData._id] = newItem;
+
+		//Assign with a length number on the end in case multiple unique items with same ID
+		assignDict.itemList[itemData._id+String(Object.keys(assignDict.itemList).length)] = newItem;
 
 	} else if (itemData.type == "action" && ((itemData.system.category == "interaction" || itemData.system.category == "class") || (assignDict != null && assignDict.type != "npc")) && itemData.system.actionType.value == "passive" && itemData.system.rules.length > 0) {
 		let tempString = clean_description(itemData.system.description.value)
