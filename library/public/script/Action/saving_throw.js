@@ -25,11 +25,12 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 			saveStrings[s] = { "name": saves[s], "string": (capitalise(saves[s]) + " " + pos_neg_sign(saveToken.getProperty(saves[s]))) };
 		}
 
-		queryHTML = queryHTML + "<table><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+		queryHTML = queryHTML + "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/NethysCSS.css\"><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 		queryHTML = queryHTML + "<input type='hidden' name='saveTokenID' value='" + saveToken.getId() + "'>";
 		queryHTML = queryHTML + "<input type='hidden' name='secretCheck' value='0'>";
 
-		queryHTML = queryHTML + "<tr><td>Save:</td><td><select name='saveName'>";
+		queryHTML += "<tr><th colspan='5' style='text-align:center'><b>Saving Throw</b></th></tr>";
+		queryHTML = queryHTML + "<tr><td colspan='1' style='text-align:right'>Save:</td><td colspan='4'><select name='saveName'>";
 		for (var s in saveStrings) {
 			queryHTML = queryHTML + "<option value='" + saveStrings[s].name + "'>" + saveStrings[s].string + "</option>";
 		}
@@ -59,14 +60,14 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 		<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
 		<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML += "<tr><td colspan='3' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td></tr>";
+		queryHTML += "<tr><td colspan='5' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td colspan='3' style='text-align:center'><input type='submit' name='savingThrowSubmit' value='Submit'></td></tr>";
+		queryHTML = queryHTML + "<tr><td colspan='5' style='text-align:center'><input type='submit' name='savingThrowSubmit' value='Submit'></td></tr>";
 
 		queryHTML = queryHTML + "</form></table></html>"
 
 		MTScript.setVariable("queryHTML", queryHTML);
-		MTScript.evalMacro("[dialog5('Saving Throw','width=510;height=290;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
+		MTScript.evalMacro("[dialog5('Saving Throw','width=600;height=350;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 
 	} else {
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(saveData));

@@ -82,13 +82,14 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 
 
-		queryHTML += "<table><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+		queryHTML += "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/NethysCSS.css\"><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 		queryHTML += "<input type='hidden' name='checkTokenID' value='" + checkToken.getId() + "'>";
 		queryHTML += "<input type='hidden' name='tokenType' value='" + tokenType + "'>";
 		queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
 		queryHTML += "<input type='hidden' name='altStat' value='" + Number(altStat) + "'>";
 
-		queryHTML += "<tr><td>Skill:</td><td><select name='skillName'>";
+		queryHTML += "<tr><th colspan='5' style='text-align:center'><b>Skill Check</b></th></tr>";
+		queryHTML += "<tr><td " + ((altStat) ? "" : "colspan='2'") + ">Skill:</td><td " + ((altStat) ? "" : "colspan='3'") + "><select name='skillName'>";
 		for (var s in skillStrings) {
 			queryHTML += "<option value='" + s + "'>" + skillStrings[s] + "</option>";
 		}
@@ -115,14 +116,24 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
 		<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML += "<tr><td colspan='3' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td></tr>";
+		queryHTML += "<tr><td colspan='5' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td></tr>";
 
-		queryHTML += "<tr><td colspan='3' style='text-align:center'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
+		let initiative = get_initiative(checkToken.getId());
+		if (!(isNaN(initiative))) {
+			queryHTML += "<tr><td colspan='2' style='text-align:center'>Use MAP:<input type='checkbox' id='useMAP' name='useMAP' value='useMAP'></td>\
+			<td colspan='3' style='text-align:center'>Increase MAP:<input type='checkbox' id='increaseMAP' name='increaseMAP' value='increaseMAP'></td></tr>";
+		}
+
+		queryHTML += "<tr><td colspan='5' style='text-align:center'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
 
 		queryHTML += "</form></table></html>"
 
 		MTScript.setVariable("queryHTML", queryHTML);
-		MTScript.evalMacro("[dialog5('Skill Check','width=510;height=300;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
+		let windowHeight = 350;
+		if (!(isNaN(initiative))) {
+			windowHeight += 20;
+		}
+		MTScript.evalMacro("[dialog5('Skill Check','width=600;height=" + String(windowHeight) + ";temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 
 	} else {
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
@@ -177,19 +188,33 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			checkData.statName = skills[checkData.skillName].stat;
 		}
 
+
+		let initiative = get_initiative(checkToken.getId());
+		let currentAttackCount = Number(checkToken.getProperty("attacksThisRound"));
+		if (isNaN(currentAttackCount)) {
+			currentAttackCount = 0;
+		}
+
+		let map_malus = Math.min(currentAttackCount, 2) * -5;
+
+		if ("useMAP" in checkData && !checkData.useMAP) {
+			map_malus = 0;
+		}
+
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
 		let prof_bonus = 0;
 		let misc_bonus = Number(checkData.miscBonus);
 		let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName), checkData.statName + "-based", "skill-check"].concat(extraScopes), true);
 		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + effect_bonus_raw.bonuses.none
 			+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + effect_bonus_raw.maluses.none;
-		
-		if(effect_bonus_raw.appliedEffects.includes("Assurance")){
+
+		if (effect_bonus_raw.appliedEffects.includes("Assurance")) {
 			dTwenty = 10;
 			dTwentyColour = "black";
 			effect_bonus = 0;
 			misc_bonus = 0;
 			stat_bonus = 0;
+			map_malus = 0;
 			effect_bonus_raw.appliedEffects = ["Assurance"];
 		}
 
@@ -211,7 +236,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			prof_bonus = effect_bonus_raw.bonuses.proficiency;
 		}
 
-		let checkMod = stat_bonus + prof_bonus + misc_bonus + effect_bonus;
+		let checkMod = stat_bonus + prof_bonus + misc_bonus + effect_bonus + map_malus;
 		let checkResult = dTwenty + checkMod;
 
 		let displayData = { "description": "", "name": checkToken.getName() + " - " + checkData.skillName + " " + pos_neg_sign(checkMod) };
@@ -228,11 +253,18 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		if (misc_bonus != 0) {
 			displayData.description += " " + pos_neg_sign(misc_bonus, true);
 		}
+		if (map_malus != 0) {
+			displayData.description += " " + pos_neg_sign(map_malus, true);
+		}
 		displayData.description += " = " + String(checkResult) + "</div></b>";
 
 		displayData.appliedEffects = effect_bonus_raw.appliedEffects;
 
 		chat_display(displayData);
+
+		if (!(isNaN(initiative)) && "increaseMAP" in checkData && checkData.increaseMAP) {
+			checkToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
+		}
 
 		return checkResult;
 	}
