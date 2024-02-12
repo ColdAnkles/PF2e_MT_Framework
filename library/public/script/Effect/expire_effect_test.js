@@ -9,8 +9,8 @@ function expire_effect_test(initiativeData, cause) {
 	//MapTool.chat.broadcast(String(currentInitiative) + ", " + String(currentRound));
 	for (var t in allTokens) {
 		let effectToken = allTokens[t];
-		if (effectToken.getName().includes("Lib:")) {
-			effectToken = MapTool.getTokenByID(effectToken.getProperty("myID"));
+		if (!effectToken.getName().includes("Lib:")) {
+			effectToken = MapTool.tokens.getTokenByID(effectToken.getProperty("myID"));
 		}
 		let activeEffects = JSON.parse(effectToken.getProperty("activeEffects"));
 
