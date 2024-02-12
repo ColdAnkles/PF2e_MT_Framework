@@ -36,25 +36,25 @@ function build_creature_view(creatureName, tokenID = null) {
 
 	if (creatureData.rarity != "common" && creatureData.rarity != "") {
 		let normalRarity = capitalise(creatureData.rarity).split('-')[0];
-		if( normalRarity in traitGlossary && traitGlossary[normalRarity]!=null ){
-			HTMLString += "<span class='trait" + creatureData.rarity + "' title=\""+traitGlossary[normalRarity]+"\">" + capitalise(creatureData.rarity) + "</span>";
-		}else{
+		if (normalRarity in traitGlossary && traitGlossary[normalRarity] != null) {
+			HTMLString += "<span class='trait" + creatureData.rarity + "' title=\"" + traitGlossary[normalRarity] + "\">" + capitalise(creatureData.rarity) + "</span>";
+		} else {
 			HTMLString += "<span class='trait" + creatureData.rarity + "'>" + capitalise(creatureData.rarity) + "</span>";
 		}
 	}
 	//HTMLString += "<span class='traitalignment'>" + capitalise(creatureData.alignment) + "</span>";
 	let normalSize = capitalise(creatureData.size).split('-')[0];
-	if( normalSize in traitGlossary && traitGlossary[normalSize]!=null){
-		HTMLString += "<span class='traitsize' title=\""+traitGlossary[normalSize]+"\">" + capitalise(creatureData.size) + "</span>"
-	}else{
+	if (normalSize in traitGlossary && traitGlossary[normalSize] != null) {
+		HTMLString += "<span class='traitsize' title=\"" + traitGlossary[normalSize] + "\">" + capitalise(creatureData.size) + "</span>"
+	} else {
 		HTMLString += "<span class='traitsize'>" + capitalise(creatureData.size) + "</span>"
 	}
 	for (var t in creatureData.traits) {
 		let traitName = creatureData.traits[t];
 		let traitNormal = capitalise(traitName).split('-')[0];
-		if( traitNormal in traitGlossary && traitGlossary[traitNormal]!=null){
-			HTMLString += "<span class='trait' title=\""+traitGlossary[traitNormal]+"\">" + capitalise(traitName) + "</span>";
-		}else{
+		if (traitNormal in traitGlossary && traitGlossary[traitNormal] != null) {
+			HTMLString += "<span class='trait' title=\"" + traitGlossary[traitNormal] + "\">" + capitalise(traitName) + "</span>";
+		} else {
 			HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
 		}
 	}

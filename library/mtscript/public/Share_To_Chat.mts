@@ -1,0 +1,1 @@
+[js.ca.pf2e.chat_display(json.get(macro.args,"data"),true)]

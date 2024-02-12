@@ -35,18 +35,18 @@ function build_spell_view(spellName) {
 
 	if (spellData.traits.rarity != "common") {
 		let normalRarity = capitalise(spellData.traits.rarity).split('-')[0];
-		if( normalRarity in traitGlossary && traitGlossary[normalRarity]!=null ){
-			HTMLString += "<span class='trait" + spellData.traits.rarity + "' title=\""+traitGlossary[normalRarity]+"\">" + capitalise(spellData.traits.rarity) + "</span>";
-		}else{
+		if (normalRarity in traitGlossary && traitGlossary[normalRarity] != null) {
+			HTMLString += "<span class='trait" + spellData.traits.rarity + "' title=\"" + traitGlossary[normalRarity] + "\">" + capitalise(spellData.traits.rarity) + "</span>";
+		} else {
 			HTMLString += "<span class='trait" + spellData.traits.rarity + "'>" + capitalise(spellData.traits.rarity) + "</span>";
 		}
 	}
 	for (var t in spellData.traits.value) {
 		let traitName = spellData.traits.value[t];
 		let traitNormal = capitalise(traitName).split('-')[0];
-		if( traitNormal in traitGlossary && traitGlossary[traitNormal]!=null){
-			HTMLString += "<span class='trait' title=\""+traitGlossary[traitNormal]+"\">" + capitalise(traitName) + "</span>";
-		}else{
+		if (traitNormal in traitGlossary && traitGlossary[traitNormal] != null) {
+			HTMLString += "<span class='trait' title=\"" + traitGlossary[traitNormal] + "\">" + capitalise(traitName) + "</span>";
+		} else {
 			HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
 		}
 	}
