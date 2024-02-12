@@ -32,7 +32,7 @@ function build_creature_list(sortKey, sortDir, searchKey = "") {
     for (var i = 0; i < creatureSorted.length; i++) {
         let thisCreature = creatureSorted[i];
 
-        if (!enabledSources.includes(thisCreature.source)) {
+        if (!enabledSources.includes(thisCreature.source) && thisItem.source != null) {
             continue;
         }
 

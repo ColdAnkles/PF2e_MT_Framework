@@ -31,7 +31,7 @@ function build_spell_list(sortKey, sortDir, searchKey = "") {
     for (var i = 0; i < spellSorted.length; i++) {
         let thisSpell = spellSorted[i];
 
-        if (!enabledSources.includes(thisSpell.source)) {
+        if (!enabledSources.includes(thisSpell.source) && thisItem.source != null) {
             continue;
         }
 

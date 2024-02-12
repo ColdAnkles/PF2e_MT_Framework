@@ -1,7 +1,7 @@
 "use strict";
 
-function build_item_list(itemType, sortKey, sortDir, searchKey = "") {
-    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/NethysCSS.css'/><h1 class='feel-title'>Items</h1>";
+function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToken = null) {
+    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/NethysCSS.css'/><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
     let itemList = JSON.parse(read_data("pf2e_" + itemType));
     let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
 
@@ -16,14 +16,24 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "") {
     <input type='submit' name='searchButton' value='Search'></input>\
     <input type='hidden' name='window' value='"+ itemType + "'></input>\
     <input type='hidden' name='sort' value='"+ sortKey + "'></input>\
-    <input type='hidden' name='dir' value='"+ sortDir + "'></input></div></form>";
+    <input type='hidden' name='dir' value='"+ sortDir + "'></input>";
+    if (relatedToken != null) {
+        returnHTML += "<input type='hidden' name='tokenID' value='" + relatedToken + "'></input>";
+    }
+    returnHTML += "</div></form>";
 
     returnHTML += "<table><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "name", "dir": ((sortKey == "name") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th>" + create_macroLink("Type", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "type", "dir": ((sortKey == "type") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th>" + create_macroLink("Rarity", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "rarity", "dir": ((sortKey == "rarity") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th width=10% align=center>Traits</th>";
-    returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "level", "dir": ((sortKey == "level") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
-    returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "source", "dir": ((sortKey == "source") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    if (itemType == "action") {
+        if (relatedToken != null) {
+            returnHTML += "<th width=10% align=center>Add Macro</th>";
+        }
+    } else {
+        returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "level", "dir": ((sortKey == "level") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+        returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "source", "dir": ((sortKey == "source") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    }
     if (itemType == "hazard") {
         returnHTML += "<th>Spawn Link</th>";
     }
@@ -34,7 +44,7 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "") {
         let thisItem = itemSorted[i];
         //MapTool.chat.broadcast(JSON.stringify(thisItem));
 
-        if (!enabledSources.includes(thisItem.source)) {
+        if (!enabledSources.includes(thisItem.source) && thisItem.source != null) {
             continue;
         }
 
@@ -69,12 +79,16 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "") {
         } else {
             returnHTML += "<td></td>";
         }
-        if ("level" in thisItem) {
-            returnHTML += "<td align=center>" + String(thisItem.level) + "</td>";
-        } else {
-            returnHTML += "<td align=center>0</td>";
+        if (itemType != "action") {
+            if ("level" in thisItem) {
+                returnHTML += "<td align=center>" + String(thisItem.level) + "</td>";
+            } else {
+                returnHTML += "<td align=center>0</td>";
+            }
+            returnHTML += "<td align=center>" + thisItem.source + "</td>";
+        } else if (itemType == "action" && relatedToken != null) {
+            returnHTML += "<td align=center>" + create_macroLink("Add Macro", "Add_Action_To_Token@Lib:ca.pf2e", "[" + JSON.stringify({ "name": thisItem.name, "type": "basic", "group": "Extra" }) + ", " + relatedToken + "]") + "</td>";
         }
-        returnHTML += "<td align=center>" + thisItem.source + "</td>";
         if (itemType == "hazard") {
             returnHTML += "<td width=0%>" + create_macroLink("Make Token", "Spawn_Hazard@Lib:ca.pf2e", thisItem.name);
         }
