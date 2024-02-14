@@ -1,7 +1,7 @@
 "use strict";
 
 function enabled_source_list(action = null) {
-    if (action != "") {
+    if (action != "" && action!=null) {
         action = JSON.parse(action);
         action = action[0];
     }
@@ -9,8 +9,8 @@ function enabled_source_list(action = null) {
     let allSources = JSON.parse(read_data("pf2e_publications"));
     allSources = allSources.sort();
     if (action != null && action != "") {
-        let changeSource = Object.keys(action)[0];
-        let changeAction = action[changeSource];
+        let changeSource = Object.keys(action)[0].replaceAll(';apos;','\'');
+        let changeAction = action[Object.keys(action)[0]];
         if (changeAction == "Enable") {
             enabledSources.push(changeSource);
         } else {
@@ -30,12 +30,13 @@ function enabled_source_list(action = null) {
         }
         returnHTML += "<tr><td>" + s + "</td>";
         if (enabledSources.includes(s)) {
-            returnHTML += "<td><input type='submit' name='" + s + "' value='Disable'></input></td></tr>";
+            returnHTML += "<td><input type='submit' name='" + s.replaceAll('\'',';apos;') + "' value='Disable'></input></td></tr>";
         } else {
-            returnHTML += "<td><input type='submit' name='" + s + "' value='Enable'></input></td></tr>";
+            returnHTML += "<td><input type='submit' name='" + s.replaceAll('\'',';apos;') + "' value='Enable'></input></td></tr>";
         }
     }
-    returnHTML += "<tr><td colspan='2' align=center><input type='submit' name='save' value='Save'></input></td></tr></form></table>";
+    //returnHTML += "<tr><td colspan='2' align=center><input type='submit' name='save' value='Save'></input></td></tr></form></table>";
+    returnHTML += "</form></table>";
     return returnHTML;
 }
 
