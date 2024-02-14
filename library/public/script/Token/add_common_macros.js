@@ -14,7 +14,8 @@ function add_common_macros(tokenID) {
     { "label": "Refund Action", "playerEditable": 0, "command": "[h: js.ca.pf2e.generic_refund_action(currentToken())]", "tooltip": "Regain An Action", "sortBy": "", "group": "1. Common" },
     { "label": "View Active Effects", "playerEditable": 0, "command": "[h: ca.pf2e.View_Active_Effects(json.set(\"{}\",\"tokenID\",currentToken()))]", "tooltip": "View current active effects.", "sortBy": "", "group": "1. Common" },
     { "label": "Flat Check", "playerEditable": 0, "command": "[h: js.ca.pf2e.flat_check(myID)]", "tooltip": "Attempt Flat Check.", "sortBy": "", "group": "1. Common" },
-    { "label": "Other Actions", "playerEditable": 0, "command": "[h: ca.pf2e.Compendium_Window(json.set(\"{}\",\"window\",\"action\",\"tokenID\",currentToken()))]", "tooltip": "View other actions.", "sortBy": "", "group": "3. Additional" }
+    { "label": "Other Actions", "playerEditable": 0, "command": "[h: ca.pf2e.Compendium_Window(json.set(\"{}\",\"window\",\"action\",\"tokenID\",currentToken()))]", "tooltip": "View other actions.", "sortBy": "", "group": "3. Additional" },
+    { "label": "Increase MAP", "playerEditable": 0, "command": "[h: js.ca.pf2e.increase_map(myID))]", "tooltip": "Increase your MAP by 1.", "sortBy": "", "group": "3. Additional" }
     ]
     for (var m in commonMacros) {
         createMacro(commonMacros[m], tokenID);
