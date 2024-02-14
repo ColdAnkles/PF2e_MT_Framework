@@ -3,6 +3,11 @@
 function change_hp(tokenID, changeHPData = null) {
 	let token = MapTool.tokens.getTokenByID(tokenID);
 
+    if(!(token.getName().includes("Lib")) && get_token_type(token)=="PC"){
+        change_hp(token.getProperty("myID"), changeHPData);
+		return;
+    }
+
 	let tokenCurrentHP = Number(token.getProperty("HP"));
 	let tokenCurrentMaxHP = Number(token.getProperty("MaxHP"));
 	let tokenCurrentTempHP = Number(token.getProperty("TempHP"));
@@ -103,6 +108,10 @@ function change_hp(tokenID, changeHPData = null) {
 			}
 		}
 	}
+
+	if(token.getName().includes("Lib")){
+        update_my_tokens(token);
+    }
 
 }
 
