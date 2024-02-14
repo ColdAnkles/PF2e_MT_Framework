@@ -11,7 +11,8 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 
 	castLevel = Number(castLevel);
 
-	let castingData = JSON.parse(casterToken.getProperty("spellRules"))[castGroup];
+	let spellCasting = JSON.parse(casterToken.getProperty("spellRules"))
+	let castingData = spellCasting[castGroup];
 
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
@@ -52,10 +53,33 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		actionData.signature = false;
 	}
 
-	if (actionData.signature){// && !(spellData.time.includes("to") && additionalData == null)) {
+	if (actionData.signature) {// && !(spellData.time.includes("to") && additionalData == null)) {
 		MTScript.evalMacro("[h: signatureUpcast=" + String(castLevel) + "][h: input(\"signatureUpcast|" + castingData.castLevels.join(',') + "|Select Upcast Level|LIST|VALUE=STRING\")]");
 		actionData.castLevel = MTScript.getVariable("signatureUpcast");
 		castLevel = actionData.castLevel;
+	}
+
+	let resources = JSON.parse(casterToken.getProperty("resources"));
+	if (!(spellData.traits.value.includes("focus")) && !(castingData.currentSlots[castLevel] > 0) && !(spellData.traits.value.includes("cantrip"))) {
+		message_window("No Spell Slot!", "You've expended all the spell slots for this rank of spell!");
+		return;
+	} else if (!(spellData.traits.value.includes("focus")) && castingData.currentSlots[castLevel] > 0 && !(spellData.traits.value.includes("cantrip"))) {
+		castingData.currentSlots[castLevel] -= 1;
+		casterToken.setProperty("spellRules", JSON.stringify(spellCasting));
+		if (!(casterToken.getName().includes("Lib"))) {
+			let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
+			libToken.setProperty("spellRules", JSON.stringify(spellCasting));
+		}
+	} else if (spellData.traits.value.includes("focus") && (!("focus" in resources) || resources.focus.current <= 0)) {
+		message_window("No Focus Point!", "You've expended all your focus points!");
+		return;
+	} else if (spellData.traits.value.includes("focus") && ("focus" in resources) && resources.focus.current > 0) {
+		resources.focus.current -= 1;
+		casterToken.setProperty("resources", JSON.stringify(resources));
+		if (!(casterToken.getName().includes("Lib"))) {
+			let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
+			libToken.setProperty("resources", JSON.stringify(resources));
+		}
 	}
 
 	if (!(isNaN(spellData.time))) {

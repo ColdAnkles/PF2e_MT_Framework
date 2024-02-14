@@ -30,11 +30,18 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		add_action_to_token(actionData, newPCTokenID, pcData);
 	}
 
+	let addedRefocus = false;
 	for (var s in pcData.spellRules) {
 		let spellSource = pcData.spellRules[s];
 		for (var sp in spellSource.spells) {
 			let spellData = spellSource.spells[sp];
 			add_action_to_token({ "name": spellData.name, "actionType": "spell", "type": "spell", "group": spellSource.name, "castLevel": spellData.castLevel, "rawData": spellData, "traits": spellData.traits.value, "creatureLevel": pcData.level }, newPCTokenID, MapTool.tokens.getTokenByID(pcLibID));
+		}
+		if (spellSource.name.includes("Focus") && !addedRefocus) {
+			//add_action_to_token({ "name": "Refocus", "type": "basic", "group": "1. Common" }, tokenID);
+			createMacro({ "label": "Add Focus Point", "playerEditable": 0, "command": "[h: js.ca.pf2e.add_focus_point(myID)]", "tooltip": "Add 1 Focus Point", "sortBy": "", "group": "1. Common" }, newPCTokenID);
+			createMacro({ "label": "Use Focus Point", "playerEditable": 0, "command": "[h: js.ca.pf2e.use_focus_point(myID)]", "tooltip": "Use 1 Focus Point", "sortBy": "", "group": "1. Common" }, newPCTokenID);
+			addedRefocus = true;
 		}
 	}
 

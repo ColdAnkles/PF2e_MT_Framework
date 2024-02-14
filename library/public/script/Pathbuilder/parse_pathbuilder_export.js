@@ -129,6 +129,7 @@ function parse_pathbuilder_export(data) {
 	parsedData.weaknesses = [];
 	parsedData.passiveDefenses = [];
 	parsedData.otherDefenses = [];
+	parsedData.resources = {};
 
 	//__SKILLS__	
 	parsedData.skillList = [];
@@ -162,7 +163,8 @@ function parse_pathbuilder_export(data) {
 			newCastingRules.spellAttack = parsedData.abilities[castingData.ability];
 		}
 		newCastingRules.spellDC = 10 + newCastingRules.spellAttack;
-
+		newCastingRules.totalSlots = castingData.perDay;
+		newCastingRules.currentSlots = castingData.perDay;
 		for (var l in castingData.spells) {
 			let castLevel = castingData.spells[l].spellLevel;
 			if (!(newCastingRules.castLevels.includes(castLevel))) {
@@ -221,6 +223,10 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
+	if(data.focusPoints>0){
+		parsedData.resources.focus = {"current":data.focusPoints, "max":data.focusPoints};
+	}
+
 	//__MISC__
 	parsedData.name = data.name;
 	parsedData.creatureType = data.ancestry;
@@ -232,7 +238,6 @@ function parse_pathbuilder_export(data) {
 	parsedData.traits = [data.ancestry, data.class];
 	parsedData.size = data.sizeName;
 	parsedData.languages = data.languages;
-	parsedData.resources = {};
 	parsedData.itemList = {};
 
 	let features_to_parse = [];
