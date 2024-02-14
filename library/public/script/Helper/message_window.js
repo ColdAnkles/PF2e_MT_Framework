@@ -7,5 +7,5 @@ function message_window(title, text) {
 }
 
 function close_message_window(windowTitle) {
-    MTScript.evalMacro("[h: closeFrame(" + windowTitle + ")]");
+    MTScript.evalMacro("[h: closeFrame(\"" + windowTitle + "\")]");
 }
