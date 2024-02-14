@@ -258,6 +258,9 @@ function parse_pathbuilder_export(data) {
 	message_window("Importing " + data.name, "Importing Specials");
 	for (var s in data.specials) {
 		let tempName = data.specials[s];
+		if(tempName==""){
+			continue;
+		}
 		tempName = tempName.replaceAll("Arcane School: ", "").replaceAll("Arcane Thesis: ", "");
 		tempName = tempName.replaceAll(" Patron", "");
 		if (tempName == "Aquatic Adaptation" && data.ancestry == "Lizardfolk") {
