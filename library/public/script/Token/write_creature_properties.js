@@ -14,8 +14,17 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__HEALTH__
-	token.setProperty("HP", parseInt(creatureData.hp.max));
+	if("current" in creatureData.hp){
+		token.setProperty("HP", parseInt(creatureData.hp.current));
+	}else{
+		token.setProperty("HP", parseInt(creatureData.hp.max));
+	}
 	token.setProperty("MaxHP", parseInt(creatureData.hp.max));
+	if("temp" in creatureData.hp && !isNaN(creatureData.hp.temp)){
+		token.setProperty("TempHP", parseInt(creatureData.hp.temp));
+	}else{
+		token.setProperty("TempHP", "0");
+	}
 
 	//__OFFENSE__
 	token.setProperty("basicAttacks", JSON.stringify(creatureData.basicAttacks));

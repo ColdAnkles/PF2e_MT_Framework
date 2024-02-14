@@ -16,7 +16,9 @@ function read_creature_properties(token) {
 	}
 
 	//__HEALTH__
-	creatureData.hp.max = token.getProperty("MaxHP");
+	creatureData.hp.max = Number(token.getProperty("MaxHP"));
+	creatureData.hp.current = Number(token.getProperty("HP"));
+	creatureData.hp.temp = Number(token.getProperty("TempHP"));
 
 	//__OFFENSE__
 	creatureData.basicAttacks = JSON.parse(token.getProperty("basicAttacks"));
