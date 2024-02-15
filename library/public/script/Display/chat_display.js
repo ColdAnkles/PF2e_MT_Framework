@@ -83,8 +83,14 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	//MapTool.chat.broadcast(outputText.replaceAll("<","&lt;"));
 
+	if (!("gmOnly" in displayData)) {
+		displayData.gmOnly = false;
+	}
+
 	if (broadcast) {
-		MapTool.chat.broadcastTo(["not-gm"], outputText);
+		if (!(displayData.gmOnly)) {
+			MapTool.chat.broadcastTo(["not-gm"], outputText);
+		}
 		MapTool.chat.broadcastTo(["gm"], gmOutputText);
 	} else {
 		return "<html>" + outputText + "</html>";

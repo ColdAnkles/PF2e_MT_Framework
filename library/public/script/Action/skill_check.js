@@ -123,13 +123,14 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			queryHTML += "<tr><td colspan='2' style='text-align:center'>Use MAP:<input type='checkbox' id='useMAP' name='useMAP' value='useMAP'></td>\
 			<td colspan='3' style='text-align:center'>Increase MAP:<input type='checkbox' id='increaseMAP' name='increaseMAP' value='increaseMAP'></td></tr>";
 		}
+		queryHTML += "<tr><td colspan='5' style='text-align:center'>Secret Check:<input type='checkbox' id='secretCheck' name='secretCheck' value='secretCheck'></td></tr>";
 
 		queryHTML += "<tr><td colspan='5' style='text-align:center'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
 
 		queryHTML += "</form></table></html>"
 
 		MTScript.setVariable("queryHTML", queryHTML);
-		let windowHeight = 350;
+		let windowHeight = 360;
 		if (!(isNaN(initiative))) {
 			windowHeight += 20;
 		}
@@ -259,6 +260,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		displayData.description += " = " + String(checkResult) + "</div></b>";
 
 		displayData.appliedEffects = effect_bonus_raw.appliedEffects;
+		displayData.gmOnly = checkData.secretCheck;
 
 		chat_display(displayData);
 
