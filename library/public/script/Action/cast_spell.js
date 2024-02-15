@@ -59,26 +59,28 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		castLevel = actionData.castLevel;
 	}
 
-	let resources = JSON.parse(casterToken.getProperty("resources"));
-	if (!(spellData.traits.value.includes("focus")) && !(castingData.currentSlots[castLevel] > 0) && !(spellData.traits.value.includes("cantrip"))) {
-		message_window("No Spell Slot!", "You've expended all the spell slots for this rank of spell!");
-		return;
-	} else if (!(spellData.traits.value.includes("focus")) && castingData.currentSlots[castLevel] > 0 && !(spellData.traits.value.includes("cantrip"))) {
-		castingData.currentSlots[castLevel] -= 1;
-		casterToken.setProperty("spellRules", JSON.stringify(spellCasting));
-		if (!(casterToken.getName().includes("Lib"))) {
-			let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
-			libToken.setProperty("spellRules", JSON.stringify(spellCasting));
-		}
-	} else if (spellData.traits.value.includes("focus") && (!("focus" in resources) || resources.focus.current <= 0)) {
-		message_window("No Focus Point!", "You've expended all your focus points!");
-		return;
-	} else if (spellData.traits.value.includes("focus") && ("focus" in resources) && resources.focus.current > 0) {
-		resources.focus.current -= 1;
-		casterToken.setProperty("resources", JSON.stringify(resources));
-		if (!(casterToken.getName().includes("Lib"))) {
-			let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
-			libToken.setProperty("resources", JSON.stringify(resources));
+	if (get_token_type(casterToken) == "PC") {
+		let resources = JSON.parse(casterToken.getProperty("resources"));
+		if (!(spellData.traits.value.includes("focus")) && !(castingData.currentSlots[castLevel] > 0) && !(spellData.traits.value.includes("cantrip"))) {
+			message_window("No Spell Slot!", "You've expended all the spell slots for this rank of spell!");
+			return;
+		} else if (!(spellData.traits.value.includes("focus")) && castingData.currentSlots[castLevel] > 0 && !(spellData.traits.value.includes("cantrip"))) {
+			castingData.currentSlots[castLevel] -= 1;
+			casterToken.setProperty("spellRules", JSON.stringify(spellCasting));
+			if (!(casterToken.getName().includes("Lib"))) {
+				let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
+				libToken.setProperty("spellRules", JSON.stringify(spellCasting));
+			}
+		} else if (spellData.traits.value.includes("focus") && (!("focus" in resources) || resources.focus.current <= 0)) {
+			message_window("No Focus Point!", "You've expended all your focus points!");
+			return;
+		} else if (spellData.traits.value.includes("focus") && ("focus" in resources) && resources.focus.current > 0) {
+			resources.focus.current -= 1;
+			casterToken.setProperty("resources", JSON.stringify(resources));
+			if (!(casterToken.getName().includes("Lib"))) {
+				let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
+				libToken.setProperty("resources", JSON.stringify(resources));
+			}
 		}
 	}
 

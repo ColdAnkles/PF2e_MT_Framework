@@ -101,6 +101,14 @@ function parse_npc(rawData, parseRaw = false) {
 
 	//MapTool.chat.broadcast(JSON.stringify(npcData.passiveSkills));
 
+	//Fix for Casting Format Change
+	let oldNPCCasting = npcData.spellRules;
+	npcData.spellRules = {};
+	for (var key in oldNPCCasting) {
+		let castData = oldNPCCasting[key];
+		npcData.spellRules[castData.name] = castData;
+	}
+
 	return npcData;
 }
 
