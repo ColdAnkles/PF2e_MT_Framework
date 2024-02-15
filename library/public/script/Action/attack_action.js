@@ -13,18 +13,26 @@ function attack_action(actionData, actingToken) {
 	}
 
 	let activeConditions = JSON.parse(actingToken.getProperty("conditionDetails"));
+	if (activeConditions == null) {
+		activeConditions = {};
+	}
 
 	if ("Dazzled" in activeConditions) {
 		flat_check(actingToken);
 	}
 
 
-	let inventory = JSON.parse(actingToken.getProperty("inventory"));
-	let itemData = inventory[actionData.linkedWeapon];
+	let inventory = null;
+	let itemData = null;
 
-	if (itemData == null) {
-		MapTool.chat.broadcast("Linked Weapon Missing!");
-		return
+	if (get_token_type(actingToken) == "PC") {
+		inventory = JSON.parse(actingToken.getProperty("inventory"));
+		itemData = inventory[actionData.linkedWeapon];
+
+		if (itemData == null) {
+			MapTool.chat.broadcast("Linked Weapon Missing!");
+			return
+		}
 	}
 
 	let attack_bonus = actionData.bonus;
@@ -53,13 +61,13 @@ function attack_action(actionData, actingToken) {
 	let effect_bonus_raw = calculate_bonus(actingToken, attackScopes, true);
 
 
-	if ("WeaponPotency" in effect_bonus_raw.otherEffects) {
+	if ("WeaponPotency" in effect_bonus_raw.otherEffects && itemData != null) {
 		let currBonus = effect_bonus_raw.bonuses.item;
 		effect_bonus_raw.bonuses.item = Math.max(currBonus, Number(effect_bonus_raw.otherEffects.WeaponPotency));
 		itemData.runes.potency = effect_bonus_raw.otherEffects.WeaponPotency;
 	}
 
-	if ("Striking" in effect_bonus_raw.otherEffects) {
+	if ("Striking" in effect_bonus_raw.otherEffects && itemData != null) {
 		actionData.damage[0].dice = Math.max(actionData.damage[0].dice, effect_bonus_raw.otherEffects.Striking + 1);
 		itemData.damage.dice = actionData.damage[0].dice;
 		itemData.runes.striking = effect_bonus_raw.otherEffects.Striking;
@@ -107,13 +115,13 @@ function attack_action(actionData, actingToken) {
 			}
 
 		} else if (traitName.includes("jousting")) {
-			if (itemData.damage.dice > damage_bonus.bonuses.circumstance) {
+			if (itemData != null && itemData.damage.dice > damage_bonus.bonuses.circumstance) {
 				additionalDamageList.push("+" + String(itemData.damage.dice) + " (" + String(Number(2 * itemData.damage.dice)) + ") (Jousting (c))");
 			}
 			let joustDie = traitName.split("-")[1];
 			actionData.damage["joustOneHanded"] = { "damage": String(itemData.damage.dice) + joustDie + "+" + Number(actingToken.getProperty("str")), "damageType": "piercing (one-handed)" };
 
-		} else if (traitName.includes("two-hand")) {
+		} else if (itemData != null && traitName.includes("two-hand")) {
 			let twoHandDie = traitName.split("-")[2];
 			actionData.damage["twoHanded"] = { "damage": String(itemData.damage.dice) + twoHandDie + "+" + Number(actingToken.getProperty("str")), "damageType": itemData.damage.damageType + " (two-handed)" };
 
@@ -124,7 +132,7 @@ function attack_action(actionData, actingToken) {
 			additionalAttackBonuses.push("+1 (Sweep (c))");
 
 		} else if (traitName == "twin" && currentAttackCount > 0) {
-			if (itemData.damage.dice > damage_bonus.bonuses.circumstance) {
+			if (itemData != null && itemData.damage.dice > damage_bonus.bonuses.circumstance) {
 				additionalAttackBonuses.push("+" + String(itemData.damage.dice) + " (Twin (c))");
 			}
 		}
@@ -206,8 +214,10 @@ function attack_action(actionData, actingToken) {
 	}
 
 	displayData.runes = [];
-	for (var r in itemData.runes.property) {
-		displayData.runes.push(itemData.runes.property[r].name);
+	if (itemData != null) {
+		for (var r in itemData.runes.property) {
+			displayData.runes.push(itemData.runes.property[r].name);
+		}
 	}
 
 	if (!(isNaN(initiative)) && "increaseMAP" in actionData && actionData.increaseMAP) {
