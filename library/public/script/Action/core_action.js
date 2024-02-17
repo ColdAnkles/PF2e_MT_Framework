@@ -33,6 +33,7 @@ function core_action(actionData, actingToken) {
 
 	if (canAct) {
 		//MapTool.chat.broadcast("Performing Action: "+ actionData.name);
+		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		setLibProperty("lib:ca.pf2e", "lastAction", actionData.name);
 
 		if ("isSpell" in actionData && actionData.isSpell) {
@@ -79,6 +80,11 @@ function core_action(actionData, actingToken) {
 				effectData.type = effectType;
 				effectData.name = "Effect: " + actionData.name
 				//toggle_action_effect(effectData, actingToken, true);
+			}
+
+			if("selfEffect" in actionData){
+				let effectName = actionData.selfEffect.name;
+				toggle_named_effect(effectName, actingToken, 1, actionData);
 			}
 
 			if (actionData.name == "Recall Knowledge") {
