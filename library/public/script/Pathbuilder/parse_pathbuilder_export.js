@@ -310,7 +310,8 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(data.armor[a].name, "item");
 		if ("fileURL" in tempData) {
 			parse_feature(rest_call(tempData.fileURL), parsedData);
-			parsedData.itemList[tempData.id].quantity = data.armor[a].qty;
+			let trueID = tempData.id+String(Object.keys(parsedData.itemList).length -1);
+			parsedData.itemList[trueID].quantity = data.armor[a].qty;
 		}
 	}
 
@@ -366,7 +367,8 @@ function parse_pathbuilder_export(data) {
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
 				parse_feature(rest_call(tempData.fileURL), parsedData);
-				parsedData.itemList[tempData.id].quantity = data.equipment[e][1];
+				let trueID = tempData.id+String(Object.keys(parsedData.itemList).length -1);
+				parsedData.itemList[trueID].quantity = data.equipment[e][1];
 			}
 		}
 	}
