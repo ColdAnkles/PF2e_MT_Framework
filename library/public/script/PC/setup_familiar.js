@@ -86,8 +86,8 @@ function setup_familiar(baseData) {
     }
 
     MTScript.evalMacro("[h: input(\"speedData|Normal,Aquatic|Movement Type|List\")]");
-    let familiarSpeed = MTScript.getVariable("speedData");
-    if (familiarSpeed == "1" || familiarSpeed == 1) {
+    let familiarSpeed = String(MTScript.getVariable("speedData"));
+    if (familiarSpeed == "0" || familiarSpeed == 0) {
         newFamiliarData.speeds.base = 25;
     } else {
         newFamiliarData.speeds.other.push({ "type": "swim", "value": 25 });
