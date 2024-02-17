@@ -68,8 +68,11 @@ function parse_feature(feature, assignDict = null) {
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
 		newAction.traits = itemData.system.traits.value;
-		if ("requirements" in itemData) {
-			itemData.requirements = itemData.system.requirements;
+		if ("requirements" in itemData.system) {
+			newAction.requirements = itemData.system.requirements;
+		}
+		if("selfEffect" in itemData.system){
+			newAction.selfEffect = itemData.system.selfEffect;
 		}
 		if (simpleReturn) {
 			return newAction;
@@ -81,8 +84,11 @@ function parse_feature(feature, assignDict = null) {
 		let newAction = { "mainText": itemData.name, "subText": tempString, "rules": itemData.system.rules, "actionType": "passive", "actionCost": 0, "description": tempString, "name": itemData.name };
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
-		if ("requirements" in itemData) {
+		if ("requirements" in itemData.system) {
 			itemData.requirements = itemData.system.requirements;
+		}
+		if("selfEffect" in itemData.system){
+			newAction.selfEffect = itemData.system.selfEffect;
 		}
 		if (simpleReturn) {
 			return newAction;
@@ -93,7 +99,7 @@ function parse_feature(feature, assignDict = null) {
 		let newAction = { "description": itemData.system.description.value, "name": itemData.name, "actionType": itemData.system.actionType.value, "actionCost": itemData.system.actions.value }
 		newAction.traits = itemData.system.traits.value;
 		newAction.rules = itemData.system.rules;
-		if ("requirements" in itemData) {
+		if ("requirements" in itemData.system) {
 			itemData.requirements = itemData.system.requirements;
 		}
 		newAction.type = "feat";
@@ -101,6 +107,9 @@ function parse_feature(feature, assignDict = null) {
 			newAction.level = itemData.system.level.value;
 		} else {
 			newAction.level = 0;
+		}
+		if("selfEffect" in itemData.system){
+			newAction.selfEffect = itemData.system.selfEffect;
 		}
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
