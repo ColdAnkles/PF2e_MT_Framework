@@ -18,8 +18,10 @@ function display_spell_slots(token) {
         if ("currentSlots" in castData) {
             for (var slot in castData.currentSlots) {
                 displaySlots[slot] += castData.currentSlots[slot];
+                if(slot>1 && castData.currentSlots[slot]>0){
+                    hasSlots = true;
+                }
             }
-            hasSlots = true;
         }
         if (castData.name.includes("Focus")) {
             hasFocus = true;
