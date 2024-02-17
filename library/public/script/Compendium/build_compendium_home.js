@@ -11,7 +11,8 @@ function build_compendium_home() {
 	let pcList = find_pc_libs();
 	for (var pc in pcList) {
 		let pcName = pcList[pc].getName().replace("Lib:", "");
-		HTMLString = HTMLString + "<b>" + create_macroLink(pcName, "Creature_View_Frame@Lib:ca.pf2e", JSON.stringify({ "name": pcName, "tokenID": pcList[pc].getId() })) + "</b> <span style='font-size:10px'>" + create_macroLink("Reimport", "Import_Pathbuilder_PC@Lib:ca.pf2e", pcList[pc].getId()) + "</span><br />";
+		let isPet = JSON.stringify(pcList[pc].getProperty("traits")).includes("minion");
+		HTMLString = HTMLString + "<b>" + create_macroLink(pcName, "Creature_View_Frame@Lib:ca.pf2e", JSON.stringify({ "name": pcName, "tokenID": pcList[pc].getId() })) + ((isPet)?"":"</b> <span style='font-size:10px'>" + create_macroLink("Reimport", "Import_Pathbuilder_PC@Lib:ca.pf2e", pcList[pc].getId()) + "</span>") + "<br />";
 	}
 	HTMLString = HTMLString + create_macroLink("Import from Pathbuilder", "Import_Pathbuilder_PC@Lib:ca.pf2e", "") + "<br />";
 
