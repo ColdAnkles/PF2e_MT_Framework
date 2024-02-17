@@ -5,13 +5,18 @@ function foundry_calc_value(value, actor, item) {
 	if (isNaN(newValue)) {
 		if (typeof (value) == "object") {
 			if ("brackets" in value) {
-				let bracketSplit = value.field.split("|");
+				let splitVal = null;
 				//MapTool.chat.broadcast(JSON.stringify(value.brackets));
-				let splitVal = 0;
-				if (bracketSplit[0] == "actor" && actor != null) {
-					splitVal = actor.getProperty(bracketSplit[1]);
+				if("field" in value){
+					let bracketSplit = value.field.split("|");
+					if (bracketSplit[0] == "actor" && actor != null) {
+						splitVal = actor.getProperty(bracketSplit[1]);
+					}
 				}
-				//MapTool.chat.broadcast(String(splitVal));
+
+				if(splitVal==null){
+					splitVal = Number(actor.getProperty("level"));
+				}
 				for (var s in value.brackets) {
 					let startVal = 0;
 					let endVal = 0;
@@ -30,6 +35,9 @@ function foundry_calc_value(value, actor, item) {
 			} else {
 				return 0;
 			}
+		}
+		if(!(isNaN(value))){
+			return value;
 		}
 		let foundMatches = value.match(/@[a-zA-Z\.]+/g);
 		for (var m in foundMatches) {
