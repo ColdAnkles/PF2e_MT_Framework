@@ -30,8 +30,6 @@ function removeMacro(macroName, tokenID){
         }
     }
 
-    MapTool.chat.broadcast(JSON.stringify(removeIndicies));
-
     for (var ri in removeIndicies){
         MTScript.setVariable("index", removeIndicies[ri]);
         MTScript.evalMacro("[h: removeMacro(index, tokenID)]");

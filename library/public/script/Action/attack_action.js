@@ -29,9 +29,11 @@ function attack_action(actionData, actingToken) {
 		inventory = JSON.parse(actingToken.getProperty("inventory"));
 		itemData = inventory[actionData.linkedWeapon];
 
-		if (itemData == null) {
+		if (itemData == null && !actionData.linkedWeapon=="unarmed") {
 			MapTool.chat.broadcast("Linked Weapon Missing!");
 			return
+		}else if (itemData == null && actionData.linkedWeapon=="unarmed"){
+			itemData = inventory["Handwraps of Mighty Blows"]; //Won't Work, but needs finding, if exists.
 		}
 	}
 
