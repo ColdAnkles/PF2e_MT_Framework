@@ -3,7 +3,7 @@
 function build_creature_view(creatureName, tokenID = null) {
 	let creatureData = null;
 	let token = null;
-	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).traitDescriptions;
+	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
 
 	if (tokenID == null) {
 		//let libToken = get_runtime("libToken");
@@ -36,24 +36,24 @@ function build_creature_view(creatureName, tokenID = null) {
 
 	if (creatureData.rarity != "common" && creatureData.rarity != "") {
 		let normalRarity = capitalise(creatureData.rarity).split('-')[0];
-		if (normalRarity in traitGlossary && traitGlossary[normalRarity] != null) {
-			HTMLString += "<span class='trait" + creatureData.rarity + "' title=\"" + traitGlossary[normalRarity] + "\">" + capitalise(creatureData.rarity) + "</span>";
+		if ("traitDescription"+normalRarity in traitGlossary && traitGlossary["traitDescription"+normalRarity] != null) {
+			HTMLString += "<span class='trait" + creatureData.rarity + "' title=\"" + traitGlossary["traitDescription"+normalRarity] + "\">" + capitalise(creatureData.rarity) + "</span>";
 		} else {
 			HTMLString += "<span class='trait" + creatureData.rarity + "'>" + capitalise(creatureData.rarity) + "</span>";
 		}
 	}
 	//HTMLString += "<span class='traitalignment'>" + capitalise(creatureData.alignment) + "</span>";
 	let normalSize = capitalise(creatureData.size).split('-')[0];
-	if (normalSize in traitGlossary && traitGlossary[normalSize] != null) {
-		HTMLString += "<span class='traitsize' title=\"" + traitGlossary[normalSize] + "\">" + capitalise(creatureData.size) + "</span>"
+	if ("traitDescription"+normalSize in traitGlossary && traitGlossary["traitDescription"+normalSize] != null) {
+		HTMLString += "<span class='traitsize' title=\"" + traitGlossary["traitDescription"+normalSize] + "\">" + capitalise(creatureData.size) + "</span>"
 	} else {
 		HTMLString += "<span class='traitsize'>" + capitalise(creatureData.size) + "</span>"
 	}
 	for (var t in creatureData.traits) {
 		let traitName = creatureData.traits[t];
 		let traitNormal = capitalise(traitName).split('-')[0];
-		if (traitNormal in traitGlossary && traitGlossary[traitNormal] != null) {
-			HTMLString += "<span class='trait' title=\"" + traitGlossary[traitNormal] + "\">" + capitalise(traitName) + "</span>";
+		if ("traitDescription"+traitNormal in traitGlossary && traitGlossary["traitDescription"+traitNormal] != null) {
+			HTMLString += "<span class='trait' title=\"" + traitGlossary["traitDescription"+traitNormal] + "\">" + capitalise(traitName) + "</span>";
 		} else {
 			HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
 		}

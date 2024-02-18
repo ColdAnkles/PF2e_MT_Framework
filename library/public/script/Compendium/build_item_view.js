@@ -2,7 +2,7 @@
 
 function build_item_view(itemType, itemName) {
 	let itemList = JSON.parse(read_data("pf2e_" + itemType));
-	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).traitDescriptions;
+	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
 	if (!(itemName in itemList)) {
 		return "<b>Could not find " + itemType + " " + itemName + ".</b>";
 	}
@@ -19,8 +19,8 @@ function build_item_view(itemType, itemName) {
 	HTMLString += "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + (("level" in itemData) ? itemData.level : "") + "</span></h1>";
 	if (itemData.rarity != "common") {
 		let normalRarity = capitalise(itemData.rarity).split('-')[0];
-		if (normalRarity in traitGlossary && traitGlossary[normalRarity] != null) {
-			HTMLString += "<span class='trait" + itemData.rarity + "' title=\"" + traitGlossary[normalRarity] + "\">" + capitalise(itemData.rarity) + "</span>";
+		if ("traitDescription"+normalRarity in traitGlossary && traitGlossary["traitDescription"+normalRarity] != null) {
+			HTMLString += "<span class='trait" + itemData.rarity + "' title=\"" + traitGlossary["traitDescription"+normalRarity] + "\">" + capitalise(itemData.rarity) + "</span>";
 		} else {
 			HTMLString += "<span class='trait" + itemData.rarity + "'>" + capitalise(itemData.rarity) + "</span>";
 		}
@@ -29,8 +29,8 @@ function build_item_view(itemType, itemName) {
 		for (var t in itemData.traits) {
 			let traitName = itemData.traits[t];
 			let traitNormal = capitalise(traitName).split('-')[0];
-			if (traitNormal in traitGlossary && traitGlossary[traitNormal] != null) {
-				HTMLString += "<span class='trait' title=\"" + traitGlossary[traitNormal] + "\">" + capitalise(traitName) + "</span>";
+			if ("traitDescription"+traitNormal in traitGlossary && traitGlossary["traitDescription"+traitNormal] != null) {
+				HTMLString += "<span class='trait' title=\"" + traitGlossary["traitDescription"+traitNormal] + "\">" + capitalise(traitName) + "</span>";
 			} else {
 				HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
 			}
