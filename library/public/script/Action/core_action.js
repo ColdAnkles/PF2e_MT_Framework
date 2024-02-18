@@ -73,14 +73,14 @@ function core_action(actionData, actingToken) {
 				}
 			}
 
-			if (needsEffect) {
-				let effectData = {};
-				effectData.rules = actionData.rules;
-				effectData.duration = { "expiry": "turn-start", "sustained": "false", "unit": "rounds", "value": 1 }
-				effectData.type = effectType;
-				effectData.name = "Effect: " + actionData.name
-				//toggle_action_effect(effectData, actingToken, true);
-			}
+			//if (needsEffect) {
+			//	let effectData = {};
+			//	effectData.rules = actionData.rules;
+			//	effectData.duration = { "expiry": "turn-start", "sustained": "false", "unit": "rounds", "value": 1 }
+			//	effectData.type = effectType;
+			//	effectData.name = "Effect: " + actionData.name
+			//	toggle_action_effect(effectData, actingToken, true);
+			//}
 
 			if("selfEffect" in actionData){
 				let effectName = actionData.selfEffect.name;
