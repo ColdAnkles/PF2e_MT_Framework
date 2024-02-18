@@ -3,7 +3,7 @@
 function chat_display(displayData, broadcast = true, additionalData = { "rollDice": false }) {
 	//MapTool.chat.broadcast(JSON.stringify(displayData));
 
-	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).traitDescriptions;
+	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
 
 	additionalData.invertImages = false;
 
@@ -40,8 +40,8 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		for (var t in displayData.traits) {
 			let traitName = displayData.traits[t];
 			let traitNormal = capitalise(traitName).split('-')[0];
-			if (traitNormal in traitGlossary && traitGlossary[traitNormal] != null) {
-				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'><span title=\"" + traitGlossary[traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
+			if ("traitDescription"+traitNormal in traitGlossary && traitGlossary["traitDescription"+traitNormal] != null) {
+				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'><span title=\"" + traitGlossary["traitDescription"+traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
 			} else {
 				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
 			}
