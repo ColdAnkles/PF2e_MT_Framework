@@ -237,7 +237,17 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			prof_bonus = effect_bonus_raw.bonuses.proficiency;
 		}
 
-		let checkMod = stat_bonus + prof_bonus + misc_bonus + effect_bonus + map_malus;
+		let armorPenalty = 0;
+
+		if(checkData.statName=="str" || checkData.statName=="dex"){
+			let tokenArmor = get_equipped_armor(checkToken);
+			let tokenStr = checkToken.getProperty("str")
+			if(tokenArmor!=null && "checkPenalty" in tokenArmor && "strReq" in tokenArmor && tokenStr<tokenArmor.strReq){
+				armorPenalty = tokenArmor.checkPenalty;
+			}
+		}
+
+		let checkMod = stat_bonus + prof_bonus + misc_bonus + effect_bonus + map_malus + armorPenalty;
 		let checkResult = dTwenty + checkMod;
 
 		let displayData = { "description": "", "name": checkToken.getName() + " - " + checkData.skillName + " " + pos_neg_sign(checkMod) };
@@ -256,6 +266,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		}
 		if (map_malus != 0) {
 			displayData.description += " " + pos_neg_sign(map_malus, true);
+		}
+		if (armorPenalty != 0) {
+			displayData.description += " " + pos_neg_sign(armorPenalty, true);
 		}
 		displayData.description += " = " + String(checkResult) + "</div></b>";
 

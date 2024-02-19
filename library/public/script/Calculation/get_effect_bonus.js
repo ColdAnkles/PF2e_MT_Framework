@@ -57,8 +57,8 @@ function get_effect_bonus(effectData, bonusScopes, actor = null) {
 			} else if (ruleData.key == "SubstituteRoll") {
 				returnData.otherEffects[ruleData.key] = ruleData.value;
 				returnData.otherEffects["adjustCause"] = ruleData.slug;
-			} else if (ruleData.key == "AdjustModifier") {
-				//Nothing yet
+			} else if (ruleData.key == "DexterityModifierCap") {
+				returnData.otherEffects[ruleData.key] = ruleData.value;
 			} else {
 			}
 		}

@@ -307,11 +307,21 @@ function parse_pathbuilder_export(data) {
 	//Armor
 	message_window("Importing " + data.name, "Importing Armor");
 	for (var a in data.armor) {
-		let tempData = find_object_data(data.armor[a].name, "item");
+		let thisArmor = data.armor[a];
+		let tempData = find_object_data(thisArmor.name, "item");
 		if ("fileURL" in tempData) {
 			parse_feature(rest_call(tempData.fileURL), parsedData);
 			let trueID = tempData.id+String(Object.keys(parsedData.itemList).length -1);
-			parsedData.itemList[trueID].quantity = data.armor[a].qty;
+			parsedData.itemList[trueID].quantity = thisArmor.qty;
+			parsedData.itemList[trueID].equipped = thisArmor.worn;
+			parsedData.itemList[trueID].runes = {"property":[],"potency":((thisArmor.pot=="")?0:thisArmor.pot), "resilient":((thisArmor.res=="")?0:thisArmor.res)};
+			for (var rI of thisArmor.runes) {
+				let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
+				if(runeData!=null && "fileURL" in runeData){
+					runeData = parse_feature(rest_call(runeData.fileURL), null);
+					parsedData.itemList[trueID].runes.property.push(runeData);
+				}
+			}
 		}
 	}
 
@@ -345,9 +355,11 @@ function parse_pathbuilder_export(data) {
 				newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
 				newWeapon.runes.potency = thisWeapon.pot;
 				for (var rI of thisWeapon.runes) {
-					let runeData = find_object_data(rI, "item");
-					runeData = parse_feature(rest_call(runeData.fileURL), null);
-					newWeapon.runes.property.push(runeData);
+					let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
+					if(runeData!=null && "fileURL" in runeData){
+						runeData = parse_feature(rest_call(runeData.fileURL), null);
+						newWeapon.runes.property.push(runeData);
+					}
 				}
 				parsedData.basicAttacks.push(newAttackData);
 				//newAttackData = JSON.parse(JSON.stringify(newAttackData));

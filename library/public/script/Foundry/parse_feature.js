@@ -26,6 +26,28 @@ function parse_feature(feature, assignDict = null) {
 			newItem.traits = itemData.system.traits.value;
 			if (itemData.system.category == "shield") {
 				newItem.acBonus = itemData.system.acBonus;
+				newItem.armorType = "shield";
+			}
+			newItem.acBonus = itemData.system.acBonus;
+			if("checkPenalty" in itemData.system){
+				newItem.checkPenalty = itemData.system.checkPenalty;
+			}else{
+				newItem.checkPenalty = 0;
+			}
+			if("speedPenalty" in itemData.system){
+				newItem.speedPenalty = itemData.system.speedPenalty;
+			}else{
+				newItem.speedPenalty = 0;
+			}
+			if("dexCap" in itemData.system){
+				newItem.dexCap = itemData.system.dexCap;
+			}else{
+				newItem.dexCap = 999;
+			}
+			if("strength" in itemData.system){
+				newItem.strReq = itemData.system.strength;
+			}else{
+				newItem.strReq = -999;
 			}
 		} else if (itemData.type == "weapon") {
 			newItem.damage = itemData.system.damage;
@@ -55,6 +77,7 @@ function parse_feature(feature, assignDict = null) {
 		}
 		newItem.source = itemData.system.publication.title;
 		newItem.rarity = itemData.system.traits.rarity;
+		newItem.equipped = false;
 		if (simpleReturn) {
 			return newItem;
 		}
