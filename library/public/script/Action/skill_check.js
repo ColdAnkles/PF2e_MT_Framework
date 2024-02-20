@@ -87,6 +87,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		queryHTML += "<input type='hidden' name='tokenType' value='" + tokenType + "'>";
 		queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
 		queryHTML += "<input type='hidden' name='altStat' value='" + Number(altStat) + "'>";
+		queryHTML += "<input type='hidden' name='extraScopes' value='"+JSON.stringify(extraScopes)+"'>";
 
 		queryHTML += "<tr><th colspan='5' style='text-align:center'><b>Skill Check</b></th></tr>";
 		queryHTML += "<tr><td " + ((altStat) ? "" : "colspan='2'") + ">Skill:</td><td " + ((altStat) ? "" : "colspan='3'") + "><select name='skillName'>";
@@ -159,6 +160,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		}
 		if (!("fortuneSelect" in checkData)) {
 			checkData.fortuneSelect = "normal";
+		}
+		if("extraScopes" in checkData){
+			extraScopes = checkData.extraScopes;
 		}
 
 		MTScript.evalMacro("[h: dTwenty = roll(1,20)]");

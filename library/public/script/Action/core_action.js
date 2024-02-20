@@ -90,6 +90,9 @@ function core_action(actionData, actingToken) {
 			if (actionData.name == "Recall Knowledge") {
 				doCheck = true;
 			}
+			if(actionData.traits.includes("skill")){
+				doCheck = true;
+			}
 
 			chat_display(actionData, true, { "rollDice": true, "actor": actingToken, "action": actionData });
 
@@ -97,7 +100,7 @@ function core_action(actionData, actingToken) {
 				saving_throw(actingToken, null, { "applyEffect": actionData.name });
 			}
 			if (doCheck) {
-				skill_check(actingToken);
+				skill_check(actingToken, false, null, [actionData.baseName]);
 			}
 		}
 
