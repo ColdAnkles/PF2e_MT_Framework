@@ -223,8 +223,8 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
-	if(data.focusPoints>0){
-		parsedData.resources.focus = {"current":data.focusPoints, "max":data.focusPoints};
+	if (data.focusPoints > 0) {
+		parsedData.resources.focus = { "current": data.focusPoints, "max": data.focusPoints };
 	}
 
 	//__MISC__
@@ -259,7 +259,7 @@ function parse_pathbuilder_export(data) {
 	message_window("Importing " + data.name, "Importing Specials");
 	for (var s in data.specials) {
 		let tempName = data.specials[s];
-		if(tempName==""){
+		if (tempName == "") {
 			continue;
 		}
 		tempName = tempName.replaceAll("Arcane School: ", "").replaceAll("Arcane Thesis: ", "");
@@ -312,13 +312,13 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(thisArmor.name, "item");
 		if ("fileURL" in tempData) {
 			parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData);
-			let trueID = tempData.id+String(Object.keys(parsedData.itemList).length -1);
+			let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
 			parsedData.itemList[trueID].quantity = thisArmor.qty;
 			parsedData.itemList[trueID].equipped = thisArmor.worn;
-			parsedData.itemList[trueID].runes = {"property":[],"potency":((thisArmor.pot=="")?0:thisArmor.pot), "resilient":((thisArmor.res=="")?0:thisArmor.res)};
+			parsedData.itemList[trueID].runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient": ((thisArmor.res == "") ? 0 : thisArmor.res) };
 			for (var rI of thisArmor.runes) {
 				let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
-				if(runeData!=null && "fileURL" in runeData){
+				if (runeData != null && "fileURL" in runeData) {
 					runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
 					parsedData.itemList[trueID].runes.property.push(runeData);
 				}
@@ -334,7 +334,7 @@ function parse_pathbuilder_export(data) {
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
 				parse_feature(rest_call(tempData.fileURL), parsedData);
-				let trueID = tempData.id+String(Object.keys(parsedData.itemList).length -1);
+				let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
 				let newWeapon = parsedData.itemList[trueID];
 				newWeapon.quantity = thisWeapon.qty;
 				let newAttackData = {
@@ -357,7 +357,7 @@ function parse_pathbuilder_export(data) {
 				newWeapon.runes.potency = thisWeapon.pot;
 				for (var rI of thisWeapon.runes) {
 					let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
-					if(runeData!=null && "fileURL" in runeData){
+					if (runeData != null && "fileURL" in runeData) {
 						runeData = parse_feature(rest_call(runeData.fileURL), null);
 						newWeapon.runes.property.push(runeData);
 					}
@@ -380,7 +380,7 @@ function parse_pathbuilder_export(data) {
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
 				parse_feature(rest_call(tempData.fileURL), parsedData);
-				let trueID = tempData.id+String(Object.keys(parsedData.itemList).length -1);
+				let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
 				parsedData.itemList[trueID].quantity = data.equipment[e][1];
 			}
 		}

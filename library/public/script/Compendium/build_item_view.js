@@ -11,7 +11,7 @@ function build_item_view(itemType, itemName) {
 	if ("fileURL" in itemData) {
 		itemData = rest_call(itemData["fileURL"], "");
 	}
-	itemData = parse_feature(itemBaseName,itemData);
+	itemData = parse_feature(itemBaseName, itemData);
 
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
 
@@ -20,8 +20,8 @@ function build_item_view(itemType, itemName) {
 	HTMLString += "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + (("level" in itemData) ? itemData.level : "") + "</span></h1>";
 	if (itemData.rarity != "common") {
 		let normalRarity = capitalise(itemData.rarity).split('-')[0];
-		if ("traitDescription"+normalRarity in traitGlossary && traitGlossary["traitDescription"+normalRarity] != null) {
-			HTMLString += "<span class='trait" + itemData.rarity + "' title=\"" + traitGlossary["traitDescription"+normalRarity] + "\">" + capitalise(itemData.rarity) + "</span>";
+		if ("traitDescription" + normalRarity in traitGlossary && traitGlossary["traitDescription" + normalRarity] != null) {
+			HTMLString += "<span class='trait" + itemData.rarity + "' title=\"" + traitGlossary["traitDescription" + normalRarity] + "\">" + capitalise(itemData.rarity) + "</span>";
 		} else {
 			HTMLString += "<span class='trait" + itemData.rarity + "'>" + capitalise(itemData.rarity) + "</span>";
 		}
@@ -30,8 +30,8 @@ function build_item_view(itemType, itemName) {
 		for (var t in itemData.traits) {
 			let traitName = itemData.traits[t];
 			let traitNormal = capitalise(traitName).split('-')[0];
-			if ("traitDescription"+traitNormal in traitGlossary && traitGlossary["traitDescription"+traitNormal] != null) {
-				HTMLString += "<span class='trait' title=\"" + traitGlossary["traitDescription"+traitNormal] + "\">" + capitalise(traitName) + "</span>";
+			if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
+				HTMLString += "<span class='trait' title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + capitalise(traitName) + "</span>";
 			} else {
 				HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
 			}

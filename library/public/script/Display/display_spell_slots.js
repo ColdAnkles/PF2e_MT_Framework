@@ -5,7 +5,7 @@ function display_spell_slots(token) {
         token = MapTool.tokens.getTokenByID(token);
     }
 
-    if(get_token_type(token)=="NPC"){
+    if (get_token_type(token) == "NPC") {
         return "";
     }
 
@@ -22,7 +22,7 @@ function display_spell_slots(token) {
         if ("currentSlots" in castData) {
             for (var slot in castData.currentSlots) {
                 displaySlots[slot] += castData.currentSlots[slot];
-                if(slot>1 && castData.currentSlots[slot]>0){
+                if (slot > 1 && castData.currentSlots[slot] > 0) {
                     hasSlots = true;
                 }
             }
@@ -42,7 +42,7 @@ function display_spell_slots(token) {
 
     if (hasSlots && !hasFocus) {
         returnString += displaySlots.join(", ").replace(", 6th:", "\n6th:");
-    }else if (hasSlots && hasFocus){
+    } else if (hasSlots && hasFocus) {
         returnString += displaySlots.join(", ").replace(", 7th:", "\n7th:");
     }
 

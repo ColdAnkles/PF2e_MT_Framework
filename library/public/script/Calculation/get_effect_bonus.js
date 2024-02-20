@@ -9,8 +9,8 @@ function get_effect_bonus(effectData, bonusScopes, actor = null) {
 	let returnData = { "bonuses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "maluses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "query": false, "otherEffects": {} };
 	for (var r in effectData.rules) {
 		let ruleData = effectData.rules[r];
-		if("predicate" in ruleData){
-			if(!predicate_check(ruleData.predicate, bonusScopes, actor)){
+		if ("predicate" in ruleData) {
+			if (!predicate_check(ruleData.predicate, bonusScopes, actor)) {
 				continue;
 			}
 		}
@@ -65,7 +65,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null) {
 			} else if (ruleData.key == "DexterityModifierCap") {
 				returnData.otherEffects[ruleData.key] = ruleData.value;
 			} else if (ruleData.key == "AdjustModifier") {
-				returnData.otherEffects[ruleData.slug] = {"mode":ruleData.mode, "value":ruleData.value};
+				returnData.otherEffects[ruleData.slug] = { "mode": ruleData.mode, "value": ruleData.value };
 			}
 		}
 	}

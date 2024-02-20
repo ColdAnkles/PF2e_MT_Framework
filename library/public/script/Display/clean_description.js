@@ -136,11 +136,11 @@ function parse_localize(localizeString, additionalData) {
 	let parsed = parse_foundry_strings(localizeString);
 	//MapTool.chat.broadcast(JSON.stringify(parsed));
 
-	if(parsed.bracketContents!=""){
+	if (parsed.bracketContents != "") {
 		let keySplit = parsed.bracketContents.split(".");
 		let glossaryData = JSON.parse(read_data("pf2e_glossary"));
-		for(var k in keySplit){
-			if(!(keySplit[k] in glossaryData)){
+		for (var k in keySplit) {
+			if (!(keySplit[k] in glossaryData)) {
 				return "";
 			}
 			glossaryData = glossaryData[keySplit[k]]

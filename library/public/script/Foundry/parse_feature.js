@@ -7,7 +7,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
 	//MapTool.chat.broadcast(String(simpleReturn));
 
-	if(featureName!=null && assignDict!=null && "allFeatures" in assignDict && itemData.type=="feat"){
+	if (featureName != null && assignDict != null && "allFeatures" in assignDict && itemData.type == "feat") {
 		assignDict.allFeatures.push(featureName);
 	}
 
@@ -33,24 +33,24 @@ function parse_feature(featureName, feature, assignDict = null) {
 				newItem.armorType = "shield";
 			}
 			newItem.acBonus = itemData.system.acBonus;
-			if("checkPenalty" in itemData.system){
+			if ("checkPenalty" in itemData.system) {
 				newItem.checkPenalty = itemData.system.checkPenalty;
-			}else{
+			} else {
 				newItem.checkPenalty = 0;
 			}
-			if("speedPenalty" in itemData.system){
+			if ("speedPenalty" in itemData.system) {
 				newItem.speedPenalty = itemData.system.speedPenalty;
-			}else{
+			} else {
 				newItem.speedPenalty = 0;
 			}
-			if("dexCap" in itemData.system){
+			if ("dexCap" in itemData.system) {
 				newItem.dexCap = itemData.system.dexCap;
-			}else{
+			} else {
 				newItem.dexCap = 999;
 			}
-			if("strength" in itemData.system){
+			if ("strength" in itemData.system) {
 				newItem.strReq = itemData.system.strength;
-			}else{
+			} else {
 				newItem.strReq = -999;
 			}
 		} else if (itemData.type == "weapon") {
@@ -88,7 +88,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 		}
 
 		//Assign with a length number on the end in case multiple unique items with same ID
-		assignDict.itemList[itemData._id+String(Object.keys(assignDict.itemList).length)] = newItem;
+		assignDict.itemList[itemData._id + String(Object.keys(assignDict.itemList).length)] = newItem;
 
 	} else if (itemData.type == "action" && ((itemData.system.category == "interaction" || itemData.system.category == "class") || (assignDict != null && assignDict.type != "npc")) && itemData.system.actionType.value == "passive" && itemData.system.rules.length > 0) {
 		let tempString = clean_description(itemData.system.description.value)
@@ -100,7 +100,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 		if ("requirements" in itemData.system) {
 			newAction.requirements = itemData.system.requirements;
 		}
-		if("selfEffect" in itemData.system){
+		if ("selfEffect" in itemData.system) {
 			newAction.selfEffect = itemData.system.selfEffect;
 		}
 		if (simpleReturn) {
@@ -117,7 +117,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 		if ("requirements" in itemData.system) {
 			itemData.requirements = itemData.system.requirements;
 		}
-		if("selfEffect" in itemData.system){
+		if ("selfEffect" in itemData.system) {
 			newAction.selfEffect = itemData.system.selfEffect;
 		}
 		if (simpleReturn) {
@@ -139,7 +139,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 		} else {
 			newAction.level = 0;
 		}
-		if("selfEffect" in itemData.system){
+		if ("selfEffect" in itemData.system) {
 			newAction.selfEffect = itemData.system.selfEffect;
 		}
 		newAction.source = itemData.system.publication.title;

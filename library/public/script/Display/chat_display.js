@@ -35,13 +35,13 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	outputText = outputText + "</tr></table>";
 
-	if ("traits" in displayData && displayData.traits.length>0) {
+	if ("traits" in displayData && displayData.traits.length > 0) {
 		outputText = outputText + "<table border='0', bgcolor='#5a0308', style='font-size:13pt;font-family:Century Gothic;font-weight:bold;border-spacing:0px'>";
 		for (var t in displayData.traits) {
 			let traitName = displayData.traits[t];
 			let traitNormal = capitalise(traitName).split('-')[0];
-			if ("traitDescription"+traitNormal in traitGlossary && traitGlossary["traitDescription"+traitNormal] != null) {
-				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'><span title=\"" + traitGlossary["traitDescription"+traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
+			if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
+				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'><span title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
 			} else {
 				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
 			}

@@ -82,7 +82,7 @@ function core_action(actionData, actingToken) {
 			//	toggle_action_effect(effectData, actingToken, true);
 			//}
 
-			if("selfEffect" in actionData){
+			if ("selfEffect" in actionData) {
 				let effectName = actionData.selfEffect.name;
 				toggle_named_effect(effectName, actingToken, 1, actionData);
 			}
@@ -90,7 +90,7 @@ function core_action(actionData, actingToken) {
 			if (actionData.name == "Recall Knowledge") {
 				doCheck = true;
 			}
-			if(actionData.traits.includes("skill")){
+			if (actionData.traits.includes("skill")) {
 				doCheck = true;
 			}
 

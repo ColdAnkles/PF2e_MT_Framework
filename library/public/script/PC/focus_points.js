@@ -9,10 +9,10 @@ function add_focus_point(token) {
         add_focus_point(token.getProperty("myID"));
         return;
     }
-    
+
     let tokenResources = JSON.parse(token.getProperty("resources"));
     if ("focus" in tokenResources) {
-        tokenResources.focus.current = Math.min(tokenResources.focus.max, tokenResources.focus.current+1);
+        tokenResources.focus.current = Math.min(tokenResources.focus.max, tokenResources.focus.current + 1);
     }
     token.setProperty("resources", JSON.stringify(tokenResources));
 
@@ -32,10 +32,10 @@ function use_focus_point(token) {
         use_focus_point(token.getProperty("myID"));
         return;
     }
-    
+
     let tokenResources = JSON.parse(token.getProperty("resources"));
     if ("focus" in tokenResources) {
-        tokenResources.focus.current = Math.max(0, tokenResources.focus.current-1);
+        tokenResources.focus.current = Math.max(0, tokenResources.focus.current - 1);
     }
     token.setProperty("resources", JSON.stringify(tokenResources));
 

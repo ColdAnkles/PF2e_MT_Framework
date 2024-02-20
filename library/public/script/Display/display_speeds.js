@@ -11,10 +11,10 @@ function display_speeds(token) {
 	let speedPenalty = 0;
 	let tokenStr = Number(token.getProperty("str"));
 
-	if(equipArmor!=null){
-		if("strReq" in equipArmor && tokenStr>=equipArmor.strReq){
+	if (equipArmor != null) {
+		if ("strReq" in equipArmor && tokenStr >= equipArmor.strReq) {
 			speedPenalty = equipArmor.speedPenalty + 5;
-		}else{
+		} else {
 			speedPenalty = equipArmor.speedPenalty;
 		}
 	}

@@ -14,15 +14,15 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__HEALTH__
-	if("current" in creatureData.hp){
+	if ("current" in creatureData.hp) {
 		token.setProperty("HP", parseInt(creatureData.hp.current));
-	}else{
+	} else {
 		token.setProperty("HP", parseInt(creatureData.hp.max));
 	}
 	token.setProperty("MaxHP", parseInt(creatureData.hp.max));
-	if("temp" in creatureData.hp && !isNaN(creatureData.hp.temp)){
+	if ("temp" in creatureData.hp && !isNaN(creatureData.hp.temp)) {
 		token.setProperty("TempHP", parseInt(creatureData.hp.temp));
-	}else{
+	} else {
 		token.setProperty("TempHP", "0");
 	}
 
@@ -87,9 +87,9 @@ function write_creature_properties(creatureData, token) {
 	if ("reactionsLeft" in creatureData && creatureData.reactionsLeft != null) {
 		token.setProperty("reactionsLeft", Number(creatureData.reactionsLeft));
 	}
-	if("allFeatures" in creatureData && creatureData.allFeatures != null){
+	if ("allFeatures" in creatureData && creatureData.allFeatures != null) {
 		token.setProperty("allFeatures", JSON.stringify(creatureData.allFeatures));
-	}else{
+	} else {
 		token.setProperty("allFeatures", JSON.stringify([]));
 	}
 

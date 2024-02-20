@@ -15,32 +15,32 @@ function calculate_ac(tokenID) {
 	let dexCap = 999;
 
 
-	if("otherEffects" in bonuses && "DexterityModifierCap" in bonuses.otherEffects){
+	if ("otherEffects" in bonuses && "DexterityModifierCap" in bonuses.otherEffects) {
 		dexCap = bonuses.otherEffects.DexterityModifierCap;
 	}
 
 	let profBonus = 0;
 	let armorProfType = "unarmored";
 
-	if(eqArmor!=null){
+	if (eqArmor != null) {
 		armorBonus = eqArmor.acBonus + eqArmor.runes.potency;
 		dexCap = Math.min(eqArmor.dexCap, dexCap);
 		armorProfType = eqArmor.armorType;
-		if("otherEffects" in bonuses && eqArmor.baseItem in bonuses.otherEffects){
+		if ("otherEffects" in bonuses && eqArmor.baseItem in bonuses.otherEffects) {
 			let armorChange = bonuses.otherEffects[eqArmor.baseItem];
-			if (armorChange.mode=="add"){
-				armorBonus+=armorChange.value;
+			if (armorChange.mode == "add") {
+				armorBonus += armorChange.value;
 			}
 		}
 	}
-	
-	for(var p in profs){
-		if(armorProfType == profs[p].name.toLowerCase()){
+
+	for (var p in profs) {
+		if (armorProfType == profs[p].name.toLowerCase()) {
 			profBonus = profs[p].bonus;
 			break;
 		}
 	}
-	
+
 
 	dex_bonus = Math.max(0, Math.min(dex_bonus, dexCap));
 

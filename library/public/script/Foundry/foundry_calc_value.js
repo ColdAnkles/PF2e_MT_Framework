@@ -7,14 +7,14 @@ function foundry_calc_value(value, actor, item) {
 			if ("brackets" in value) {
 				let splitVal = null;
 				//MapTool.chat.broadcast(JSON.stringify(value.brackets));
-				if("field" in value){
+				if ("field" in value) {
 					let bracketSplit = value.field.split("|");
 					if (bracketSplit[0] == "actor" && actor != null) {
 						splitVal = actor.getProperty(bracketSplit[1]);
 					}
 				}
 
-				if(splitVal==null){
+				if (splitVal == null) {
 					splitVal = Number(actor.getProperty("level"));
 				}
 				for (var s in value.brackets) {
@@ -36,7 +36,7 @@ function foundry_calc_value(value, actor, item) {
 				return 0;
 			}
 		}
-		if(!(isNaN(value))){
+		if (!(isNaN(value))) {
 			return value;
 		}
 		let foundMatches = value.match(/@[a-zA-Z\.]+/g);

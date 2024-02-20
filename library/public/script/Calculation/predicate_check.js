@@ -1,114 +1,114 @@
 "use strict";
 
-function predicate_check(predicate, predicateScopes, actor){
+function predicate_check(predicate, predicateScopes, actor) {
 
-	if (typeof (actor) == "string") {
-		actor = MapTool.tokens.getTokenByID(actor);
-	}
+    if (typeof (actor) == "string") {
+        actor = MapTool.tokens.getTokenByID(actor);
+    }
     let actorFeats = [];
-    
-    if(actor!=null){
+
+    if (actor != null) {
         actorFeats = JSON.parse(actor.getProperty("allFeatures"));
     }
 
-    function predicate_and(contents, predicateScopes, actor){
+    function predicate_and(contents, predicateScopes, actor) {
         let results = [];
-        for(var c in contents){
+        for (var c in contents) {
             results.push(predicate_check(contents[c], predicateScopes, actor))
         }
         let finalResult = true;
-        for (var r in results){
+        for (var r in results) {
             finalResult = (finalResult && results[r]);
         }
         return finalResult;
     }
 
-    function predicate_nand(contents, predicateScopes, actor){
+    function predicate_nand(contents, predicateScopes, actor) {
         return !(predicate_and(contents, predicateScopes, actor));
     }
 
-    function predicate_or(contents, predicateScopes, actor){
+    function predicate_or(contents, predicateScopes, actor) {
         let results = [];
-        for(var c in contents){
+        for (var c in contents) {
             results.push(predicate_check(contents[c], predicateScopes, actor))
         }
         let finalResult = true;
-        for (var r in results){
+        for (var r in results) {
             finalResult = (finalResult || results[r]);
         }
         return finalResult;
     }
 
-    function predicate_nor(contents, predicateScopes, actor){
+    function predicate_nor(contents, predicateScopes, actor) {
         return !(predicate_or(contents, predicateScopes, actor));
     }
 
-    function predicate_gte(contents, predicateScopes, actor){
+    function predicate_gte(contents, predicateScopes, actor) {
         MapTool.chat.broadcast("Predicate GTE Not implemented.")
     }
 
-    function predicate_not(contents, predicateScopes, actor){
+    function predicate_not(contents, predicateScopes, actor) {
         return !(predicate_check(contents, predicateScopes, actor));
     }
 
-    if(typeof(predicate)=="string"){
+    if (typeof (predicate) == "string") {
         predicate = [predicate];
     }
 
     //MapTool.chat.broadcast(JSON.stringify(predicateScopes));
 
     let predicate_resolution = true;
-    for(var pK in predicate){
-        if(typeof(predicate[pK])=="string"){
+    for (var pK in predicate) {
+        if (typeof (predicate[pK]) == "string") {
             let pText = predicate[pK];
             //MapTool.chat.broadcast(pText);
-            if(pText.match(/^feat:/)){
+            if (pText.match(/^feat:/)) {
                 let featSlug = pText.split(":")[1];
                 predicate_resolution = predicate_resolution && actorFeats.includes(featSlug);
-            }else if(pText.match(/^item:/)){
+            } else if (pText.match(/^item:/)) {
 
-            }else if(pText.match(/^self:/)){
+            } else if (pText.match(/^self:/)) {
                 let slug = pText.split(":")[1];
-                if(slug == "armored"){
+                if (slug == "armored") {
                     let eqArmor = get_equipped_armor(actor)
-                    predicate_resolution = predicate_resolution && (eqArmor!=null && eqArmor.armorType!="unarmored");
-                }else if(slug=="effect"){
+                    predicate_resolution = predicate_resolution && (eqArmor != null && eqArmor.armorType != "unarmored");
+                } else if (slug == "effect") {
                     let effectSlug = pText.split(":")[2];
                     let tokenEffects = JSON.parse(actor.getProperty("activeEffects"));
-                    if(Object.keys(tokenEffects).length==0){
+                    if (Object.keys(tokenEffects).length == 0) {
                         return false;
-                    }else{
-                        for(var e in tokenEffects){
-                            if(tokenEffects[e].baseName == effectSlug || tokenEffects[e].baseName.replace("stance-","") == effectSlug || tokenEffects[e].baseName.replace("effect-") == effectSlug){
+                    } else {
+                        for (var e in tokenEffects) {
+                            if (tokenEffects[e].baseName == effectSlug || tokenEffects[e].baseName.replace("stance-", "") == effectSlug || tokenEffects[e].baseName.replace("effect-") == effectSlug) {
                                 predicate_resolution = predicate_resolution && true;
                                 break;
                             }
                         }
                     }
                 }
-            }else if(pText.match(/^action:/)){
+            } else if (pText.match(/^action:/)) {
                 let actionSlug = pText.split(":")[1];
                 predicate_resolution = predicate_resolution && predicateScopes.includes(actionSlug);
-            }else{
+            } else {
                 predicate_resolution = false;
             }
-        }else{
+        } else {
             //MapTool.chat.broadcast(JSON.stringify(predicate[pK]));
-            for(var k in predicate[pK]){
+            for (var k in predicate[pK]) {
                 //MapTool.chat.broadcast(JSON.stringify(predicate[pK][k]));
-                if (k=="and"){
+                if (k == "and") {
                     predicate_resolution = predicate_resolution && predicate_and(predicate[pK][k], predicateScopes, actor);
-                }else if (k=="nand"){
+                } else if (k == "nand") {
                     predicate_resolution = predicate_resolution && predicate_nand(predicate[pK][k], predicateScopes, actor);
-                }else if (k=="or"){
+                } else if (k == "or") {
                     predicate_resolution = predicate_resolution && predicate_or(predicate[pK][k], predicateScopes, actor);
-                }else if (k=="nor"){
+                } else if (k == "nor") {
                     predicate_resolution = predicate_resolution && predicate_nor(predicate[pK][k], predicateScopes, actor);
-                }else if (k=="gte"){
+                } else if (k == "gte") {
                     predicate_resolution = predicate_resolution && predicate_gte(predicate[pK][k], predicateScopes, actor);
-                }else if (k=="not"){
+                } else if (k == "not") {
                     predicate_resolution = predicate_resolution && predicate_not(predicate[pK][k], predicateScopes, actor);
-                }else{
+                } else {
                 }
             }
         }
