@@ -1,7 +1,7 @@
 "use strict";
 
 function get_effect_bonus(effectData, bonusScopes, actor = null) {
-	if (!("all" in bonusScopes)) {
+	if (!(bonusScopes.includes("all"))) {
 		bonusScopes.push("all");
 	}
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
@@ -9,6 +9,11 @@ function get_effect_bonus(effectData, bonusScopes, actor = null) {
 	let returnData = { "bonuses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "maluses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "query": false, "otherEffects": {} };
 	for (var r in effectData.rules) {
 		let ruleData = effectData.rules[r];
+		if("predicate" in ruleData){
+			if(!predicate_check(ruleData.predicate, bonusScopes, actor)){
+				continue;
+			}
+		}
 		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll == "if-enabled") || ("choices" in ruleData) || returnData.query;
 		if ("selector" in ruleData) {
 			let selector = selector_inheritance(ruleData.selector);
@@ -59,7 +64,8 @@ function get_effect_bonus(effectData, bonusScopes, actor = null) {
 				returnData.otherEffects["adjustCause"] = ruleData.slug;
 			} else if (ruleData.key == "DexterityModifierCap") {
 				returnData.otherEffects[ruleData.key] = ruleData.value;
-			} else {
+			} else if (ruleData.key == "AdjustModifier") {
+				returnData.otherEffects[ruleData.slug] = {"mode":ruleData.mode, "value":ruleData.value};
 			}
 		}
 	}
