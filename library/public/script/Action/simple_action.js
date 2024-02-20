@@ -11,7 +11,7 @@ function simple_action(actionName, actingToken) {
 	}
 
 	if ("fileURL" in actionData) {
-		actionData = parse_feature(rest_call(actionData["fileURL"], ""));
+		actionData = parse_feature(actionData.baseName, rest_call(actionData["fileURL"], ""));
 	}
 
 	actionData.spendAction = true;
