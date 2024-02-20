@@ -32,7 +32,9 @@ function create_npc(newNPCTokenID, creatureName) {
 
 	for (var a in allPossible) {
 		let actionData = allPossible[a];
-		actionData.type = "personal";
+		if(!("type" in actionData)){
+			actionData.type = "personal";
+		}
 		add_action_to_token(actionData, newNPCTokenID);
 	}
 

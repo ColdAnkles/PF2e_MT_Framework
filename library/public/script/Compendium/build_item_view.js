@@ -7,10 +7,11 @@ function build_item_view(itemType, itemName) {
 		return "<b>Could not find " + itemType + " " + itemName + ".</b>";
 	}
 	let itemData = itemList[itemName];
+	let itemBaseName = itemList.baseName;
 	if ("fileURL" in itemData) {
 		itemData = rest_call(itemData["fileURL"], "");
 	}
-	itemData = parse_feature(itemData);
+	itemData = parse_feature(itemBaseName,itemData);
 
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
 

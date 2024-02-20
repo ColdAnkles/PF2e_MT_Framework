@@ -120,6 +120,8 @@ function import-source-file {
     $storeData.type = $data.type
     $storeData.id = $data._id
     $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master/packs/" + $fileDir + "/" + $fileName
+    $baseNameSplit = $fileName -split "\.";
+    $storeData.baseName = $baseNameSplit[0]
 
     if ($null -eq $data.type) {
         $storeData.type = "null"

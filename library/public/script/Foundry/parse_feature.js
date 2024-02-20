@@ -1,15 +1,19 @@
 "use strict";
 
-function parse_feature(feature, assignDict = null) {
+function parse_feature(featureName, feature, assignDict = null) {
 	let itemData = feature;
 	let simpleReturn = assignDict == null;
+	itemData.baseName = featureName;
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
 	//MapTool.chat.broadcast(String(simpleReturn));
+
+	if(featureName!=null && assignDict!=null && "allFeatures" in assignDict && itemData.type=="feat"){
+		assignDict.allFeatures.push(featureName);
+	}
 
 	if (itemData.type == "feat" || (itemData.type == "heritage" && "actionType" in itemData.system)) {
 		itemData.type = "action";
 	}
-
 
 	if (itemData.type == "lore") {
 		let newSkill = { "string": itemData.name + " +" + itemData.system.mod.value, "name": itemData.name, "bonus": itemData.system.mod.value };
@@ -77,6 +81,7 @@ function parse_feature(feature, assignDict = null) {
 		}
 		newItem.source = itemData.system.publication.title;
 		newItem.rarity = itemData.system.traits.rarity;
+		newItem.baseItem = itemData.system.baseItem;
 		newItem.equipped = false;
 		if (simpleReturn) {
 			return newItem;
@@ -91,6 +96,7 @@ function parse_feature(feature, assignDict = null) {
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
 		newAction.traits = itemData.system.traits.value;
+		newAction.baseName = itemData.baseName;
 		if ("requirements" in itemData.system) {
 			newAction.requirements = itemData.system.requirements;
 		}
@@ -107,6 +113,7 @@ function parse_feature(feature, assignDict = null) {
 		let newAction = { "mainText": itemData.name, "subText": tempString, "rules": itemData.system.rules, "actionType": "passive", "actionCost": 0, "description": tempString, "name": itemData.name };
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
+		newAction.baseName = itemData.baseName;
 		if ("requirements" in itemData.system) {
 			itemData.requirements = itemData.system.requirements;
 		}
@@ -122,6 +129,7 @@ function parse_feature(feature, assignDict = null) {
 		let newAction = { "description": itemData.system.description.value, "name": itemData.name, "actionType": itemData.system.actionType.value, "actionCost": itemData.system.actions.value }
 		newAction.traits = itemData.system.traits.value;
 		newAction.rules = itemData.system.rules;
+		newAction.baseName = itemData.baseName;
 		if ("requirements" in itemData.system) {
 			itemData.requirements = itemData.system.requirements;
 		}
@@ -151,6 +159,7 @@ function parse_feature(feature, assignDict = null) {
 		newItem.actionCost = 1;
 		newItem.source = itemData.system.publication.title;
 		newItem.rarity = itemData.system.traits.rarity;
+		newItem.baseName = itemData.baseName;
 		if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e) {
 			newItem.linkedWeapon = itemData.flags.pf2e.linkedWeapon;
 		}
@@ -194,6 +203,7 @@ function parse_feature(feature, assignDict = null) {
 		let newAction = { "description": itemData.system.description.value, "name": itemData.name, "actionType": itemData.system.actionType.value, "actionCost": itemData.system.actions.value, "traits": itemData.system.traits.value };
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
+		newAction.baseName = itemData.baseName;
 		if (simpleReturn) {
 			return newAction;
 		}
@@ -214,6 +224,7 @@ function parse_feature(feature, assignDict = null) {
 		newEffect.source = itemData.system.publication.title;
 		newEffect.duration = itemData.system.duration;
 		newEffect.description = itemData.system.description.value;
+		newEffect.baseName = itemData.baseName;
 
 		if (simpleReturn) {
 			return newEffect;
@@ -226,6 +237,7 @@ function parse_feature(feature, assignDict = null) {
 		newCond.overrides = itemData.system.overrides;
 		newCond.rules = itemData.system.rules;
 		newCond.value = itemData.system.value;
+		newCond.baseName = itemData.baseName;
 
 		if (simpleReturn) {
 			return newCond;
@@ -234,6 +246,7 @@ function parse_feature(feature, assignDict = null) {
 		let newAction = { "description": itemData.system.description.value, "name": itemData.name, "actionType": itemData.system.actionType.value, "actionCost": itemData.system.actions.value, "traits": itemData.system.traits.value };
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
+		newAction.baseName = itemData.baseName;
 		if (simpleReturn) {
 			return newAction;
 		}

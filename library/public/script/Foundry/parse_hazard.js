@@ -65,7 +65,7 @@ function parse_hazard(rawData, parseRaw = false) {
 
 	for (var i in rawData.items) {
 		let itemData = rawData.items[i];
-		parse_feature(itemData, hazardData);
+		parse_feature(itemData.slug, itemData, hazardData);
 	}
 
 	hazardData.passiveDefenses = hazardData.passiveDefenses.concat(hazardData.passiveSkills);

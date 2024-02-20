@@ -8,10 +8,11 @@ function build_hazard_view(itemName, tokenID = null) {
 			return "<b>Could not find hazard " + itemName + ".</b>";
 		}
 		itemData = itemList[itemName];
+		let itemBaseName = itemData.baseName;
 		if ("fileURL" in itemData) {
 			itemData = rest_call(itemData["fileURL"], "");
 		}
-		itemData = parse_feature(itemData);
+		itemData = parse_feature(itemBaseName, itemData);
 	} else {
 		itemData = read_hazard_properties(tokenID);
 	}

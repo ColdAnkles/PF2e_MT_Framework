@@ -76,7 +76,7 @@ function parse_npc(rawData, parseRaw = false) {
 	for (var i in rawData.items) {
 		let itemData = rawData.items[i];
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
-		parse_feature(itemData, npcData);
+		parse_feature(itemData.slug, itemData, npcData);
 	}
 
 	for (var t in npcData.traits) {

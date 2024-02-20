@@ -87,6 +87,11 @@ function write_creature_properties(creatureData, token) {
 	if ("reactionsLeft" in creatureData && creatureData.reactionsLeft != null) {
 		token.setProperty("reactionsLeft", Number(creatureData.reactionsLeft));
 	}
+	if("allFeatures" in creatureData && creatureData.allFeatures != null){
+		token.setProperty("allFeatures", JSON.stringify(creatureData.allFeatures));
+	}else{
+		token.setProperty("allFeatures", JSON.stringify([]));
+	}
 
 }
 

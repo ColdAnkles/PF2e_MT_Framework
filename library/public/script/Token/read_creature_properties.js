@@ -68,6 +68,7 @@ function read_creature_properties(token) {
 	creatureData.attacksThisRound = Number(token.getProperty("attacksThisRound"));
 	creatureData.actionsLeft = Number(token.getProperty("actionsLeft"));
 	creatureData.reactionsLeft = Number(token.getProperty("reactionsLeft"));
+	creatureData.allFeatures = JSON.parse(token.getProperty("allFeatures"));
 
 	if (creatureData.activeEffects == null) {
 		creatureData.activeEffects = {};
@@ -86,6 +87,9 @@ function read_creature_properties(token) {
 	}
 	if (creatureData.reactionsLeft == null) {
 		creatureData.reactionsLeft = 0;
+	}
+	if (creatureData.allFeatures == null) {
+		creatureData.allFeatures = [];
 	}
 
 

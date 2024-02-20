@@ -239,6 +239,7 @@ function parse_pathbuilder_export(data) {
 	parsedData.size = data.sizeName;
 	parsedData.languages = data.languages;
 	parsedData.itemList = {};
+	parsedData.allFeatures = [];
 
 	let features_to_parse = [];
 	let featureNotes = {};
@@ -278,7 +279,7 @@ function parse_pathbuilder_export(data) {
 	for (var f in features_to_parse) {
 		let featureData = features_to_parse[f];
 		if ("fileURL" in featureData) {
-			parse_feature(rest_call(featureData.fileURL), parsedData);
+			parse_feature(featureData.baseName, rest_call(featureData.fileURL), parsedData);
 		}
 	}
 
@@ -310,7 +311,7 @@ function parse_pathbuilder_export(data) {
 		let thisArmor = data.armor[a];
 		let tempData = find_object_data(thisArmor.name, "item");
 		if ("fileURL" in tempData) {
-			parse_feature(rest_call(tempData.fileURL), parsedData);
+			parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData);
 			let trueID = tempData.id+String(Object.keys(parsedData.itemList).length -1);
 			parsedData.itemList[trueID].quantity = thisArmor.qty;
 			parsedData.itemList[trueID].equipped = thisArmor.worn;
@@ -318,7 +319,7 @@ function parse_pathbuilder_export(data) {
 			for (var rI of thisArmor.runes) {
 				let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
 				if(runeData!=null && "fileURL" in runeData){
-					runeData = parse_feature(rest_call(runeData.fileURL), null);
+					runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
 					parsedData.itemList[trueID].runes.property.push(runeData);
 				}
 			}
