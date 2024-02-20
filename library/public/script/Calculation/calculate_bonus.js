@@ -9,7 +9,7 @@ function calculate_bonus(token, bonusScopes, consume = false) {
 	}
 	//MapTool.chat.broadcast("Calculating bonus for: " + JSON.stringify(bonusScopes));
 
-	let activeEffects = Object.assign({}, JSON.parse(token.getProperty("activeEffects")), JSON.parse(token.getProperty("specialEffects")), JSON.parse(token.getProperty("passiveSkills")));
+	let activeEffects = Object.assign({}, JSON.parse(token.getProperty("activeEffects")), JSON.parse(token.getProperty("specialEffects")), JSON.parse(token.getProperty("passiveSkills")), JSON.parse(token.getProperty("otherDefenses")));
 
 	let activeConditions = JSON.parse(token.getProperty("conditionDetails"));
 
