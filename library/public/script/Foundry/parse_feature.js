@@ -4,6 +4,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 	let itemData = feature;
 	let simpleReturn = assignDict == null;
 	itemData.baseName = featureName;
+	let returnObject = null;
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
 	//MapTool.chat.broadcast(String(simpleReturn));
 
@@ -17,10 +18,10 @@ function parse_feature(featureName, feature, assignDict = null) {
 
 	if (itemData.type == "lore") {
 		let newSkill = { "string": itemData.name + " +" + itemData.system.mod.value, "name": itemData.name, "bonus": itemData.system.mod.value };
-		if (simpleReturn) {
-			return newSkill;
+		if (!simpleReturn) {
+			assignDict.skillList.push(newSkill);
 		}
-		assignDict.skillList.push(newSkill);
+		returnObject = newSkill;
 
 	} else if (itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable" || itemData.type == "shield" || itemData.type == "treasure" || itemData.type == "equipment" || itemData.type == "backpack") {
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
@@ -83,12 +84,12 @@ function parse_feature(featureName, feature, assignDict = null) {
 		newItem.rarity = itemData.system.traits.rarity;
 		newItem.baseItem = itemData.system.baseItem;
 		newItem.equipped = false;
-		if (simpleReturn) {
-			return newItem;
+		if (!simpleReturn) {
+			//Assign with a length number on the end in case multiple unique items with same ID
+			assignDict.itemList[itemData._id + String(Object.keys(assignDict.itemList).length)] = newItem;
 		}
 
-		//Assign with a length number on the end in case multiple unique items with same ID
-		assignDict.itemList[itemData._id + String(Object.keys(assignDict.itemList).length)] = newItem;
+		returnObject = newItem;
 
 	} else if (itemData.type == "action" && ((itemData.system.category == "interaction" || itemData.system.category == "class") || (assignDict != null && assignDict.type != "npc")) && itemData.system.actionType.value == "passive" && itemData.system.rules.length > 0) {
 		let tempString = clean_description(itemData.system.description.value)
@@ -103,10 +104,11 @@ function parse_feature(featureName, feature, assignDict = null) {
 		if ("selfEffect" in itemData.system) {
 			newAction.selfEffect = itemData.system.selfEffect;
 		}
-		if (simpleReturn) {
-			return newAction;
+		if (!simpleReturn) {
+			assignDict.passiveSkills.push(newAction);
 		}
-		assignDict.passiveSkills.push(newAction);
+
+		returnObject = newAction;
 
 	} else if (itemData.type == "action" && ((itemData.system.category == "defensive" || itemData.system.category == "interaction") || (assignDict != null && assignDict.type != "npc")) && itemData.system.actionType.value == "passive" && itemData.system.rules.length > 0 && "selector" in itemData.system.rules[0] && itemData.system.rules[0].selector == "saving-throw") {
 		let tempString = clean_description(itemData.system.description.value)
@@ -120,10 +122,11 @@ function parse_feature(featureName, feature, assignDict = null) {
 		if ("selfEffect" in itemData.system) {
 			newAction.selfEffect = itemData.system.selfEffect;
 		}
-		if (simpleReturn) {
-			return newAction;
+		if (!simpleReturn) {
+			assignDict.passiveDefenses.push(newAction);
 		}
-		assignDict.passiveDefenses.push(newAction);
+
+		returnObject = newAction;
 
 	} else if (itemData.type == "action" && (itemData.system.category != null && (itemData.system.category == "defensive" || itemData.system.category == "general" || itemData.system.category.includes("class")) || (assignDict != null && assignDict.type != "npc"))) {
 		let newAction = { "description": itemData.system.description.value, "name": itemData.name, "actionType": itemData.system.actionType.value, "actionCost": itemData.system.actions.value }
@@ -144,10 +147,11 @@ function parse_feature(featureName, feature, assignDict = null) {
 		}
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
-		if (simpleReturn) {
-			return newAction;
+		if (!simpleReturn) {
+			assignDict.otherDefenses.push(newAction);
 		}
-		assignDict.otherDefenses.push(newAction);
+
+		returnObject = newAction;
 
 	} else if (itemData.type == "melee") {
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
@@ -163,10 +167,11 @@ function parse_feature(featureName, feature, assignDict = null) {
 		if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e) {
 			newItem.linkedWeapon = itemData.flags.pf2e.linkedWeapon;
 		}
-		if (simpleReturn) {
-			return newItem;
+		if (!simpleReturn) {
+			assignDict.basicAttacks.push(newItem);
 		}
-		assignDict.basicAttacks.push(newItem);
+
+		returnObject = newItem;
 
 	} else if (itemData.type == "spellcastingEntry") {
 		let newSpellEntry = { "name": itemData.name, "spells": [], "spellDC": itemData.system.spelldc.dc, "spellAttack": itemData.system.spelldc.value, "type": itemData.system.prepared.value }
@@ -177,10 +182,11 @@ function parse_feature(featureName, feature, assignDict = null) {
 			newSpellEntry["autoHeighten"] = 1;
 		}
 		//MapTool.chat.broadcast(JSON.stringify(newSpellEntry));
-		if (simpleReturn) {
-			return newSpellEntry;
+		if (!simpleReturn) {
+			assignDict.spellRules[itemData._id] = newSpellEntry;
 		}
-		assignDict.spellRules[itemData._id] = newSpellEntry;
+
+		returnObject = newSpellEntry;
 
 	} else if (itemData.type == "spell") {
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
@@ -193,27 +199,29 @@ function parse_feature(featureName, feature, assignDict = null) {
 		} else {
 			newSpellEntry.castLevel = newSpellEntry.level;
 		}
-		if (simpleReturn) {
-			return newSpellEntry;
+		if (!simpleReturn) {
+			if (itemData.system.location.value in assignDict.spellRules) {
+				assignDict.spellRules[itemData.system.location.value].spells.push(newSpellEntry);
+			}
 		}
-		if (itemData.system.location.value in assignDict.spellRules) {
-			assignDict.spellRules[itemData.system.location.value].spells.push(newSpellEntry);
-		}
+
+		returnObject = newSpellEntry;
+
 	} else if (itemData.type == "action" && (itemData.system.category == "offensive" || (assignDict != null && assignDict.type != "npc"))) {
 		let newAction = { "description": itemData.system.description.value, "name": itemData.name, "actionType": itemData.system.actionType.value, "actionCost": itemData.system.actions.value, "traits": itemData.system.traits.value };
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
 		newAction.baseName = itemData.baseName;
-		if (simpleReturn) {
-			return newAction;
+		if (!simpleReturn) {
+			assignDict.offensiveActions.push(newAction);
 		}
-		assignDict.offensiveActions.push(newAction);
+
+		returnObject = newAction;
 
 	} else if (itemData.type == "hazard") {
 		let newItem = parse_hazard(itemData);
-		if (simpleReturn) {
-			return newItem;
-		}
+
+		returnObject = newItem;
 	} else if (itemData.type == "effect") {
 		let newEffect = { "name": itemData.name, "type": "effect" }
 		newEffect.rules = itemData.system.rules;
@@ -226,9 +234,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 		newEffect.description = itemData.system.description.value;
 		newEffect.baseName = itemData.baseName;
 
-		if (simpleReturn) {
-			return newEffect;
-		}
+		returnObject = newEffect;
 	} else if (itemData.type == "condition") {
 		let newCond = {}
 		newCond.name = itemData.name;
@@ -239,18 +245,17 @@ function parse_feature(featureName, feature, assignDict = null) {
 		newCond.value = itemData.system.value;
 		newCond.baseName = itemData.baseName;
 
-		if (simpleReturn) {
-			return newCond;
-		}
+		returnObject = newCond;
 	} else if (itemData.type == "action") {
 		let newAction = { "description": itemData.system.description.value, "name": itemData.name, "actionType": itemData.system.actionType.value, "actionCost": itemData.system.actions.value, "traits": itemData.system.traits.value };
 		newAction.source = itemData.system.publication.title;
 		newAction.rarity = itemData.system.traits.rarity;
 		newAction.baseName = itemData.baseName;
-		if (simpleReturn) {
-			return newAction;
-		}
+
+		returnObject = newAction;
 	} else {
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
 	}
+
+	return returnObject;
 }
