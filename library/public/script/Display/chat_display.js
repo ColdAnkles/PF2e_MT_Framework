@@ -78,6 +78,15 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
 	}
 
+	if ("materials" in displayData && displayData.materials != null && displayData.materials.length > 0) {
+		let materialStrings = [];
+		for (var r in displayData.materials) {
+			materialStrings.push(capitalise(displayData.materials[r]));
+		}
+		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
+		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
+	}
+
 	outputText += "</div>";
 	gmOutputText += "</div>";
 
