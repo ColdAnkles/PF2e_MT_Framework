@@ -1,6 +1,6 @@
 "use strict";
 
-function get_effect_bonus(effectData, bonusScopes, actor = null) {
+function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 	if (!(bonusScopes.includes("all"))) {
 		bonusScopes.push("all");
 	}
@@ -9,8 +9,9 @@ function get_effect_bonus(effectData, bonusScopes, actor = null) {
 	let returnData = { "bonuses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "maluses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "query": false, "otherEffects": {} };
 	for (var r in effectData.rules) {
 		let ruleData = effectData.rules[r];
+		//MapTool.chat.broadcast(JSON.stringify(ruleData));
 		if ("predicate" in ruleData) {
-			if (!predicate_check(ruleData.predicate, bonusScopes, actor)) {
+			if (!predicate_check(ruleData.predicate, bonusScopes, actor, item)) {
 				continue;
 			}
 		}
@@ -66,6 +67,14 @@ function get_effect_bonus(effectData, bonusScopes, actor = null) {
 				returnData.otherEffects[ruleData.key] = ruleData.value;
 			} else if (ruleData.key == "AdjustModifier") {
 				returnData.otherEffects[ruleData.slug] = { "mode": ruleData.mode, "value": ruleData.value };
+			} else if (ruleData.key == "ItemAlteration") {
+				if ("itemId" in ruleData && item != null && ruleData.itemId.includes(item.name.toUpperCase())) {
+					returnData.otherEffects[ruleData.key] = { "mode": ruleData.mode, "property": ruleData.property };
+				} else if (!("itemId" in ruleData)) {
+					returnData.otherEffects[ruleData.key] = { "mode": ruleData.mode, "property": ruleData.property };
+				}
+			} else if (ruleData.key == "AdjustStrike") {
+				returnData.otherEffects[ruleData.key + "_" + ruleData.value] = { "mode": ruleData.mode, "value": ruleData.value, "property": ruleData.property };
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 "use strict";
 
-function calculate_bonus(token, bonusScopes, consume = false) {
+function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
 	}
@@ -9,7 +9,12 @@ function calculate_bonus(token, bonusScopes, consume = false) {
 	}
 	//MapTool.chat.broadcast("Calculating bonus for: " + JSON.stringify(bonusScopes));
 
-	let activeEffects = Object.assign({}, JSON.parse(token.getProperty("activeEffects")), JSON.parse(token.getProperty("specialEffects")), JSON.parse(token.getProperty("passiveSkills")), JSON.parse(token.getProperty("otherDefenses")));
+	let activeEffects = Object.assign({}, JSON.parse(token.getProperty("activeEffects")), JSON.parse(token.getProperty("specialEffects")));
+	let arrayEntries = JSON.parse(token.getProperty("passiveSkills")).concat(JSON.parse(token.getProperty("otherDefenses")));
+
+	for (var i in arrayEntries) {
+		activeEffects[String(i) + "_arrayEntry"] = arrayEntries[i];
+	}
 
 	let activeConditions = JSON.parse(token.getProperty("conditionDetails"));
 
@@ -19,7 +24,7 @@ function calculate_bonus(token, bonusScopes, consume = false) {
 	for (var e in activeEffects) {
 		let effectData = JSON.parse(JSON.stringify(activeEffects[e]));
 		//MapTool.chat.broadcast(JSON.stringify(effectData));
-		let effectBonuses = get_effect_bonus(effectData, bonusScopes, token);
+		let effectBonuses = get_effect_bonus(effectData, bonusScopes, token, causeItem);
 		//MapTool.chat.broadcast(JSON.stringify(effectBonuses));
 		effectData.bonus = effectBonuses;
 		let hasAsked = false;

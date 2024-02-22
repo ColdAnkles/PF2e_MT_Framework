@@ -58,7 +58,7 @@ function parse_pathbuilder_export(data) {
 				return itemLibrary[testVar4];
 			}
 		}
-		unfoundData.push(objectName);
+		return null;
 	}
 
 	function setup_spell(spellName) {
@@ -132,11 +132,15 @@ function parse_pathbuilder_export(data) {
 	parsedData.resources = {};
 
 	//__SKILLS__	
+	let unarmedProf = 0;
 	parsedData.skillList = [];
 	for (var p in data.proficiencies) {
 		if (data.proficiencies[p] != 0 && p != "fortitude" && p != "reflex" && p != "will") {
 			let newProf = { "bonus": data.proficiencies[p] + data.level, "name": capitalise(p), "string": capitalise(p) + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
 			parsedData.skillList.push(newProf);
+			if (p == "unarmed") {
+				unarmedProf = newProf.bonus;
+			}
 		}
 	}
 	for (var l in data.lores) {
@@ -253,6 +257,8 @@ function parse_pathbuilder_export(data) {
 				featureNotes.assuranceChoices.push(data.feats[f][1].toLowerCase());
 			}
 			features_to_parse.push(tempData);
+		}else{
+			unfoundData.push(data.feats[f][0]);
 		}
 	}
 
@@ -273,15 +279,34 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(tempName);
 		if (tempData != null) {
 			features_to_parse.push(tempData);
+		}else{
+			unfoundData.push(tempName);
 		}
 	}
 
+	let grantedAttacks = [];
 	for (var f in features_to_parse) {
 		let featureData = features_to_parse[f];
 		if ("fileURL" in featureData) {
-			parse_feature(featureData.baseName, rest_call(featureData.fileURL), parsedData);
+			let addedFeature = parse_feature(featureData.baseName, rest_call(featureData.fileURL), parsedData);
+			if (addedFeature != null && "rules" in addedFeature && addedFeature.rules != null && addedFeature.rules.length > 0) {
+				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
+				let newAttacks = rules_grant_attack(addedFeature.rules);
+				for (var a in newAttacks) {
+					let newAttack = newAttacks[a];
+					for (var p in parsedData.skillList) {
+						if (parsedData.skillList[p].name.toUpperCase() == newAttack.category.toUpperCase()) {
+							newAttack.bonus = parsedData.skillList[p].bonus;
+							break;
+						}
+					}
+					newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(parsedData.abilities.str) != 0) ? "+" + Number(parsedData.abilities.str) : "");
+				}
+				grantedAttacks = grantedAttacks.concat(newAttacks);
+			}
 		}
 	}
+	parsedData.basicAttacks = parsedData.basicAttacks.concat(grantedAttacks);
 
 	if ("assuranceChoices" in featureNotes) {
 		let assuranceData = null;
@@ -323,6 +348,9 @@ function parse_pathbuilder_export(data) {
 					parsedData.itemList[trueID].runes.property.push(runeData);
 				}
 			}
+			parsedData.itemList[trueID].id = trueID;
+		}else if(tempData==null){
+			unfoundData.push(thisArmor.name);
 		}
 	}
 
@@ -333,12 +361,16 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(thisWeapon.name, "item");
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
-				parse_feature(rest_call(tempData.fileURL), parsedData);
+				let success = parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData)!=null;
+				if(!success){
+					unfoundData.push(thisWeapon.name);
+					continue;
+				}
 				let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
 				let newWeapon = parsedData.itemList[trueID];
 				newWeapon.quantity = thisWeapon.qty;
 				let newAttackData = {
-					"actionCost": 1, "actionType": "action", "bonus": thisWeapon.attack, "damage": [newWeapon.damage],
+					"actionCost": 1, "actionType": "action", "bonus": 0, "damage": [newWeapon.damage],
 					"description": "", "effects": [], "isMelee": newWeapon.isMelee,
 					"name": newWeapon.name, "traits": newWeapon.traits
 				}
@@ -358,31 +390,85 @@ function parse_pathbuilder_export(data) {
 				for (var rI of thisWeapon.runes) {
 					let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
 					if (runeData != null && "fileURL" in runeData) {
-						runeData = parse_feature(rest_call(runeData.fileURL), null);
+						runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
 						newWeapon.runes.property.push(runeData);
 					}
 				}
+				if(thisWeapon.mat!=""){
+					if(thisWeapon.mat.match(/([^\s]*) \((.*)\)/)){
+						let matParse = thisWeapon.mat.match(/([^\s]*) \((.*)\)/);
+						newWeapon.material.type = matParse[1].toLowerCase();
+						newWeapon.material.grade = matParse[2].toLowerCase();
+					}else{
+						newWeapon.material.type = thisWeapon.mat.toLowerCase();
+					}
+				}
+				newWeapon.id = trueID;
 				parsedData.basicAttacks.push(newAttackData);
-				//newAttackData = JSON.parse(JSON.stringify(newAttackData));
-				//newAttackData.name+=" (Free)";
-				//newAttackData.actionCost="1";
-				//newAttackData.actionType="freeaction";
-				//newAttackData.description += " This is a action free version for use as subordinate calls as part of feats etc.."
-				//parsedData.basicAttacks.push(newAttackData);
 			}
+		}else{
+			unfoundData.push(thisWeapon.name);
 		}
 	}
+
+	let unarmedAttack = {
+		"actionCost": 1, "actionType": "action", "bonus": unarmedProf, "damage": [{ "die": "d4", "dice": 1, "damageType": "bludgeoning" }],
+		"description": "", "effects": [], "isMelee": true, "group": "",
+		"name": "Fist", "traits": ["agile", "finesse", "nonlethal", "unarmed"], "linkedWeapon": "unarmed", "category": "unarmed", "type": "action"
+	}
+	unarmedAttack.damage[0].damage = String(unarmedAttack.damage[0].dice) + unarmedAttack.damage[0].die + ((Number(parsedData.abilities.str) != 0) ? "+" + Number(parsedData.abilities.str) : "");
+	parsedData.basicAttacks.push(unarmedAttack);
 
 	//Other Items
 	message_window("Importing " + data.name, "Importing Gear");
 	for (var e in data.equipment) {
-		let tempData = find_object_data(data.equipment[e][0], "item");
+		let eqName = data.equipment[e][0];
+		let tempData = find_object_data(eqName, "item");
+		if(tempData==null){
+			eqName = eqName.match(/([^\(\)]*) \(.*\)/);
+			if(eqName.length>1){
+				eqName=eqName[1];
+				tempData = find_object_data(eqName, "item");
+			}else{
+				eqName=eqName[0];
+				tempData = find_object_data(eqName, "item");
+			}
+		}
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
-				parse_feature(rest_call(tempData.fileURL), parsedData);
+				parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData);
 				let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
 				parsedData.itemList[trueID].quantity = data.equipment[e][1];
+				parsedData.itemList[trueID].id = trueID;
+				if(eqName=="Handwraps of Mighty Blows"){
+					let handwrapsLevels = {0:{0:0},1:{0:2,1:4},2:{1:10,2:12},3:{2:16,3:19}};
+					let handwrapsBonus = data.equipment[e][0].match(/\+([0-9])/);
+					let handwrapsStrike = data.equipment[e][0].match(/((Minor|Major|Greater) )?(Striking)/);
+					if(handwrapsBonus!=null){
+						parsedData.itemList[trueID].runes.potency = handwrapsBonus[1];
+						handwrapsBonus = handwrapsBonus[1];
+					}else{
+						handwrapsBonus = 0;
+					}
+					if(handwrapsStrike!=null){
+						if(handwrapsStrike[2]==null){
+							parsedData.itemList[trueID].runes.striking = 1;
+							handwrapsStrike = 1;
+						}else if(handwrapsStrike[2]=="Greater"){
+							parsedData.itemList[trueID].runes.striking = 2;
+							handwrapsStrike = 2;
+						}else if(handwrapsStrike[2]=="Major"){
+							parsedData.itemList[trueID].runes.striking = 3;
+							handwrapsStrike = 3;
+						}
+					}else{
+						handwrapsStrike = 0;
+					}
+					parsedData.itemList[trueID].level = handwrapsLevels[handwrapsBonus][handwrapsStrike];
+				}
 			}
+		}else{
+			unfoundData.push(eqName);
 		}
 	}
 
@@ -400,6 +486,8 @@ function parse_pathbuilder_export(data) {
 				parsedData.familiars[f].familiarAbilities.push(tempData);
 			} else if (ability != "Darkvision") {
 				MapTool.chat.broadcast("Couldn't find familiar ability " + ability);
+			}else{
+				unfoundData.push(ability);
 			}
 		}
 	}
