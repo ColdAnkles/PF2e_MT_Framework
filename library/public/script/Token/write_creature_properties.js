@@ -71,21 +71,33 @@ function write_creature_properties(creatureData, token) {
 	//__CALCULATION_DATA__
 	if ("activeEffects" in creatureData && creatureData.activeEffects != null) {
 		token.setProperty("activeEffects", JSON.stringify(creatureData.activeEffects));
+	} else {
+		token.setProperty("activeEffects", JSON.stringify({}));
 	}
 	if ("specialEffects" in creatureData && creatureData.specialEffects != null) {
 		token.setProperty("specialEffects", JSON.stringify(creatureData.specialEffects));
+	} else {
+		token.setProperty("specialEffects", JSON.stringify({}));
 	}
 	if ("conditionDetails" in creatureData && creatureData.conditionDetails != null) {
 		token.setProperty("conditionDetails", JSON.stringify(creatureData.conditionDetails));
+	} else {
+		token.setProperty("conditionDetails", JSON.stringify({}));
 	}
 	if ("attacksThisRound" in creatureData && creatureData.attacksThisRound != null) {
 		token.setProperty("attacksThisRound", Number(creatureData.attacksThisRound));
+	} else {
+		token.setProperty("attacksThisRound", "0");
 	}
 	if ("actionsLeft" in creatureData && creatureData.actionsLeft != null) {
 		token.setProperty("actionsLeft", Number(creatureData.actionsLeft));
+	} else {
+		token.setProperty("actionsLeft", "0");
 	}
 	if ("reactionsLeft" in creatureData && creatureData.reactionsLeft != null) {
 		token.setProperty("reactionsLeft", Number(creatureData.reactionsLeft));
+	} else {
+		token.setProperty("reactionsLeft", "0");
 	}
 	if ("allFeatures" in creatureData && creatureData.allFeatures != null) {
 		token.setProperty("allFeatures", JSON.stringify(creatureData.allFeatures));
