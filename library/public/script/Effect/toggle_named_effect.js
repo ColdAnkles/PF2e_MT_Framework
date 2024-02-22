@@ -43,31 +43,7 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 	effectData.sourceItem = effectSource;
 	//MapTool.chat.broadcast(JSON.stringify(effectData.rules));
 
-	var newAttacks = [];
-	for (var r in effectData.rules) {
-		let newRule = effectData.rules[r];
-		if ("key" in newRule && newRule.key == "Strike") {
-			let newAttack = {};
-			if (newRule.label.includes(".")) {
-				let strSplit = newRule.label.split(".");
-				newAttack.name = strSplit[strSplit.length - 1];
-			} else {
-				newAttack.name = newRule.label;
-			}
-			newAttack.traits = newRule.traits;
-			newRule.damage.base.damage = String(newRule.damage.base.dice) + String(newRule.damage.base.die);
-			newAttack.damage = [newRule.damage.base];
-			newAttack.actionCost = 1;
-			newAttack.actionType = "action";
-			newAttack.linkedWeapon = "unarmed";
-			newAttack.description = "";
-			newAttack.category = newRule.category;
-			newAttack.effects = [];
-			newAttack.isMelee = true;
-			newAttack.group = "";
-			newAttacks.push(newAttack);
-		}
-	}
+	let newAttacks = rules_grant_attack(effectData.rules);
 
 	//MapTool.chat.broadcast(JSON.stringify(newAttacks));
 	//MapTool.chat.broadcast(String(affectedCreature));
@@ -115,6 +91,7 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 				} else {
 					newAttack.bonus += Number(thisCreature.getProperty("str"));
 				}
+				newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(thisCreature.getProperty("str") != 0)) ? "+" + Number(thisCreature.getProperty("str")) : "");
 				attacks.push(newAttack);
 				if (!thisCreature.getName().includes("Lib:")) {
 					add_action_to_token(newAttack, thisCreature.getId(), thisCreature);
