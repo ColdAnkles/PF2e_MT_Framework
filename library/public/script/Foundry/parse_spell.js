@@ -1,7 +1,8 @@
 "use strict";
 
-function parse_spell(spellData) {
+function parse_spell(baseName, spellData) {
 	let parsedData = {};
+	parsedData.baseName = baseName;
 	for (var key in spellData) {
 		if (key != "system") {
 			parsedData[key] = spellData[key];

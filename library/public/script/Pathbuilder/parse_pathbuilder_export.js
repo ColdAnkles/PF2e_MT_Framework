@@ -65,9 +65,10 @@ function parse_pathbuilder_export(data) {
 		let fSpellData = null;
 		if (spellName in spellLibrary) {
 			fSpellData = spellLibrary[spellName];
+			let spellBaseName = fSpellData.baseName;
 			fSpellData = rest_call(fSpellData.fileURL);
 			//MapTool.chat.broadcast(JSON.stringify(fSpellData));
-			return parse_spell(fSpellData);
+			return parse_spell(spellBaseName, fSpellData);
 		} else {
 			let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
 			if (!(spellName in remasterChanges) || !(remasterChanges[spellName] in spellLibrary)) {
@@ -76,10 +77,11 @@ function parse_pathbuilder_export(data) {
 			} else {
 				spellName = remasterChanges[spellName];
 				fSpellData = spellLibrary[spellName];
+				let spellBaseName = fSpellData.baseName;
 				if ("fileURL" in fSpellData) {
 					fSpellData = rest_call(fSpellData.fileURL);
 				}
-				return parse_spell(fSpellData);
+				return parse_spell(spellBaseName, fSpellData);
 			}
 		}
 	}
@@ -440,6 +442,7 @@ function parse_pathbuilder_export(data) {
 				let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
 				parsedData.itemList[trueID].quantity = data.equipment[e][1];
 				parsedData.itemList[trueID].id = trueID;
+				parsedData.itemList[trueID].equipped = true;
 				if(eqName=="Handwraps of Mighty Blows"){
 					let handwrapsLevels = {0:{0:0},1:{0:2,1:4},2:{1:10,2:12},3:{2:16,3:19}};
 					let handwrapsBonus = data.equipment[e][0].match(/\+([0-9])/);

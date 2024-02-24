@@ -77,6 +77,9 @@ function parse_feature(featureName, feature, assignDict = null) {
 		} else {
 			newItem.quantity = 1;
 		}
+		if("rules" in itemData.system){
+			newItem.rules = itemData.system.rules;
+		}
 		if (itemData.type != "armor" && itemData.type != "weapon" && itemData.type != "consumable") {
 			itemData.type = "item";
 		}
@@ -190,7 +193,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 
 	} else if (itemData.type == "spell") {
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
-		let newSpellEntry = parse_spell(itemData);
+		let newSpellEntry = parse_spell(featureName, itemData);
 		//let newSpellEntry = {"name":itemData.name,"level":itemData.system.level.value,"traits":itemData.system.traits.value};
 		if (itemData.system.traits.value.includes("cantrip")) {
 			//MapTool.chat.broadcast(JSON.stringify(itemData));

@@ -21,11 +21,12 @@ function build_spell_view(spellName) {
 	}
 
 	let spellData = property[spellName];
+	let spellBaseName = spellData.baseName;
 	if ("fileURL" in spellData) {
 		spellData = rest_call(spellData["fileURL"], "");
 	}
 
-	spellData = parse_spell(spellData);
+	spellData = parse_spell(spellBaseName, spellData);
 
 	//MapTool.chat.broadcast(JSON.stringify(spellData));
 

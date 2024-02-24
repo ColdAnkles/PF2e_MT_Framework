@@ -114,7 +114,7 @@ function add_action_to_token(actionData, tokenID, token) {
 		} else {
 			lookupSpell = property[spellName];
 			if ("fileURL" in lookupSpell) {
-				lookupSpell = parse_spell(rest_call(lookupSpell["fileURL"], ""));
+				lookupSpell = parse_spell(lookupSpell.baseName, rest_call(lookupSpell["fileURL"], ""));
 			}
 		}
 
