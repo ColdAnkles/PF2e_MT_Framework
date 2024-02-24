@@ -11,15 +11,18 @@ function spell_action(actionData, actingToken) {
 	}
 
 	let spellData = property[actionData.name];
+	let spellBaseName = spellData.baseName;
 	if ("fileURL" in spellData) {
 		spellData = rest_call(spellData["fileURL"], "");
 	}
-	spellData = parse_spell(spellData);
+	spellData = parse_spell(spellBaseName, spellData);
 
 	if (typeof (actingToken) == "string") {
 		actingToken = MapTool.tokens.getTokenByID(actingToken);
 	}
 
+	let damageScopes = ["spell", "damage", "spell-damage"];
+	let attackScopes = ["spell", "attack", "spell-attack"];
 	let spellRules = JSON.parse(actingToken.getProperty("spellRules"));
 	let tokenSpell = null;
 	let castData = null;
@@ -40,6 +43,11 @@ function spell_action(actionData, actingToken) {
 		MTScript.evalMacro("[h: targetChoice=\"Living\"][h: input(\"targetChoice|Living,Dead|Target Type|LIST|VALUE=STRING\")]");
 
 		hh_targetType = MTScript.getVariable("targetChoice");
+	}
+	if(spellData.name=="Heal" && (hh_targetType=="Living" || hh_targetType==null)){
+		damageScopes = ["spell","healing"];
+	}else if(spellData.name=="Harm" && (hh_targetType=="Undead" || hh_targetType==null)){
+		damageScopes = ["spell","healing"];
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
@@ -71,10 +79,6 @@ function spell_action(actionData, actingToken) {
 	let spellMod = Number(actingToken.getProperty(actionData.castingAbility));
 
 	//MapTool.chat.broadcast(JSON.stringify(spellData));
-
-	let attackScopes = ["spell"];
-	let damageScopes = ["damage", "spell-damage"];
-	let damage_bonus = calculate_bonus(actingToken, damageScopes);
 
 	let displayData = { "description": "", "name": actingToken.getName() + " - " + actionData.name, "level": actionData.castLevel, "type": spellData.category };
 	if (spellData.area != null) {
@@ -115,10 +119,7 @@ function spell_action(actionData, actingToken) {
 
 		MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 		let dTwenty = Number(MTScript.getVariable("dTwenty"));
-
-		attackScopes.push("attack");
-		attackScopes.push("spell-attack");
-		let effect_bonus_raw = calculate_bonus(actingToken, attackScopes);
+		let effect_bonus_raw = calculate_bonus(actingToken, attackScopes, true, spellData);
 		let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + effect_bonus_raw.bonuses.item + effect_bonus_raw.bonuses.none +
 			effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
 		displayData.appliedEffects = effect_bonus_raw.appliedEffects;
@@ -223,9 +224,17 @@ function spell_action(actionData, actingToken) {
 				spellData.damage = heightenVal.damage;
 			}
 		}
+		let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, spellData);
+		//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
+		let damage_bonus = damage_bonus_raw.bonuses.circumstance + damage_bonus_raw.bonuses.status + damage_bonus_raw.bonuses.item + damage_bonus_raw.bonuses.none +
+		damage_bonus_raw.maluses.circumstance + damage_bonus_raw.maluses.status + damage_bonus_raw.maluses.item + damage_bonus_raw.maluses.none;
+		//MapTool.chat.broadcast(String(damage_bonus));
 		for (var d in spellData.damage) {
 			displayData.description += "<div style='font-size:10px'><b>";
 			let damageData = spellData.damage[d];
+			if(damage_bonus!=0){
+				damageData.formula += "+" + String(damage_bonus)
+			}
 			let damageRoll = String(damageData.formula);
 			if ("heightening" in spellData && "damage" in spellData.heightening && spellData.heightening.type == "interval" && d in spellData.heightening.damage) {
 				for (let i = spellData.level + 1; i <= actionData.castLevel; i += spellData.heightening.interval) {
