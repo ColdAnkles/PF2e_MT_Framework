@@ -111,10 +111,10 @@ function predicate_check(predicate, predicateScopes, actor, item) {
             if (pText.match(/^feat:/)) {
                 let featSlug = pText.split(":")[1];
                 predicate_resolution = predicate_resolution && actorFeats.includes(featSlug);
-            } else if (pText.match(/^item:/)) {
+            } else if (pText.match(/^item:/) && item != null) {
                 //MapTool.chat.broadcast(JSON.stringify(item));
                 let slug = pText.split(":")[1];
-                if (slug == "proficiency" && actor != null && item != null) {
+                if (slug == "proficiency" && actor != null) {
                     let profSlug = pText.split(":")[2];
                     if (profSlug == "rank") {
                         let findProf = item.category;
@@ -126,11 +126,17 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                             }
                         }
                         if (pText.split(":").length == 4) {
-                            predicate_resolution = foundProf == Number(pText.split(":")[3]);
+                            predicate_resolution = predicate_resolution && (foundProf == Number(pText.split(":")[3]));
                         } else {
-                            predicate_resolution = foundProf;
+                            predicate_resolution = predicate_resolution && foundProf;
                         }
                     }
+                } else if (slug=="type"){
+                    let typeSlug = pText.split(":")[2];
+                    predicate_resolution = predicate_resolution && (typeSlug.toUpperCase() == item.type.toUpperCase());
+                } else if (slug=="slug"){
+                    let typeSlug = pText.split(":")[2];
+                    predicate_resolution = predicate_resolution && (typeSlug == item.baseName);
                 } else {
                     predicate_resolution = false;
                 }
