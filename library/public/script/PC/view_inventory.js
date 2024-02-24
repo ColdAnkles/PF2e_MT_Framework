@@ -6,13 +6,23 @@ function view_inventory(tokenID, inventoryAction = null) {
     let inventory = JSON.parse(token.getProperty("inventory"));
 
     if (inventoryAction != null) {
-        let shareItem = "";
+        let actionItem = "";
+        let action = null;
         for (var key in inventoryAction) {
             if (key.includes("share_")) {
-                shareItem = inventory[key.replace("share_", "")];
+                actionItem = inventory[key.replace("share_", "")];
+                action = "share";
+            }else if (key.includes("equip_")){
+                actionItem = inventory[key.replace("equip_", "")];
+                action = "equip";
             }
         }
-        chat_display(shareItem);
+        if(action=="share"){
+            chat_display(actionItem);
+        }else if(action=="equip"){
+            actionItem.equipped = !actionItem.equipped;
+            token.setProperty("inventory", JSON.stringify(inventory));
+        }
     }
 
     let tokenName = token.getName().replaceAll("Lib:", "");
@@ -20,11 +30,11 @@ function view_inventory(tokenID, inventoryAction = null) {
     let inventoryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/NethysCSS.css'/><h1 class='feel-title'>" + tokenName + "'s Inventory</h1>";
     inventoryHTML += "<table width=100%><form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
     inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'>";
-    inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Use</th></tr>";
+    inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Equip</th><th>Use</th></tr>";
 
     for (var itemID in inventory) {
         let thisItem = inventory[itemID];
-        inventoryHTML += "<tr><td>" + thisItem.name + "</td><td>" + String(thisItem.quantity) + "</td><td><input type='submit' name='share_" + thisItem.id + "' value='Submit'></td></tr>"
+        inventoryHTML += "<tr><td>" + thisItem.name + "</td><td>" + String(thisItem.quantity) + "</td><td><input type='submit' name='equip_" + thisItem.id + "' value='"+((thisItem.equipped)?"Unequip":"Equip")+"'></td><td><input type='submit' name='share_" + thisItem.id + "' value='Submit'></td></tr>"
     }
 
     inventoryHTML += "</form></table></html>"
