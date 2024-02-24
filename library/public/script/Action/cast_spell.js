@@ -32,10 +32,11 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 	}
 
 	let spellData = property[spellName];
+	let spellBaseName = spellData.baseName;
 	if ("fileURL" in spellData) {
 		spellData = rest_call(spellData["fileURL"], "");
 	}
-	spellData = parse_spell(spellData);
+	spellData = parse_spell(spellBaseName, spellData);
 	//MapTool.chat.broadcast(JSON.stringify(spellData));
 
 	let actionData = { "name": spellData.name, "isSpell": true, "castLevel": castLevel, "spendAction": true, "castingAbility": castingData.castingAbility, "overlays": [] };
@@ -57,31 +58,6 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		MTScript.evalMacro("[h: signatureUpcast=" + String(castLevel) + "][h: input(\"signatureUpcast|" + castingData.castLevels.join(',') + "|Select Upcast Level|LIST|VALUE=STRING\")]");
 		actionData.castLevel = MTScript.getVariable("signatureUpcast");
 		castLevel = actionData.castLevel;
-	}
-
-	if (get_token_type(casterToken) == "PC") {
-		let resources = JSON.parse(casterToken.getProperty("resources"));
-		if (!(spellData.traits.value.includes("focus")) && !(castingData.currentSlots[castLevel] > 0) && !(spellData.traits.value.includes("cantrip"))) {
-			message_window("No Spell Slot!", "You've expended all the spell slots for this rank of spell!");
-			return;
-		} else if (!(spellData.traits.value.includes("focus")) && castingData.currentSlots[castLevel] > 0 && !(spellData.traits.value.includes("cantrip"))) {
-			castingData.currentSlots[castLevel] -= 1;
-			casterToken.setProperty("spellRules", JSON.stringify(spellCasting));
-			if (!(casterToken.getName().includes("Lib"))) {
-				let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
-				libToken.setProperty("spellRules", JSON.stringify(spellCasting));
-			}
-		} else if (spellData.traits.value.includes("focus") && (!("focus" in resources) || resources.focus.current <= 0)) {
-			message_window("No Focus Point!", "You've expended all your focus points!");
-			return;
-		} else if (spellData.traits.value.includes("focus") && ("focus" in resources) && resources.focus.current > 0) {
-			resources.focus.current -= 1;
-			casterToken.setProperty("resources", JSON.stringify(resources));
-			if (!(casterToken.getName().includes("Lib"))) {
-				let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
-				libToken.setProperty("resources", JSON.stringify(resources));
-			}
-		}
 	}
 
 	if (!(isNaN(spellData.time))) {
@@ -121,6 +97,31 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		//Non-encounter mode spells
 		actionData.actionType = "action";
 		actionData.actionCost = 100;
+	}
+
+	if (get_token_type(casterToken) == "PC") {
+		let resources = JSON.parse(casterToken.getProperty("resources"));
+		if (!(spellData.traits.value.includes("focus")) && !(castingData.currentSlots[castLevel] > 0) && !(spellData.traits.value.includes("cantrip"))) {
+			message_window("No Spell Slot!", "You've expended all the spell slots for this rank of spell!");
+			return;
+		} else if (!(spellData.traits.value.includes("focus")) && castingData.currentSlots[castLevel] > 0 && !(spellData.traits.value.includes("cantrip"))) {
+			castingData.currentSlots[castLevel] -= 1;
+			casterToken.setProperty("spellRules", JSON.stringify(spellCasting));
+			if (!(casterToken.getName().includes("Lib"))) {
+				let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
+				libToken.setProperty("spellRules", JSON.stringify(spellCasting));
+			}
+		} else if (spellData.traits.value.includes("focus") && (!("focus" in resources) || resources.focus.current <= 0)) {
+			message_window("No Focus Point!", "You've expended all your focus points!");
+			return;
+		} else if (spellData.traits.value.includes("focus") && ("focus" in resources) && resources.focus.current > 0) {
+			resources.focus.current -= 1;
+			casterToken.setProperty("resources", JSON.stringify(resources));
+			if (!(casterToken.getName().includes("Lib"))) {
+				let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
+				libToken.setProperty("resources", JSON.stringify(resources));
+			}
+		}
 	}
 
 	core_action(actionData, casterToken);
