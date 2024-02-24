@@ -259,7 +259,7 @@ function parse_pathbuilder_export(data) {
 				featureNotes.assuranceChoices.push(data.feats[f][1].toLowerCase());
 			}
 			features_to_parse.push(tempData);
-		}else{
+		} else {
 			unfoundData.push(data.feats[f][0]);
 		}
 	}
@@ -281,7 +281,7 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(tempName);
 		if (tempData != null) {
 			features_to_parse.push(tempData);
-		}else{
+		} else {
 			unfoundData.push(tempName);
 		}
 	}
@@ -351,7 +351,7 @@ function parse_pathbuilder_export(data) {
 				}
 			}
 			parsedData.itemList[trueID].id = trueID;
-		}else if(tempData==null){
+		} else if (tempData == null) {
 			unfoundData.push(thisArmor.name);
 		}
 	}
@@ -363,8 +363,8 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(thisWeapon.name, "item");
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
-				let success = parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData)!=null;
-				if(!success){
+				let success = parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData) != null;
+				if (!success) {
 					unfoundData.push(thisWeapon.name);
 					continue;
 				}
@@ -396,19 +396,19 @@ function parse_pathbuilder_export(data) {
 						newWeapon.runes.property.push(runeData);
 					}
 				}
-				if(thisWeapon.mat!=""){
-					if(thisWeapon.mat.match(/([^\s]*) \((.*)\)/)){
+				if (thisWeapon.mat != "") {
+					if (thisWeapon.mat.match(/([^\s]*) \((.*)\)/)) {
 						let matParse = thisWeapon.mat.match(/([^\s]*) \((.*)\)/);
 						newWeapon.material.type = matParse[1].toLowerCase();
 						newWeapon.material.grade = matParse[2].toLowerCase();
-					}else{
+					} else {
 						newWeapon.material.type = thisWeapon.mat.toLowerCase();
 					}
 				}
 				newWeapon.id = trueID;
 				parsedData.basicAttacks.push(newAttackData);
 			}
-		}else{
+		} else {
 			unfoundData.push(thisWeapon.name);
 		}
 	}
@@ -426,13 +426,13 @@ function parse_pathbuilder_export(data) {
 	for (var e in data.equipment) {
 		let eqName = data.equipment[e][0];
 		let tempData = find_object_data(eqName, "item");
-		if(tempData==null){
+		if (tempData == null) {
 			eqName = eqName.match(/([^\(\)]*) \(.*\)/);
-			if(eqName.length>1){
-				eqName=eqName[1];
+			if (eqName.length > 1) {
+				eqName = eqName[1];
 				tempData = find_object_data(eqName, "item");
-			}else{
-				eqName=eqName[0];
+			} else {
+				eqName = eqName[0];
 				tempData = find_object_data(eqName, "item");
 			}
 		}
@@ -443,34 +443,34 @@ function parse_pathbuilder_export(data) {
 				parsedData.itemList[trueID].quantity = data.equipment[e][1];
 				parsedData.itemList[trueID].id = trueID;
 				parsedData.itemList[trueID].equipped = true;
-				if(eqName=="Handwraps of Mighty Blows"){
-					let handwrapsLevels = {0:{0:0},1:{0:2,1:4},2:{1:10,2:12},3:{2:16,3:19}};
+				if (eqName == "Handwraps of Mighty Blows") {
+					let handwrapsLevels = { 0: { 0: 0 }, 1: { 0: 2, 1: 4 }, 2: { 1: 10, 2: 12 }, 3: { 2: 16, 3: 19 } };
 					let handwrapsBonus = data.equipment[e][0].match(/\+([0-9])/);
 					let handwrapsStrike = data.equipment[e][0].match(/((Minor|Major|Greater) )?(Striking)/);
-					if(handwrapsBonus!=null){
+					if (handwrapsBonus != null) {
 						parsedData.itemList[trueID].runes.potency = handwrapsBonus[1];
 						handwrapsBonus = handwrapsBonus[1];
-					}else{
+					} else {
 						handwrapsBonus = 0;
 					}
-					if(handwrapsStrike!=null){
-						if(handwrapsStrike[2]==null){
+					if (handwrapsStrike != null) {
+						if (handwrapsStrike[2] == null) {
 							parsedData.itemList[trueID].runes.striking = 1;
 							handwrapsStrike = 1;
-						}else if(handwrapsStrike[2]=="Greater"){
+						} else if (handwrapsStrike[2] == "Greater") {
 							parsedData.itemList[trueID].runes.striking = 2;
 							handwrapsStrike = 2;
-						}else if(handwrapsStrike[2]=="Major"){
+						} else if (handwrapsStrike[2] == "Major") {
 							parsedData.itemList[trueID].runes.striking = 3;
 							handwrapsStrike = 3;
 						}
-					}else{
+					} else {
 						handwrapsStrike = 0;
 					}
 					parsedData.itemList[trueID].level = handwrapsLevels[handwrapsBonus][handwrapsStrike];
 				}
 			}
-		}else{
+		} else {
 			unfoundData.push(eqName);
 		}
 	}
@@ -489,7 +489,7 @@ function parse_pathbuilder_export(data) {
 				parsedData.familiars[f].familiarAbilities.push(tempData);
 			} else if (ability != "Darkvision") {
 				MapTool.chat.broadcast("Couldn't find familiar ability " + ability);
-			}else{
+			} else {
 				unfoundData.push(ability);
 			}
 		}

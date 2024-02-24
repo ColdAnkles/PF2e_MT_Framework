@@ -34,7 +34,7 @@ function get_equipped_armor(token) {
 
 MTScript.registerMacro("ca.pf2e.get_equipped_armor", get_equipped_armor);
 
-function find_handwraps(token){
+function find_handwraps(token) {
 	let bestHandwraps = null;
 	let bestHandwrapsLevel = -1;
 	if (typeof (token) == "string") {
@@ -52,16 +52,16 @@ function find_handwraps(token){
 
 MTScript.registerMacro("ca.pf2e.find_handwraps", find_handwraps);
 
-function get_equipped_items(token){
+function get_equipped_items(token) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
 	}
 	let inventory = JSON.parse(token.getProperty("inventory"));
 	let equippedItems = {};
-	
+
 	for (var i in inventory) {
 		let itemData = inventory[i];
-		if(itemData.equipped){
+		if (itemData.equipped) {
 			equippedItems[i] = itemData;
 		}
 	}

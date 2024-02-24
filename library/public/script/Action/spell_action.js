@@ -44,10 +44,10 @@ function spell_action(actionData, actingToken) {
 
 		hh_targetType = MTScript.getVariable("targetChoice");
 	}
-	if(spellData.name=="Heal" && (hh_targetType=="Living" || hh_targetType==null)){
-		damageScopes = ["spell","healing"];
-	}else if(spellData.name=="Harm" && (hh_targetType=="Undead" || hh_targetType==null)){
-		damageScopes = ["spell","healing"];
+	if (spellData.name == "Heal" && (hh_targetType == "Living" || hh_targetType == null)) {
+		damageScopes = ["spell", "healing"];
+	} else if (spellData.name == "Harm" && (hh_targetType == "Undead" || hh_targetType == null)) {
+		damageScopes = ["spell", "healing"];
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
@@ -227,12 +227,12 @@ function spell_action(actionData, actingToken) {
 		let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, spellData);
 		//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
 		let damage_bonus = damage_bonus_raw.bonuses.circumstance + damage_bonus_raw.bonuses.status + damage_bonus_raw.bonuses.item + damage_bonus_raw.bonuses.none +
-		damage_bonus_raw.maluses.circumstance + damage_bonus_raw.maluses.status + damage_bonus_raw.maluses.item + damage_bonus_raw.maluses.none;
+			damage_bonus_raw.maluses.circumstance + damage_bonus_raw.maluses.status + damage_bonus_raw.maluses.item + damage_bonus_raw.maluses.none;
 		//MapTool.chat.broadcast(String(damage_bonus));
 		for (var d in spellData.damage) {
 			displayData.description += "<div style='font-size:10px'><b>";
 			let damageData = spellData.damage[d];
-			if(damage_bonus!=0){
+			if (damage_bonus != 0) {
 				damageData.formula += "+" + String(damage_bonus)
 			}
 			let damageRoll = String(damageData.formula);

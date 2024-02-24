@@ -77,7 +77,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 		} else {
 			newItem.quantity = 1;
 		}
-		if("rules" in itemData.system){
+		if ("rules" in itemData.system) {
 			newItem.rules = itemData.system.rules;
 		}
 		if (itemData.type != "armor" && itemData.type != "weapon" && itemData.type != "consumable") {

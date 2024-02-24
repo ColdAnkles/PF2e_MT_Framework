@@ -55,7 +55,7 @@ function predicate_check(predicate, predicateScopes, actor, item) {
         return partA >= partB;
     }
 
-    
+
 
     function predicate_gt(contents, predicateScopes, actor) {
         let partA = contents[0];
@@ -131,10 +131,10 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                             predicate_resolution = predicate_resolution && foundProf;
                         }
                     }
-                } else if (slug=="type"){
+                } else if (slug == "type") {
                     let typeSlug = pText.split(":")[2];
                     predicate_resolution = predicate_resolution && (typeSlug.toUpperCase() == item.type.toUpperCase());
-                } else if (slug=="slug"){
+                } else if (slug == "slug") {
                     let typeSlug = pText.split(":")[2];
                     predicate_resolution = predicate_resolution && (typeSlug == item.baseName);
                 } else {

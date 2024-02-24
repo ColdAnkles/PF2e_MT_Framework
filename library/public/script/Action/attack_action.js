@@ -21,7 +21,7 @@ function attack_action(actionData, actingToken) {
 		flat_check(actingToken);
 	}
 
-	let dieUpgrades = {"d4":"d6","d6":"d8","d8":"d10","d10":"d12"};
+	let dieUpgrades = { "d4": "d6", "d6": "d8", "d8": "d10", "d10": "d12" };
 
 	let inventory = null;
 	let itemData = null;
@@ -35,23 +35,23 @@ function attack_action(actionData, actingToken) {
 			return
 		} else if (itemData == null && actionData.linkedWeapon == "unarmed") {
 			itemData = find_handwraps(actingToken);
-			if(itemData!=null){
+			if (itemData != null) {
 				actionData.damage[0].dice = itemData.runes.striking + 1;
 				actionData.traits = actionData.traits.concat(itemData.traits);
 			}
 		}
 	}
-	if(itemData!=null){
-		if(itemData.material.type!=null){
-			if(itemData.material.grade!= null){
+	if (itemData != null) {
+		if (itemData.material.type != null) {
+			if (itemData.material.grade != null) {
 				actionData.materials = [itemData.material.grade + " " + itemData.material.type];
-			}else{
+			} else {
 				actionData.materials = [itemData.material.type];
 			}
-		}else{
+		} else {
 			actionData.materials = [];
 		}
-	}else{
+	} else {
 	}
 
 	let attack_bonus = actionData.bonus;
@@ -66,7 +66,7 @@ function attack_action(actionData, actingToken) {
 		attackScopes.push("ranged-attack");
 		damageScopes.push("ranged-damage");
 	}
-	if(actionData.name=="Fist"){
+	if (actionData.name == "Fist") {
 		damageScopes.push("fist-base-damage");
 	}
 
@@ -83,15 +83,15 @@ function attack_action(actionData, actingToken) {
 	let effect_bonus_raw = calculate_bonus(actingToken, attackScopes, true, actionData);
 	//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
-	for(var oE in effect_bonus_raw.otherEffects){
+	for (var oE in effect_bonus_raw.otherEffects) {
 		let thisEffect = effect_bonus_raw.otherEffects[oE];
-		if("property" in thisEffect){
-			if(thisEffect.property=="materials"){
-				if(thisEffect.mode == "add"){
+		if ("property" in thisEffect) {
+			if (thisEffect.property == "materials") {
+				if (thisEffect.mode == "add") {
 					actionData.materials.push(thisEffect.value);
 				}
-			}else if(thisEffect.property=="weapon-traits"){
-				if(thisEffect.mode == "add"){
+			} else if (thisEffect.property == "weapon-traits") {
+				if (thisEffect.mode == "add") {
 					actionData.traits.push(thisEffect.value);
 				}
 			}
@@ -113,11 +113,11 @@ function attack_action(actionData, actingToken) {
 	let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, actionData);
 	//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
 
-	if("otherEffects" in damage_bonus_raw){
-		if("ItemAlteration" in damage_bonus_raw.otherEffects){
-			if("mode" in damage_bonus_raw.otherEffects.ItemAlteration && damage_bonus_raw.otherEffects.ItemAlteration.mode == "upgrade"){
-				if("property" in damage_bonus_raw.otherEffects.ItemAlteration){
-					if( damage_bonus_raw.otherEffects.ItemAlteration.property == "damage-dice-faces"){
+	if ("otherEffects" in damage_bonus_raw) {
+		if ("ItemAlteration" in damage_bonus_raw.otherEffects) {
+			if ("mode" in damage_bonus_raw.otherEffects.ItemAlteration && damage_bonus_raw.otherEffects.ItemAlteration.mode == "upgrade") {
+				if ("property" in damage_bonus_raw.otherEffects.ItemAlteration) {
+					if (damage_bonus_raw.otherEffects.ItemAlteration.property == "damage-dice-faces") {
 						let currentDie = actionData.damage[0].die;
 						actionData.damage[0].die = dieUpgrades[currentDie];
 					}
@@ -194,18 +194,18 @@ function attack_action(actionData, actingToken) {
 	let damage_bonus = damage_bonus_raw.bonuses.circumstance + damage_bonus_raw.bonuses.status + damage_bonus_raw.bonuses.item + damage_bonus_raw.bonuses.none +
 		damage_bonus_raw.maluses.circumstance + damage_bonus_raw.maluses.status + damage_bonus_raw.maluses.item + damage_bonus_raw.maluses.none;
 
-	if(get_token_type(actingToken)=="PC"){
+	if (get_token_type(actingToken) == "PC") {
 		actionData.damage[0].damage = String(actionData.damage[0].dice) + actionData.damage[0].die + ((itemData != null && itemData.damageBonus != null && itemData.damageBonus > 0) ? "+" + String(itemData.damageBonus) : "");
-		if(actionData.traits.includes("finesse")){
+		if (actionData.traits.includes("finesse")) {
 			attack_bonus += Math.max(Number(actingToken.getProperty("str")), Number(actingToken.getProperty("dex")));
-		}else{		
+		} else {
 			attack_bonus += Number(actingToken.getProperty("str"));
 		}
 	}
 
 	for (var d in actionData.damage) {
 		let damageData = actionData.damage[d];
-		if(damage_bonus!=0){
+		if (damage_bonus != 0) {
 			damageData.damage += "+" + String(damage_bonus)
 		}
 		let rolledDamage = roll_dice(damageData.damage);
@@ -223,7 +223,7 @@ function attack_action(actionData, actingToken) {
 		critDamageDetails.push(critDice + " " + damageData.damageType);
 	}
 
-	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + ((itemData!=null && get_token_type(actingToken)=="PC")?Math.max(effect_bonus_raw.bonuses.item, itemData.runes.potency):effect_bonus_raw.bonuses.item) + effect_bonus_raw.bonuses.none +
+	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + ((itemData != null && get_token_type(actingToken) == "PC") ? Math.max(effect_bonus_raw.bonuses.item, itemData.runes.potency) : effect_bonus_raw.bonuses.item) + effect_bonus_raw.bonuses.none +
 		effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
 
 	let map_malus = currentAttackCount * MAP_Penalty;

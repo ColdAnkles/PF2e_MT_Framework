@@ -12,14 +12,14 @@ function view_inventory(tokenID, inventoryAction = null) {
             if (key.includes("share_")) {
                 actionItem = inventory[key.replace("share_", "")];
                 action = "share";
-            }else if (key.includes("equip_")){
+            } else if (key.includes("equip_")) {
                 actionItem = inventory[key.replace("equip_", "")];
                 action = "equip";
             }
         }
-        if(action=="share"){
+        if (action == "share") {
             chat_display(actionItem);
-        }else if(action=="equip"){
+        } else if (action == "equip") {
             actionItem.equipped = !actionItem.equipped;
             token.setProperty("inventory", JSON.stringify(inventory));
         }
@@ -34,7 +34,7 @@ function view_inventory(tokenID, inventoryAction = null) {
 
     for (var itemID in inventory) {
         let thisItem = inventory[itemID];
-        inventoryHTML += "<tr><td>" + thisItem.name + "</td><td>" + String(thisItem.quantity) + "</td><td><input type='submit' name='equip_" + thisItem.id + "' value='"+((thisItem.equipped)?"Unequip":"Equip")+"'></td><td><input type='submit' name='share_" + thisItem.id + "' value='Submit'></td></tr>"
+        inventoryHTML += "<tr><td>" + thisItem.name + "</td><td>" + String(thisItem.quantity) + "</td><td><input type='submit' name='equip_" + thisItem.id + "' value='" + ((thisItem.equipped) ? "Unequip" : "Equip") + "'></td><td><input type='submit' name='share_" + thisItem.id + "' value='Submit'></td></tr>"
     }
 
     inventoryHTML += "</form></table></html>"
