@@ -51,3 +51,19 @@ function find_handwraps(token){
 }
 
 MTScript.registerMacro("ca.pf2e.find_handwraps", find_handwraps);
+
+function get_equipped_items(token){
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+	}
+	let inventory = JSON.parse(token.getProperty("inventory"));
+	let equippedItems = {};
+	
+	for (var i in inventory) {
+		let itemData = inventory[i];
+		if(itemData.equipped){
+			equippedItems[i] = itemData;
+		}
+	}
+	return equippedItems;
+}
