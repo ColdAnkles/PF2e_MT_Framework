@@ -4,6 +4,9 @@ function capitalise(aString) {
 	}
 	let words = aString.split(" ");
 	return words.map((word) => {
+		if (word == "") {
+			return word;
+		}
 		return word[0].toUpperCase() + word.substring(1);
 	}).join(" ");
 }

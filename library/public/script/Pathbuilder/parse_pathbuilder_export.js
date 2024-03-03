@@ -19,7 +19,6 @@ function parse_pathbuilder_export(data) {
 	let unfoundData = [];
 
 	function find_object_data(objectName, searchSet = "all") {
-		//MapTool.chat.broadcast(objectName);
 		if (objectName == "Versatile Heritage") {
 			objectName = "Versatile";
 			searchSet = "heritage";
@@ -396,7 +395,7 @@ function parse_pathbuilder_export(data) {
 						newWeapon.runes.property.push(runeData);
 					}
 				}
-				if (thisWeapon.mat != "") {
+				if (thisWeapon.mat != null && thisWeapon.mat != "") {
 					if (thisWeapon.mat.match(/([^\s]*) \((.*)\)/)) {
 						let matParse = thisWeapon.mat.match(/([^\s]*) \((.*)\)/);
 						newWeapon.material.type = matParse[1].toLowerCase();
