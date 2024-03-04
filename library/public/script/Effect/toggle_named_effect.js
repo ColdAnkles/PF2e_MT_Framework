@@ -31,14 +31,18 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 	}
 
 	let property = JSON.parse(read_data("pf2e_effect"));
+	if (!(effectName in property)) {
+		MapTool.chat.broadcast("Cannot find effect: " + effectName);
+		return;
+	}
 	let effectData = JSON.parse(JSON.stringify(property[effectName]));
-
-	effectData.applyTime = { "round": currentRound, "initiative": currentInitiative };
 
 	if (effectData == null) {
 		MapTool.chat.broadcast("Cannot find effect: " + effectName);
 		return;
 	}
+
+	effectData.applyTime = { "round": currentRound, "initiative": currentInitiative };
 
 	effectData.sourceItem = effectSource;
 	//MapTool.chat.broadcast(JSON.stringify(effectData.rules));
