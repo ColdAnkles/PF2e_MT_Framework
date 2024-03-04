@@ -4,7 +4,7 @@ function group_dice(diceString) {
 	//MapTool.chat.broadcast(diceString);
 
 	const dieRegexp = /[+-]?[0-9]*d[0-9]+/g;
-	const flatRegexp = /(?<!d)[+-][0-9]+(?!d)/g;
+	const flatRegexp = /(?<!d)[+-]?[0-9]+(?![0-9]*d)/g;
 
 	let dice = diceString.match(dieRegexp);
 	let flats = diceString.match(flatRegexp);
@@ -48,8 +48,6 @@ function group_dice(diceString) {
 		}
 		resultString += String(totalFlat);
 	}
-
-	//resultString = resultString.substring(0,resultString.length-1);
 
 	resultString = resultString.replaceAll("++", "+").replaceAll("+-", "-").replaceAll("+", " + ").replaceAll("-", " - ");
 
