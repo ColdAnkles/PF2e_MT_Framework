@@ -5,7 +5,7 @@ function build_spell_view(spellName) {
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
 	let property = JSON.parse(read_data("pf2e_spell"));
-	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).traitDescriptions;
+	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
 
 	if (!(spellName in property)) {
 		let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
@@ -36,8 +36,8 @@ function build_spell_view(spellName) {
 
 	if (spellData.traits.rarity != "common") {
 		let normalRarity = capitalise(spellData.traits.rarity).split('-')[0];
-		if (normalRarity in traitGlossary && traitGlossary[normalRarity] != null) {
-			HTMLString += "<span class='trait" + spellData.traits.rarity + "' title=\"" + traitGlossary[normalRarity] + "\">" + capitalise(spellData.traits.rarity) + "</span>";
+		if ("traitDescription" + normalRarity in traitGlossary && traitGlossary["traitDescription" + normalRarity] != null) {
+			HTMLString += "<span class='trait" + spellData.traits.rarity + "' title=\"" + traitGlossary["traitDescription" + normalRarity] + "\">" + capitalise(spellData.traits.rarity) + "</span>";
 		} else {
 			HTMLString += "<span class='trait" + spellData.traits.rarity + "'>" + capitalise(spellData.traits.rarity) + "</span>";
 		}
@@ -45,8 +45,8 @@ function build_spell_view(spellName) {
 	for (var t in spellData.traits.value) {
 		let traitName = spellData.traits.value[t];
 		let traitNormal = capitalise(traitName).split('-')[0];
-		if (traitNormal in traitGlossary && traitGlossary[traitNormal] != null) {
-			HTMLString += "<span class='trait' title=\"" + traitGlossary[traitNormal] + "\">" + capitalise(traitName) + "</span>";
+		if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
+			HTMLString += "<span class='trait' title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + capitalise(traitName) + "</span>";
 		} else {
 			HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
 		}
@@ -75,13 +75,15 @@ function build_spell_view(spellName) {
 		HTMLString += spellData.time;
 	}
 
-	let components = [];
-	for (var k in spellData.components) {
-		if (spellData.components[k]) {
-			components.push(k);
+	if ("components" in spellData) {
+		let components = [];
+		for (var k in spellData.components) {
+			if (spellData.components[k]) {
+				components.push(k);
+			}
 		}
+		HTMLString += " " + components.join(", ") + "<br />";
 	}
-	HTMLString += " " + components.join(", ") + "<br />";
 
 	if (spellData.area != null) {
 		HTMLString += "<b>Area</b> " + spellData.area.details + "; <b>Targets</b> " + spellData.target + "<br />";
@@ -89,7 +91,7 @@ function build_spell_view(spellName) {
 		HTMLString += "<b>Range</b> " + spellData.range + "; <b>Targets</b> " + spellData.target + "<br />";
 	}
 
-	if (spellData.spellType == "save" && spellData.save.value != "") {
+	if (spellData.spellType == "save" && spellData.save.statistic != "") {
 		HTMLString += "<b>Saving Throw</b> ";
 		if (spellData.save.basic) {
 			HTMLString += "basic ";
