@@ -47,7 +47,5 @@ function parse_spell(baseName, spellData) {
 		parsedData.category = "spell";
 	}
 
-	//MapTool.chat.broadcast(JSON.stringify(parsedData));
-
 	return parsedData;
 }
