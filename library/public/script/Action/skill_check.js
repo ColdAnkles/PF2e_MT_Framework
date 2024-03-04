@@ -117,7 +117,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
 		<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML += "<tr><td colspan='5' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td></tr>";
+		queryHTML += "<tr><td colspan='2' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td>\
+		<td>Other:</b></td><td>+<input type='text' name='oBonus' value='0' size='2'></input></td>\
+		<td>-<input type='text' name='oMalus' value='0' size='2'></input></td></tr>";
 
 		let initiative = get_initiative(checkToken.getId());
 		if (!(isNaN(initiative))) {
@@ -142,21 +144,43 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 		if (!("cBonus" in checkData)) {
 			checkData.cBonus = 0;
+		} else {
+			checkData.cBonus = Math.abs(checkData.cBonus);
 		}
 		if (!("sBonus" in checkData)) {
 			checkData.sBonus = 0;
+		} else {
+			checkData.sBonus = Math.abs(checkData.sBonus);
 		}
 		if (!("iBonus" in checkData)) {
 			checkData.iBonus = 0;
+		} else {
+			checkData.iBonus = Math.abs(checkData.iBonus);
+		}
+		if (!("oBonus" in checkData)) {
+			checkData.oBonus = 0;
+		} else {
+			checkData.oBonus = Math.abs(checkData.oBonus);
 		}
 		if (!("cMalus" in checkData)) {
 			checkData.cMalus = 0;
+		} else {
+			checkData.cMalus = Math.abs(checkData.cMalus) * -1;
 		}
 		if (!("sMalus" in checkData)) {
 			checkData.sMalus = 0;
+		} else {
+			checkData.sMalus = Math.abs(checkData.sMalus) * -1;
 		}
 		if (!("iMalus" in checkData)) {
 			checkData.iMalus = 0;
+		} else {
+			checkData.iMalus = Math.abs(checkData.iMalus) * -1;
+		}
+		if (!("oMalus" in checkData)) {
+			checkData.oMalus = 0;
+		} else {
+			checkData.oMalus = Math.abs(checkData.oMalus) * -1;
 		}
 		if (!("fortuneSelect" in checkData)) {
 			checkData.fortuneSelect = "normal";
@@ -210,8 +234,8 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		let prof_bonus = 0;
 		let misc_bonus = Number(checkData.miscBonus);
 		let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName), checkData.statName + "-based", "skill-check"].concat(extraScopes), true);
-		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + effect_bonus_raw.bonuses.none
-			+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + effect_bonus_raw.maluses.none;
+		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + Math.max(effect_bonus_raw.bonuses.none, checkData.oBonus)
+			+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + Math.min(effect_bonus_raw.maluses.none, checkData.oMalus);
 
 		if (effect_bonus_raw.appliedEffects.includes("Assurance")) {
 			dTwenty = 10;

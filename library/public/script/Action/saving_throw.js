@@ -60,7 +60,9 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 		<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
 		<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML += "<tr><td colspan='5' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td></tr>";
+		queryHTML += "<tr><td colspan='2' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td>\
+		<td>Other:</b></td><td>+<input type='text' name='oBonus' value='0' size='2'></input></td>\
+		<td>-<input type='text' name='oMalus' value='0' size='2'></input></td></tr>";
 
 		queryHTML = queryHTML + "<tr><td colspan='5' style='text-align:center'><input type='submit' name='savingThrowSubmit' value='Submit'></td></tr>";
 
@@ -74,21 +76,43 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 
 		if (!("cBonus" in saveData)) {
 			saveData.cBonus = 0;
+		} else {
+			saveData.cBonus = Math.abs(saveData.cBonus);
 		}
 		if (!("sBonus" in saveData)) {
 			saveData.sBonus = 0;
+		} else {
+			saveData.sBonus = Math.abs(saveData.sBonus);
 		}
 		if (!("iBonus" in saveData)) {
 			saveData.iBonus = 0;
+		} else {
+			saveData.iBonus = Math.abs(saveData.iBonus);
+		}
+		if (!("oBonus" in saveData)) {
+			saveData.oBonus = 0;
+		} else {
+			saveData.oBonus = Math.abs(saveData.oBonus);
 		}
 		if (!("cMalus" in saveData)) {
 			saveData.cMalus = 0;
+		} else {
+			saveData.cMalus = Math.abs(saveData.cMalus) * -1;
 		}
 		if (!("sMalus" in saveData)) {
 			saveData.sMalus = 0;
+		} else {
+			saveData.sMalus = Math.abs(saveData.sMalus) * -1;
 		}
 		if (!("iMalus" in saveData)) {
 			saveData.iMalus = 0;
+		} else {
+			saveData.iMalus = Math.abs(saveData.iMalus) * -1;
+		}
+		if (!("oMalus" in saveData)) {
+			saveData.oMalus = 0;
+		} else {
+			saveData.oMalus = Math.abs(saveData.oMalus) * -1;
 		}
 		if (!("fortuneSelect" in saveData)) {
 			saveData.fortuneSelect = "normal";
@@ -135,10 +159,8 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus));
 
-
-
-		let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + effect_bonus_raw.bonuses.item + effect_bonus_raw.bonuses.none +
-			effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
+		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, saveData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, saveData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, saveData.iBonus) + Math.max(effect_bonus_raw.bonuses.none, saveData.oBonus)
+			+ Math.min(effect_bonus_raw.maluses.circumstance, saveData.cMalus) + Math.min(effect_bonus_raw.maluses.status, saveData.sMalus) + Math.min(effect_bonus_raw.maluses.item, saveData.iMalus) + Math.min(effect_bonus_raw.maluses.none, saveData.oMalus);
 
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus));
 
