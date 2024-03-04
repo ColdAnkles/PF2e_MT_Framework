@@ -72,11 +72,11 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 		uuidString = parsed.braceContents;
 	} else if ("Compendium.pf2e.bestiary-effects.Item.Effect" in parsed.bracketDetail) {
 		uuidString = "";
-	} else if (parsed.bracketContents.includes("Spell Effect") && !additionalData.rollDice) {
+	} else if (parsed.bracketContents.includes("spell-effects") && !additionalData.rollDice) {
 		let tempArray = parsed.bracketContents.split(/[^(Vs)]\./);
 		let effectName = tempArray[tempArray.length - 1];
 		uuidString = create_macroLink(capitalise(effectName), "Item_View_Frame@Lib:ca.pf2e", { "itemType": "effect", "itemName": effectName });
-	} else if (parsed.bracketContents.includes("Spell Effect") && additionalData.rollDice) {
+	} else if (parsed.bracketContents.includes("spell-effects") && additionalData.rollDice) {
 		let tempArray = parsed.bracketContents.split(/[^(Vs)]\./);
 		let effectName = tempArray[tempArray.length - 1];
 		uuidString = create_macroLink("Apply " + effectName, "Apply_Effect_Query@Lib:ca.pf2e", { "effectName": effectName, "effectSource": additionalData.item });
