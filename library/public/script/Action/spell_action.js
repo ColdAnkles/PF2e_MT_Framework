@@ -39,14 +39,20 @@ function spell_action(actionData, actingToken) {
 	}
 
 	let hh_targetType = null;
-	if ((spellData.name == "Heal" || spellData.name == "Harm") && actionData.actionCost == "2") {
+	let alt_hh_test = null;
+	if (((spellData.name == "Heal" || spellData.name == "Harm") && actionData.actionCost == "2") || spellData.name == "Lay on Hands") {
 		MTScript.evalMacro("[h: targetChoice=\"Living\"][h: input(\"targetChoice|Living,Dead|Target Type|LIST|VALUE=STRING\")]");
 
 		hh_targetType = MTScript.getVariable("targetChoice");
+		if (hh_targetType == "Living") {
+			alt_hh_test = "Healing";
+		} else {
+			alt_hh_test = "Harming";
+		}
 	}
-	if (spellData.name == "Heal" && (hh_targetType == "Living" || hh_targetType == null)) {
+	if ((spellData.name == "Heal" || spellData.name == "Lay on Hands") && (hh_targetType == "Living" || hh_targetType == null)) {
 		damageScopes = ["spell", "healing"];
-	} else if (spellData.name == "Harm" && (hh_targetType == "Undead" || hh_targetType == null)) {
+	} else if ((spellData.name == "Harm" || spellData.name == "Lay on Hands") && (hh_targetType == "Undead" || hh_targetType == null)) {
 		damageScopes = ["spell", "healing"];
 	}
 
@@ -56,16 +62,23 @@ function spell_action(actionData, actingToken) {
 		for (var o in actionData.overlays) {
 			let overlayData = spellData.overlays[actionData.overlays[o]];
 			if (overlayData.overlayType == "override") {
-				if (hh_targetType != null && "name" in overlayData && overlayData.name != null && !(overlayData.name.includes(hh_targetType))) {
+				if (hh_targetType != null && "name" in overlayData && overlayData.name != null && (!(overlayData.name.toUpperCase().includes(hh_targetType.toUpperCase())) && !(overlayData.name.toUpperCase().includes(alt_hh_test.toUpperCase())))) {
 					continue;
 				};
 				for (var key in overlayData.system) {
 					if (typeof (overlayData.system[key]) == "object" && overlayData.system[key] != null && "value" in overlayData.system[key] && Object.keys(overlayData.system[key]).length == 1 && key != "traits") {
 						spellData[key] = overlayData.system[key].value;
 					} else if (key == "damage" || key == "heightening") {
+						if (!(key in spellData)) {
+							spellData[key] = {};
+						}
 						for (var e in overlayData.system[key]) {
-							for (var k2 in overlayData.system[key][e]) {
-								spellData[key][e][k2] = overlayData.system[key][e][k2];
+							if (!(e in spellData[key])) {
+								spellData[key][e] = overlayData.system[key][e];
+							} else {
+								for (var k2 in overlayData.system[key][e]) {
+									spellData[key][e][k2] = overlayData.system[key][e][k2];
+								}
 							}
 						}
 					} else {
@@ -205,8 +218,12 @@ function spell_action(actionData, actingToken) {
 	}
 
 	if ("damage" in spellData && Object.keys(spellData.damage).length > 0) {
-		displayData.description += "<i>Damage</i><br />";
-		if ("heightening" in spellData && spellData.heightening.type == "fixed") {
+		if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
+			displayData.description += "<i>Healing</i><br />";
+		} else {
+			displayData.description += "<i>Damage</i><br />";
+		}
+		if ("heightening" in spellData && (spellData.heightening.type == "fixed")) {
 			let found = false;
 			let heightenVal = null;
 			let testIndex = actionData.castLevel
@@ -224,6 +241,7 @@ function spell_action(actionData, actingToken) {
 				spellData.damage = heightenVal.damage;
 			}
 		}
+
 		let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, spellData);
 		//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
 		let damage_bonus = damage_bonus_raw.bonuses.circumstance + damage_bonus_raw.bonuses.status + damage_bonus_raw.bonuses.item + damage_bonus_raw.bonuses.none +
@@ -237,7 +255,7 @@ function spell_action(actionData, actingToken) {
 			}
 			let damageRoll = String(damageData.formula);
 			if ("heightening" in spellData && "damage" in spellData.heightening && spellData.heightening.type == "interval" && d in spellData.heightening.damage) {
-				for (let i = spellData.level + 1; i <= actionData.castLevel; i += spellData.heightening.interval) {
+				for (let i = spellData.level + spellData.heightening.interval; i <= actionData.castLevel; i += spellData.heightening.interval) {
 					damageRoll = damageRoll + "+" + spellData.heightening.damage[d];
 				}
 			}
@@ -260,7 +278,11 @@ function spell_action(actionData, actingToken) {
 			displayData.description += " " + damageData.type + "</b>";
 			if (String(rolled) != damageRoll) {
 				let critDamage = rolled * 2;
-				displayData.description += "<br /><i>Crit Damage</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
+				if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
+					displayData.description += "<br /><i>Crit Healing</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
+				} else {
+					displayData.description += "<br /><i>Crit Damage</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
+				}
 				if (damageData.category != null) {
 					displayData.description += " " + damageData.category;
 				}

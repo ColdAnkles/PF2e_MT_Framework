@@ -63,6 +63,11 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 	if (!(isNaN(spellData.time))) {
 		actionData.actionType = "action";
 		actionData.actionCost = spellData.time;
+		for (var overlay in spellData.overlays) {
+			if (!("time" in spellData.overlays[overlay].system)) {
+				actionData.overlays.push(overlay);
+			}
+		}
 	} else if (spellData.time.includes("to") && additionalData == null) {
 		//Ask actions spent
 		let first = Number(spellData.time.split(" to ")[0]);
@@ -85,7 +90,9 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		actionData.actionCost = Number(additionalData);
 
 		for (var overlay in spellData.overlays) {
-			if (spellData.overlays[overlay].system.time.value.includes(String(additionalData))) {
+			if (!("time" in spellData.overlays[overlay].system)) {
+				actionData.overlays.push(overlay);
+			} else if ("time" in spellData.overlays[overlay].system && spellData.overlays[overlay].system.time.value.includes(String(additionalData))) {
 				actionData.overlays.push(overlay);
 			}
 		}
@@ -93,10 +100,20 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 	} else if (spellData.time == "reaction") {
 		actionData.actionType = "reaction";
 		actionData.actionCost = 1;
+		for (var overlay in spellData.overlays) {
+			if (!("time" in spellData.overlays[overlay].system)) {
+				actionData.overlays.push(overlay);
+			}
+		}
 	} else {
 		//Non-encounter mode spells
 		actionData.actionType = "action";
 		actionData.actionCost = 100;
+		for (var overlay in spellData.overlays) {
+			if (!("time" in spellData.overlays[overlay].system)) {
+				actionData.overlays.push(overlay);
+			}
+		}
 	}
 
 	if (get_token_type(casterToken) == "PC") {
