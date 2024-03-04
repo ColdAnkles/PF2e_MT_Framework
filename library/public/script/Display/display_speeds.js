@@ -19,14 +19,14 @@ function display_speeds(token) {
 		}
 	}
 
-	let speedBonus = calculate_bonus(token, ["speed", "land-speed"]);
+	let speedBonus = calculate_bonus(token, ["speed", "land-speed", "all-speeds"]);
 	speedBonus = speedBonus.bonuses.circumstance + speedBonus.bonuses.status + speedBonus.bonuses.item + speedBonus.bonuses.none + speedBonus.maluses.circumstance + speedBonus.maluses.status + speedBonus.maluses.item + speedBonus.maluses.none;
 
 	let otherSpeedString = [];
 
 	for (var s in otherSpeed) {
 		//MapTool.chat.broadcast(JSON.stringify(otherSpeed[s]));
-		speedBonus = calculate_bonus(token, ["speed", otherSpeed[s].type]);
+		speedBonus = calculate_bonus(token, ["speed", otherSpeed[s].type, "all-speeds"]);
 		speedBonus = speedBonus.bonuses.circumstance + speedBonus.bonuses.status + speedBonus.bonuses.item + speedBonus.bonuses.none + speedBonus.maluses.circumstance + speedBonus.maluses.status + speedBonus.maluses.item + speedBonus.maluses.none;
 		otherSpeedString.push(otherSpeed[s].type + " " + String(Math.max(Number(otherSpeed[s].value) + speedBonus + speedPenalty, 5)) + " ft");
 	}
