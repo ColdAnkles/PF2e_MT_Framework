@@ -18,15 +18,32 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		}
 	}
 
-	let allPossible = pcData.basicAttacks;
-	allPossible = allPossible.concat(pcData.offensiveActions);
-	allPossible = allPossible.concat(pcData.otherDefenses);
-	allPossible = allPossible.concat(pcData.passiveDefenses);
-	allPossible = allPossible.concat(pcData.passiveSkills);
+	for (var a in pcData.basicAttacks) {
+		let actionData = pcData.basicAttacks[a];
+		add_action_to_token(actionData, newPCTokenID, pcData);
+	}
 
-	for (var a in allPossible) {
-		let actionData = allPossible[a];
-		//actionData.type = "personal";
+	for (var a in pcData.offensiveActions) {
+		let actionData = pcData.offensiveActions[a];
+		actionData.group = "4. Abilities";
+		add_action_to_token(actionData, newPCTokenID, pcData);
+	}
+
+	for (var a in pcData.otherDefenses) {
+		let actionData = pcData.otherDefenses[a];
+		actionData.group = "4. Abilities";
+		add_action_to_token(actionData, newPCTokenID, pcData);
+	}
+
+	for (var a in pcData.passiveDefenses) {
+		let actionData = pcData.passiveDefenses[a];
+		actionData.group = "4. Abilities";
+		add_action_to_token(actionData, newPCTokenID, pcData);
+	}
+
+	for (var a in pcData.passiveSkills) {
+		let actionData = pcData.passiveSkills[a];
+		actionData.group = "4. Abilities";
 		add_action_to_token(actionData, newPCTokenID, pcData);
 	}
 
