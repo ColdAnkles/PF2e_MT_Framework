@@ -1,7 +1,11 @@
 "use strict";
 
-function parse_foundry_strings(foundryString) {
-	const bracketRegexp = /\[+(.*?\]?)\]+/;
+function parse_foundry_strings(foundryString, altBracketRegexp = false) {
+	//bracketRegexp Changed Multiple times - Treat Wounds good example to test with
+	let bracketRegexp = /\[+(.*?\]?)\]+/;
+	if(altBracketRegexp){
+		bracketRegexp = /\[+(.*?)\]+/;
+	}
 	const braceRegexp = /\]\{(.*?)\}/;
 
 	//MapTool.chat.broadcast(foundryString);
@@ -113,6 +117,8 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 		let tempArray = parsed.bracketContents.split(".");
 		let itemName = tempArray[tempArray.length - 1];
 		uuidString = create_macroLink(capitalise(itemName), "Item_View_Frame@Lib:ca.pf2e", { "itemType": "item", "itemName": itemName });
+	} else if (parsed.bracketContents.includes("pf2e-macros")) {
+		uuidString = "";
 	}
 	//MapTool.chat.broadcast(uuidString);
 	return uuidString;
@@ -166,7 +172,7 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 	if (rollString.includes("/br") || (!(rollString.includes("(")) || !(rollString.includes(")")))) {
 		//MapTool.chat.broadcast("Case One");
-		let parsed = parse_foundry_strings(rollString);
+		let parsed = parse_foundry_strings(rollString, true);
 		//MapTool.chat.broadcast(JSON.stringify(parsed));
 		if (parsed.braceContents != null) {
 			if (additionalData.rollDice) {
@@ -201,16 +207,17 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 				let diceMatch = parsed.bracketContents.match(/\/r ([0-9+ d-]*).*/g);
 				//MapTool.chat.broadcast(JSON.stringify(diceMatch));
 				if (diceMatch.length > 0) {
-					diceMatch = diceMatch[0].replaceAll("/r ", "").replaceAll("/r", "");
+					diceMatch = diceMatch[0];
+					let dice = diceMatch.replaceAll("/r ", "").replaceAll("/r", "");
 					let replaceString = "";
-					if (diceMatch.includes("d")) {
-						replaceString = "[r: " + diceMatch + "]";
+					if (dice.includes("d") && additionalData.rollDice) {
+						replaceString = String(roll_dice(dice));
 					} else {
-						replaceString = diceMatch;
+						replaceString = dice;
 					}
-					return parsed.braceContents.replace(diceMatch, replaceString);
+					return parsed.bracketContents.replace(diceMatch, replaceString);
 				} else {
-					return parsed.braceContents;
+					return parsed.bracketContents;
 				}
 			} else {
 				return parsed.bracketContents.replace(/\/r ([0-9+ d-]*).*/g, "$1");
