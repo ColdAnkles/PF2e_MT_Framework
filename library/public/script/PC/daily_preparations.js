@@ -34,7 +34,7 @@ function daily_preparations(token) {
     currHP = Math.min(currHP + conMod, maxHP);
     token.setProperty("HP", String(currHP));
 
-    if (token.getName().includes("Lib")) {
+    if (token.getName().includes("Lib") && get_token_type(token) == "PC") {
         update_my_tokens(token);
     }
 }
