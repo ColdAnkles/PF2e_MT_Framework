@@ -80,11 +80,11 @@ function on_turn_begin(turnToken, turnData = {}) {
 		set_state("Reaction", 0, turnToken.getId());
 	}
 
+	expire_effect_test(turnData, "turn-begin");
+
 	turnToken.setProperty("actionsLeft", newActionCount);
 	turnToken.setProperty("reactionsLeft", newReactionCount);
 	turnToken.setProperty("attacksThisRound", 0);
-
-	expire_effect_test(turnData, "turn-begin");
 
 }
 
