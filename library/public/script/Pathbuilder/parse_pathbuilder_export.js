@@ -341,7 +341,14 @@ function parse_pathbuilder_export(data) {
 			let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
 			parsedData.itemList[trueID].quantity = thisArmor.qty;
 			parsedData.itemList[trueID].equipped = thisArmor.worn;
-			parsedData.itemList[trueID].runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient": ((thisArmor.res == "") ? 0 : thisArmor.res) };
+			parsedData.itemList[trueID].runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient":0};
+			if(thisArmor.res == "resilient"){
+				parsedData.itemList[trueID].runes.resilient = 1;
+			}else if (thisArmor.res == "greaterResilient"){
+				parsedData.itemList[trueID].runes.resilient = 2;
+			}else if (thisArmor.res == "majorResilient"){
+				parsedData.itemList[trueID].runes.resilient = 3;
+			}
 			for (var rI of thisArmor.runes) {
 				let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
 				if (runeData != null && "fileURL" in runeData) {
