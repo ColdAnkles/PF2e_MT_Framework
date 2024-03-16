@@ -88,6 +88,8 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
 		queryHTML += "<input type='hidden' name='altStat' value='" + Number(altStat) + "'>";
 		queryHTML += "<input type='hidden' name='extraScopes' value='" + JSON.stringify(extraScopes) + "'>";
+		queryHTML += "<input type='hidden' name='useMAP' value='0'>";
+		queryHTML += "<input type='hidden' name='increaseMAP' value='0'>";
 
 		queryHTML += "<tr><th colspan='5' style='text-align:center'><b>Skill Check</b></th></tr>";
 		queryHTML += "<tr><td " + ((altStat) ? "" : "colspan='2'") + ">Skill:</td><td " + ((altStat) ? "" : "colspan='3'") + "><select name='skillName'>";
@@ -109,7 +111,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		<td>Circumstance:</b></td><td>+<input type='text' name='cBonus' value='0' size='2'></input></td>\
 		<td>-<input type='text' name='cMalus' value='0' size='2'></input></td></tr>";
 
-		queryHTML += "<tr><td>Secret Check?</td><td><input type='checkbox' name='secretCheck' value='1'></td>\
+		queryHTML += "<tr><td>Secret Check?</td><td><input type='checkbox' id='secretCheck' name='secretCheck' value='1'></td>\
 		<td>Status:</b></td><td>+<input type='text' name='sBonus' value='0' size='2'></input></td>\
 		<td>-<input type='text' name='sMalus' value='0' size='2'></input></td></tr>";
 
@@ -126,7 +128,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			queryHTML += "<tr><td colspan='2' style='text-align:center'>Use MAP:<input type='checkbox' id='useMAP' name='useMAP' value='useMAP'></td>\
 			<td colspan='3' style='text-align:center'>Increase MAP:<input type='checkbox' id='increaseMAP' name='increaseMAP' value='increaseMAP'></td></tr>";
 		}
-		queryHTML += "<tr><td colspan='5' style='text-align:center'>Secret Check:<input type='checkbox' id='secretCheck' name='secretCheck' value='secretCheck'></td></tr>";
+		//queryHTML += "<tr><td colspan='5' style='text-align:center'>Secret Check:<input type='checkbox' id='secretCheck' name='secretCheck' value='secretCheck'></td></tr>";
 
 		queryHTML += "<tr><td colspan='5' style='text-align:center'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
 
