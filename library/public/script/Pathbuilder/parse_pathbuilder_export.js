@@ -434,12 +434,14 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(eqName, "item");
 		if (tempData == null) {
 			eqName = eqName.match(/([^\(\)]*) \(.*\)/);
-			if (eqName.length > 1) {
-				eqName = eqName[1];
-				tempData = find_object_data(eqName, "item");
-			} else {
-				eqName = eqName[0];
-				tempData = find_object_data(eqName, "item");
+			if(eqName!=null){
+				if (eqName.length > 1) {
+					eqName = eqName[1];
+					tempData = find_object_data(eqName, "item");
+				} else {
+					eqName = eqName[0];
+					tempData = find_object_data(eqName, "item");
+				}
 			}
 		}
 		if (tempData != null) {
