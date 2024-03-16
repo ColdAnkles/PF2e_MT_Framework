@@ -9,6 +9,9 @@ function end_encounter() {
             set_state("ActionsLeft_" + String(Number(i) + 1), 0, thisToken.getId());
             set_state("Reaction", 0, thisToken.getId());
         }
+        thisToken.setProperty("attacksThisRound", 0);
+        thisToken.setProperty("actionsLeft", 0);
+        thisToken.setProperty("reactionsLeft", 0);
     }
     MTScript.evalMacro("[h: removeAllFromInitiative()]");
 }
