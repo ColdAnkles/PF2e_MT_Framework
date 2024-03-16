@@ -13,7 +13,7 @@ function display_speeds(token) {
 
 	if (equipArmor != null) {
 		if ("strReq" in equipArmor && tokenStr >= equipArmor.strReq && equipArmor.speedPenalty != 0) {
-			speedPenalty = equipArmor.speedPenalty - 5;
+			speedPenalty = equipArmor.speedPenalty + 5; //plus five as penalty is negative
 		} else {
 			speedPenalty = equipArmor.speedPenalty;
 		}
