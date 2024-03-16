@@ -126,7 +126,13 @@ function parse_pathbuilder_export(data) {
 		parsedData.saves.will = parsedData.abilities.wis;
 	}
 	parsedData.immunities = [];
-	parsedData.resistances = data.resistances;
+	parsedData.resistances = [];
+
+	for (var r in data.resistances){
+		let resString = data.resistances[r].split(" ");
+		parsedData.resistances.push({"type":resString[0],"value":Number(resString[1])})
+	}
+
 	parsedData.weaknesses = [];
 	parsedData.passiveDefenses = [];
 	parsedData.otherDefenses = [];
