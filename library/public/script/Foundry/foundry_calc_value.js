@@ -6,7 +6,6 @@ function foundry_calc_value(value, actor, item) {
 		if (typeof (value) == "object") {
 			if ("brackets" in value) {
 				let splitVal = null;
-				//MapTool.chat.broadcast(JSON.stringify(value.brackets));
 				if ("field" in value) {
 					let bracketSplit = value.field.split("|");
 					if (bracketSplit[0] == "actor" && actor != null) {
@@ -19,7 +18,7 @@ function foundry_calc_value(value, actor, item) {
 				}
 				for (var s in value.brackets) {
 					let startVal = 0;
-					let endVal = 0;
+					let endVal = 99;
 					let bracket = value.brackets[s];
 					if ("start" in bracket) {
 						startVal = bracket.start;
@@ -41,7 +40,6 @@ function foundry_calc_value(value, actor, item) {
 		}
 		let foundMatches = value.match(/@[a-zA-Z\.]+/g);
 		for (var m in foundMatches) {
-			//MapTool.chat.broadcast(String(foundMatches[m]));
 			let splitStrings = foundMatches[m].split(".");
 			if (splitStrings[0] == "@actor") {
 				if (actor == null) {
