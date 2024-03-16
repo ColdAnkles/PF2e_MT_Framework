@@ -60,6 +60,8 @@ function parse_feature(featureName, feature, assignDict = null) {
 			newItem.runes = itemData.system.runes;
 			newItem.material = itemData.system.material;
 			newItem.traits = itemData.system.traits.value;
+			newItem.category = itemData.system.category;
+			newItem.group = itemData.system.group;
 			if (itemData.system.range == null) {
 				newItem.isMelee = true;
 			} else {
