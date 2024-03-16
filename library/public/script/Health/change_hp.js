@@ -2,10 +2,15 @@
 
 function change_hp(tokenID, changeHPData = null) {
 	let token = MapTool.tokens.getTokenByID(tokenID);
+	let tokenDisplayName = "";
 
 	if (!(token.getName().includes("Lib")) && get_token_type(token) == "PC") {
 		change_hp(token.getProperty("myID"), changeHPData);
 		return;
+	} else if ((token.getName().includes("Lib")) && get_token_type(token) == "PC"){
+		tokenDisplayName = token.getName().replace("Lib:","");
+	}else{
+		tokenDisplayName = token.getName();
 	}
 
 	let tokenCurrentHP = Number(token.getProperty("HP"));
@@ -53,34 +58,35 @@ function change_hp(tokenID, changeHPData = null) {
 			if (changeHPData.currentHPChange <= 0) {
 				kill_creature(tokenID);
 			} else {
-				chat_display({ "name": token.getName() + " HP Set!", "description": token.getName() + " HP set to " + String(changeHPData.currentHPChange) + "!" }, true);
+				chat_display({ "name": tokenDisplayName + " HP Set!", "description": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" }, true);
 			}
 		} else if (changeHPData.currentMaxHPChange != tokenCurrentMaxHP) {
 			token.setProperty("MaxHP", String(changeHPData.currentMaxHPChange));
 		} else if (changeHPData.currentTempHPChange != tokenCurrentTempHP) {
 			token.setProperty("TempHP", String(changeHPData.currentTempHPChange));
-			chat_display({ "name": token.getName() + " changed Temp HP!", "description": token.getName() + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" }, true);
+			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "description": tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" }, true);
 		} else if (changeHPData.hpChangeType == "tempHP") {
 			tokenCurrentTempHP = Math.max(tokenCurrentTempHP, changeHPData.hpChangeVal);
 			token.setProperty("TempHP", String(tokenCurrentTempHP));
-			chat_display({ "name": token.getName() + " changed Temp HP!", "description": token.getName() + " temp HP set to " + String(tokenCurrentTempHP) + "!" }, true);
+			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "description": tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" }, true);
 		} else {
 			if (changeHPData.hpChangeType == "lethal") {
-				chat_display({ "name": token.getName() + " takes damage!", "description": token.getName() + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!" }, true);
+				chat_display({ "name": tokenDisplayName + " takes damage!", "description": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!" }, true);
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
-				tokenCurrentHP = tokenCurrentHP + tokenCurrentTempHP;
+				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP<0)?tokenCurrentTempHP:0);
 				if (tokenCurrentHP <= 0) {
 					tokenCurrentHP = 0;
 				}
+				token.setProperty("TempHP", tokenCurrentTempHP);
 				if (tokenCurrentTempHP <= 0) {
-					token.setProperty("TempHP", "0");
+					token.setProperty("TempHP", 0);
 				}
 				token.setProperty("HP", String(tokenCurrentHP));
 				if (tokenCurrentHP <= 0) {
 					zero_hp(tokenID);
 				}
 			} else if (changeHPData.hpChangeType == "nonlethal") {
-				chat_display({ "name": token.getName() + " takes damage!", "description": token.getName() + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!" }, true);
+				chat_display({ "name": tokenDisplayName + " takes damage!", "description": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!" }, true);
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
 				tokenCurrentHP = tokenCurrentHP + tokenCurrentTempHP;
 				if (tokenCurrentHP <= 0) {
@@ -94,16 +100,18 @@ function change_hp(tokenID, changeHPData = null) {
 					knockout_creature(tokenID);
 				}
 			} else if (changeHPData.hpChangeType == "healing") {
+				let tokenOldHP = tokenCurrentHP;
 				tokenCurrentHP = tokenCurrentHP + changeHPData.hpChangeVal;
 				if (tokenCurrentHP > tokenCurrentMaxHP) {
 					tokenCurrentHP = tokenCurrentMaxHP;
 				}
+				let healVal = tokenCurrentHP - tokenOldHP;
 				token.setProperty("HP", String(tokenCurrentHP));
 				if (get_state("Dead", token)) {
 					set_state("Dead", 0, token);
-					chat_display({ "name": token.getName() + " resurrected!", "description": token.getName() + " resurrected to " + String(tokenCurrentHP) + " HP!" }, true);
+					chat_display({ "name": tokenDisplayName + " resurrected!", "description": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" }, true);
 				} else {
-					chat_display({ "name": token.getName() + " healed!", "description": token.getName() + " heals " + String(changeHPData.hpChangeVal - tokenCurrentHP) + "!" }, true);
+					chat_display({ "name": tokenDisplayName + " healed!", "description": tokenDisplayName + " heals " + String(healVal) + "!" }, true);
 				}
 			}
 		}
