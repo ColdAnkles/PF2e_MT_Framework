@@ -80,7 +80,7 @@ function attack_action(actionData, actingToken) {
 		dTwentyColour = "green";
 	}
 
-	let effect_bonus_raw = calculate_bonus(actingToken, attackScopes, true, actionData);
+	let effect_bonus_raw = calculate_bonus(actingToken, attackScopes, true, ((itemData!=null)?itemData:actionData));
 	//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
 	for (var oE in effect_bonus_raw.otherEffects) {
@@ -110,7 +110,7 @@ function attack_action(actionData, actingToken) {
 		itemData.runes.striking = effect_bonus_raw.otherEffects.Striking;
 	}
 
-	let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, actionData);
+	let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, ((itemData!=null)?itemData:actionData));
 	//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
 
 	if ("otherEffects" in damage_bonus_raw) {
