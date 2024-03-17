@@ -3,12 +3,6 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
-        {
-            "label": "build-all",
-            "type": "shell",
-            "command": "rm -r pf2e-master; rm pf2e-master.zip; rm library/public/data/*.json; ./prep-content.ps1 -runFuncs all;rm PF2e_MT_Framework.mtlib; cp ./remaster_changes.json library/public/data/; 7z a -tzip PF2e_MT_Framework.mtlib '@.vscode/listfile.txt'",
-            "problemMatcher": []
-        },
 		{
             "label": "build-simple",
             "type": "shell",
