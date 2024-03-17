@@ -83,7 +83,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				} else if (!("itemId" in ruleData)) {
 					returnData.otherEffects[ruleData.key] = { "mode": ruleData.mode, "property": ruleData.property };
 				}
-			} else if (ruleData.key == "AdjustStrike") {
+			} else if (ruleData.key == "AdjustStrike" && bonusScopes.includes("attack")) {
 				returnData.otherEffects[ruleData.key + "_" + ruleData.value] = { "mode": ruleData.mode, "value": ruleData.value, "property": ruleData.property };
 			}
 		}
