@@ -53,7 +53,14 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 					}
 				} else {
 					if (!("type" in ruleData)) {
-						returnData.bonuses.none = returnData.bonuses.none + ruleData.value;
+						if("selector" in ruleData){
+							returnData.otherEffects[ruleData.selector] = { "slug": ruleData.slug, "value": ruleData.value };
+							if("slug" in ruleData){
+								returnData.otherEffects[ruleData.selector].slug = ruleData.slug;
+							}
+						}else{
+							returnData.bonuses.none = returnData.bonuses.none + ruleData.value;
+						}
 					} else if (ruleData.value > returnData.bonuses[ruleData.type]) {
 						returnData.bonuses[ruleData.type] = ruleData.value;
 					}
@@ -66,9 +73,12 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 			} else if (ruleData.key == "DexterityModifierCap") {
 				returnData.otherEffects[ruleData.key] = ruleData.value;
 			} else if (ruleData.key == "AdjustModifier") {
-				returnData.otherEffects[ruleData.slug] = { "mode": ruleData.mode, "value": ruleData.value };
+				returnData.otherEffects[ruleData.selector] = { "mode": ruleData.mode, "value": ruleData.value };
+				if("slug" in ruleData){
+					returnData.otherEffects[ruleData.selector].slug = ruleData.slug;
+				}
 			} else if (ruleData.key == "ItemAlteration") {
-				if ("itemId" in ruleData && item != null && ruleData.itemId.includes(item.name.toUpperCase())) {
+				if ("itemId" in ruleData && item != null && (ruleData.itemId.includes(item.name.toUpperCase()) || (item.name.toUpperCase()=="HANDWRAPS OF MIGHTY BLOWS") && ruleData.itemId.includes("FIST"))) {
 					returnData.otherEffects[ruleData.key] = { "mode": ruleData.mode, "property": ruleData.property };
 				} else if (!("itemId" in ruleData)) {
 					returnData.otherEffects[ruleData.key] = { "mode": ruleData.mode, "property": ruleData.property };

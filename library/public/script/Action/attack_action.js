@@ -125,6 +125,8 @@ function attack_action(actionData, actingToken) {
 					}
 				}
 			}
+		} else if ("strike-damage" in damage_bonus_raw.otherEffects) {
+			damage_bonus_raw.bonuses.none += damage_bonus_raw.otherEffects["strike-damage"].value;
 		}
 	}
 
