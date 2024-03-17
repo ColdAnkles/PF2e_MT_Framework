@@ -38,6 +38,8 @@ function attack_action(actionData, actingToken) {
 			if (itemData != null) {
 				actionData.damage[0].dice = itemData.runes.striking + 1;
 				actionData.traits = actionData.traits.concat(itemData.traits);
+				itemData.category = "unarmed";
+				itemData.group = "brawling";
 			}
 		}
 	}
@@ -193,13 +195,25 @@ function attack_action(actionData, actingToken) {
 
 	let damage_bonus = damage_bonus_raw.bonuses.circumstance + damage_bonus_raw.bonuses.status + damage_bonus_raw.bonuses.item + damage_bonus_raw.bonuses.none +
 		damage_bonus_raw.maluses.circumstance + damage_bonus_raw.maluses.status + damage_bonus_raw.maluses.item + damage_bonus_raw.maluses.none;
+	
+	let strBon = Number(actingToken.getProperty("str"));
+	let dexBon = Number(actingToken.getProperty("dex"));
+	if(actionData.isMelee || (actionData.traits.includes("thrown") && !actionData.isMelee)){
+		damage_bonus += strBon;
+	}else if(actionData.traits.includes("propulsive") && !actionData.isMelee){
+		if(strBon>=0){
+			damage_bonus += floor(strBon/2);
+		}else{
+			damage_bonus += strBon;
+		}
+	}
 
 	if (get_token_type(actingToken) == "PC") {
 		actionData.damage[0].damage = String(actionData.damage[0].dice) + actionData.damage[0].die + ((itemData != null && itemData.damageBonus != null && itemData.damageBonus > 0) ? "+" + String(itemData.damageBonus) : "");
 		if (actionData.traits.includes("finesse")) {
-			attack_bonus += Math.max(Number(actingToken.getProperty("str")), Number(actingToken.getProperty("dex")));
+			attack_bonus += Math.max(strBon, dexBon);
 		} else {
-			attack_bonus += Number(actingToken.getProperty("str"));
+			attack_bonus += strBon;
 		}
 	}
 
