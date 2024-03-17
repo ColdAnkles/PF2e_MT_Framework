@@ -41,18 +41,13 @@ function core_action(actionData, actingToken) {
 		} else if ("isMelee" in actionData) {
 
 			if (!(isNaN(initiative)) && !("useMAP" in actionData)) {
-				let queryHTML = "<html><p align=center><form action='macro://Core_Action_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>"
-				queryHTML += "<input type='hidden' name='actionData' value='" + JSON.stringify(actionData) + "'>";
-				queryHTML += "<input type='hidden' name='actingToken' value='" + actingToken.getId() + "'>";
-				queryHTML += "Use MAP:<input type='checkbox' id='useMAP' name='useMAP' value='useMAP' checked='true'><br />";
-				queryHTML += "Increase MAP:<input type='checkbox' id='increaseMAP' name='increaseMAP' value='increaseMAP' checked='true'><br />";
-				queryHTML += "Spend Action:<input type='checkbox' id='spendAction' name='spendAction' value='spendAction' checked='true'><br />";
-				queryHTML += "<input type='submit' name='submit' value='Submit'></input>";
-				queryHTML += "</form></p></html>";
-
-				MTScript.setVariable("queryHTML", queryHTML);
-				MTScript.evalMacro("[frame5('Attack Query', 'width=250; height=250; temporary=1; noframe=0; input=1'):{[r: queryHTML]}]")
-				return;
+				MTScript.setVariable("useMAP", 1);
+				MTScript.setVariable("increaseMAP", 1);
+				MTScript.setVariable("spendAction", 1);
+				MTScript.evalMacro("[h: input(\"useMap|1|Use MAP|CHECK\",\"increaseMAP|1|Increase MAP|CHECK\",\"spendAction|1|Spend Action|CHECK\")]");
+				actionData.useMAP = Boolean(MTScript.getVariable("useMAP"));
+				actionData.increaseMAP = Boolean(MTScript.getVariable("increaseMAP"));
+				actionData.spendAction = Boolean(MTScript.getVariable("spendAction"));
 			}
 
 			attack_action(actionData, actingToken);
