@@ -51,12 +51,18 @@ function parse_template(templateString) {
 
 function parse_damage(damageString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
 	let parsed = parse_foundry_strings(damageString);
-	if (additionalData.rollDice) {
-		let diceMatch = parsed.bracketContents.match(/([0-9d +-]*)/gm);
+	//MapTool.chat.broadcast(JSON.stringify(parsed));
+	let diceMatch = parsed.bracketContents.match(/([0-9d +-]+)/gm);
+	//MapTool.chat.broadcast(JSON.stringify(diceMatch));
+	if (additionalData.rollDice || !diceMatch[0].includes("d")) {
 		if (diceMatch.length > 0) {
 			diceMatch = diceMatch[0];
 			let rolledDice = roll_dice(diceMatch);
-			parsed.bracketContents = parsed.bracketContents.replace(diceMatch, diceMatch + " (" + String(rolledDice) + ") ");
+			if(!diceMatch.includes("d")){
+				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, String(rolledDice));
+			}else{
+				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, diceMatch + " (" + String(rolledDice) + ") ");
+			}
 			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 $2").replaceAll(/(.*)\[(.*)\]/gm, "$1 $2");
 		} else {
 			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 $2").replaceAll(/(.*)\[(.*)\]/gm, "$1 $2");
@@ -318,11 +324,13 @@ function clean_calculations(calculationString, additionalData = { "rollDice": fa
 		calculationString = calculationString.replaceAll("@level", String(additionalData.level));
 	} else if (calculationString.includes("@item.level") && "level" in additionalData) {
 		calculationString = calculationString.replaceAll("@item.level", String(additionalData.level));
+	} else if (calculationString.includes("@item.rank") && "level" in additionalData) {
+		calculationString = calculationString.replaceAll("@item.rank", String(additionalData.level));
 	} else if (calculationString.includes("@actor.level") && "level" in additionalData) {
 		calculationString = calculationString.replaceAll("@actor.level", String(additionalData.level));
 	}
-	//MapTool.chat.broadcast(calculationString);
-	return String(eval(calculationString));
+	let completedCalculation = eval(calculationString)
+	return String(completedCalculation);
 }
 
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true, "invertImages": true }) {
@@ -368,6 +376,13 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription = cleanDescription.replaceAll("<hr />", "");
 	}
 
+	//Horrible Regex to balance parens
+	let calculation_matches = cleanDescription.match(/((floor|ceil|max|min)\([^d)(]*(?:\([^d)(]*(?:\([^d)(]*(?:\([^d)(]*\)[^d)(]*)*\)[^d)(]*)*\)[^d)(]*)*\))/gm);
+	for (var m in calculation_matches) {
+		let replaceString = clean_calculations(calculation_matches[m], additionalData);
+		cleanDescription = cleanDescription.replaceAll(calculation_matches[m], replaceString);
+	}
+
 	let resolve_matches = cleanDescription.match(/resolve\([^()]*\)/gm);
 	for (var m in resolve_matches) {
 		let replaceString = parse_resolve(resolve_matches[m], additionalData);
@@ -402,12 +417,6 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 	for (var m in localize_matches) {
 		let replaceString = parse_localize(localize_matches[m], additionalData);
 		cleanDescription = cleanDescription.replaceAll(localize_matches[m], replaceString);
-	}
-
-	let calculation_matches = cleanDescription.match(/((floor|ceil|max|min)\([^d]*\))/gm);
-	for (var m in calculation_matches) {
-		let replaceString = clean_calculations(calculation_matches[m], additionalData);
-		cleanDescription = cleanDescription.replaceAll(calculation_matches[m], replaceString);
 	}
 
 	let roll_matches = cleanDescription.match(/(\[+\/b?r.*?\]+)(\{.*?\})?/gm);
