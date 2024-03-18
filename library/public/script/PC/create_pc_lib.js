@@ -1,7 +1,12 @@
 "use strict";
 
 function create_pc_lib(pathbuilderID, tokenID) {
-	let PCData = get_pathbuilder_export_via_id(pathbuilderID);
+	let PCData = null;
+	if(String(pathbuilderID)=="-1"){
+		PCData = get_patbuilder_export_via_input();
+	}else{
+		PCData = get_pathbuilder_export_via_id(pathbuilderID);
+	}
 
 	for (var c in PCData.pets) {
 		let petData = PCData.pets[c];

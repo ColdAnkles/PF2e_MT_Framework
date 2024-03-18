@@ -18,7 +18,7 @@ function parse_pathbuilder_export(data) {
 
 	let unfoundData = [];
 
-	function find_object_data(objectName, searchSet = "all") {
+	function find_object_data(objectName, searchSet = ["all"]) {
 		if (objectName == "Versatile Heritage") {
 			objectName = "Versatile";
 			searchSet = "heritage";
@@ -41,19 +41,19 @@ function parse_pathbuilder_export(data) {
 			parsedData.senses.push("darkvision");
 			return;
 		} else {
-			if ((testVar in featLibrary || testCaps in featLibrary) && (searchSet == "all" || searchSet == "feat")) {
+			if ((testVar in featLibrary || testCaps in featLibrary) && (searchSet.includes("all") || searchSet.includes("feat"))) {
 				return featLibrary[testVar];
-			} else if ((testVar in actionLibrary || testCaps in actionLibrary) && (searchSet == "all" || searchSet == "action")) {
+			} else if ((testVar in actionLibrary || testCaps in actionLibrary) && (searchSet.includes("all") || searchSet.includes("action"))) {
 				return actionLibrary[testVar];
-			} else if ((testVar in heritageLibrary || testCaps in heritageLibrary) && (searchSet == "all" || searchSet == "heritage")) {
+			} else if ((testVar in heritageLibrary || testCaps in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
 				return heritageLibrary[testVar];
-			} else if ((testVar2 in heritageLibrary || testCaps2 in heritageLibrary) && (searchSet == "all" || searchSet == "heritage")) {
+			} else if ((testVar2 in heritageLibrary || testCaps2 in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
 				return heritageLibrary[testVar2];
-			} else if ((testVar3 in heritageLibrary || testCaps3 in heritageLibrary) && (searchSet == "all" || searchSet == "heritage")) {
+			} else if ((testVar3 in heritageLibrary || testCaps3 in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
 				return heritageLibrary[testVar3];
-			} else if ((testVar in itemLibrary || testCaps in itemLibrary) && (searchSet == "all" || searchSet == "item")) {
+			} else if ((testVar in itemLibrary || testCaps in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
 				return itemLibrary[testVar];
-			} else if ((testVar4 in itemLibrary || testCaps4 in itemLibrary) && (searchSet == "all" || searchSet == "item")) {
+			} else if ((testVar4 in itemLibrary || testCaps4 in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
 				return itemLibrary[testVar4];
 			}
 		}
@@ -255,7 +255,7 @@ function parse_pathbuilder_export(data) {
 	let features_to_parse = [];
 	let featureNotes = {};
 	for (var f in data.feats) {
-		let tempData = find_object_data(data.feats[f][0]);
+		let tempData = find_object_data(data.feats[f][0], ["feat","action","heritage"]);
 		if (tempData != null) {
 			if (tempData.name == "Assurance") {
 				if (!("assuranceChoices" in featureNotes)) {
@@ -283,7 +283,7 @@ function parse_pathbuilder_export(data) {
 		if (tempName == "Spellbook") {
 			continue; //Spellbook not treated as a feature in foundry
 		}
-		let tempData = find_object_data(tempName);
+		let tempData = find_object_data(tempName, ["feat","action","heritage"]);
 		if (tempData != null) {
 			features_to_parse.push(tempData);
 		} else {
@@ -384,9 +384,9 @@ function parse_pathbuilder_export(data) {
 				let newWeapon = parsedData.itemList[trueID];
 				newWeapon.quantity = thisWeapon.qty;
 				let newAttackData = {
-					"actionCost": 1, "actionType": "action", "bonus": 0, "damage": [newWeapon.damage],
+					"actionCost": 1, "actionType": "action", "bonus": thisWeapon.attack, "damage": [newWeapon.damage],
 					"description": "", "effects": [], "isMelee": newWeapon.isMelee,
-					"name": newWeapon.name, "traits": newWeapon.traits
+					"name": newWeapon.name, "traits": newWeapon.traits, "category":newWeapon.category, "group":newWeapon.group
 				}
 				if (thisWeapon.str == "striking") {
 					thisWeapon.runes.striking = 1;
