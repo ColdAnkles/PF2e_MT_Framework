@@ -20,6 +20,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 
 	for (var a in pcData.basicAttacks) {
 		let actionData = pcData.basicAttacks[a];
+		actionData.group = "";
 		add_action_to_token(actionData, newPCTokenID, pcData);
 	}
 

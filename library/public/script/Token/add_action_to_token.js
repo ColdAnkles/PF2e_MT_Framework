@@ -177,7 +177,15 @@ function add_action_to_token(actionData, tokenID, token) {
 		actionData.name = spellName;
 		let tooltipDescription = chat_display(actionData, false, { "level": actionData.castLevel, "rollDice": false });
 
-		let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.cast_spell(\"" + spellName + "\"," + actionData.castLevel + ",\"" + actionData.group + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": actionData.name, "group": actionData.group };
+		let sortNum = actionData.castLevel;
+		if(actionData.traits.includes("cantrip")){
+			spellLabel += " (C)";
+			sortNum = 0;
+		}else{
+			spellLabel += " ("+String(actionData.castLevel)+")";
+		}
+
+		let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.cast_spell(\"" + spellName + "\"," + actionData.castLevel + ",\"" + actionData.group + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": String(sortNum), "group": actionData.group };
 
 		//MapTool.chat.broadcast(JSON.stringify(props));
 		createMacro(props, tokenID);
