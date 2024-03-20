@@ -239,14 +239,24 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + Math.max(effect_bonus_raw.bonuses.none, checkData.oBonus)
 			+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + Math.min(effect_bonus_raw.maluses.none, checkData.oMalus);
 
+		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
+
 		if (effect_bonus_raw.appliedEffects.includes("Assurance")) {
-			dTwenty = 10;
-			dTwentyColour = "black";
-			effect_bonus = 0;
-			misc_bonus = 0;
-			stat_bonus = 0;
-			map_malus = 0;
-			effect_bonus_raw.appliedEffects = ["Assurance"];
+			MTScript.evalMacro("[h: apply=0][h: input(\"apply|0|Apply Assurance|CHECK\")]");
+			let applyAssurance = Number(MTScript.getVariable("apply"))==1;
+			//MapTool.chat.broadcast(String(applyAssurance));
+			if(applyAssurance){
+				dTwenty = 10;
+				dTwentyColour = "black";
+				effect_bonus = 0;
+				misc_bonus = 0;
+				stat_bonus = 0;
+				map_malus = 0;
+				effect_bonus_raw.appliedEffects = ["Assurance"];
+			}else{
+				let assuranceIndex = effect_bonus_raw.appliedEffects.indexOf("Assurance");
+				effect_bonus_raw.appliedEffects.splice(assuranceIndex,1);
+			}
 		}
 
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
