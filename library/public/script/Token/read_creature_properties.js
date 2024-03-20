@@ -69,6 +69,7 @@ function read_creature_properties(token) {
 	creatureData.actionsLeft = Number(token.getProperty("actionsLeft"));
 	creatureData.reactionsLeft = Number(token.getProperty("reactionsLeft"));
 	creatureData.allFeatures = JSON.parse(token.getProperty("allFeatures"));
+	creatureData.creatureFlags = JSON.parse(token.getProperty("creatureFlags"));
 
 	if (creatureData.activeEffects == null) {
 		creatureData.activeEffects = {};
@@ -90,6 +91,9 @@ function read_creature_properties(token) {
 	}
 	if (creatureData.allFeatures == null) {
 		creatureData.allFeatures = [];
+	}
+	if (creatureData.creatureFlags == null) {
+		creatureData.creatureFlags = [];
 	}
 
 

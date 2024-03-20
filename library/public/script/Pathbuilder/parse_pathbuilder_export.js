@@ -251,11 +251,34 @@ function parse_pathbuilder_export(data) {
 	parsedData.languages = data.languages;
 	parsedData.itemList = {};
 	parsedData.allFeatures = [];
+	parsedData.creatureFlags = {};
 
 	let features_to_parse = [];
 	let featureNotes = {};
+
+	let removeRegex = [
+		/ (Racket)$/,
+		/ (Style)$/,
+		/ (Initiate Benefit)$/,
+		/ Mystery$/,
+		/ (Doctrine)$/,
+		/ (Element)$/,
+		/ (Impulse Junction)$/,
+		/ (Gate Junction:).*$/,
+		/ (Patron)$/,
+		/^(Arcane Thesis): /,
+		/^(Arcane School): /,
+		/^(The) /,
+		/^(Blessing): /,
+		/^(Empiricism) Selected Skill: /,
+	  ];
+
 	for (var f in data.feats) {
-		let tempData = find_object_data(data.feats[f][0], ["feat","action","heritage"]);
+		let tempName = data.feats[f][0];
+		for(var r in removeRegex){
+			tempName = tempName.replace(removeRegex[r], "");
+		}
+		let tempData = find_object_data(tempName, ["feat","action","heritage"]);
 		if (tempData != null) {
 			if (tempData.name == "Assurance") {
 				if (!("assuranceChoices" in featureNotes)) {
@@ -270,13 +293,24 @@ function parse_pathbuilder_export(data) {
 	}
 
 	message_window("Importing " + data.name, "Importing Specials");
+
+	if(data.class == "Fighter"){
+		if(data.level>=5){
+			data.specials.push("Fighter Weapon Mastery");
+		}
+		if(data.level>=13){
+			data.specials.push("Weapon Legend");
+		}
+	}
+
 	for (var s in data.specials) {
 		let tempName = data.specials[s];
 		if (tempName == "") {
 			continue;
 		}
-		tempName = tempName.replaceAll("Arcane School: ", "").replaceAll("Arcane Thesis: ", "");
-		tempName = tempName.replaceAll(" Patron", "");
+		for(var r in removeRegex){
+			tempName = tempName.replace(removeRegex[r], "");
+		}
 		if (tempName == "Aquatic Adaptation" && data.ancestry == "Lizardfolk") {
 			tempName = "Aquatic Adaptation (Lizardfolk)";
 		}
@@ -298,15 +332,17 @@ function parse_pathbuilder_export(data) {
 			let addedFeature = parse_feature(featureData.baseName, rest_call(featureData.fileURL), parsedData);
 			if (addedFeature != null && "rules" in addedFeature && addedFeature.rules != null && addedFeature.rules.length > 0) {
 				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
+				feature_require_choice(addedFeature, parsedData.creatureFlags);
+				feature_cause_definition(addedFeature, parsedData);
 				let newAttacks = rules_grant_attack(addedFeature.rules);
 				for (var a in newAttacks) {
 					let newAttack = newAttacks[a];
-					for (var p in parsedData.skillList) {
-						if (parsedData.skillList[p].name.toUpperCase() == newAttack.category.toUpperCase()) {
-							newAttack.bonus = parsedData.skillList[p].bonus;
-							break;
-						}
-					}
+					//for (var p in parsedData.skillList) {
+					//	if (parsedData.skillList[p].name.toUpperCase() == newAttack.category.toUpperCase()) {
+					//		newAttack.bonus = parsedData.skillList[p].bonus;
+					//		break;
+					//	}
+					//}
 					newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(parsedData.abilities.str) != 0) ? "+" + Number(parsedData.abilities.str) : "");
 				}
 				grantedAttacks = grantedAttacks.concat(newAttacks);

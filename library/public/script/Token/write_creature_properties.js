@@ -105,6 +105,12 @@ function write_creature_properties(creatureData, token) {
 		token.setProperty("allFeatures", JSON.stringify([]));
 	}
 
+	if ("creatureFlags" in creatureData && creatureData.creatureFlags != null) {
+		token.setProperty("creatureFlags", JSON.stringify(creatureData.creatureFlags));
+	} else {
+		token.setProperty("creatureFlags", JSON.stringify([]));
+	}
+
 }
 
 MTScript.registerMacro("ca.pf2e.write_creature_properties", write_creature_properties);
