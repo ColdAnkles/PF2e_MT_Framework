@@ -39,41 +39,58 @@ function foundry_calc_value(value, actor, item) {
 			return value;
 		}
 		let foundMatches = value.match(/@[a-zA-Z\.]+/g);
-		for (var m in foundMatches) {
-			let splitStrings = foundMatches[m].split(".");
-			if (splitStrings[0] == "@actor") {
-				if (actor == null) {
-					MapTool.chat.broadcast("Error! No actor when parsing value " + value);
-					return null;
-				}
-				value = value.replaceAll(foundMatches[m], actor.getProperty(splitStrings[1]));
-			} else if (splitStrings[0] == "@item" && splitStrings[splitStrings.length - 1] == "value") {
-				if (item == null) {
-					MapTool.chat.broadcast("Error! No item when parsing value " + value);
-					return null;
-				}
-				if (isNaN(Number(item.value))) {
-					if ("value" in item.value) {
-						value = value.replaceAll(foundMatches[m], item.value.value);
+		if(foundMatches!=null){
+			for (var m in foundMatches) {
+				let splitStrings = foundMatches[m].split(".");
+				if (splitStrings[0] == "@actor") {
+					if (actor == null) {
+						MapTool.chat.broadcast("Error! No actor when parsing value " + value);
+						return null;
+					}
+					value = value.replaceAll(foundMatches[m], actor.getProperty(splitStrings[1]));
+				} else if (splitStrings[0] == "@item" && splitStrings[splitStrings.length - 1] == "value") {
+					if (item == null) {
+						MapTool.chat.broadcast("Error! No item when parsing value " + value);
+						return null;
+					}
+					if (isNaN(Number(item.value))) {
+						if ("value" in item.value) {
+							value = value.replaceAll(foundMatches[m], item.value.value);
+						}
+					} else {
+						value = value.replaceAll(foundMatches[m], item.value);
+					}
+				} else if (splitStrings[0] == "@item" && splitStrings[1] == "level") {
+					if (item == null) {
+						MapTool.chat.broadcast("Error! No item when parsing value " + value);
+						return null;
+					}
+					if (isNaN(Number(item.level))) {
+						if ("value" in item.level) {
+							value = value.replaceAll(foundMatches[m], item.level.value);
+						}
+					} else {
+						value = value.replaceAll(foundMatches[m], item.level);
 					}
 				} else {
-					value = value.replaceAll(foundMatches[m], item.value);
+					MapTool.chat.broadcast("Error! No match for " + splitStrings[0]);
 				}
-			} else if (splitStrings[0] == "@item" && splitStrings[1] == "level") {
-				if (item == null) {
-					MapTool.chat.broadcast("Error! No item when parsing value " + value);
-					return null;
-				}
-				if (isNaN(Number(item.level))) {
-					if ("value" in item.level) {
-						value = value.replaceAll(foundMatches[m], item.level.value);
-					}
-				} else {
-					value = value.replaceAll(foundMatches[m], item.level);
-				}
-			} else {
-				MapTool.chat.broadcast("Error! No match for " + splitStrings[0]);
 			}
+		}else{
+			value = value.replace(/^{/,"").replace(/}$/,"");
+			if(value.includes("flags")){
+				let splitStrings = value.split(".");
+				let flagKey = splitStrings[splitStrings.length -1];
+				if(actor!=null){
+					let flagList = JSON.parse(actor.getProperty("creatureFlags"));
+					if(flagKey in flagList){
+						return flagList[flagKey];
+					}else{
+						return value;
+					}
+				}
+			}
+			return value;
 		}
 		//MapTool.chat.broadcast(value);
 		newValue = eval(value);
