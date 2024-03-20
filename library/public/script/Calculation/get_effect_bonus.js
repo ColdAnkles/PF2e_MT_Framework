@@ -4,16 +4,15 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 	if (!(bonusScopes.includes("all"))) {
 		bonusScopes.push("all");
 	}
+	//MapTool.chat.broadcast(effectData.name)
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
+	//MapTool.chat.broadcast(JSON.stringify(effectData.rules));
 	let returnData = { "bonuses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "maluses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "query": false, "otherEffects": {} };
 	for (var r in effectData.rules) {
 		let ruleData = effectData.rules[r];
-		//MapTool.chat.broadcast(JSON.stringify(ruleData));
-		if ("predicate" in ruleData) {
-			if (!predicate_check(ruleData.predicate, bonusScopes, actor, item)) {
-				continue;
-			}
+		if("choices" in ruleData){
+			continue; //Skip choice entries as they should already be resolved?
 		}
 		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll == "if-enabled") || ("choices" in ruleData) || returnData.query;
 		if ("selector" in ruleData) {
@@ -25,6 +24,24 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				continue;
 			}
 		}
+		if("key" in ruleData && ["GrantItem","Resistance"].includes(ruleData.key)){
+			continue;
+		}
+		if("key" in ruleData && ["CricitalSpecialization"].includes(ruleData.key) && !bonusScopes.includes("attack")){
+			continue;
+		}
+		if("key" in ruleData && ruleData.key.includes("Proficiency") && !bonusScopes.includes("proficiency")){
+			continue;
+		}
+		if("definition" in ruleData){
+			continue
+		}
+		if ("predicate" in ruleData) {
+			if (!predicate_check(ruleData.predicate, bonusScopes, actor, item)) {
+				continue;
+			}
+		}
+		//MapTool.chat.broadcast(JSON.stringify(ruleData));
 		if ("mode" in ruleData && ruleData.mode == "override") {
 			if (ruleData.path == "system.attributes.shield" && bonusScopes.includes("ac")) {
 				//MapTool.chat.broadcast(JSON.stringify(ruleData));
@@ -85,6 +102,10 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				}
 			} else if (ruleData.key == "AdjustStrike" && bonusScopes.includes("attack")) {
 				returnData.otherEffects[ruleData.key + "_" + ruleData.value] = { "mode": ruleData.mode, "value": ruleData.value, "property": ruleData.property };
+			} else if (ruleData.key == "CriticalSpecialization" && bonusScopes.includes("attack")) {
+				returnData.otherEffects["Critical Specialization"] = true;
+			} else if (ruleData.key == "MartialProficiency"){
+				returnData.otherEffects["AdjustProficiency"] = {"profName":"Martial", "value":ruleData.value};
 			}
 		}
 	}
