@@ -254,7 +254,7 @@ function parse_pathbuilder_export(data) {
 	parsedData.creatureFlags = {};
 
 	let features_to_parse = [];
-	let featureNotes = {};
+	let featSubChoices = [];
 
 	let removeRegex = [
 		/ (Racket)$/,
@@ -275,18 +275,14 @@ function parse_pathbuilder_export(data) {
 
 	for (var f in data.feats) {
 		let tempName = data.feats[f][0];
+		let subChoice = data.feats[f][1];
 		for (var r in removeRegex) {
 			tempName = tempName.replace(removeRegex[r], "");
 		}
 		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 		if (tempData != null) {
-			if (tempData.name == "Assurance") {
-				if (!("assuranceChoices" in featureNotes)) {
-					featureNotes.assuranceChoices = [];
-				}
-				featureNotes.assuranceChoices.push(data.feats[f][1].toLowerCase());
-			}
 			features_to_parse.push(tempData);
+			featSubChoices.push({"name":tempName,"value":subChoice});
 		} else {
 			unfoundData.push(data.feats[f][0]);
 		}
@@ -297,9 +293,11 @@ function parse_pathbuilder_export(data) {
 	if (data.class == "Fighter") {
 		if (data.level >= 5) {
 			data.specials.push("Fighter Weapon Mastery");
+			featSubChoices.push({"name":"Fighter Weapon Mastery","value":null});
 		}
 		if (data.level >= 13) {
 			data.specials.push("Weapon Legend");
+			featSubChoices.push({"name":"Weapon Legend","value":null});
 		}
 	}
 
@@ -320,6 +318,7 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 		if (tempData != null) {
 			features_to_parse.push(tempData);
+			featSubChoices.push({"name":tempName,"value":null});
 		} else {
 			unfoundData.push(tempName);
 		}
@@ -332,7 +331,8 @@ function parse_pathbuilder_export(data) {
 			let addedFeature = parse_feature(featureData.baseName, rest_call(featureData.fileURL), parsedData);
 			if (addedFeature != null && "rules" in addedFeature && addedFeature.rules != null && addedFeature.rules.length > 0) {
 				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
-				feature_require_choice(addedFeature, parsedData.creatureFlags);
+				//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
+				feature_require_choice(addedFeature, parsedData.creatureFlags, data.specials.concat(featSubChoices[f].value));
 				feature_cause_definition(addedFeature, parsedData);
 				let newAttacks = rules_grant_attack(addedFeature.rules);
 				for (var a in newAttacks) {
@@ -350,24 +350,6 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 	parsedData.basicAttacks = parsedData.basicAttacks.concat(grantedAttacks);
-
-	if ("assuranceChoices" in featureNotes) {
-		let assuranceData = null;
-		for (var s in parsedData.passiveSkills) {
-			if (parsedData.passiveSkills[s].mainText == "Assurance") {
-				assuranceData = parsedData.passiveSkills[s];
-				break;
-			}
-		}
-		if (assuranceData != null) {
-			for (var r in assuranceData.rules) {
-				let ruleData = assuranceData.rules[r];
-				if (ruleData.key == "SubstituteRoll" || ruleData.key == "AdjustModifier") {
-					ruleData.selector = featureNotes.assuranceChoices;
-				}
-			}
-		}
-	}
 
 	if (parsedData.senses.length == 0) {
 		parsedData.senses.push("normal");
