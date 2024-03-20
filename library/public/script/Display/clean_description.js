@@ -3,7 +3,7 @@
 function parse_foundry_strings(foundryString, altBracketRegexp = false) {
 	//bracketRegexp Changed Multiple times - Treat Wounds good example to test with
 	let bracketRegexp = /\[+(.*?\]?)\]+/;
-	if(altBracketRegexp){
+	if (altBracketRegexp) {
 		bracketRegexp = /\[+(.*?)\]+/;
 	}
 	const braceRegexp = /\]\{(.*?)\}/;
@@ -58,9 +58,9 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 		if (diceMatch.length > 0) {
 			diceMatch = diceMatch[0];
 			let rolledDice = roll_dice(diceMatch);
-			if(!diceMatch.includes("d")){
+			if (!diceMatch.includes("d")) {
 				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, String(rolledDice));
-			}else{
+			} else {
 				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, diceMatch + " (" + String(rolledDice) + ") ");
 			}
 			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 $2").replaceAll(/(.*)\[(.*)\]/gm, "$1 $2");

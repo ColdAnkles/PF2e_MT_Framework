@@ -11,7 +11,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 	let returnData = { "bonuses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "maluses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "query": false, "otherEffects": {} };
 	for (var r in effectData.rules) {
 		let ruleData = effectData.rules[r];
-		if("choices" in ruleData){
+		if ("choices" in ruleData) {
 			continue; //Skip choice entries as they should already be resolved?
 		}
 		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll == "if-enabled") || ("choices" in ruleData) || returnData.query;
@@ -24,16 +24,16 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				continue;
 			}
 		}
-		if("key" in ruleData && ["GrantItem","Resistance"].includes(ruleData.key)){
+		if ("key" in ruleData && ["GrantItem", "Resistance"].includes(ruleData.key)) {
 			continue;
 		}
-		if("key" in ruleData && ["CricitalSpecialization"].includes(ruleData.key) && !bonusScopes.includes("attack")){
+		if ("key" in ruleData && ["CricitalSpecialization"].includes(ruleData.key) && !bonusScopes.includes("attack")) {
 			continue;
 		}
-		if("key" in ruleData && ruleData.key.includes("Proficiency") && !bonusScopes.includes("proficiency")){
+		if ("key" in ruleData && ruleData.key.includes("Proficiency") && !bonusScopes.includes("proficiency")) {
 			continue;
 		}
-		if("definition" in ruleData){
+		if ("definition" in ruleData) {
 			continue
 		}
 		if ("predicate" in ruleData) {
@@ -70,12 +70,12 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 					}
 				} else {
 					if (!("type" in ruleData)) {
-						if("selector" in ruleData){
+						if ("selector" in ruleData) {
 							returnData.otherEffects[ruleData.selector] = { "slug": ruleData.slug, "value": ruleData.value };
-							if("slug" in ruleData){
+							if ("slug" in ruleData) {
 								returnData.otherEffects[ruleData.selector].slug = ruleData.slug;
 							}
-						}else{
+						} else {
 							returnData.bonuses.none = returnData.bonuses.none + ruleData.value;
 						}
 					} else if (ruleData.value > returnData.bonuses[ruleData.type]) {
@@ -91,11 +91,11 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				returnData.otherEffects[ruleData.key] = ruleData.value;
 			} else if (ruleData.key == "AdjustModifier") {
 				returnData.otherEffects[ruleData.selector] = { "mode": ruleData.mode, "value": ruleData.value };
-				if("slug" in ruleData){
+				if ("slug" in ruleData) {
 					returnData.otherEffects[ruleData.selector].slug = ruleData.slug;
 				}
 			} else if (ruleData.key == "ItemAlteration") {
-				if ("itemId" in ruleData && item != null && (ruleData.itemId.includes(item.name.toUpperCase()) || (item.name.toUpperCase()=="HANDWRAPS OF MIGHTY BLOWS") && ruleData.itemId.includes("FIST"))) {
+				if ("itemId" in ruleData && item != null && (ruleData.itemId.includes(item.name.toUpperCase()) || (item.name.toUpperCase() == "HANDWRAPS OF MIGHTY BLOWS") && ruleData.itemId.includes("FIST"))) {
 					returnData.otherEffects[ruleData.key] = { "mode": ruleData.mode, "property": ruleData.property };
 				} else if (!("itemId" in ruleData)) {
 					returnData.otherEffects[ruleData.key] = { "mode": ruleData.mode, "property": ruleData.property };
@@ -104,8 +104,8 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				returnData.otherEffects[ruleData.key + "_" + ruleData.value] = { "mode": ruleData.mode, "value": ruleData.value, "property": ruleData.property };
 			} else if (ruleData.key == "CriticalSpecialization" && bonusScopes.includes("attack")) {
 				returnData.otherEffects["Critical Specialization"] = true;
-			} else if (ruleData.key == "MartialProficiency"){
-				returnData.otherEffects["AdjustProficiency"] = {"profName":"Martial", "value":ruleData.value};
+			} else if (ruleData.key == "MartialProficiency") {
+				returnData.otherEffects["AdjustProficiency"] = { "profName": "Martial", "value": ruleData.value };
 			}
 		}
 	}

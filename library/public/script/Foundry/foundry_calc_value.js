@@ -39,7 +39,7 @@ function foundry_calc_value(value, actor, item) {
 			return value;
 		}
 		let foundMatches = value.match(/@[a-zA-Z\.]+/g);
-		if(foundMatches!=null){
+		if (foundMatches != null) {
 			for (var m in foundMatches) {
 				let splitStrings = foundMatches[m].split(".");
 				if (splitStrings[0] == "@actor") {
@@ -76,16 +76,16 @@ function foundry_calc_value(value, actor, item) {
 					MapTool.chat.broadcast("Error! No match for " + splitStrings[0]);
 				}
 			}
-		}else{
-			value = value.replace(/^{/,"").replace(/}$/,"");
-			if(value.includes("flags")){
+		} else {
+			value = value.replace(/^{/, "").replace(/}$/, "");
+			if (value.includes("flags")) {
 				let splitStrings = value.split(".");
-				let flagKey = splitStrings[splitStrings.length -1];
-				if(actor!=null){
+				let flagKey = splitStrings[splitStrings.length - 1];
+				if (actor != null) {
 					let flagList = JSON.parse(actor.getProperty("creatureFlags"));
-					if(flagKey in flagList){
+					if (flagKey in flagList) {
 						return flagList[flagKey];
-					}else{
+					} else {
 						return value;
 					}
 				}

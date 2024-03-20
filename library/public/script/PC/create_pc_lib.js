@@ -2,9 +2,9 @@
 
 function create_pc_lib(pathbuilderID, tokenID) {
 	let PCData = null;
-	if(String(pathbuilderID)=="-1"){
+	if (String(pathbuilderID) == "-1") {
 		PCData = get_patbuilder_export_via_input();
-	}else{
+	} else {
 		PCData = get_pathbuilder_export_via_id(pathbuilderID);
 	}
 

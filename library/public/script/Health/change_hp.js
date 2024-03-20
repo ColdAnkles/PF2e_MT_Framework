@@ -7,9 +7,9 @@ function change_hp(tokenID, changeHPData = null) {
 	if (!(token.getName().includes("Lib")) && get_token_type(token) == "PC") {
 		change_hp(token.getProperty("myID"), changeHPData);
 		return;
-	} else if ((token.getName().includes("Lib")) && get_token_type(token) == "PC"){
-		tokenDisplayName = token.getName().replace("Lib:","");
-	}else{
+	} else if ((token.getName().includes("Lib")) && get_token_type(token) == "PC") {
+		tokenDisplayName = token.getName().replace("Lib:", "");
+	} else {
 		tokenDisplayName = token.getName();
 	}
 
@@ -73,7 +73,7 @@ function change_hp(tokenID, changeHPData = null) {
 			if (changeHPData.hpChangeType == "lethal") {
 				chat_display({ "name": tokenDisplayName + " takes damage!", "description": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!" }, true);
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
-				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP<0)?tokenCurrentTempHP:0);
+				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
 				if (tokenCurrentHP <= 0) {
 					tokenCurrentHP = 0;
 				}

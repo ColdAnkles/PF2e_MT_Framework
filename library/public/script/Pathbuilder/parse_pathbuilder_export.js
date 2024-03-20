@@ -128,9 +128,9 @@ function parse_pathbuilder_export(data) {
 	parsedData.immunities = [];
 	parsedData.resistances = [];
 
-	for (var r in data.resistances){
+	for (var r in data.resistances) {
 		let resString = data.resistances[r].split(" ");
-		parsedData.resistances.push({"type":resString[0],"value":Number(resString[1])})
+		parsedData.resistances.push({ "type": resString[0], "value": Number(resString[1]) })
 	}
 
 	parsedData.weaknesses = [];
@@ -271,14 +271,14 @@ function parse_pathbuilder_export(data) {
 		/^(The) /,
 		/^(Blessing): /,
 		/^(Empiricism) Selected Skill: /,
-	  ];
+	];
 
 	for (var f in data.feats) {
 		let tempName = data.feats[f][0];
-		for(var r in removeRegex){
+		for (var r in removeRegex) {
 			tempName = tempName.replace(removeRegex[r], "");
 		}
-		let tempData = find_object_data(tempName, ["feat","action","heritage"]);
+		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 		if (tempData != null) {
 			if (tempData.name == "Assurance") {
 				if (!("assuranceChoices" in featureNotes)) {
@@ -294,11 +294,11 @@ function parse_pathbuilder_export(data) {
 
 	message_window("Importing " + data.name, "Importing Specials");
 
-	if(data.class == "Fighter"){
-		if(data.level>=5){
+	if (data.class == "Fighter") {
+		if (data.level >= 5) {
 			data.specials.push("Fighter Weapon Mastery");
 		}
-		if(data.level>=13){
+		if (data.level >= 13) {
 			data.specials.push("Weapon Legend");
 		}
 	}
@@ -308,7 +308,7 @@ function parse_pathbuilder_export(data) {
 		if (tempName == "") {
 			continue;
 		}
-		for(var r in removeRegex){
+		for (var r in removeRegex) {
 			tempName = tempName.replace(removeRegex[r], "");
 		}
 		if (tempName == "Aquatic Adaptation" && data.ancestry == "Lizardfolk") {
@@ -317,7 +317,7 @@ function parse_pathbuilder_export(data) {
 		if (tempName == "Spellbook") {
 			continue; //Spellbook not treated as a feature in foundry
 		}
-		let tempData = find_object_data(tempName, ["feat","action","heritage"]);
+		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 		if (tempData != null) {
 			features_to_parse.push(tempData);
 		} else {
@@ -383,12 +383,12 @@ function parse_pathbuilder_export(data) {
 			let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
 			parsedData.itemList[trueID].quantity = thisArmor.qty;
 			parsedData.itemList[trueID].equipped = thisArmor.worn;
-			parsedData.itemList[trueID].runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient":0};
-			if(thisArmor.res == "resilient"){
+			parsedData.itemList[trueID].runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient": 0 };
+			if (thisArmor.res == "resilient") {
 				parsedData.itemList[trueID].runes.resilient = 1;
-			}else if (thisArmor.res == "greaterResilient"){
+			} else if (thisArmor.res == "greaterResilient") {
 				parsedData.itemList[trueID].runes.resilient = 2;
-			}else if (thisArmor.res == "majorResilient"){
+			} else if (thisArmor.res == "majorResilient") {
 				parsedData.itemList[trueID].runes.resilient = 3;
 			}
 			for (var rI of thisArmor.runes) {
@@ -422,7 +422,7 @@ function parse_pathbuilder_export(data) {
 				let newAttackData = {
 					"actionCost": 1, "actionType": "action", "bonus": thisWeapon.attack, "damage": [newWeapon.damage],
 					"description": "", "effects": [], "isMelee": newWeapon.isMelee,
-					"name": newWeapon.name, "traits": newWeapon.traits, "category":newWeapon.category, "group":newWeapon.group
+					"name": newWeapon.name, "traits": newWeapon.traits, "category": newWeapon.category, "group": newWeapon.group
 				}
 				if (thisWeapon.str == "striking") {
 					thisWeapon.runes.striking = 1;
@@ -476,7 +476,7 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(eqName, "item");
 		if (tempData == null) {
 			eqName = eqName.match(/([^\(\)]*) \(.*\)/);
-			if(eqName!=null){
+			if (eqName != null) {
 				if (eqName.length > 1) {
 					eqName = eqName[1];
 					tempData = find_object_data(eqName, "item");

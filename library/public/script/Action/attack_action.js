@@ -57,7 +57,7 @@ function attack_action(actionData, actingToken) {
 	}
 
 	let tokLevel = Number(actingToken.getProperty("level"));
-	let profBon = (calculate_proficiency(((itemData!=null)?itemData.category:actionData.name), actingToken, ((itemData!=null)?itemData:actionData))*2);
+	let profBon = (calculate_proficiency(((itemData != null) ? itemData.category : actionData.name), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
 	let attack_bonus = tokLevel + profBon;
 	MapTool.chat.broadcast("Token Level: " + String(tokLevel))
 	MapTool.chat.broadcast("profBon: " + String(profBon))
@@ -87,12 +87,12 @@ function attack_action(actionData, actingToken) {
 		dTwentyColour = "green";
 	}
 
-	let effect_bonus_raw = calculate_bonus(actingToken, attackScopes, true, ((itemData!=null)?itemData:actionData));
+	let effect_bonus_raw = calculate_bonus(actingToken, attackScopes, true, ((itemData != null) ? itemData : actionData));
 	//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
 	for (var oE in effect_bonus_raw.otherEffects) {
 		let thisEffect = effect_bonus_raw.otherEffects[oE];
-		if(typeof(thisEffect)=="object"){
+		if (typeof (thisEffect) == "object") {
 			if ("property" in thisEffect) {
 				if (thisEffect.property == "materials") {
 					if (thisEffect.mode == "add") {
@@ -104,7 +104,7 @@ function attack_action(actionData, actingToken) {
 					}
 				}
 			}
-		}else if(typeof(thisEffect)=="boolean" && thisEffect){
+		} else if (typeof (thisEffect) == "boolean" && thisEffect) {
 			effect_bonus_raw.appliedEffects.push(oE);
 		}
 	}
@@ -121,7 +121,7 @@ function attack_action(actionData, actingToken) {
 		itemData.runes.striking = effect_bonus_raw.otherEffects.Striking;
 	}
 
-	let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, ((itemData!=null)?itemData:actionData));
+	let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, ((itemData != null) ? itemData : actionData));
 	//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
 
 	if ("otherEffects" in damage_bonus_raw) {
@@ -206,15 +206,15 @@ function attack_action(actionData, actingToken) {
 
 	let damage_bonus = damage_bonus_raw.bonuses.circumstance + damage_bonus_raw.bonuses.status + damage_bonus_raw.bonuses.item + damage_bonus_raw.bonuses.none +
 		damage_bonus_raw.maluses.circumstance + damage_bonus_raw.maluses.status + damage_bonus_raw.maluses.item + damage_bonus_raw.maluses.none;
-	
+
 	let strBon = Number(actingToken.getProperty("str"));
 	let dexBon = Number(actingToken.getProperty("dex"));
-	if(actionData.isMelee || (actionData.traits.includes("thrown") && !actionData.isMelee)){
+	if (actionData.isMelee || (actionData.traits.includes("thrown") && !actionData.isMelee)) {
 		damage_bonus += strBon;
-	}else if(actionData.traits.includes("propulsive") && !actionData.isMelee){
-		if(strBon>=0){
-			damage_bonus += floor(strBon/2);
-		}else{
+	} else if (actionData.traits.includes("propulsive") && !actionData.isMelee) {
+		if (strBon >= 0) {
+			damage_bonus += floor(strBon / 2);
+		} else {
 			damage_bonus += strBon;
 		}
 	}

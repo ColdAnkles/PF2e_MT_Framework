@@ -51,12 +51,12 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 
 	let newAttacks = rules_grant_attack(effectData.rules);
 
-	if(addonExists("Lib:DateTime")){
+	if (addonExists("Lib:DateTime")) {
 		let effectDuration = effectData.duration;
-		if (effectDuration.unit == "days" || effectDuration.unit != "hours" || effectDuration.unit != "minutes"){
+		if (effectDuration.unit == "days" || effectDuration.unit != "hours" || effectDuration.unit != "minutes") {
 			let dtDurationUnit = capitalise(effectDuration.unit);
 			let dtDurationAdd = effectDuration.value;
-			let dtData = {"Save":"Save","setEventName":effectData.name + " Expires","selectedNumber":dtDurationAdd,"numberType":dtDurationUnit, "setExpires":true, "setDescription":effectData.name + " expires on " + affectedCreature.getName()}
+			let dtData = { "Save": "Save", "setEventName": effectData.name + " Expires", "selectedNumber": dtDurationAdd, "numberType": dtDurationUnit, "setExpires": true, "setDescription": effectData.name + " expires on " + affectedCreature.getName() }
 			MTScript.setVariable("dtData", dtData);
 			MTScript.evalMacro("[h: datetime.QuickEvent(dtData)]")
 		}

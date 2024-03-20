@@ -4,21 +4,21 @@ function feature_require_choice(feature, assignDict) {
     let rules = feature.rules;
     let choiceTitle = feature.name;
     MTScript.setVariable("choiceTitle", choiceTitle);
-	for (var r in rules) {
-		let newRule = rules[r];
-		if ("key" in newRule && newRule.key == "ChoiceSet") {
+    for (var r in rules) {
+        let newRule = rules[r];
+        if ("key" in newRule && newRule.key == "ChoiceSet") {
             //MapTool.chat.broadcast(JSON.stringify(newRule));
             let choicePrompt = newRule.prompt;
             let choiceFlag = newRule.flag;
-            if(newRule.prompt.includes("WeaponGroup")){
+            if (newRule.prompt.includes("WeaponGroup")) {
                 choicePrompt = "Choose a Weapon Group";
             }
-            if(newRule.prompt.includes("GeneralTraining")){
+            if (newRule.prompt.includes("GeneralTraining")) {
                 continue;
             }
             let choices = [];
-            if(newRule.choices=="weaponGroups"){
-                choices = ["Axe","Bomb","Bow","Brawling","Club","Crossbow","Dart", "Firearm","Flail","Hammer","Knife","Pick","Polearm","Shield","Sling","Spear","Sword"];
+            if (newRule.choices == "weaponGroups") {
+                choices = ["Axe", "Bomb", "Bow", "Brawling", "Club", "Crossbow", "Dart", "Firearm", "Flail", "Hammer", "Knife", "Pick", "Polearm", "Shield", "Sling", "Spear", "Sword"];
             }
 
 
@@ -28,6 +28,6 @@ function feature_require_choice(feature, assignDict) {
             let choiceResult = MTScript.getVariable("choice");
             //MapTool.chat.broadcast(choiceResult);
             assignDict[choiceFlag] = choiceResult;
-		}
-	}
+        }
+    }
 }
