@@ -16,7 +16,8 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 		}
 		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll == "if-enabled") || ("choices" in ruleData) || returnData.query;
 		if ("selector" in ruleData) {
-			let selector = selector_inheritance(ruleData.selector);
+			//MapTool.chat.broadcast(JSON.stringify(ruleData.selector));
+			let selector = selector_inheritance(foundry_calc_value(ruleData.selector,actor,item));
 			//MapTool.chat.broadcast(JSON.stringify(selector));
 			let intersect = selector.filter(value => bonusScopes.includes(value));
 			//MapTool.chat.broadcast(JSON.stringify(intersect));
