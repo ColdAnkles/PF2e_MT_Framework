@@ -56,7 +56,12 @@ function attack_action(actionData, actingToken) {
 	} else {
 	}
 
-	let attack_bonus = actionData.bonus;
+	let tokLevel = Number(actingToken.getProperty("level"));
+	let profBon = (calculate_proficiency(((itemData!=null)?itemData.category:actionData.name), actingToken, ((itemData!=null)?itemData:actionData))*2);
+	let attack_bonus = tokLevel + profBon;
+	MapTool.chat.broadcast("Token Level: " + String(tokLevel))
+	MapTool.chat.broadcast("profBon: " + String(profBon))
+	MapTool.chat.broadcast("attack_bonus: " + String(attack_bonus))
 	let initiative = get_initiative(actingToken.getId());
 
 	let attackScopes = ["attack", "attack-roll", "weapon-attack"];
@@ -87,16 +92,20 @@ function attack_action(actionData, actingToken) {
 
 	for (var oE in effect_bonus_raw.otherEffects) {
 		let thisEffect = effect_bonus_raw.otherEffects[oE];
-		if ("property" in thisEffect) {
-			if (thisEffect.property == "materials") {
-				if (thisEffect.mode == "add") {
-					actionData.materials.push(thisEffect.value);
-				}
-			} else if (thisEffect.property == "weapon-traits") {
-				if (thisEffect.mode == "add") {
-					actionData.traits.push(thisEffect.value);
+		if(typeof(thisEffect)=="object"){
+			if ("property" in thisEffect) {
+				if (thisEffect.property == "materials") {
+					if (thisEffect.mode == "add") {
+						actionData.materials.push(thisEffect.value);
+					}
+				} else if (thisEffect.property == "weapon-traits") {
+					if (thisEffect.mode == "add") {
+						actionData.traits.push(thisEffect.value);
+					}
 				}
 			}
+		}else if(typeof(thisEffect)=="boolean" && thisEffect){
+			effect_bonus_raw.appliedEffects.push(oE);
 		}
 	}
 

@@ -114,21 +114,15 @@ function predicate_check(predicate, predicateScopes, actor, item) {
             } else if (pText.match(/^item:/) && item != null) {
                 //MapTool.chat.broadcast(JSON.stringify(item));
                 let slug = pText.split(":")[1];
+                //MapTool.chat.broadcast(slug)
                 if (slug == "proficiency" && actor != null) {
                     let profSlug = pText.split(":")[2];
                     if (profSlug == "rank") {
-                        let findProf = item.category;
-                        let foundProf = 0;
-                        let tokenProfs = JSON.parse(actor.getProperty("proficiencies"));
-                        for (var p in tokenProfs) {
-                            if (findProf.toUpperCase() == tokenProfs[p].name.toUpperCase()) {
-                                foundProf = (tokenProfs[p].bonus - actor.getProperty("level")) / 2;
-                            }
-                        }
+                        let profRank = calculate_proficiency(item.category, actor, item);
                         if (pText.split(":").length == 4) {
-                            predicate_resolution = predicate_resolution && (foundProf == Number(pText.split(":")[3]));
+                            predicate_resolution = predicate_resolution && (profRank == Number(pText.split(":")[3]));
                         } else {
-                            predicate_resolution = predicate_resolution && foundProf;
+                            predicate_resolution = predicate_resolution && profRank;
                         }
                     }
                 } else if (slug == "type") {
@@ -137,6 +131,12 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                 } else if (slug == "slug") {
                     let typeSlug = pText.split(":")[2];
                     predicate_resolution = predicate_resolution && (typeSlug == item.baseName);
+                } else if (slug == "group") {
+                    let groupSlug = pText.split(":")[2];
+                    predicate_resolution = predicate_resolution && (foundry_calc_value(groupSlug, actor, item).toUpperCase() == item.group.toUpperCase());
+                } else if (slug == "category") {
+                    let categorySlug = pText.split(":")[2];
+                    predicate_resolution = predicate_resolution && (foundry_calc_value(categorySlug, actor, item).toUpperCase() == item.category.toUpperCase());
                 } else {
                     predicate_resolution = false;
                 }
