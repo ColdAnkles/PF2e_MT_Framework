@@ -243,9 +243,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 		if (effect_bonus_raw.appliedEffects.includes("Assurance")) {
 			MTScript.evalMacro("[h: apply=0][h: input(\"apply|0|Apply Assurance|CHECK\")]");
-			let applyAssurance = Number(MTScript.getVariable("apply"))==1;
+			let applyAssurance = Number(MTScript.getVariable("apply")) == 1;
 			//MapTool.chat.broadcast(String(applyAssurance));
-			if(applyAssurance){
+			if (applyAssurance) {
 				dTwenty = 10;
 				dTwentyColour = "black";
 				effect_bonus = 0;
@@ -253,9 +253,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				stat_bonus = 0;
 				map_malus = 0;
 				effect_bonus_raw.appliedEffects = ["Assurance"];
-			}else{
+			} else {
 				let assuranceIndex = effect_bonus_raw.appliedEffects.indexOf("Assurance");
-				effect_bonus_raw.appliedEffects.splice(assuranceIndex,1);
+				effect_bonus_raw.appliedEffects.splice(assuranceIndex, 1);
 			}
 		}
 

@@ -95,7 +95,7 @@ function parse_pathbuilder_export(data) {
 	message_window("Importing " + data.name, "Importing Basics");
 
 	let classData = find_object_data(data.class, ["class"]);
-	if("fileURL" in classData){
+	if ("fileURL" in classData) {
 		classData = parse_feature(classData.baseName, rest_call(classData.fileURL));
 	}
 
@@ -290,7 +290,7 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 		if (tempData != null) {
 			features_to_parse.push(tempData);
-			featSubChoices.push({"name":tempName,"value":subChoice});
+			featSubChoices.push({ "name": tempName, "value": subChoice });
 		} else {
 			unfoundData.push(data.feats[f][0]);
 		}
@@ -298,10 +298,10 @@ function parse_pathbuilder_export(data) {
 
 	message_window("Importing " + data.name, "Importing Specials");
 
-	for(var i in classData.items){
+	for (var i in classData.items) {
 		let classItem = classData.items[i];
 		if (data.level >= classItem.level) {
-			if (!(data.specials.includes(classItem.name))){
+			if (!(data.specials.includes(classItem.name))) {
 				MapTool.chat.broadcast(JSON.stringify(classItem));
 				data.specials = [classItem.name].concat(data.specials);
 			}
@@ -325,7 +325,7 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 		if (tempData != null) {
 			features_to_parse.push(tempData);
-			featSubChoices.push({"name":tempName,"value":null});
+			featSubChoices.push({ "name": tempName, "value": null });
 		} else {
 			unfoundData.push(tempName);
 		}

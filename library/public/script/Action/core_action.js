@@ -45,9 +45,9 @@ function core_action(actionData, actingToken) {
 				MTScript.setVariable("increaseMAP", 1);
 				MTScript.setVariable("spendAction", 1);
 				MTScript.evalMacro("[h: input(\"useMap|1|Use MAP|CHECK\",\"increaseMAP|1|Increase MAP|CHECK\",\"spendAction|1|Spend Action|CHECK\")]");
-				actionData.useMAP = MTScript.getVariable("useMAP")==1;
-				actionData.increaseMAP = MTScript.getVariable("increaseMAP")==1;
-				actionData.spendAction = MTScript.getVariable("spendAction")==1;
+				actionData.useMAP = MTScript.getVariable("useMAP") == 1;
+				actionData.increaseMAP = MTScript.getVariable("increaseMAP") == 1;
+				actionData.spendAction = MTScript.getVariable("spendAction") == 1;
 			}
 
 			attack_action(actionData, actingToken);

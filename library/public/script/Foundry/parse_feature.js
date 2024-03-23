@@ -265,7 +265,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 		newClass.rarity = itemData.system.traits.rarity;
 		newClass.traits = itemData.system.traits.value;
 		newClass.baseName = itemData.baseName;
-		
+
 		returnObject = newClass;
 	} else {
 		//MapTool.chat.broadcast(JSON.stringify(itemData));

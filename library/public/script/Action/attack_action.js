@@ -59,9 +59,9 @@ function attack_action(actionData, actingToken) {
 	let tokLevel = Number(actingToken.getProperty("level"));
 	let profBon = (calculate_proficiency(((itemData != null) ? itemData.category : actionData.name), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
 	let attack_bonus = tokLevel + profBon;
-	MapTool.chat.broadcast("Token Level: " + String(tokLevel))
-	MapTool.chat.broadcast("profBon: " + String(profBon))
-	MapTool.chat.broadcast("attack_bonus: " + String(attack_bonus))
+	//MapTool.chat.broadcast("Token Level: " + String(tokLevel))
+	//MapTool.chat.broadcast("profBon: " + String(profBon))
+	//MapTool.chat.broadcast("attack_bonus: " + String(attack_bonus))
 	let initiative = get_initiative(actingToken.getId());
 
 	let attackScopes = ["attack", "attack-roll", "weapon-attack"];
