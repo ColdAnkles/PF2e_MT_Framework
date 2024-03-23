@@ -3,7 +3,7 @@
 function feature_require_choice(feature, assignDict, possibleSelections=[]) {
     let rules = feature.rules;
     let nameSplit = feature.name.split(".");
-    let choiceTitle = nameSplit[nameSplit.length()];
+    let choiceTitle = nameSplit[nameSplit.length-1];
     MTScript.setVariable("choiceTitle", choiceTitle);
     for (var r in rules) {
         let newRule = rules[r];
@@ -13,7 +13,7 @@ function feature_require_choice(feature, assignDict, possibleSelections=[]) {
                 continue;
             }
             let choiceFlag = newRule.flag;
-            MapTool.chat.broadcast(feature.name)
+            //MapTool.chat.broadcast(feature.name)
             //MapTool.chat.broadcast(JSON.stringify(newRule));
             if (choicePrompt.includes("WeaponGroup")) {
                 choicePrompt = "Choose a Weapon Group";
