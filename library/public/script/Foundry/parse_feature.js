@@ -258,6 +258,15 @@ function parse_feature(featureName, feature, assignDict = null) {
 		newAction.baseName = itemData.baseName;
 
 		returnObject = newAction;
+	} else if (itemData.type == "class") {
+		let newClass = itemData.system;
+		newClass.type = "class";
+		newClass.name = itemData.name;
+		newClass.rarity = itemData.system.traits.rarity;
+		newClass.traits = itemData.system.traits.value;
+		newClass.baseName = itemData.baseName;
+		
+		returnObject = newClass;
 	} else {
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
 	}
