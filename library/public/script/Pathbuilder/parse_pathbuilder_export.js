@@ -11,6 +11,7 @@ function parse_pathbuilder_export(data) {
 
 	let featLibrary = JSON.parse(read_data("pf2e_feat"));
 	let actionLibrary = JSON.parse(read_data("pf2e_action"));
+	let classLibrary = JSON.parse(read_data("pf2e_class"));
 	let ancestryLibrary = JSON.parse(read_data("pf2e_ancestry"));
 	let heritageLibrary = JSON.parse(read_data("pf2e_heritage"));
 	let spellLibrary = JSON.parse(read_data("pf2e_spell"));
@@ -55,6 +56,8 @@ function parse_pathbuilder_export(data) {
 				return itemLibrary[testVar];
 			} else if ((testVar4 in itemLibrary || testCaps4 in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
 				return itemLibrary[testVar4];
+			} else if ((testVar in classLibrary || testCaps in classLibrary) && (searchSet.includes("all") || searchSet.includes("class"))) {
+				return classLibrary[testVar];
 			}
 		}
 		return null;
@@ -90,6 +93,11 @@ function parse_pathbuilder_export(data) {
 	let parsedData = {};
 
 	message_window("Importing " + data.name, "Importing Basics");
+
+	let classData = find_object_data(data.class, ["class"]);
+	if("fileURL" in classData){
+		classData = parse_feature(classData.baseName, rest_call(classData.fileURL));
+	}
 
 	//__STATS__	
 	parsedData.abilities = {};
@@ -290,14 +298,13 @@ function parse_pathbuilder_export(data) {
 
 	message_window("Importing " + data.name, "Importing Specials");
 
-	if (data.class == "Fighter") {
-		if (data.level >= 5) {
-			data.specials.push("Fighter Weapon Mastery");
-			featSubChoices.push({"name":"Fighter Weapon Mastery","value":null});
-		}
-		if (data.level >= 13) {
-			data.specials.push("Weapon Legend");
-			featSubChoices.push({"name":"Weapon Legend","value":null});
+	for(var i in classData.items){
+		let classItem = classData.items[i];
+		if (data.level >= classItem.level) {
+			if (!(data.specials.includes(classItem.name))){
+				MapTool.chat.broadcast(JSON.stringify(classItem));
+				data.specials = [classItem.name].concat(data.specials);
+			}
 		}
 	}
 
