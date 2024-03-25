@@ -27,14 +27,14 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             if (newRule.choices == "weaponGroups") {
                 choices = ["Axe", "Bomb", "Bow", "Brawling", "Club", "Crossbow", "Dart", "Firearm", "Flail", "Hammer", "Knife", "Pick", "Polearm", "Shield", "Sling", "Spear", "Sword"];
             } else if (newRule.choices.constructor.name == "Object") {
-                if("filter" in newRule.choices){
-                    if (newRule.choices.filter == "item:tag:wizard-arcane-thesis"){
+                if ("filter" in newRule.choices) {
+                    if (newRule.choices.filter == "item:tag:wizard-arcane-thesis") {
                         choices = ["Experimental Spellshaping", "Improved Familiar Attunement", "Spell Blending", "Spell Substitution", "Staff Nexus"];
-                    } else if (newRule.choices.filter == "item:tag:wizard-arcane-school"){
+                    } else if (newRule.choices.filter == "item:tag:wizard-arcane-school") {
                         choices = ["School of Ars Grammatica", "School of Battle Magic", "School of Civic Wizardry", "School of Mentalism", "School of Protean Form", "School of the Boundary", "School of Unified Magical Theory"];
                     }
                 }
-            }else if (newRule.choices.constructor.name == "Array") {
+            } else if (newRule.choices.constructor.name == "Array") {
                 for (var e in newRule.choices) {
                     let pChoice = newRule.choices[e];
                     if (typeof (pChoice) == "String") {
@@ -62,9 +62,9 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 choiceResult = MTScript.getVariable("choice");
             }
             //MapTool.chat.broadcast(choiceResult);
-            if(choiceFlag in assignDict){
+            if (choiceFlag in assignDict) {
                 assignDict[choiceFlag].push(choiceResult.toLowerCase());
-            }else{
+            } else {
                 assignDict[choiceFlag] = [choiceResult.toLowerCase()];
             }
             chosenValues.push(choiceResult);
