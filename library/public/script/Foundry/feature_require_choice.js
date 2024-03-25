@@ -5,6 +5,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
     let nameSplit = feature.name.split(".");
     let choiceTitle = nameSplit[nameSplit.length - 1];
     MTScript.setVariable("choiceTitle", choiceTitle);
+    let chosenValues = [];
     for (var r in rules) {
         let newRule = rules[r];
         if ("key" in newRule && newRule.key == "ChoiceSet") {
@@ -22,9 +23,18 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 continue;
             }
             let choices = [];
+            //MapTool.chat.broadcast(String(newRule.choices.constructor.name));
             if (newRule.choices == "weaponGroups") {
                 choices = ["Axe", "Bomb", "Bow", "Brawling", "Club", "Crossbow", "Dart", "Firearm", "Flail", "Hammer", "Knife", "Pick", "Polearm", "Shield", "Sling", "Spear", "Sword"];
-            } else if (typeof (newRule.choices) == "object") {
+            } else if (newRule.choices.constructor.name == "Object") {
+                if("filter" in newRule.choices){
+                    if (newRule.choices.filter == "item:tag:wizard-arcane-thesis"){
+                        choices = ["Experimental Spellshaping", "Improved Familiar Attunement", "Spell Blending", "Spell Substitution", "Staff Nexus"];
+                    } else if (newRule.choices.filter == "item:tag:wizard-arcane-school"){
+                        choices = ["School of Ars Grammatica", "School of Battle Magic", "School of Civic Wizardry", "School of Mentalism", "School of Protean Form", "School of the Boundary", "School of Unified Magical Theory"];
+                    }
+                }
+            }else if (newRule.choices.constructor.name == "Array") {
                 for (var e in newRule.choices) {
                     let pChoice = newRule.choices[e];
                     if (typeof (pChoice) == "String") {
@@ -52,7 +62,13 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 choiceResult = MTScript.getVariable("choice");
             }
             //MapTool.chat.broadcast(choiceResult);
-            assignDict[choiceFlag] = choiceResult.toLowerCase();
+            if(choiceFlag in assignDict){
+                assignDict[choiceFlag].push(choiceResult.toLowerCase());
+            }else{
+                assignDict[choiceFlag] = [choiceResult.toLowerCase()];
+            }
+            chosenValues.push(choiceResult);
         }
     }
+    return chosenValues;
 }

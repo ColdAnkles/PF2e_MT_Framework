@@ -302,12 +302,14 @@ function parse_pathbuilder_export(data) {
 		let classItem = classData.items[i];
 		if (data.level >= classItem.level) {
 			if (!(data.specials.includes(classItem.name))) {
-				MapTool.chat.broadcast(JSON.stringify(classItem));
+				//MapTool.chat.broadcast(JSON.stringify(classItem));
+				//MapTool.chat.broadcast(JSON.stringify(data.specials));
 				data.specials = [classItem.name].concat(data.specials);
 			}
 		}
 	}
 
+	let foundSpecials = [];
 	for (var s in data.specials) {
 		let tempName = data.specials[s];
 		if (tempName == "") {
@@ -323,12 +325,14 @@ function parse_pathbuilder_export(data) {
 			continue; //Spellbook not treated as a feature in foundry
 		}
 		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
-		if (tempData != null) {
+		if (tempData != null && !foundSpecials.includes(tempName)) {
 			features_to_parse.push(tempData);
 			featSubChoices.push({ "name": tempName, "value": null });
-		} else {
+			foundSpecials.push(tempName);
+		} else if (tempData == null) {
 			unfoundData.push(tempName);
 		}
+		data.specials[s] = tempName;
 	}
 
 	let grantedAttacks = [];
@@ -336,10 +340,11 @@ function parse_pathbuilder_export(data) {
 		let featureData = features_to_parse[f];
 		if ("fileURL" in featureData) {
 			let addedFeature = parse_feature(featureData.baseName, rest_call(featureData.fileURL), parsedData);
+			//MapTool.chat.broadcast(featureData.baseName);
 			if (addedFeature != null && "rules" in addedFeature && addedFeature.rules != null && addedFeature.rules.length > 0) {
 				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
 				//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
-				feature_require_choice(addedFeature, parsedData.creatureFlags, data.specials.concat(featSubChoices[f].value));
+				let chosenValues = feature_require_choice(addedFeature, parsedData.creatureFlags, data.specials.concat(featSubChoices[f].value));
 				feature_cause_definition(addedFeature, parsedData);
 				let newAttacks = rules_grant_attack(addedFeature.rules);
 				for (var a in newAttacks) {
