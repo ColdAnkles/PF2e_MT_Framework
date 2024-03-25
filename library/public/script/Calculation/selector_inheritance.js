@@ -1,10 +1,10 @@
 "use strict";
 
 function selector_inheritance(selector) {
-	let finalSelector = [].concat(selector);
 	if (typeof (selector) == "string") {
 		selector = [selector];
 	}
+	let finalSelector = [].concat(selector);
 
 	for (var e in selector) {
 		//MapTool.chat.broadcast(selector[e]);
