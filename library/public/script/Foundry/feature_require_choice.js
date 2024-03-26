@@ -1,6 +1,7 @@
 "use strict";
 
 function feature_require_choice(feature, assignDict, possibleSelections = []) {
+    let tagData = JSON.parse(read_data("pf2e_tagData"));
     let rules = feature.rules;
     let nameSplit = feature.name.split(".");
     let choiceTitle = nameSplit[nameSplit.length - 1];
@@ -28,10 +29,12 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 choices = ["Axe", "Bomb", "Bow", "Brawling", "Club", "Crossbow", "Dart", "Firearm", "Flail", "Hammer", "Knife", "Pick", "Polearm", "Shield", "Sling", "Spear", "Sword"];
             } else if (newRule.choices.constructor.name == "Object") {
                 if ("filter" in newRule.choices) {
-                    if (newRule.choices.filter == "item:tag:wizard-arcane-thesis") {
-                        choices = ["Experimental Spellshaping", "Improved Familiar Attunement", "Spell Blending", "Spell Substitution", "Staff Nexus"];
-                    } else if (newRule.choices.filter == "item:tag:wizard-arcane-school") {
-                        choices = ["School of Ars Grammatica", "School of Battle Magic", "School of Civic Wizardry", "School of Mentalism", "School of Protean Form", "School of the Boundary", "School of Unified Magical Theory"];
+                    for(var c in newRule.choices.filter){
+                        if(newRule.choices.filter[c].includes(":tag:")){
+                            let filterSplit = newRule.choices.filter[c].split(":");
+                            let tagKey = filterSplit[filterSplit.length - 1];
+                            choices = choices.concat(tagData[tagKey]);
+                        }
                     }
                 }
             } else if (newRule.choices.constructor.name == "Array") {

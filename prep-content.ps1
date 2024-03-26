@@ -115,6 +115,7 @@ function import-source-file {
     $storeData = @{}
 
     $script:foundSources = $script:foundSources
+    $script:tagData = $script:tagData
 
     $storeData.name = $data.name
     $storeData.type = $data.type
@@ -122,6 +123,15 @@ function import-source-file {
     $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master/packs/" + $fileDir + "/" + $fileName
     $baseNameSplit = $fileName -split "\.";
     $storeData.baseName = $baseNameSplit[0]
+
+    if ($data.system.traits.PSObject.Properties.name -contains "otherTags"){
+        ForEach ($tagDef in $data.system.traits.otherTags){
+            if ( -not ($tagData.Contains($tagDef))){
+                $tagData[$tagDef] = [System.Collections.ArrayList]@()
+            }
+            $tagData[$tagDef].Add($data.name) | Out-Null
+        }
+    }
 
     if ($null -eq $data.type) {
         $storeData.type = "null"
@@ -254,6 +264,7 @@ function write-data-files {
     $script:packData = $script:packData
     $script:foundSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_publications.json"
     $script:wantedSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_enabledSources.json"
+    $script:tagData | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_tagData.json"
 
     ForEach ($dataType in $packData.Keys) {
         $dataSet = $packData[$dataType]
@@ -269,6 +280,7 @@ $wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfi
 $sources = @{}
 $packData = @{}
 $langData = @{}
+$tagData = @{}
 $foundSources = [System.Collections.ArrayList]@()
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "download") {
