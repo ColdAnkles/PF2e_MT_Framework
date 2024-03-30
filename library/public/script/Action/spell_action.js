@@ -26,6 +26,7 @@ function spell_action(actionData, actingToken) {
 	let spellRules = JSON.parse(actingToken.getProperty("spellRules"));
 	let tokenSpell = null;
 	let castData = null;
+	let disableCrit = false;
 
 	for (var spellcasting in spellRules) {
 		let spellCastData = spellRules[spellcasting];
@@ -214,6 +215,7 @@ function spell_action(actionData, actingToken) {
 		for (let i = 1; i < totalDarts; i += 1) {
 			spellData.damage["dart" + String(i)] = spellData.damage[0];
 		}
+		disableCrit = true;
 		//MapTool.chat.broadcast(JSON.stringify(spellData.damage));
 	}
 
@@ -276,7 +278,7 @@ function spell_action(actionData, actingToken) {
 				displayData.description += " " + damageData.category;
 			}
 			displayData.description += " " + damageData.type + "</b>";
-			if (String(rolled) != damageRoll) {
+			if (String(rolled) != damageRoll && !disableCrit) {
 				let critDamage = rolled * 2;
 				if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
 					displayData.description += "<br /><i>Crit Healing</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
