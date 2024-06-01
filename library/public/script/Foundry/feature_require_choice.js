@@ -7,7 +7,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
     let choiceTitle = nameSplit[nameSplit.length - 1];
     MTScript.setVariable("choiceTitle", choiceTitle);
     //MapTool.chat.broadcast(JSON.stringify(possibleSelections));
-    MapTool.chat.broadcast(JSON.stringify(feature));
+    //MapTool.chat.broadcast(JSON.stringify(feature));
     let chosenValues = [];
     for (var r in rules) {
         let newRule = rules[r];
