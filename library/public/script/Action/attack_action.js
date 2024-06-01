@@ -57,7 +57,7 @@ function attack_action(actionData, actingToken) {
 	}
 
 	let tokLevel = Number(actingToken.getProperty("level"));
-	let profBon = (calculate_proficiency(((itemData != null) ? itemData.category : actionData.name), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
+	let profBon = (calculate_proficiency(((itemData != null) ? itemData.category : actionData.category), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
 	let attack_bonus = tokLevel + profBon;
 	//MapTool.chat.broadcast("Token Level: " + String(tokLevel))
 	//MapTool.chat.broadcast("profBon: " + String(profBon))
@@ -223,8 +223,10 @@ function attack_action(actionData, actingToken) {
 		actionData.damage[0].damage = String(actionData.damage[0].dice) + actionData.damage[0].die + ((itemData != null && itemData.damageBonus != null && itemData.damageBonus > 0) ? "+" + String(itemData.damageBonus) : "");
 		if (actionData.traits.includes("finesse")) {
 			attack_bonus += Math.max(strBon, dexBon);
-		} else {
+		} else if(actionData.isMelee) {
 			attack_bonus += strBon;
+		} else if(!actionData.isMelee) {
+			attack_bonus += dexBon;
 		}
 	}
 
