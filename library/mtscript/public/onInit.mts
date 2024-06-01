@@ -38,3 +38,6 @@
 }]
 
 [h: setLibProperty("image_dict", imageDict, "Lib:ca.pf2e")]
+[h: oldSourceConf = getLibProperty("pf2e_enabledSources","Lib:ca.pf2e")]
+[h: ca.pf2e.Load_Addon_JSON()]
+[h: setLibProperty("pf2e_enabledSources","Lib:ca.pf2e")]
