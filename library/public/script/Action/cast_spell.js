@@ -55,7 +55,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 	}
 
 	if (actionData.signature) {// && !(spellData.time.includes("to") && additionalData == null)) {
-		MTScript.evalMacro("[h: signatureUpcast=" + String(castLevel) + "][h: input(\"signatureUpcast|" + castingData.castLevels.join(',') + "|Select Upcast Level|LIST|VALUE=STRING\")]");
+		MTScript.evalMacro("[h: signatureUpcast=" + String(castLevel) + "][h: input(\"signatureUpcast|" + castingData.upcastLevels.join(',') + "|Select Upcast Level|LIST|VALUE=STRING\")]");
 		actionData.castLevel = MTScript.getVariable("signatureUpcast");
 		castLevel = actionData.castLevel;
 	}

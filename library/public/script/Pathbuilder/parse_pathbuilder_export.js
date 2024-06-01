@@ -175,7 +175,7 @@ function parse_pathbuilder_export(data) {
 	for (var i in data.spellCasters) {
 		let castingData = data.spellCasters[i];
 		let id = castingData.name;
-		let newCastingRules = { "name": castingData.name, "spellAttack": 0, "spellDC": 0, "spells": [], "type": castingData.spellcastingType, "castingAbility": castingData.ability, "castLevels": [] }
+		let newCastingRules = { "name": castingData.name, "spellAttack": 0, "spellDC": 0, "spells": [], "type": castingData.spellcastingType, "castingAbility": castingData.ability, "castLevels": [], "upcastLevels":[] }
 		if (castingData.proficiency > 0) {
 			newCastingRules.spellAttack = parsedData.abilities[castingData.ability] + castingData.proficiency + data.level;
 		} else {
@@ -188,6 +188,9 @@ function parse_pathbuilder_export(data) {
 			let castLevel = castingData.spells[l].spellLevel;
 			if (!(newCastingRules.castLevels.includes(castLevel))) {
 				newCastingRules.castLevels.push(castLevel);
+				if(castLevel!=0){
+					newCastingRules.upcastLevels.push(castLevel)
+				}
 			}
 			if (castLevel == 0) {
 				castLevel = Math.max(1, Math.floor(data.level / 2))
@@ -338,6 +341,7 @@ function parse_pathbuilder_export(data) {
 	let grantedAttacks = [];
 	for (var f in features_to_parse) {
 		let featureData = features_to_parse[f];
+		//MapTool.chat.broadcast(JSON.stringify(featureData))
 		if ("fileURL" in featureData) {
 			let addedFeature = parse_feature(featureData.baseName, rest_call(featureData.fileURL), parsedData);
 			//MapTool.chat.broadcast(featureData.baseName);

@@ -31,6 +31,9 @@ function configure_signature_spells(token) {
             }
         }
         for (var si in castData.castLevels) {
+            if(si==0){
+                continue;
+            }
             let spellLevel = castData.castLevels[si];
             varList.push(castData.name + "_level_" + String(spellLevel));
             inputString += "\"" + castData.name + "_level_" + String(spellLevel) + "|" + allSpells[spellLevel].join(",") + "|Level " + String(spellLevel) + " Signature Spell|LIST|VALUE=STRING\",";

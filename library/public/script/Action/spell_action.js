@@ -57,6 +57,15 @@ function spell_action(actionData, actingToken) {
 		damageScopes = ["spell", "healing"];
 	}
 
+	for (var d in spellData.damage){
+		if ( "kinds" in spellData.damage[d] ){
+			if ( spellData.damage[d].kinds.includes("healing")){
+				damageScopes = ["spell", "healing"];
+				break;
+			}
+		}
+	}
+
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
 
 	if ("overlays" in actionData) {
@@ -277,7 +286,11 @@ function spell_action(actionData, actingToken) {
 			if (damageData.category != null) {
 				displayData.description += " " + damageData.category;
 			}
-			displayData.description += " " + damageData.type + "</b>";
+			if(damageScopes.includes("healing")){
+				displayData.description += " HP" + "</b>";
+			}else{
+				displayData.description += " " + damageData.type + "</b>";
+			}
 			if (String(rolled) != damageRoll && !disableCrit) {
 				let critDamage = rolled * 2;
 				if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
@@ -288,7 +301,11 @@ function spell_action(actionData, actingToken) {
 				if (damageData.category != null) {
 					displayData.description += " " + damageData.category;
 				}
-				displayData.description += " " + damageData.type + "</b>";
+				if(damageScopes.includes("healing")){
+					displayData.description += " HP" + "</b>";
+				}else{
+					displayData.description += " " + damageData.type + "</b>";
+				}
 			}
 			displayData.description += "</div>";
 		}
