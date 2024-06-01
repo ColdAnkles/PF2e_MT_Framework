@@ -6,11 +6,16 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
     let nameSplit = feature.name.split(".");
     let choiceTitle = nameSplit[nameSplit.length - 1];
     MTScript.setVariable("choiceTitle", choiceTitle);
+    //MapTool.chat.broadcast(JSON.stringify(possibleSelections));
+    MapTool.chat.broadcast(JSON.stringify(feature));
     let chosenValues = [];
     for (var r in rules) {
         let newRule = rules[r];
         if ("key" in newRule && newRule.key == "ChoiceSet") {
-            let choicePrompt = newRule.prompt;
+            let choicePrompt = "Choose"
+            if("prompt" in newRule){
+                choicePrompt = newRule.prompt;
+            }
             if (choicePrompt.includes("Feat")) {
                 continue;
             }
@@ -20,8 +25,12 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             if (choicePrompt.includes("WeaponGroup")) {
                 choicePrompt = "Choose a Weapon Group";
             }
-            if (newRule.prompt.includes("GeneralTraining")) {
+            if ("prompt" in newRule && newRule.prompt.includes("GeneralTraining")) {
                 continue;
+            }
+            if("prompt" in newRule && newRule.prompt.includes("specificRule")){
+                let promptSplit = newRule.prompt.split(".")
+                choicePrompt = promptSplit[promptSplit.length - 1]
             }
             let choices = [];
             //MapTool.chat.broadcast(String(newRule.choices.constructor.name));
@@ -44,7 +53,12 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                         choices.push(capitalise(pChoice));
                     } else if (typeof (pChoice) == "object") {
                         if ("value" in pChoice) {
-                            choices.push(capitalise(pChoice.value));
+                            if(pChoice.value.includes("system.")){
+                                let choiceSplit = pChoice.value.split(".");
+                                choices.push(capitalise(choiceSplit[choiceSplit.length - 2]));
+                            }else{
+                                choices.push(capitalise(pChoice.value));
+                            }
                         }
                     }
                 }
