@@ -58,6 +58,9 @@ function import-all-sources {
     ForEach ($source in $sourceList) {
         $splitArray = $source -split "\\"
         $sourceName = $splitArray[$splitArray.length - 1 ]
+        if ($sourceName -eq "heritages") {
+            Write-Host "Testing"
+        }
         if (!$script:unwantedPacks.Contains($sourceName)) {
             #Write-Host "Importing " $sourceName
             import-source $source $sourceName
@@ -75,18 +78,29 @@ function import-source {
         [Parameter(Mandatory = $true)] [string] $sourceName
     )
 
-    $childList = Get-ChildItem $sourcePath | ForEach-Object { $_.FullName }
+    $childList = Get-ChildItem -Recurse $sourcePath | ForEach-Object { $_.FullName }
 
     $counter = 0
     $total = $childList.Length
     $importText = "Importing " + $sourceName
 
     ForEach ($file in $childList) {
+        if ( -not ($file -like "*.json")) {
+            continue
+        }
         $splitArray = $file -split "\\"
         $childName = $splitArray[$splitArray.length - 1 ]
         #Write-Host "Reading " $childName
         #Write-Host $file
-        import-source-file $file $sourceName $childName
+        $subPath = ""
+        $begin = $false
+        ForEach ($p in $splitArray){
+            if (( $p -eq "packs" -or $begin ) -and $p -ne $childName){
+                $begin = $true
+                $subPath += "/" + $p
+            }
+        }
+        import-source-file $file $sourceName $childName $subPath
         $counter = $counter + 1
         $percentProgress = $counter / $total * 100
         Write-Progress -Activity $importText -Status "$percentProgress% Complete:" -PercentComplete $percentProgress
@@ -98,7 +112,8 @@ function import-source-file {
     param (
         $filePath,
         $fileDir,
-        $fileName
+        $fileName,
+        $subPath
     )
 
     $script:packData = $script:packData
@@ -112,6 +127,10 @@ function import-source-file {
         return
     }
 
+    if (($data.getType().FullName -eq "System.Object[]")){
+        return
+    }
+
     $storeData = @{}
 
     $script:foundSources = $script:foundSources
@@ -120,7 +139,7 @@ function import-source-file {
     $storeData.name = $data.name
     $storeData.type = $data.type
     $storeData.id = $data._id
-    $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master/packs/" + $fileDir + "/" + $fileName
+    $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master" + $subPath + "/" + $fileName
     $baseNameSplit = $fileName -split "\.";
     $storeData.baseName = $baseNameSplit[0]
 
