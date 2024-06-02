@@ -1,6 +1,6 @@
 [h: libContents = library.getContents("ca.pf2e")]
 [h, foreach(item, libContents), code:{
-    [h: jsonMatch = matches(item, ".*data\/.*\.json")]
+    [h: jsonMatch = matches(item, ".*\/data\/.*\.json")]
     [h, if(jsonMatch), code:{
         [h: importData = data.getStaticData('ca.pf2e', item)]
         [h: id = strfind(item, "/([^/]*)\$")]
@@ -10,3 +10,4 @@
         [h: setLibProperty(varName, importData, 'Lib:ca.pf2e')]
     };{}]
 }]
+[h: js.ca.pf2e.load_glossary()]

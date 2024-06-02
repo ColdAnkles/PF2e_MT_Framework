@@ -9,7 +9,7 @@ function get-master-zip {
 
 function expand-master-zip {
     #Expand-Archive -LiteralPath pf2e-master.zip -DestinationPath pf2e-master
-    7z x pf2e-master.zip -o"pf2e-master" */packs/* */static/lang/en.json -r
+    7z x pf2e-master.zip -o"pf2e-master" */packs/* */static/lang/* -r
 }
 
 function get-foundry-sources {
@@ -256,26 +256,18 @@ function import-source-file {
 
 function import-lang-file {
     $script:langData = $script:langData
-    $langSource = Get-ChildItem .\pf2e-master\*\static\lang\en.json
-    $rawData = Get-Content -Encoding UTF8 $langSource
-    #Windows PS doesn't does case sensitive keys in JSON - 
-    $data = $rawData.replace("""condition""", "conditionList").replace("""ui""", "_ui") | ConvertFrom-JSON
+    $langSources = Get-ChildItem .\pf2e-master\*\static\lang\*
+    $data = $null
+    ForEach ( $source in $langSources ){
+        $rawData = Get-Content -Encoding UTF8 $source
+        #Windows PS doesn't do case sensitive keys in JSON - 
+        $data = $rawData.replace("""condition""", "conditionList").replace("""ui""", "_ui") | ConvertFrom-JSON
+        $outFile = ".\library\public\lang_data\"+$source.Name
+        $data | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $outFile
+    }
 
-    #$langData.npcAbility = $data.PF2E.NPC.Abilities.Glossary
-    #$langData.traitDescriptions = @{}
-    #$langData.SpecificRule = @{}
+    
 
-    #ForEach ($entry in $data.PF2E.PSObject.Properties){
-    #    if ($entry.name -match "^TraitDescription"){
-    #        $key = $entry.name.substring(16)
-    #        $value = $entry.value
-    #        $langData.traitDescriptions[$key] = $value
-    #    }
-    #}
-
-    $outFile = ".\library\public\data\pf2e_glossary.json"
-
-    $data | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $outFile
 }
 
 function write-data-files {
