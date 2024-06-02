@@ -1,18 +1,18 @@
 "use strict";
 
-function load_glossary(string){
+function load_glossary(string) {
     MTScript.evalMacro("[h: output = library.getContents('ca.pf2e')]")
-	let libContents = JSON.parse(MTScript.getVariable("output"));
+    let libContents = JSON.parse(MTScript.getVariable("output"));
     let glossary = null;
-    for (var file in libContents){
+    for (var file in libContents) {
         let fileName = libContents[file];
-        if ( fileName.includes("/lang_data/")){
+        if (fileName.includes("/lang_data/")) {
             MTScript.setVariable("item", fileName);
             MTScript.evalMacro("[h: importData = data.getStaticData('ca.pf2e', item)]");
             let importData = JSON.parse(MTScript.getVariable("importData"));
-            if ( glossary == null ){
+            if (glossary == null) {
                 glossary = importData;
-            }else{
+            } else {
                 //Merge Dictionaries
                 glossary = merge_dict(glossary, importData)
             }

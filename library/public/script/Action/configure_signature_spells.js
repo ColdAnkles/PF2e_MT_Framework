@@ -31,7 +31,7 @@ function configure_signature_spells(token) {
             }
         }
         for (var si in castData.castLevels) {
-            if(si==0){
+            if (si == 0) {
                 continue;
             }
             let spellLevel = castData.castLevels[si];

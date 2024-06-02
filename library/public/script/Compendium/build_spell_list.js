@@ -30,8 +30,8 @@ function build_spell_list(sortKey, sortDir, searchKey = "") {
 
     for (var i = 0; i < spellSorted.length; i++) {
         let thisSpell = spellSorted[i];
-        if("traditions" in thisSpell.traits){
-            thisSpell.traditions =  thisSpell.traits.traditions;
+        if ("traditions" in thisSpell.traits) {
+            thisSpell.traditions = thisSpell.traits.traditions;
             thisSpell.traits = thisSpell.traits.value;
             thisSpell.source = thisSpell.publication.title;
         }

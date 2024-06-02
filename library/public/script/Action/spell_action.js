@@ -57,9 +57,9 @@ function spell_action(actionData, actingToken) {
 		damageScopes = ["spell", "healing"];
 	}
 
-	for (var d in spellData.damage){
-		if ( "kinds" in spellData.damage[d] ){
-			if ( spellData.damage[d].kinds.includes("healing")){
+	for (var d in spellData.damage) {
+		if ("kinds" in spellData.damage[d]) {
+			if (spellData.damage[d].kinds.includes("healing")) {
 				damageScopes = ["spell", "healing"];
 				break;
 			}
@@ -286,9 +286,9 @@ function spell_action(actionData, actingToken) {
 			if (damageData.category != null) {
 				displayData.description += " " + damageData.category;
 			}
-			if(damageScopes.includes("healing")){
+			if (damageScopes.includes("healing")) {
 				displayData.description += " HP" + "</b>";
-			}else{
+			} else {
 				displayData.description += " " + damageData.type + "</b>";
 			}
 			if (String(rolled) != damageRoll && !disableCrit) {
@@ -301,9 +301,9 @@ function spell_action(actionData, actingToken) {
 				if (damageData.category != null) {
 					displayData.description += " " + damageData.category;
 				}
-				if(damageScopes.includes("healing")){
+				if (damageScopes.includes("healing")) {
 					displayData.description += " HP" + "</b>";
-				}else{
+				} else {
 					displayData.description += " " + damageData.type + "</b>";
 				}
 			}

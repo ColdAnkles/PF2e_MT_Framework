@@ -13,11 +13,11 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
         let newRule = rules[r];
         if ("key" in newRule && newRule.key == "ChoiceSet") {
             let choicePrompt = "Choose"
-            if("prompt" in newRule){
+            if ("prompt" in newRule) {
                 let testPrompt = glossary_find(newRule.prompt);
-                if(testPrompt!=null){
+                if (testPrompt != null) {
                     choicePrompt = testPrompt;
-                }else{
+                } else {
                     choicePrompt = newRule.prompt;
                 }
             }
@@ -39,8 +39,8 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 choices = ["Axe", "Bomb", "Bow", "Brawling", "Club", "Crossbow", "Dart", "Firearm", "Flail", "Hammer", "Knife", "Pick", "Polearm", "Shield", "Sling", "Spear", "Sword"];
             } else if (newRule.choices.constructor.name == "Object") {
                 if ("filter" in newRule.choices) {
-                    for(var c in newRule.choices.filter){
-                        if(typeof(newRule.choices.filter[c]) == "string" && newRule.choices.filter[c].includes(":tag:")){
+                    for (var c in newRule.choices.filter) {
+                        if (typeof (newRule.choices.filter[c]) == "string" && newRule.choices.filter[c].includes(":tag:")) {
                             let filterSplit = newRule.choices.filter[c].split(":");
                             let tagKey = filterSplit[filterSplit.length - 1];
                             choices = choices.concat(tagData[tagKey]);
@@ -54,10 +54,10 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                         choices.push(capitalise(pChoice));
                     } else if (typeof (pChoice) == "object") {
                         if ("value" in pChoice) {
-                            if(pChoice.value.includes("system.")){
+                            if (pChoice.value.includes("system.")) {
                                 let choiceSplit = pChoice.value.split(".");
                                 choices.push(capitalise(choiceSplit[choiceSplit.length - 2]));
-                            }else{
+                            } else {
                                 choices.push(capitalise(pChoice.value));
                             }
                         }

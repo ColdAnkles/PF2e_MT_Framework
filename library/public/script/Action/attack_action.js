@@ -223,9 +223,9 @@ function attack_action(actionData, actingToken) {
 		actionData.damage[0].damage = String(actionData.damage[0].dice) + actionData.damage[0].die + ((itemData != null && itemData.damageBonus != null && itemData.damageBonus > 0) ? "+" + String(itemData.damageBonus) : "");
 		if (actionData.traits.includes("finesse")) {
 			attack_bonus += Math.max(strBon, dexBon);
-		} else if(actionData.isMelee) {
+		} else if (actionData.isMelee) {
 			attack_bonus += strBon;
-		} else if(!actionData.isMelee) {
+		} else if (!actionData.isMelee) {
 			attack_bonus += dexBon;
 		}
 	}
