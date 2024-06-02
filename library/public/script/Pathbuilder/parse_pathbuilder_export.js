@@ -262,7 +262,7 @@ function parse_pathbuilder_export(data) {
 	parsedData.languages = data.languages;
 	parsedData.itemList = {};
 	parsedData.allFeatures = [];
-	parsedData.creatureFlags = {};
+	parsedData.creatureFlags = { "system": { "attributes": { "shield": null } } };
 
 	let features_to_parse = [];
 	let featSubChoices = [];

@@ -4,10 +4,16 @@ function get_equipped_shield(token) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
 	}
+	let charFlags = JSON.parse(token.getProperty("creatureFlags"))
+	if (charFlags.system.attributes.shield != null) {
+		return charFlags.system.attributes.shield;
+	}
 	let inventory = JSON.parse(token.getProperty("inventory"));
 	for (var i in inventory) {
 		let itemData = inventory[i];
 		if (itemData.type == "shield" && itemData.equipped) {
+			charFlags.system.attributes.shield = itemData;
+			token.setProperty("creatureFlags", JSON.stringify(charFlags))
 			return itemData;
 		}
 		//MapTool.chat.broadcast(JSON.stringify(itemData));

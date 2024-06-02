@@ -12,8 +12,8 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 	let updateTokens = [token];
 	if (get_token_type(token) == "PC") {
 		if (affectedCreature.getName().includes("Lib:")) {
-			let subTokens = JSON.parse(affectedCreature.getProperty("pcTokens"));
-			updateTokens = updateTokens.concat(subTokens);
+			//let subTokens = JSON.parse(affectedCreature.getProperty("pcTokens"));
+			//updateTokens = updateTokens.concat(subTokens);
 		} else {
 			toggle_named_effect(effectName, affectedCreature.getProperty("myID"), state, effectSource);
 			return;
@@ -73,6 +73,7 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 		let activeEffects = JSON.parse(thisCreature.getProperty("activeEffects"));
 		let attacks = JSON.parse(thisCreature.getProperty("basicAttacks"));
 		let tokenProfs = JSON.parse(thisCreature.getProperty("proficiencies"));
+		rules_modify_flags(effectData.rules, state == 1, thisCreature, effectSource);
 
 		if (activeEffects == null) {
 			activeEffects = {};
@@ -120,6 +121,11 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 
 		thisCreature.setProperty("activeEffects", JSON.stringify(activeEffects));
 		thisCreature.setProperty("basicAttacks", JSON.stringify(attacks));
+		if (get_token_type(thisCreature) == "PC") {
+			if (thisCreature.getName().includes("Lib:")) {
+				update_my_tokens(thisCreature);
+			}
+		}
 	}
 
 }

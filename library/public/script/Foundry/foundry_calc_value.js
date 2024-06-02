@@ -10,6 +10,14 @@ function foundry_calc_value(value, actor, item) {
 					let bracketSplit = value.field.split("|");
 					if (bracketSplit[0] == "actor" && actor != null) {
 						splitVal = actor.getProperty(bracketSplit[1]);
+					} else if (bracketSplit[0] == "item" && item != null) {
+						let searchVal = bracketSplit[1].split(".")[0];
+						if (searchVal == "system") {
+							searchVal = bracketSplit[1].split(".")[1];
+						}
+						if (searchVal in item) {
+							splitVal = item[searchVal];
+						}
 					}
 				}
 

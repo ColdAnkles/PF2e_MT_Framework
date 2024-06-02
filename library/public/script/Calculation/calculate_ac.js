@@ -7,12 +7,15 @@ function calculate_ac(tokenID) {
 	let dex_bonus = Number(token.getProperty("dex"));
 	let bonuses = calculate_bonus(tokenID, "ac");
 	let eqArmor = get_equipped_armor(token);
+	let eqShield = get_equipped_shield(token);
 	let profs = JSON.parse(token.getProperty("proficiencies"));
 	//MapTool.chat.broadcast(JSON.stringify(bonuses));
 	//MapTool.chat.broadcast(JSON.stringify(eqArmor));
+	//MapTool.chat.broadcast(JSON.stringify(eqShield));
 
 	let armorBonus = 0;
 	let dexCap = 999;
+	let shieldBonus = 0;
 
 
 	if ("otherEffects" in bonuses && "DexterityModifierCap" in bonuses.otherEffects) {
@@ -34,6 +37,10 @@ function calculate_ac(tokenID) {
 		}
 	}
 
+	if (eqShield != null && eqShield != "null") {
+		shieldBonus = eqShield.ac;
+	}
+
 	for (var p in profs) {
 		if (armorProfType == profs[p].name.toLowerCase()) {
 			profBonus = profs[p].bonus;
@@ -44,7 +51,7 @@ function calculate_ac(tokenID) {
 
 	dex_bonus = Math.max(0, Math.min(dex_bonus, dexCap));
 
-	bonuses = bonuses.bonuses.circumstance + bonuses.bonuses.status + Math.max(bonuses.bonuses.item, armorBonus) + bonuses.maluses.circumstance + bonuses.maluses.status + bonuses.maluses.item + bonuses.bonuses.proficiency;
+	bonuses = Math.max(bonuses.bonuses.circumstance, shieldBonus) + bonuses.bonuses.status + Math.max(bonuses.bonuses.item, armorBonus) + bonuses.maluses.circumstance + bonuses.maluses.status + bonuses.maluses.item + bonuses.bonuses.proficiency;
 	//MapTool.chat.broadcast(String(base_ac) + "+"+String(bonuses) + "+" + String(dex_bonus) + "+"+String(profBonus));
 	let totalAC = (base_ac + bonuses + dex_bonus + profBonus);
 	return totalAC;
