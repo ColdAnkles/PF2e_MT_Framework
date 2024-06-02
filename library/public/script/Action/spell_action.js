@@ -318,6 +318,7 @@ function spell_action(actionData, actingToken) {
 	displayData.level = spellData.level;
 	displayData.actionCost = actionData.actionCost;
 	displayData.actionType = actionData.actionType;
+	spellData.level = actionData.castLevel;
 	if ("cantrip" in spellData.traits.value) {
 		displayData.type = "Cantrip";
 	}
