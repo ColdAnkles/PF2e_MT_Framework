@@ -14,7 +14,12 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
         if ("key" in newRule && newRule.key == "ChoiceSet") {
             let choicePrompt = "Choose"
             if("prompt" in newRule){
-                choicePrompt = newRule.prompt;
+                let testPrompt = glossary_find(newRule.prompt);
+                if(testPrompt!=null){
+                    choicePrompt = testPrompt;
+                }else{
+                    choicePrompt = newRule.prompt;
+                }
             }
             if (choicePrompt.includes("Feat")) {
                 continue;
@@ -28,10 +33,6 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             if ("prompt" in newRule && newRule.prompt.includes("GeneralTraining")) {
                 continue;
             }
-            if("prompt" in newRule && newRule.prompt.includes("specificRule")){
-                let promptSplit = newRule.prompt.split(".")
-                choicePrompt = promptSplit[promptSplit.length - 1]
-            }
             let choices = [];
             //MapTool.chat.broadcast(String(newRule.choices.constructor.name));
             if (newRule.choices == "weaponGroups") {
@@ -39,7 +40,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             } else if (newRule.choices.constructor.name == "Object") {
                 if ("filter" in newRule.choices) {
                     for(var c in newRule.choices.filter){
-                        if(newRule.choices.filter[c].includes(":tag:")){
+                        if(typeof(newRule.choices.filter[c]) == "string" && newRule.choices.filter[c].includes(":tag:")){
                             let filterSplit = newRule.choices.filter[c].split(":");
                             let tagKey = filterSplit[filterSplit.length - 1];
                             choices = choices.concat(tagData[tagKey]);
