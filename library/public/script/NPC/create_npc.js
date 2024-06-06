@@ -6,8 +6,7 @@ function create_npc(newNPCTokenID, creatureName) {
 	//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
 	let property = JSON.parse(read_data("pf2e_npc"));
 	let creatureData = property[creatureName];
-	creatureData = rest_call(creatureData["fileURL"], "");
-	creatureData = parse_npc(creatureData);
+	creatureData = parse_npc(rest_call(creatureData["fileURL"], ""));
 
 	write_creature_properties(creatureData, newToken);
 
@@ -19,9 +18,9 @@ function create_npc(newNPCTokenID, creatureName) {
 	for (var s in creatureData.speeds.other) {
 		let speedData = creatureData.speeds.other[s];
 		if (speedData.type == "fly") {
-			add_action_to_token({ "name": "Fly", "actionType": "action", "actionCount": 1, "type": "basic", "group": "Movement" }, newNPCTokenID)
+			add_action_to_token({ "name": "Fly", "type": "basic", "system": { "actionType": "action", "actionCount": 1, "type": "basic", "group": "Movement", "description": { "value": "" } } }, newNPCTokenID)
 		} else if (speedData.type == "burrow") {
-			add_action_to_token({ "name": "Burrow", "actionType": "action", "actionCount": 1, "type": "basic", "group": "Movement" }, newNPCTokenID)
+			add_action_to_token({ "name": "Burrow", "type": "basic", "system": { "actionType": "action", "actionCount": 1, "group": "Movement", "description": { "value": "" } } }, newNPCTokenID)
 		}
 	}
 
@@ -42,7 +41,7 @@ function create_npc(newNPCTokenID, creatureName) {
 		let spellSource = creatureData.spellRules[s];
 		for (var sp in spellSource.spells) {
 			let spellData = spellSource.spells[sp];
-			add_action_to_token({ "name": spellData.name, "actionType": "spell", "type": "spell", "group": spellSource.name, "castLevel": spellData.castLevel, "rawData": spellData, "traits": spellData.traits.value, "creatureLevel": creatureData.level }, newNPCTokenID);
+			add_action_to_token(spellData, newNPCTokenID);
 		}
 	}
 

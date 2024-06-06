@@ -1,6 +1,7 @@
 "use strict";
 
 function parse_spell(baseName, spellData) {
+	MapTool.chat.broadcast("Call to Deprecated parse_spell: " + baseName);
 	let parsedData = {};
 	parsedData.baseName = baseName;
 	for (var key in spellData) {

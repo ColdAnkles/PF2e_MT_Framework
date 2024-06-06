@@ -17,6 +17,7 @@ function build_creature_view(creatureName, tokenID = null) {
 		token = MapTool.tokens.getTokenByID(tokenID);
 		creatureData = read_creature_properties(tokenID);
 	}
+	//MapTool.chat.broadcast(JSON.stringify(creatureData));
 
 	if (creatureData.name.includes("Lib:")) {
 		creatureData.name = creatureData.name.replaceAll("Lib:", "");
@@ -105,12 +106,12 @@ function build_creature_view(creatureName, tokenID = null) {
 
 	for (var pSkill in creatureData.passiveSkills) {
 		let skillData = creatureData.passiveSkills[pSkill];
-		HTMLString += "<b>" + skillData.mainText + "</b> ";
-		if (skillData.traits.length > 0) {
+		HTMLString += "<b>" + skillData.name + "</b> ";
+		if (skillData.system.traits.length > 0) {
 			HTMLString += " (" + skillData.traits.join(", ") + ") ";
 		}
 		additionalData.action = skillData;
-		HTMLString += clean_description(skillData.subText, true, true, true, additionalData) + "<br />";
+		HTMLString += clean_description(skillData.system.description.value, true, true, true, additionalData) + "<br />";
 	}
 
 	HTMLString += "<hr />";
@@ -118,16 +119,16 @@ function build_creature_view(creatureName, tokenID = null) {
 	if (creatureData.ac.details.length > 0) {
 		HTMLString += " " + creatureData.ac.details;
 	}
-	HTMLString += "; <b>Fort</b> " + creatureData.saves.fortitude + ", "
-	HTMLString += "<b>Ref</b> " + creatureData.saves.reflex + ", "
-	HTMLString += "<b>Will</b> " + creatureData.saves.will
+	HTMLString += "; <b>Fort</b> +" + creatureData.saves.fortitude + ", "
+	HTMLString += "<b>Ref</b> +" + creatureData.saves.reflex + ", "
+	HTMLString += "<b>Will</b> +" + creatureData.saves.will
 
 	if (creatureData.passiveDefenses.length > 0) {
 		HTMLString += ";";
 		for (var d in creatureData.passiveDefenses) {
-			HTMLString += " " + creatureData.passiveDefenses[d].mainText;
-			if (creatureData.passiveDefenses[d].subText.length > 0) {
-				HTMLString += " (" + creatureData.passiveDefenses[d].subText + ")";
+			HTMLString += " " + creatureData.passiveDefenses[d].name;
+			if (creatureData.passiveDefenses[d].system.description.value.length > 0) {
+				HTMLString += " (" + clean_description(creatureData.passiveDefenses[d].system.description.value) + ")";
 			}
 		}
 	}
@@ -206,29 +207,39 @@ function build_creature_view(creatureName, tokenID = null) {
 
 	HTMLString += "<br />";
 
-	for (var feat in creatureData.otherDefenses) {
-		let featData = creatureData.otherDefenses[feat];
-		const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
-		if (!(regex.test(HTMLString))) {
-			//MapTool.chat.broadcast(JSON.stringify(featData));
-			let iconLookup = featData.actionType;
-			if (featData.actionCost != null) {
-				iconLookup = String(featData.actionCost) + iconLookup;
-			}
-			additionalData.action = featData;
-			featData.description = clean_description(featData.description, true, true, true, additionalData);
-			let traitText = "";
-			if (featData.traits.length > 0) {
-				traitText = " (" + featData.traits.join(", ") + ")";
-			}
-			let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup, true) + " " + featData.description;
-			//MapTool.chat.broadcast(featString.replace("<","&lt;"));
-			HTMLString += featString;
-			const testPattern = /<\/ul>$/
-			if (!(testPattern.test(featString))) {
-				HTMLString += "<br />";
-			}
-		}
+	for (var feat in creatureData.passiveSkills) {
+		let featData = creatureData.passiveSkills[feat];
+		let featString = "<b>" + featData.name + "</b> " + clean_description(featData.system.description.value);
+		HTMLString += featString + "<br />";
+	}
+
+
+	for (var feat in creatureData.reactions) {
+		let featData = creatureData.reactions[feat];
+		let featString = "<b>" + featData.name + "</b> " + icon_img("reaction", true) + " " + clean_description(featData.system.description.value);
+		HTMLString += featString + "<br />";
+
+		//const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
+		//if (!(regex.test(HTMLString))) {
+		//	//MapTool.chat.broadcast(JSON.stringify(featData));
+		//	let iconLookup = featData.actionType;
+		//	if (featData.actionCost != null) {
+		//		iconLookup = String(featData.actionCost) + iconLookup;
+		//	}
+		//	additionalData.action = featData;
+		//	featData.description = clean_description(featData.description, true, true, true, additionalData);
+		//	let traitText = "";
+		//	if (featData.traits.length > 0) {
+		//		traitText = " (" + featData.traits.join(", ") + ")";
+		//	}
+		//	let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup, true) + " " + featData.description;
+		//	//MapTool.chat.broadcast(featString.replace("<","&lt;"));
+		//	HTMLString += featString;
+		//	const testPattern = /<\/ul>$/
+		//	if (!(testPattern.test(featString))) {
+		//		HTMLString += "<br />";
+		//	}
+		//}
 	}
 	HTMLString += "<hr />";
 
@@ -269,39 +280,38 @@ function build_creature_view(creatureName, tokenID = null) {
 		let attackData = creatureData.basicAttacks[w];
 		//MapTool.chat.broadcast(JSON.stringify(attackData));
 		let attackString = "";
-		if (attackData.isMelee) {
+		if (attackData.type == "melee") {
 			attackString = "<b>Melee</b> ";
 		} else {
 			attackString = "<b>Ranged</b> ";
 		}
-		attackString = attackString + icon_img("1action", true) + " " + attackData.name + " +" + attackData.bonus;
-		if ("agile" in attackData.traits) {
-			attackString = attackString + " [" + pos_neg_sign(attackData.bonus - 4) + "/" + pos_neg_sign(attackData.bonus - 8) + "] ";
+		attackString = attackString + icon_img("1action", true) + " " + attackData.name + " +" + attackData.system.bonus.value;
+		if ("agile" in attackData.system.traits) {
+			attackString = attackString + " [" + pos_neg_sign(attackData.system.bonus.value - 4) + "/" + pos_neg_sign(attackData.system.bonus.value - 8) + "] ";
 		} else {
-			attackString = attackString + " [" + pos_neg_sign(attackData.bonus - 5) + "/" + pos_neg_sign(attackData.bonus - 10) + "] ";
+			attackString = attackString + " [" + pos_neg_sign(attackData.system.bonus.value - 5) + "/" + pos_neg_sign(attackData.system.bonus.value - 10) + "] ";
 		}
-		if (attackData.traits.length > 0) {
-			attackString = attackString + "(" + attackData.traits.join(", ").replaceAll("-", " ") + ")";
+		if (attackData.system.traits.value.length > 0) {
+			attackString = attackString + "(" + attackData.system.traits.value.join(", ").replaceAll("-", " ") + ")";
 		}
 		attackString = attackString + ", <b>Damage</b> ";
 		let dmgStrings = [];
-		for (var dmg in attackData.damage) {
-			let dmgData = attackData.damage[dmg];
+		for (var dmg in attackData.system.damageRolls) {
+			let dmgData = attackData.system.damageRolls[dmg];
 			dmgStrings.push(dmgData.damage + " " + dmgData.damageType);
 		}
 		attackString = attackString + dmgStrings.join(" plus ");
-
-		if (attackData.effects.length > 1 && typeof (attackData.effects) == "object") {
-			attackString += " plus " + attackData.effects.join(" and ").replaceAll("-", " ");
-		} else if (attackData.effects.length == 1 && typeof (attackData.effects) == "object") {
-			attackString += " plus " + attackData.effects[0].replaceAll("-", " ");
-		} else if (typeof (attackData.effects) == "string") {
-			attackString += "plus" + attackData.effects.replaceAll("-", " ");
+		if (attackData.system.attackEffects.length > 1 && typeof (attackData.system.attackEffects) == "object" && "custom" in attackData.system.attackEffects && attackData.system.attackEffects.custom != "") {
+			attackString += " plus " + attackData.system.attackEffects.join(" and ").replaceAll("-", " ");
+		} else if (attackData.system.attackEffects.length == 1 && typeof (attackData.system.attackEffects) == "object") {
+			attackString += " plus " + attackData.system.attackEffects[0].replaceAll("-", " ");
+		} else if (typeof (attackData.system.attackEffects) == "string") {
+			attackString += "plus" + attackData.system.attackEffects.replaceAll("-", " ");
 		}
 		additionalData.action = attackData;
 
-		if (attackData.description.length > 0) {
-			attackString = attackString + " " + clean_description(attackData.description, true, true, true, additionalData);
+		if (attackData.system.description.value.length > 0) {
+			attackString = attackString + " " + clean_description(attackData.system.description.value, true, true, true, additionalData);
 		}
 
 		//MapTool.chat.broadcast(attackString);
@@ -315,13 +325,13 @@ function build_creature_view(creatureName, tokenID = null) {
 		//MapTool.chat.broadcast(JSON.stringify(theRules));
 		theRules.spells.sort((a, b) => {
 			//MapTool.chat.broadcast(JSON.stringify(a));
-			let testA = a.castLevel;
-			if (a.traits.value.includes("cantrip")) {
+			let testA = a.system.castLevel.value;
+			if (a.system.traits.value.includes("cantrip")) {
 				testA = -1;
 			}
 			//MapTool.chat.broadcast(JSON.stringify(b));
-			let testB = b.castLevel;
-			if (b.traits.value.includes("cantrip")) {
+			let testB = b.system.castLevel.value;
+			if (b.system.traits.value.includes("cantrip")) {
 				testB = -1;
 			}
 			if (a.name.includes("Constant") && b.name.includes("Constant")) {
@@ -352,19 +362,19 @@ function build_creature_view(creatureName, tokenID = null) {
 		for (var aSpell in theRules.spells) {
 			let spellData = theRules.spells[aSpell];
 			//MapTool.chat.broadcast(JSON.stringify(spellData));
-			if (!(firstCantrip) && (spellData.traits.value.includes("cantrip"))) {
-				let cantripLevel = spellData.castLevel;
+			if (!(firstCantrip) && (spellData.system.traits.value.includes("cantrip"))) {
+				let cantripLevel = spellData.system.castLevel.value;
 				spellString = spellString + "; <b>Cantrips (" + String(cantripLevel) + getOrdinal(cantripLevel) + ")</b> ";
 				firstCantrip = true;
 			} else if (!(firstConstant) && spellData.name.includes("Constant")) {
 				spellString = spellString + "; <b>Constant</b> ";
 				levelsPrinted = [];
 				firstConstant = true;
-				spellString = spellString + "<b>" + String(spellData.castLevel) + getOrdinal(spellData.castLevel) + "</b> ";
-				levelsPrinted.push(spellData.castLevel);
-			} else if (!(spellData.traits.value.includes("cantrip")) && !(levelsPrinted.includes(spellData.castLevel))) {
-				spellString = spellString + "; <b>" + String(spellData.castLevel) + getOrdinal(spellData.castLevel) + "</b> ";
-				levelsPrinted.push(spellData.castLevel);
+				spellString = spellString + "<b>" + String(spellData.system.castLevel.value) + getOrdinal(spellData.system.castLevel.value) + "</b> ";
+				levelsPrinted.push(spellData.system.castLevel.value);
+			} else if (!(spellData.system.traits.value.includes("cantrip")) && !(levelsPrinted.includes(spellData.system.castLevel.value))) {
+				spellString = spellString + "; <b>" + String(spellData.system.castLevel.value) + getOrdinal(spellData.system.castLevel.value) + "</b> ";
+				levelsPrinted.push(spellData.system.castLevel);
 			} else {
 				spellString = spellString + ", ";
 			}
@@ -379,14 +389,15 @@ function build_creature_view(creatureName, tokenID = null) {
 		let actionData = creatureData.offensiveActions[o];
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		HTMLString += "<b>" + actionData.name + "</b> ";
-		if (actionData.actionCost == 1 || actionData.actionCost == 2 || actionData.actionCost == 3) {
-			HTMLString += icon_img(String(actionData.actionCost) + "action", true) + " ";
+		let actionCost = actionData.system.actions.value
+		if (actionCost == 1 || actionCost == 2 || actionCost == 3) {
+			HTMLString += icon_img(String(actionCost) + "action", true) + " ";
 		}
-		if (actionData.traits.length > 0) {
+		if (actionData.system.traits.length > 0) {
 			HTMLString += "(" + actionData.traits.join(", ") + ") ";
 		}
 		additionalData.action = actionData;
-		HTMLString += clean_description(actionData.description, true, true, true, additionalData);
+		HTMLString += clean_description(actionData.system.description.value, true, true, true, additionalData);
 		HTMLString += "<br />";
 	}
 

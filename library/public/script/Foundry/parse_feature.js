@@ -1,6 +1,7 @@
 "use strict";
 
 function parse_feature(featureName, feature, assignDict = null) {
+	MapTool.chat.broadcast("Call to Deprecated parse_feature: " + featureName);
 	let itemData = feature;
 	let simpleReturn = assignDict == null;
 	itemData.baseName = featureName;

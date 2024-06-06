@@ -1,7 +1,7 @@
 "use strict";
 
 function feature_cause_definition(feature, PCdata) {
-    let rules = feature.rules;
+    let rules = feature.system.rules;
     for (var r in rules) {
         let newRule = rules[r];
         if ("definition" in newRule) {

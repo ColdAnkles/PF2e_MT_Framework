@@ -90,7 +90,7 @@ function foundry_calc_value(value, actor, item) {
 				let splitStrings = value.split(".");
 				let flagKey = splitStrings[splitStrings.length - 1];
 				if (actor != null) {
-					let flagList = JSON.parse(actor.getProperty("creatureFlags"));
+					let flagList = JSON.parse(actor.getProperty("foundryActor"));
 					if (flagKey in flagList) {
 						return flagList[flagKey];
 					} else {

@@ -73,7 +73,7 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 		let activeEffects = JSON.parse(thisCreature.getProperty("activeEffects"));
 		let attacks = JSON.parse(thisCreature.getProperty("basicAttacks"));
 		let tokenProfs = JSON.parse(thisCreature.getProperty("proficiencies"));
-		rules_modify_flags(effectData.rules, state == 1, thisCreature, effectSource);
+		//rules_modify_actor(effectData.rules, state == 1, thisCreature, effectSource);
 
 		if (activeEffects == null) {
 			activeEffects = {};

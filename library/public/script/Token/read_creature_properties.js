@@ -68,8 +68,8 @@ function read_creature_properties(token) {
 	creatureData.attacksThisRound = Number(token.getProperty("attacksThisRound"));
 	creatureData.actionsLeft = Number(token.getProperty("actionsLeft"));
 	creatureData.reactionsLeft = Number(token.getProperty("reactionsLeft"));
-	creatureData.allFeatures = JSON.parse(token.getProperty("allFeatures"));
-	creatureData.creatureFlags = JSON.parse(token.getProperty("creatureFlags"));
+	creatureData.features = JSON.parse(token.getProperty("features"));
+	creatureData.foundryActor = JSON.parse(token.getProperty("foundryActor"));
 
 	if (creatureData.activeEffects == null) {
 		creatureData.activeEffects = {};
@@ -89,11 +89,11 @@ function read_creature_properties(token) {
 	if (creatureData.reactionsLeft == null) {
 		creatureData.reactionsLeft = 0;
 	}
-	if (creatureData.allFeatures == null) {
-		creatureData.allFeatures = [];
+	if (creatureData.features == null) {
+		creatureData.features = [];
 	}
-	if (creatureData.creatureFlags == null) {
-		creatureData.creatureFlags = [];
+	if (creatureData.foundryActor == null) {
+		creatureData.foundryActor = {};
 	}
 
 

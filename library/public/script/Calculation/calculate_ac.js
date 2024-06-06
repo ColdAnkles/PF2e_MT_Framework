@@ -26,9 +26,9 @@ function calculate_ac(tokenID) {
 	let armorProfType = "unarmored";
 
 	if (eqArmor != null) {
-		armorBonus = eqArmor.acBonus + eqArmor.runes.potency;
-		dexCap = Math.min(eqArmor.dexCap, dexCap);
-		armorProfType = eqArmor.armorType;
+		armorBonus = eqArmor.system.acBonus + eqArmor.system.runes.potency;
+		dexCap = Math.min(eqArmor.system.dexCap, dexCap);
+		armorProfType = eqArmor.system.category;
 		if ("otherEffects" in bonuses && eqArmor.baseItem in bonuses.otherEffects) {
 			let armorChange = bonuses.otherEffects[eqArmor.baseItem];
 			if (armorChange.mode == "add") {
@@ -37,8 +37,12 @@ function calculate_ac(tokenID) {
 		}
 	}
 
-	if (eqShield != null && eqShield != "null") {
-		shieldBonus = eqShield.ac;
+	if (eqShield != null && eqShield != "null" && "raised" in eqShield && eqShield.raised) {
+		if ("ac" in eqShield) {
+			shieldBonus = eqShield.system.ac;
+		} else if ("acBonus" in eqShield) {
+			shieldBonus = eqShield.system.acBonus;
+		}
 	}
 
 	for (var p in profs) {
@@ -48,12 +52,20 @@ function calculate_ac(tokenID) {
 		}
 	}
 
+	let totalAC = base_ac;
+	if (get_token_type(token) == "PC") {
+		dex_bonus = Math.max(0, Math.min(dex_bonus, dexCap));
 
-	dex_bonus = Math.max(0, Math.min(dex_bonus, dexCap));
+		bonuses = Math.max(bonuses.bonuses.circumstance, shieldBonus) + bonuses.bonuses.status + Math.max(bonuses.bonuses.item, armorBonus) + bonuses.maluses.circumstance + bonuses.maluses.status + bonuses.maluses.item + bonuses.bonuses.proficiency;
+		//MapTool.chat.broadcast(String(base_ac) + "+"+String(bonuses) + "+" + String(dex_bonus) + "+"+String(profBonus));
+		totalAC = (base_ac + bonuses + dex_bonus + profBonus);
+	} else {
+		base_ac = Number(token.getProperty("AC"));
 
-	bonuses = Math.max(bonuses.bonuses.circumstance, shieldBonus) + bonuses.bonuses.status + Math.max(bonuses.bonuses.item, armorBonus) + bonuses.maluses.circumstance + bonuses.maluses.status + bonuses.maluses.item + bonuses.bonuses.proficiency;
-	//MapTool.chat.broadcast(String(base_ac) + "+"+String(bonuses) + "+" + String(dex_bonus) + "+"+String(profBonus));
-	let totalAC = (base_ac + bonuses + dex_bonus + profBonus);
+		bonuses = Math.max(bonuses.bonuses.circumstance, shieldBonus) + bonuses.bonuses.status + bonuses.bonuses.item + bonuses.maluses.circumstance + bonuses.maluses.status + bonuses.maluses.item + bonuses.bonuses.proficiency;
+
+		totalAC = (base_ac + bonuses);
+	}
 	return totalAC;
 }
 

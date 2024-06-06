@@ -30,298 +30,318 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 	let stats = ["str", "dex", "con", "int", "wis", "cha"];
 
 	if (checkData === null) {
+		try {
+			let queryHTML = "<html>";
 
-		let queryHTML = "<html>";
+			let skillStrings = {};
 
-		let skillStrings = {};
+			let statStrings = {};
 
-		let statStrings = {};
-
-		if (altStat) {
-			for (var s in stats) {
-				statStrings[s] = { "name": stats[s], "string": (capitalise(stats[s]) + " +" + checkToken.getProperty(stats[s])) };
-			}
-		}
-
-		let tokenType = get_token_type(checkToken);
-
-		for (var p in skills) {
-			let skillData = skills[p];
-			let abilityMod = checkToken.getProperty(skillData.stat);
-			skillStrings[skillData.name] = skillData.name + " " + pos_neg_sign(abilityMod);
-		}
-
-		let profList = JSON.parse(checkToken.getProperty("proficiencies"));
-
-		for (var p in profList) {
-			let profData = profList[p];
-			if (!(profData.name in skills) && !(profData.name.includes("Lore"))) {
-				continue
-			}
-			let attMod = 0;
-			if (profData.name in skills) {
-				attMod = Number(checkToken.getProperty(skills[profData.name].stat));
-			} else if (profData.name.includes("Lore")) {
-				attMod = Number(checkToken.getProperty("int"));
+			if (altStat) {
+				for (var s in stats) {
+					statStrings[s] = { "name": stats[s], "string": (capitalise(stats[s]) + " +" + checkToken.getProperty(stats[s])) };
+				}
 			}
 
-			let displayNumber = profData.bonus;
-			if (tokenType == "PC") {
-				if (!altStat) {
-					displayNumber = profData.bonus + attMod;
+			let tokenType = get_token_type(checkToken);
+
+			for (var p in skills) {
+				let skillData = skills[p];
+				let abilityMod = checkToken.getProperty(skillData.stat);
+				skillStrings[skillData.name] = skillData.name + " " + pos_neg_sign(abilityMod);
+			}
+
+			let profList = JSON.parse(checkToken.getProperty("proficiencies"));
+
+			for (var p in profList) {
+				let profData = profList[p];
+				if (!(profData.name in skills) && !(profData.name.includes("Lore"))) {
+					continue
+				}
+				let attMod = 0;
+				if (profData.name in skills) {
+					attMod = Number(checkToken.getProperty(skills[profData.name].stat));
+				} else if (profData.name.includes("Lore")) {
+					attMod = Number(checkToken.getProperty("int"));
+				}
+
+				let displayNumber = profData.bonus;
+				if (tokenType == "PC") {
+					if (!altStat) {
+						displayNumber = profData.bonus + attMod;
+					} else {
+						displayNumber = profData.bonus;
+					}
 				} else {
-					displayNumber = profData.bonus;
+					if (altStat) {
+						displayNumber = profData.bonus - attMod;
+					}
 				}
-			} else {
-				if (altStat) {
-					displayNumber = profData.bonus - attMod;
-				}
+				skillStrings[profData.name] = profData.name + " " + pos_neg_sign(displayNumber);
 			}
-			skillStrings[profData.name] = profData.name + " " + pos_neg_sign(displayNumber);
-		}
 
 
 
-		queryHTML += "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/NethysCSS.css\"><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
-		queryHTML += "<input type='hidden' name='checkTokenID' value='" + checkToken.getId() + "'>";
-		queryHTML += "<input type='hidden' name='tokenType' value='" + tokenType + "'>";
-		queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
-		queryHTML += "<input type='hidden' name='altStat' value='" + Number(altStat) + "'>";
-		queryHTML += "<input type='hidden' name='extraScopes' value='" + JSON.stringify(extraScopes) + "'>";
-		queryHTML += "<input type='hidden' name='useMAP' value='0'>";
-		queryHTML += "<input type='hidden' name='increaseMAP' value='0'>";
+			queryHTML += "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/NethysCSS.css\"><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+			queryHTML += "<input type='hidden' name='checkTokenID' value='" + checkToken.getId() + "'>";
+			queryHTML += "<input type='hidden' name='tokenType' value='" + tokenType + "'>";
+			queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
+			queryHTML += "<input type='hidden' name='altStat' value='" + Number(altStat) + "'>";
+			queryHTML += "<input type='hidden' name='extraScopes' value='" + JSON.stringify(extraScopes) + "'>";
+			queryHTML += "<input type='hidden' name='useMAP' value='0'>";
+			queryHTML += "<input type='hidden' name='increaseMAP' value='0'>";
 
-		queryHTML += "<tr><th colspan='5' style='text-align:center'><b>Skill Check</b></th></tr>";
-		queryHTML += "<tr><td " + ((altStat) ? "" : "colspan='2'") + ">Skill:</td><td " + ((altStat) ? "" : "colspan='3'") + "><select name='skillName'>";
-		for (var s in skillStrings) {
-			queryHTML += "<option value='" + s + "'>" + skillStrings[s] + "</option>";
-		}
-		queryHTML += "</select></td>";
-
-		if (altStat) {
-			queryHTML += "<td>Attribute:</td><td><select name='statName'>";
-			for (var s in statStrings) {
-				queryHTML += "<option value='" + statStrings[s].name + "'>" + statStrings[s].string + "</option>";
+			queryHTML += "<tr><th colspan='5' style='text-align:center'><b>Skill Check</b></th></tr>";
+			queryHTML += "<tr><td " + ((altStat) ? "" : "colspan='2'") + ">Skill:</td><td " + ((altStat) ? "" : "colspan='3'") + "><select name='skillName'>";
+			for (var s in skillStrings) {
+				queryHTML += "<option value='" + s + "'>" + skillStrings[s] + "</option>";
 			}
 			queryHTML += "</select></td>";
+
+			if (altStat) {
+				queryHTML += "<td>Attribute:</td><td><select name='statName'>";
+				for (var s in statStrings) {
+					queryHTML += "<option value='" + statStrings[s].name + "'>" + statStrings[s].string + "</option>";
+				}
+				queryHTML += "</select></td>";
+			}
+			queryHTML += "</tr>";
+
+			queryHTML += "<tr><td>Misc Bonus:</td><td><input type='text' name='miscBonus' size='' maxlength='' value='0'></td>\
+			<td>Circumstance:</b></td><td>+<input type='text' name='cBonus' value='0' size='2'></input></td>\
+			<td>-<input type='text' name='cMalus' value='0' size='2'></input></td></tr>";
+
+			queryHTML += "<tr><td>Secret Check?</td><td><input type='checkbox' id='secretCheck' name='secretCheck' value='1'></td>\
+			<td>Status:</b></td><td>+<input type='text' name='sBonus' value='0' size='2'></input></td>\
+			<td>-<input type='text' name='sMalus' value='0' size='2'></input></td></tr>";
+
+			queryHTML += "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >" + checkToken.getName() + " tries to be skillful.</textarea></td>\
+			<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
+			<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
+
+			queryHTML += "<tr><td colspan='2' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td>\
+			<td>Other:</b></td><td>+<input type='text' name='oBonus' value='0' size='2'></input></td>\
+			<td>-<input type='text' name='oMalus' value='0' size='2'></input></td></tr>";
+
+			let initiative = get_initiative(checkToken.getId());
+			if (!(isNaN(initiative))) {
+				queryHTML += "<tr><td colspan='2' style='text-align:center'>Use MAP:<input type='checkbox' id='useMAP' name='useMAP' value='useMAP'></td>\
+				<td colspan='3' style='text-align:center'>Increase MAP:<input type='checkbox' id='increaseMAP' name='increaseMAP' value='increaseMAP'></td></tr>";
+			}
+			//queryHTML += "<tr><td colspan='5' style='text-align:center'>Secret Check:<input type='checkbox' id='secretCheck' name='secretCheck' value='secretCheck'></td></tr>";
+
+			queryHTML += "<tr><td colspan='5' style='text-align:center'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
+
+			queryHTML += "</form></table></html>"
+
+			MTScript.setVariable("queryHTML", queryHTML);
+			let windowHeight = 360;
+			if (!(isNaN(initiative))) {
+				windowHeight += 20;
+			}
+			MTScript.evalMacro("[dialog5('Skill Check','width=600;height=" + String(windowHeight) + ";temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
+
+		} catch (e) {
+			MapTool.chat.broadcast("Error in checkData-NULL during skill_check");
+			MapTool.chat.broadcast("checkToken: " + String(checkToken));
+			MapTool.chat.broadcast("altStat: " + String(altStat));
+			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
+			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
 		}
-		queryHTML += "</tr>";
-
-		queryHTML += "<tr><td>Misc Bonus:</td><td><input type='text' name='miscBonus' size='' maxlength='' value='0'></td>\
-		<td>Circumstance:</b></td><td>+<input type='text' name='cBonus' value='0' size='2'></input></td>\
-		<td>-<input type='text' name='cMalus' value='0' size='2'></input></td></tr>";
-
-		queryHTML += "<tr><td>Secret Check?</td><td><input type='checkbox' id='secretCheck' name='secretCheck' value='1'></td>\
-		<td>Status:</b></td><td>+<input type='text' name='sBonus' value='0' size='2'></input></td>\
-		<td>-<input type='text' name='sMalus' value='0' size='2'></input></td></tr>";
-
-		queryHTML += "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >" + checkToken.getName() + " tries to be skillful.</textarea></td>\
-		<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
-		<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
-
-		queryHTML += "<tr><td colspan='2' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td>\
-		<td>Other:</b></td><td>+<input type='text' name='oBonus' value='0' size='2'></input></td>\
-		<td>-<input type='text' name='oMalus' value='0' size='2'></input></td></tr>";
-
-		let initiative = get_initiative(checkToken.getId());
-		if (!(isNaN(initiative))) {
-			queryHTML += "<tr><td colspan='2' style='text-align:center'>Use MAP:<input type='checkbox' id='useMAP' name='useMAP' value='useMAP'></td>\
-			<td colspan='3' style='text-align:center'>Increase MAP:<input type='checkbox' id='increaseMAP' name='increaseMAP' value='increaseMAP'></td></tr>";
-		}
-		//queryHTML += "<tr><td colspan='5' style='text-align:center'>Secret Check:<input type='checkbox' id='secretCheck' name='secretCheck' value='secretCheck'></td></tr>";
-
-		queryHTML += "<tr><td colspan='5' style='text-align:center'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
-
-		queryHTML += "</form></table></html>"
-
-		MTScript.setVariable("queryHTML", queryHTML);
-		let windowHeight = 360;
-		if (!(isNaN(initiative))) {
-			windowHeight += 20;
-		}
-		MTScript.evalMacro("[dialog5('Skill Check','width=600;height=" + String(windowHeight) + ";temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 
 	} else {
 		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
+		try {
 
-		if (!("cBonus" in checkData)) {
-			checkData.cBonus = 0;
-		} else {
-			checkData.cBonus = Math.abs(checkData.cBonus);
-		}
-		if (!("sBonus" in checkData)) {
-			checkData.sBonus = 0;
-		} else {
-			checkData.sBonus = Math.abs(checkData.sBonus);
-		}
-		if (!("iBonus" in checkData)) {
-			checkData.iBonus = 0;
-		} else {
-			checkData.iBonus = Math.abs(checkData.iBonus);
-		}
-		if (!("oBonus" in checkData)) {
-			checkData.oBonus = 0;
-		} else {
-			checkData.oBonus = Math.abs(checkData.oBonus);
-		}
-		if (!("cMalus" in checkData)) {
-			checkData.cMalus = 0;
-		} else {
-			checkData.cMalus = Math.abs(checkData.cMalus) * -1;
-		}
-		if (!("sMalus" in checkData)) {
-			checkData.sMalus = 0;
-		} else {
-			checkData.sMalus = Math.abs(checkData.sMalus) * -1;
-		}
-		if (!("iMalus" in checkData)) {
-			checkData.iMalus = 0;
-		} else {
-			checkData.iMalus = Math.abs(checkData.iMalus) * -1;
-		}
-		if (!("oMalus" in checkData)) {
-			checkData.oMalus = 0;
-		} else {
-			checkData.oMalus = Math.abs(checkData.oMalus) * -1;
-		}
-		if (!("fortuneSelect" in checkData)) {
-			checkData.fortuneSelect = "normal";
-		}
-		if ("extraScopes" in checkData) {
-			extraScopes = checkData.extraScopes;
-		}
-
-		MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
-		let dTwenty = Number(MTScript.getVariable("dTwenty"));
-		if (checkData.fortuneSelect == "fortune") {
-			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
-			dTwenty = Math.max(dTwenty, Number(MTScript.getVariable("dTwenty")));
-		} else if (checkData.fortuneSelect == "misfortune") {
-			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
-			dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
-		}
-
-		let dTwentyColour = "black";
-		if (dTwenty == 1) {
-			dTwentyColour = "red";
-		} else if (dTwenty == 20) {
-			dTwentyColour = "green";
-		}
-
-		let stat_bonus = Number(checkToken.getProperty(checkData.statName));
-		if (checkData.skillName in skills && !("statName" in checkData)) {
-			stat_bonus = Number(checkToken.getProperty(skills[checkData.skillName].stat));
-		} else if (checkData.skillName.includes("Lore")) {
-			stat_bonus = Number(checkToken.getProperty("int"));
-		}
-
-		if (!("statName" in checkData) && checkData.skillName in skills) {
-			checkData.statName = skills[checkData.skillName].stat;
-		}
-
-
-		let initiative = get_initiative(checkToken.getId());
-		let currentAttackCount = Number(checkToken.getProperty("attacksThisRound"));
-		if (isNaN(currentAttackCount)) {
-			currentAttackCount = 0;
-		}
-
-		let map_malus = Math.min(currentAttackCount, 2) * -5;
-
-		if ("useMAP" in checkData && !checkData.useMAP) {
-			map_malus = 0;
-		}
-
-		//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
-		let prof_bonus = 0;
-		let misc_bonus = Number(checkData.miscBonus);
-		let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName), checkData.statName + "-based", "skill-check"].concat(extraScopes), true);
-		let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + Math.max(effect_bonus_raw.bonuses.none, checkData.oBonus)
-			+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + Math.min(effect_bonus_raw.maluses.none, checkData.oMalus);
-
-		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
-
-		if (effect_bonus_raw.appliedEffects.includes("Assurance")) {
-			MTScript.evalMacro("[h: apply=0][h: input(\"apply|0|Apply Assurance|CHECK\")]");
-			let applyAssurance = Number(MTScript.getVariable("apply")) == 1;
-			//MapTool.chat.broadcast(String(applyAssurance));
-			if (applyAssurance) {
-				dTwenty = 10;
-				dTwentyColour = "black";
-				effect_bonus = 0;
-				misc_bonus = 0;
-				stat_bonus = 0;
-				map_malus = 0;
-				effect_bonus_raw.appliedEffects = ["Assurance"];
+			if (!("cBonus" in checkData)) {
+				checkData.cBonus = 0;
 			} else {
-				let assuranceIndex = effect_bonus_raw.appliedEffects.indexOf("Assurance");
-				effect_bonus_raw.appliedEffects.splice(assuranceIndex, 1);
+				checkData.cBonus = Math.abs(checkData.cBonus);
 			}
-		}
+			if (!("sBonus" in checkData)) {
+				checkData.sBonus = 0;
+			} else {
+				checkData.sBonus = Math.abs(checkData.sBonus);
+			}
+			if (!("iBonus" in checkData)) {
+				checkData.iBonus = 0;
+			} else {
+				checkData.iBonus = Math.abs(checkData.iBonus);
+			}
+			if (!("oBonus" in checkData)) {
+				checkData.oBonus = 0;
+			} else {
+				checkData.oBonus = Math.abs(checkData.oBonus);
+			}
+			if (!("cMalus" in checkData)) {
+				checkData.cMalus = 0;
+			} else {
+				checkData.cMalus = Math.abs(checkData.cMalus) * -1;
+			}
+			if (!("sMalus" in checkData)) {
+				checkData.sMalus = 0;
+			} else {
+				checkData.sMalus = Math.abs(checkData.sMalus) * -1;
+			}
+			if (!("iMalus" in checkData)) {
+				checkData.iMalus = 0;
+			} else {
+				checkData.iMalus = Math.abs(checkData.iMalus) * -1;
+			}
+			if (!("oMalus" in checkData)) {
+				checkData.oMalus = 0;
+			} else {
+				checkData.oMalus = Math.abs(checkData.oMalus) * -1;
+			}
+			if (!("fortuneSelect" in checkData)) {
+				checkData.fortuneSelect = "normal";
+			}
+			if ("extraScopes" in checkData) {
+				extraScopes = checkData.extraScopes;
+			}
 
-		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
+			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
+			let dTwenty = Number(MTScript.getVariable("dTwenty"));
+			if (checkData.fortuneSelect == "fortune") {
+				MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
+				dTwenty = Math.max(dTwenty, Number(MTScript.getVariable("dTwenty")));
+			} else if (checkData.fortuneSelect == "misfortune") {
+				MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
+				dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
+			}
 
-		if (checkData.tokenType == "NPC" || checkData.tokenType == "PC") {
-			let profList = JSON.parse(checkToken.getProperty("proficiencies"));
-			for (var p in profList) {
-				let profData = profList[p];
-				if (checkData.skillName == profData.name && checkData.tokenType == "NPC") {
-					prof_bonus = Number(profData.bonus - stat_bonus);
-				} else if (checkData.skillName == profData.name && checkData.tokenType == "PC") {
-					prof_bonus = Number(profData.bonus);
+			let dTwentyColour = "black";
+			if (dTwenty == 1) {
+				dTwentyColour = "red";
+			} else if (dTwenty == 20) {
+				dTwentyColour = "green";
+			}
+
+			let stat_bonus = Number(checkToken.getProperty(checkData.statName));
+			if (checkData.skillName in skills && !("statName" in checkData)) {
+				stat_bonus = Number(checkToken.getProperty(skills[checkData.skillName].stat));
+			} else if (checkData.skillName.includes("Lore")) {
+				stat_bonus = Number(checkToken.getProperty("int"));
+			}
+
+			if (!("statName" in checkData) && checkData.skillName in skills) {
+				checkData.statName = skills[checkData.skillName].stat;
+			}
+
+
+			let initiative = get_initiative(checkToken.getId());
+			let currentAttackCount = Number(checkToken.getProperty("attacksThisRound"));
+			if (isNaN(currentAttackCount)) {
+				currentAttackCount = 0;
+			}
+
+			let map_malus = Math.min(currentAttackCount, 2) * -5;
+
+			if ("useMAP" in checkData && !checkData.useMAP) {
+				map_malus = 0;
+			}
+
+			//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
+			let prof_bonus = 0;
+			let misc_bonus = Number(checkData.miscBonus);
+			let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName), checkData.statName + "-based", "skill-check"].concat(extraScopes), true);
+			let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + Math.max(effect_bonus_raw.bonuses.none, checkData.oBonus)
+				+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + Math.min(effect_bonus_raw.maluses.none, checkData.oMalus);
+
+			//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
+
+			if (effect_bonus_raw.appliedEffects.includes("Assurance")) {
+				MTScript.evalMacro("[h: apply=0][h: input(\"apply|0|Apply Assurance|CHECK\")]");
+				let applyAssurance = Number(MTScript.getVariable("apply")) == 1;
+				//MapTool.chat.broadcast(String(applyAssurance));
+				if (applyAssurance) {
+					dTwenty = 10;
+					dTwentyColour = "black";
+					effect_bonus = 0;
+					misc_bonus = 0;
+					stat_bonus = 0;
+					map_malus = 0;
+					effect_bonus_raw.appliedEffects = ["Assurance"];
+				} else {
+					let assuranceIndex = effect_bonus_raw.appliedEffects.indexOf("Assurance");
+					effect_bonus_raw.appliedEffects.splice(assuranceIndex, 1);
 				}
 			}
-		}
 
-		if (effect_bonus_raw.bonuses.proficiency > 0 && prof_bonus == 0) {
-			prof_bonus = effect_bonus_raw.bonuses.proficiency;
-		}
+			//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
-		let armorPenalty = 0;
-
-		if (checkData.statName == "str" || checkData.statName == "dex") {
-			let tokenArmor = get_equipped_armor(checkToken);
-			let tokenStr = checkToken.getProperty("str")
-			if (tokenArmor != null && "checkPenalty" in tokenArmor && "strReq" in tokenArmor && tokenStr < tokenArmor.strReq) {
-				armorPenalty = tokenArmor.checkPenalty;
+			if (checkData.tokenType == "NPC" || checkData.tokenType == "PC") {
+				let profList = JSON.parse(checkToken.getProperty("proficiencies"));
+				for (var p in profList) {
+					let profData = profList[p];
+					if (checkData.skillName == profData.name && checkData.tokenType == "NPC") {
+						prof_bonus = Number(profData.bonus - stat_bonus);
+					} else if (checkData.skillName == profData.name && checkData.tokenType == "PC") {
+						prof_bonus = Number(profData.bonus);
+					}
+				}
 			}
-		}
 
-		let checkMod = stat_bonus + prof_bonus + misc_bonus + effect_bonus + map_malus + armorPenalty;
-		let checkResult = dTwenty + checkMod;
+			if (effect_bonus_raw.bonuses.proficiency > 0 && prof_bonus == 0) {
+				prof_bonus = effect_bonus_raw.bonuses.proficiency;
+			}
 
-		let displayData = { "description": "", "name": checkToken.getName() + " - " + checkData.skillName + " " + pos_neg_sign(checkMod) };
-		displayData.description = checkData.flavourText + "<br/><div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span>"
-		if (stat_bonus != 0) {
-			displayData.description += " " + pos_neg_sign(stat_bonus, true);
-		}
-		if (prof_bonus != 0) {
-			displayData.description += " " + pos_neg_sign(prof_bonus, true);
-		}
-		if (effect_bonus != 0) {
-			displayData.description += " " + pos_neg_sign(effect_bonus, true);
-		}
-		if (misc_bonus != 0) {
-			displayData.description += " " + pos_neg_sign(misc_bonus, true);
-		}
-		if (map_malus != 0) {
-			displayData.description += " " + pos_neg_sign(map_malus, true);
-		}
-		if (armorPenalty != 0) {
-			displayData.description += " " + pos_neg_sign(armorPenalty, true);
-		}
-		displayData.description += " = " + String(checkResult) + "</div></b>";
+			let armorPenalty = 0;
 
-		displayData.appliedEffects = effect_bonus_raw.appliedEffects;
-		displayData.gmOnly = checkData.secretCheck;
+			if (checkData.statName == "str" || checkData.statName == "dex") {
+				let tokenArmor = get_equipped_armor(checkToken);
+				let tokenStr = checkToken.getProperty("str")
+				if (tokenArmor != null && "checkPenalty" in tokenArmor && "strReq" in tokenArmor && tokenStr < tokenArmor.strReq) {
+					armorPenalty = tokenArmor.checkPenalty;
+				}
+			}
 
-		chat_display(displayData);
+			let checkMod = stat_bonus + prof_bonus + misc_bonus + effect_bonus + map_malus + armorPenalty;
+			let checkResult = dTwenty + checkMod;
 
-		if (!(isNaN(initiative)) && "increaseMAP" in checkData && checkData.increaseMAP) {
-			checkToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
+			let displayData = { "name": checkToken.getName() + " - " + checkData.skillName + " " + pos_neg_sign(checkMod), "system": { "description": { "value": "" } } };
+			displayData.system.description.value = checkData.flavourText + "<br/><div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span>"
+			if (stat_bonus != 0) {
+				displayData.system.description.value += " " + pos_neg_sign(stat_bonus, true);
+			}
+			if (prof_bonus != 0) {
+				displayData.system.description.value += " " + pos_neg_sign(prof_bonus, true);
+			}
+			if (effect_bonus != 0) {
+				displayData.system.description.value += " " + pos_neg_sign(effect_bonus, true);
+			}
+			if (misc_bonus != 0) {
+				displayData.system.description.value += " " + pos_neg_sign(misc_bonus, true);
+			}
+			if (map_malus != 0) {
+				displayData.system.description.value += " " + pos_neg_sign(map_malus, true);
+			}
+			if (armorPenalty != 0) {
+				displayData.system.description.value += " " + pos_neg_sign(armorPenalty, true);
+			}
+			displayData.system.description.value += " = " + String(checkResult) + "</div></b>";
+
+			displayData.system.appliedEffects = effect_bonus_raw.appliedEffects;
+			displayData.system.gmOnly = checkData.secretCheck;
+
+			chat_display(displayData);
+
+			if (!(isNaN(initiative)) && "increaseMAP" in checkData && checkData.increaseMAP) {
+				checkToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
+			}
+
+			return checkResult;
+		} catch (e) {
+			MapTool.chat.broadcast("Error in checkData-else during skill_check");
+			MapTool.chat.broadcast("checkToken: " + String(checkToken));
+			MapTool.chat.broadcast("altStat: " + String(altStat));
+			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
+			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
 		}
-
-		return checkResult;
 	}
 }
 

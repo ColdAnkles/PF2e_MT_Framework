@@ -4,16 +4,17 @@ function get_equipped_shield(token) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
 	}
-	let charFlags = JSON.parse(token.getProperty("creatureFlags"))
-	if (charFlags.system.attributes.shield != null) {
-		return charFlags.system.attributes.shield;
+	let testShield = get_actor_data(token, "system.attributes.shield");
+	if (testShield != null) {
+		return testShield;
 	}
 	let inventory = JSON.parse(token.getProperty("inventory"));
 	for (var i in inventory) {
 		let itemData = inventory[i];
-		if (itemData.type == "shield" && itemData.equipped) {
-			charFlags.system.attributes.shield = itemData;
-			token.setProperty("creatureFlags", JSON.stringify(charFlags))
+		if (itemData.type == "shield" && itemData.system.equipped) {
+			let actorData = JSON.parse(token.getProperty("foundryActor"));
+			actorData.system.attributes.shield = itemData;
+			token.setProperty("foundryActor", JSON.stringify(actorData))
 			return itemData;
 		}
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
@@ -30,7 +31,7 @@ function get_equipped_armor(token) {
 	let inventory = JSON.parse(token.getProperty("inventory"));
 	for (var i in inventory) {
 		let itemData = inventory[i];
-		if (itemData.type == "armor" && itemData.equipped) {
+		if (itemData.type == "armor" && itemData.system.equipped) {
 			return itemData;
 		}
 		//MapTool.chat.broadcast(JSON.stringify(itemData));
@@ -49,7 +50,7 @@ function find_handwraps(token) {
 	let inventory = JSON.parse(token.getProperty("inventory"));
 	for (var i in inventory) {
 		let itemData = inventory[i];
-		if (itemData.name == "Handwraps of Mighty Blows" && itemData.level > bestHandwrapsLevel) {
+		if (itemData.name == "Handwraps of Mighty Blows" && itemData.system.level.value > bestHandwrapsLevel) {
 			bestHandwraps = itemData;
 		}
 	}
@@ -67,7 +68,7 @@ function get_equipped_items(token) {
 
 	for (var i in inventory) {
 		let itemData = inventory[i];
-		if (itemData.equipped) {
+		if (itemData.system.equipped) {
 			equippedItems[i] = itemData;
 		}
 	}

@@ -8,6 +8,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
     MTScript.setVariable("choiceTitle", choiceTitle);
     //MapTool.chat.broadcast(JSON.stringify(possibleSelections));
     //MapTool.chat.broadcast(JSON.stringify(feature));
+    //MapTool.chat.broadcast(JSON.stringify(assignDict));
     let chosenValues = [];
     for (var r in rules) {
         let newRule = rules[r];
@@ -70,6 +71,8 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             let intersect = choices.filter(value => possibleSelections.includes(value));
             if (intersect.length == 1) {
                 choiceResult = intersect[0];
+            } else if (intersect.length > 1) {
+                choices = intersect;
             }
             //MapTool.chat.broadcast(String(choiceResult));
 
@@ -80,10 +83,10 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 choiceResult = MTScript.getVariable("choice");
             }
             //MapTool.chat.broadcast(choiceResult);
-            if (choiceFlag in assignDict) {
-                assignDict[choiceFlag].push(choiceResult.toLowerCase());
+            if ("flags" in assignDict && "pf2e" in assignDict.flags && "ruleSelections" in assignDict.flags.pf2e && choiceFlag in assignDict.flags.pf2e.ruleSelections) {
+                assignDict.flags.pf2e.ruleSelections[choiceFlag].push(choiceResult.toLowerCase());
             } else {
-                assignDict[choiceFlag] = [choiceResult.toLowerCase()];
+                assignDict.flags.pf2e.ruleSelection[choiceFlag] = [choiceResult.toLowerCase()];
             }
             chosenValues.push(choiceResult);
         }

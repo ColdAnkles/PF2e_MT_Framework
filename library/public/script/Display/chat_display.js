@@ -10,81 +10,159 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	let outputText = "<div style='padding:2px 5px 5px 5px; background-color:black;width:500px'>";
 	outputText = outputText + "<table style='width:100%;padding: 4px 0px;'><tr height=20px style='background-color: #522e2c;'><td><h1 style='color: #cbc18f;line-height: 1em;vertical-align: middle;font-variant: small-caps;'>";
 
-	if ("actionCost" in displayData && "actionType" in displayData) {
-		let imgString = ""
-		if (displayData.actionCost != null) {
-			imgString = icon_img(String(displayData.actionCost) + displayData.actionType, true);
-		} else {
-			imgString = icon_img(displayData.actionType, true);
+	try {
+		if ("actions" in displayData.system && "actionType" in displayData.system) {
+			let imgString = ""
+			if (displayData.system.actions.value != null) {
+				imgString = icon_img(String(displayData.system.actions.value) + displayData.system.actionType.value, true);
+			} else {
+				imgString = icon_img(displayData.system.actionType.value, true);
+			}
+			if (!imgString.includes("NO IMAGE")) {
+				outputText = outputText + imgString + "&nbsp;";
+			} else {
+				outputText = outputText + "&nbsp;";
+			}
 		}
-		if (!imgString.includes("NO IMAGE")) {
-			outputText = outputText + imgString + "&nbsp;";
-		} else {
-			outputText = outputText + "&nbsp;";
-		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during action icon setup");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	outputText = outputText + displayData.name.replaceAll("Lib:", "") + "</h1></td>";
 
-	if ("level" in displayData) {
-		if ("castLevel" in displayData && displayData.castLevel != displayData.level) {
-			displayData.level = displayData.level + " (" + displayData.castLevel + ")";
+	try {
+		if ("level" in displayData.system) {
+			if ("castLevel" in displayData.system && displayData.system.castLevel.value != displayData.system.level.value) {
+				displayData.system.level.value = displayData.system.level.value + " (" + displayData.system.castLevel.value + ")";
+			}
+			outputText = outputText + "<td style='text-align:right'><h1 style='color: #cbc18f;line-height: 1em;vertical-align: middle;font-variant: small-caps;'>" + capitalise(displayData.type) + " " + displayData.system.level.value + "</h1></td>";
 		}
-		outputText = outputText + "<td style='text-align:right'><h1 style='color: #cbc18f;line-height: 1em;vertical-align: middle;font-variant: small-caps;'>" + capitalise(displayData.type) + " " + displayData.level + "</h1></td>";
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during level display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	outputText = outputText + "</tr></table>";
 
-	if ("traits" in displayData && displayData.traits.length > 0) {
-		outputText = outputText + "<table border='0', bgcolor='#5a0308', style='font-size:13pt;font-family:Century Gothic;font-weight:bold;border-spacing:0px'>";
-		for (var t in displayData.traits) {
-			let traitName = displayData.traits[t];
-			let traitNormal = capitalise(traitName).split('-')[0];
-			if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
-				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'><span title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
-			} else {
-				outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
+	try {
+		if ("traits" in displayData.system && displayData.system.traits.value.length > 0) {
+			outputText = outputText + "<table border='0', bgcolor='#5a0308', style='font-size:13pt;font-family:Century Gothic;font-weight:bold;border-spacing:0px'>";
+			for (var t in displayData.system.traits.value) {
+				let traitName = displayData.system.traits.value[t];
+				let traitNormal = capitalise(traitName).split('-')[0];
+				if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
+					outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'><span title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
+				} else {
+					outputText = outputText + "<td style='border:2px solid #d9c484;'><font color='white'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
+				}
 			}
+			outputText = outputText + "</table>"
 		}
-		outputText = outputText + "</table>"
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during trait display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	let gmOutputText = outputText;
-	if (displayData.description != null && displayData.description != "") {
-		additionalData.gm = false;
-		additionalData.replaceGMRolls = false;
-		let normalDesc = clean_description(displayData.description, false, false, false, additionalData);
-		additionalData.gm = true;
-		let gmDesc = clean_description(normalDesc, false, false, false, additionalData)
-		additionalData.gm = false;
-		additionalData.replaceGMRolls = true;
-		normalDesc = clean_description(normalDesc, false, false, false, additionalData);
-		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + normalDesc + "</div>";
-		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + gmDesc + "</div>";
-	}
 
-	if ("appliedEffects" in displayData && displayData.appliedEffects != null && displayData.appliedEffects.length > 0) {
-		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Applied Effects</i><br />" + displayData.appliedEffects.join(", ") + "</div>";
-		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Applied Effects</i><br />" + displayData.appliedEffects.join(", ") + "</div>";
-	}
-
-	if ("runes" in displayData && displayData.runes != null && displayData.runes.length > 0) {
-		let runeStrings = [];
-		for (var r in displayData.runes) {
-			runeStrings.push(
-				create_macroLink(displayData.runes[r], "Item_View_Frame@Lib:ca.pf2e", { "itemType": "item", "itemName": displayData.runes[r] }));
+	try {
+		if (displayData.system.description.value != null && displayData.system.description.value != "") {
+			additionalData.gm = false;
+			additionalData.replaceGMRolls = false;
+			let normalDesc = clean_description(displayData.system.description.value, false, false, false, additionalData);
+			additionalData.gm = true;
+			let gmDesc = clean_description(normalDesc, false, false, false, additionalData)
+			additionalData.gm = false;
+			additionalData.replaceGMRolls = true;
+			normalDesc = clean_description(normalDesc, false, false, false, additionalData);
+			outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + normalDesc + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'>" + gmDesc + "</div>";
 		}
-		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
-		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during description display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
-	if ("materials" in displayData && displayData.materials != null && displayData.materials.length > 0) {
-		let materialStrings = [];
-		for (var r in displayData.materials) {
-			materialStrings.push(capitalise(displayData.materials[r]));
+	try {
+		if ("appliedEffects" in displayData.system && displayData.system.appliedEffects != null && displayData.system.appliedEffects.length > 0) {
+			outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Applied Effects</i><br />" + displayData.system.appliedEffects.join(", ") + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Applied Effects</i><br />" + displayData.system.appliedEffects.join(", ") + "</div>";
 		}
-		outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
-		gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during applied effect display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		if ("runes" in displayData.system && displayData.system.runes != null && displayData.system.runes.length > 0) {
+			let runeStrings = [];
+			for (var r in displayData.system.runes) {
+				runeStrings.push(
+					create_macroLink(displayData.system.runes[r], "Item_View_Frame@Lib:ca.pf2e", { "itemType": "item", "itemName": displayData.system.runes[r] }));
+			}
+			outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during rune display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		if ("materials" in displayData.system && displayData.system.materials != null && displayData.system.materials.length > 0) {
+			let materialStrings = [];
+			for (var r in displayData.system.materials) {
+				materialStrings.push(capitalise(displayData.system.materials[r]));
+			}
+			outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during material display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		if ("remasterFrom" in displayData.system && displayData.system.remasterFrom != null && displayData.system.remasterFrom != "") {
+			outputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Remastered From</i><br />" + displayData.system.remasterFrom + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:#ffffff'><i>Remastered From</i><br />" + displayData.system.remasterFrom + "</div>";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during remaster-from display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	outputText += "</div>";
@@ -92,12 +170,12 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	//MapTool.chat.broadcast(outputText.replaceAll("<","&lt;"));
 
-	if (!("gmOnly" in displayData)) {
-		displayData.gmOnly = false;
+	if (!("gmOnly" in displayData.system)) {
+		displayData.system.gmOnly = false;
 	}
 
 	if (broadcast) {
-		if (!(displayData.gmOnly)) {
+		if (!(displayData.system.gmOnly)) {
 			MapTool.chat.broadcastTo(["not-gm"], outputText);
 		}
 		MapTool.chat.broadcastTo(["gm"], gmOutputText);

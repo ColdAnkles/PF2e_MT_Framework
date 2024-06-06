@@ -39,7 +39,7 @@ function parse_pathbuilder_export(data) {
 		let testCaps4 = capitalise(testVar4);
 
 		if (testVar == "Darkvision") {
-			parsedData.senses.push("darkvision");
+			characterData.senses.push("darkvision");
 			return;
 		} else {
 			if ((testVar in featLibrary || testCaps in featLibrary) && (searchSet.includes("all") || searchSet.includes("feat"))) {
@@ -67,10 +67,7 @@ function parse_pathbuilder_export(data) {
 		let fSpellData = null;
 		if (spellName in spellLibrary) {
 			fSpellData = spellLibrary[spellName];
-			let spellBaseName = fSpellData.baseName;
-			fSpellData = rest_call(fSpellData.fileURL);
-			//MapTool.chat.broadcast(JSON.stringify(fSpellData));
-			return parse_spell(spellBaseName, fSpellData);
+			return rest_call(fSpellData.fileURL);
 		} else {
 			let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
 			if (!(spellName in remasterChanges) || !(remasterChanges[spellName] in spellLibrary)) {
@@ -79,107 +76,108 @@ function parse_pathbuilder_export(data) {
 			} else {
 				spellName = remasterChanges[spellName];
 				fSpellData = spellLibrary[spellName];
-				let spellBaseName = fSpellData.baseName;
 				if ("fileURL" in fSpellData) {
-					fSpellData = rest_call(fSpellData.fileURL);
+					return rest_call(fSpellData.fileURL);
+				} else {
+					return fSpellData;
 				}
-				return parse_spell(spellBaseName, fSpellData);
 			}
 		}
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(data));
 	//MapTool.chat.broadcast(JSON.stringify(data.specials));
-	let parsedData = {};
+	let characterData = {};
 
 	message_window("Importing " + data.name, "Importing Basics");
 
 	let classData = find_object_data(data.class, ["class"]);
 	if ("fileURL" in classData) {
-		classData = parse_feature(classData.baseName, rest_call(classData.fileURL));
+		classData = rest_call(classData.fileURL);
 	}
 
 	//__STATS__	
-	parsedData.abilities = {};
-	parsedData.abilities.str = Math.floor((data.abilities.str - 10) / 2);
-	parsedData.abilities.dex = Math.floor((data.abilities.dex - 10) / 2);
-	parsedData.abilities.con = Math.floor((data.abilities.con - 10) / 2);
-	parsedData.abilities.int = Math.floor((data.abilities.int - 10) / 2);
-	parsedData.abilities.wis = Math.floor((data.abilities.wis - 10) / 2);
-	parsedData.abilities.cha = Math.floor((data.abilities.cha - 10) / 2);
+	characterData.abilities = {};
+	characterData.abilities.str = Math.floor((data.abilities.str - 10) / 2);
+	characterData.abilities.dex = Math.floor((data.abilities.dex - 10) / 2);
+	characterData.abilities.con = Math.floor((data.abilities.con - 10) / 2);
+	characterData.abilities.int = Math.floor((data.abilities.int - 10) / 2);
+	characterData.abilities.wis = Math.floor((data.abilities.wis - 10) / 2);
+	characterData.abilities.cha = Math.floor((data.abilities.cha - 10) / 2);
 
 	//__HEALTH__
-	parsedData.hp = { "max": data.attributes.ancestryhp + ((data.attributes.classhp + parsedData.abilities.con) * data.level) + (data.attributes.bonushpPerLevel * data.level) + data.attributes.bonushp };
+	characterData.hp = { "max": data.attributes.ancestryhp + ((data.attributes.classhp + characterData.abilities.con) * data.level) + (data.attributes.bonushpPerLevel * data.level) + data.attributes.bonushp };
 
 	//__OFFENSE__
-	parsedData.offensiveActions = [];
-	parsedData.basicAttacks = [];
+	characterData.offensiveActions = [];
+	characterData.basicAttacks = [];
 
 	//__DEFENSES__
-	parsedData.ac = { "value": data.acTotal.acTotal };
-	parsedData.saves = { "fortitude": 0, "reflex": 0, "will": 0 };
+	characterData.ac = { "value": data.acTotal.acTotal };
+	characterData.saves = { "fortitude": 0, "reflex": 0, "will": 0 };
 	if (data.proficiencies.fortitude > 0) {
-		parsedData.saves.fortitude = data.proficiencies.fortitude + data.level + parsedData.abilities.con;
+		characterData.saves.fortitude = data.proficiencies.fortitude + data.level + characterData.abilities.con;
 	} else {
-		parsedData.saves.fortitude = parsedData.abilities.con;
+		characterData.saves.fortitude = characterData.abilities.con;
 	}
 	if (data.proficiencies.reflex > 0) {
-		parsedData.saves.reflex = data.proficiencies.reflex + data.level + parsedData.abilities.dex;
+		characterData.saves.reflex = data.proficiencies.reflex + data.level + characterData.abilities.dex;
 	} else {
-		parsedData.saves.reflex = parsedData.abilities.dex;
+		characterData.saves.reflex = characterData.abilities.dex;
 	}
 	if (data.proficiencies.will > 0) {
-		parsedData.saves.will = data.proficiencies.will + data.level + parsedData.abilities.wis;
+		characterData.saves.will = data.proficiencies.will + data.level + characterData.abilities.wis;
 	} else {
-		parsedData.saves.will = parsedData.abilities.wis;
+		characterData.saves.will = characterData.abilities.wis;
 	}
-	parsedData.immunities = [];
-	parsedData.resistances = [];
+	characterData.immunities = [];
+	characterData.resistances = [];
 
 	for (var r in data.resistances) {
 		let resString = data.resistances[r].split(" ");
-		parsedData.resistances.push({ "type": resString[0], "value": Number(resString[1]) })
+		characterData.resistances.push({ "type": resString[0], "value": Number(resString[1]) })
 	}
 
-	parsedData.weaknesses = [];
-	parsedData.passiveDefenses = [];
-	parsedData.otherDefenses = [];
-	parsedData.resources = {};
+	characterData.weaknesses = [];
+	characterData.passiveDefenses = [];
+	characterData.otherDefenses = [];
+	characterData.passiveSkills = [];
+	characterData.rections = [];
+	characterData.resources = {};
 
 	//__SKILLS__	
 	let unarmedProf = 0;
-	parsedData.skillList = [];
+	characterData.skillList = [];
 	for (var p in data.proficiencies) {
 		if (data.proficiencies[p] != 0 && p != "fortitude" && p != "reflex" && p != "will") {
 			let newProf = { "bonus": data.proficiencies[p] + data.level, "name": capitalise(p), "string": capitalise(p) + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
-			parsedData.skillList.push(newProf);
+			characterData.skillList.push(newProf);
 			if (p == "unarmed") {
 				unarmedProf = newProf.bonus;
 			}
 		}
 	}
 	for (var l in data.lores) {
-		let newProf = { "bonus": data.lores[l][1] + data.level + parsedData.abilities.int, "name": "Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
-		parsedData.skillList.push(newProf);
+		let newProf = { "bonus": data.lores[l][1] + data.level + characterData.abilities.int, "name": "Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
+		characterData.skillList.push(newProf);
 	}
 	if (data.proficiencies.perception > 0) {
-		parsedData.perception = data.proficiencies.perception + data.level + parsedData.abilities.wis;
+		characterData.perception = data.proficiencies.perception + data.level + characterData.abilities.wis;
 	} else {
-		parsedData.perception = parsedData.abilities.wis;
+		characterData.perception = characterData.abilities.wis;
 	}
-	parsedData.passiveSkills = [];
 
 	//__MAGIC__
 	message_window("Importing " + data.name, "Importing Spellcasting");
-	parsedData.spellRules = {};
+	characterData.spellRules = {};
 	for (var i in data.spellCasters) {
 		let castingData = data.spellCasters[i];
 		let id = castingData.name;
 		let newCastingRules = { "name": castingData.name, "spellAttack": 0, "spellDC": 0, "spells": [], "type": castingData.spellcastingType, "castingAbility": castingData.ability, "castLevels": [], "upcastLevels": [] }
 		if (castingData.proficiency > 0) {
-			newCastingRules.spellAttack = parsedData.abilities[castingData.ability] + castingData.proficiency + data.level;
+			newCastingRules.spellAttack = characterData.abilities[castingData.ability] + castingData.proficiency + data.level;
 		} else {
-			newCastingRules.spellAttack = parsedData.abilities[castingData.ability];
+			newCastingRules.spellAttack = characterData.abilities[castingData.ability];
 		}
 		newCastingRules.spellDC = 10 + newCastingRules.spellAttack;
 		newCastingRules.totalSlots = castingData.perDay;
@@ -199,13 +197,13 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.spells[l].list[s];
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.castLevel = castLevel;
+					spellData.system.castLevel = castLevel;
 					newCastingRules.spells.push(spellData)
 				}
 			}
 		}
 
-		parsedData.spellRules[id] = newCastingRules;
+		characterData.spellRules[id] = newCastingRules;
 		//MapTool.chat.broadcast(JSON.stringify(castingData));
 		//MapTool.chat.broadcast(JSON.stringify(newCastingRules));
 	}
@@ -218,9 +216,9 @@ function parse_pathbuilder_export(data) {
 			let id = capitalise(i) + " " + capitalise(j) + " Focus";
 			let newCastingRules = { "name": id, "spellAttack": 0, "spellDC": 0, "spells": [], "type": castingData.focus, "castingAbility": j }
 			if (castingData.proficiency > 0) {
-				newCastingRules.spellAttack = parsedData.abilities[j] + castingData.proficiency + data.level;
+				newCastingRules.spellAttack = characterData.abilities[j] + castingData.proficiency + data.level;
 			} else {
-				newCastingRules.spellAttack = parsedData.abilities[j];
+				newCastingRules.spellAttack = characterData.abilities[j];
 			}
 			newCastingRules.spellDC = 10 + newCastingRules.spellAttack;
 			let focusLevel = Math.max(1, Math.floor(data.level / 2));
@@ -228,7 +226,7 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.focusCantrips[l].replaceAll(" (Amped)", "");
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.castLevel = focusLevel;
+					spellData.system.castLevel = focusLevel;
 				}
 				newCastingRules.spells.push(spellData)
 			}
@@ -236,33 +234,33 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.focusSpells[l].replaceAll(" (Amped)", "");
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.castLevel = focusLevel;
+					spellData.system.castLevel = focusLevel;
 				}
 				newCastingRules.spells.push(spellData)
 			}
 
-			parsedData.spellRules[id] = newCastingRules;
+			characterData.spellRules[id] = newCastingRules;
 		}
 	}
 
 	if (data.focusPoints > 0) {
-		parsedData.resources.focus = { "current": data.focusPoints, "max": data.focusPoints };
+		characterData.resources.focus = { "current": data.focusPoints, "max": data.focusPoints };
 	}
 
 	//__MISC__
-	parsedData.name = data.name;
-	parsedData.creatureType = data.ancestry;
-	parsedData.alignment = data.alignment;
-	parsedData.level = data.level;
-	parsedData.senses = [];
-	parsedData.speeds = { "base": data.attributes.speed, "other": [] };
-	parsedData.rarity = "unique";
-	parsedData.traits = [data.ancestry, data.class];
-	parsedData.size = data.sizeName;
-	parsedData.languages = data.languages;
-	parsedData.itemList = {};
-	parsedData.allFeatures = [];
-	parsedData.creatureFlags = { "system": { "attributes": { "shield": null } } };
+	characterData.name = data.name;
+	characterData.creatureType = data.ancestry;
+	characterData.alignment = data.alignment;
+	characterData.level = data.level;
+	characterData.senses = [];
+	characterData.speeds = { "base": data.attributes.speed, "other": [] };
+	characterData.rarity = "unique";
+	characterData.traits = [data.ancestry, data.class];
+	characterData.size = data.sizeName;
+	characterData.languages = data.languages;
+	characterData.itemList = {};
+	characterData.features = {};
+	characterData.foundryActor = { "system": { "attributes": { "shield": null } }, "flags": { "pf2e": {} } };
 
 	let features_to_parse = [];
 	let featSubChoices = [];
@@ -301,11 +299,11 @@ function parse_pathbuilder_export(data) {
 
 	message_window("Importing " + data.name, "Importing Specials");
 
-	for (var i in classData.items) {
-		let classItem = classData.items[i];
+	for (var i in classData.system.items) {
+		let classItem = classData.system.items[i];
+		//MapTool.chat.broadcast(JSON.stringify(classItem));
 		if (data.level >= classItem.level) {
 			if (!(data.specials.includes(classItem.name))) {
-				//MapTool.chat.broadcast(JSON.stringify(classItem));
 				//MapTool.chat.broadcast(JSON.stringify(data.specials));
 				data.specials = [classItem.name].concat(data.specials);
 			}
@@ -343,32 +341,34 @@ function parse_pathbuilder_export(data) {
 		let featureData = features_to_parse[f];
 		//MapTool.chat.broadcast(JSON.stringify(featureData))
 		if ("fileURL" in featureData) {
-			let addedFeature = parse_feature(featureData.baseName, rest_call(featureData.fileURL), parsedData);
+			featureData = rest_call(featureData.fileURL);
+			characterData.features[featureData.name] = featureData;
+			//MapTool.chat.broadcast(JSON.stringify(featureData));
 			//MapTool.chat.broadcast(featureData.baseName);
-			if (addedFeature != null && "rules" in addedFeature && addedFeature.rules != null && addedFeature.rules.length > 0) {
+			if (featureData != null && "rules" in featureData.system && featureData.system.rules != null && featureData.system.rules.length > 0) {
 				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
 				//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
-				let chosenValues = feature_require_choice(addedFeature, parsedData.creatureFlags, data.specials.concat(featSubChoices[f].value));
-				feature_cause_definition(addedFeature, parsedData);
-				let newAttacks = rules_grant_attack(addedFeature.rules);
+				feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
+				feature_cause_definition(featureData, characterData);
+				let newAttacks = rules_grant_attack(featureData.system.rules);
 				for (var a in newAttacks) {
 					let newAttack = newAttacks[a];
-					//for (var p in parsedData.skillList) {
-					//	if (parsedData.skillList[p].name.toUpperCase() == newAttack.category.toUpperCase()) {
-					//		newAttack.bonus = parsedData.skillList[p].bonus;
+					//for (var p in characterData.skillList) {
+					//	if (characterData.skillList[p].name.toUpperCase() == newAttack.category.toUpperCase()) {
+					//		newAttack.bonus = characterData.skillList[p].bonus;
 					//		break;
 					//	}
 					//}
-					newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(parsedData.abilities.str) != 0) ? "+" + Number(parsedData.abilities.str) : "");
+					newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
 				}
 				grantedAttacks = grantedAttacks.concat(newAttacks);
 			}
 		}
 	}
-	parsedData.basicAttacks = parsedData.basicAttacks.concat(grantedAttacks);
+	characterData.basicAttacks = characterData.basicAttacks.concat(grantedAttacks);
 
-	if (parsedData.senses.length == 0) {
-		parsedData.senses.push("normal");
+	if (characterData.senses.length == 0) {
+		characterData.senses.push("normal");
 	}
 
 	//Armor
@@ -377,26 +377,28 @@ function parse_pathbuilder_export(data) {
 		let thisArmor = data.armor[a];
 		let tempData = find_object_data(thisArmor.name, "item");
 		if ("fileURL" in tempData) {
-			parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData);
-			let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
-			parsedData.itemList[trueID].quantity = thisArmor.qty;
-			parsedData.itemList[trueID].equipped = thisArmor.worn;
-			parsedData.itemList[trueID].runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient": 0 };
+			let itemData = rest_call(tempData.fileURL);
+			let trueID = itemData._id + String(Object.keys(characterData.itemList).length);
+			characterData.itemList[trueID] = itemData;
+			//parse_feature(tempData.baseName, itemData, characterData);
+			itemData.system.quantity = thisArmor.qty;
+			itemData.system.equipped = thisArmor.worn;
+			itemData.system.runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient": 0 };
 			if (thisArmor.res == "resilient") {
-				parsedData.itemList[trueID].runes.resilient = 1;
+				itemData.system.runes.resilient = 1;
 			} else if (thisArmor.res == "greaterResilient") {
-				parsedData.itemList[trueID].runes.resilient = 2;
+				itemData.system.runes.resilient = 2;
 			} else if (thisArmor.res == "majorResilient") {
-				parsedData.itemList[trueID].runes.resilient = 3;
+				itemData.system.runes.resilient = 3;
 			}
 			for (var rI of thisArmor.runes) {
 				let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
 				if (runeData != null && "fileURL" in runeData) {
 					runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
-					parsedData.itemList[trueID].runes.property.push(runeData);
+					itemData.system.runes.property.push(runeData);
 				}
 			}
-			parsedData.itemList[trueID].id = trueID;
+			itemData.system.id = trueID;
 		} else if (tempData == null) {
 			unfoundData.push(thisArmor.name);
 		}
@@ -409,63 +411,75 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(thisWeapon.name, "item");
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
-				let success = parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData) != null;
-				if (!success) {
-					unfoundData.push(thisWeapon.name);
-					continue;
-				}
-				let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
-				let newWeapon = parsedData.itemList[trueID];
-				newWeapon.quantity = thisWeapon.qty;
+				let itemData = rest_call(tempData.fileURL);
+				//let success = parse_feature(tempData.baseName, itemData, characterData) != null;
+				//if (!success) {
+				//	unfoundData.push(thisWeapon.name);
+				//	continue;
+				//}
+				let trueID = tempData.id + String(Object.keys(characterData.itemList).length);
+				characterData.itemList[trueID] = itemData;
+				itemData.system.quantity = thisWeapon.qty;
 				let newAttackData = {
-					"actionCost": 1, "actionType": "action", "bonus": thisWeapon.attack, "damage": [newWeapon.damage],
-					"description": "", "effects": [], "isMelee": newWeapon.isMelee,
-					"name": newWeapon.name, "traits": newWeapon.traits, "category": newWeapon.category, "group": newWeapon.group
+					"name": itemData.name,
+					"system": {
+						"actionCost": 1, "actionType": "action", "bonus": { "value": thisWeapon.attack }, "damageRolls": { "0": itemData.system.damage },
+						"description": { "value": "" }, "attackEffects": { "custom": "", "value": [] },
+						"traits": itemData.system.traits, "category": itemData.system.category, "group": itemData.system.group
+					},
+					"type": ((itemData.system.isMelee) ? "melee" : "ranged"),
+					"flags": { "pf2e": {} }
 				}
 				if (thisWeapon.str == "striking") {
-					thisWeapon.runes.striking = 1;
+					itemData.system.runes.striking = 1;
 					newAttackData.damage[0].dice += 1;
 				} else if (thisWeapon.str == "greaterStriking") {
-					thisWeapon.runes.striking = 2;
+					itemData.system.runes.striking = 2;
 					newAttackData.damage[0].dice += 2;
 				} else if (thisWeapon.str == "majorStriking") {
-					thisWeapon.runes.striking = 3;
+					itemData.system.runes.striking = 3;
 					newAttackData.damage[0].dice += 3;
 				}
-				newAttackData.linkedWeapon = trueID;
-				newAttackData.damage[0].damage = String(newAttackData.damage[0].dice) + newAttackData.damage[0].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
-				newWeapon.runes.potency = thisWeapon.pot;
+				newAttackData.flags.pf2e.linkedWeapon = trueID;
+				newAttackData.system.damageRolls["0"].damage = String(newAttackData.system.damageRolls["0"].dice) + newAttackData.system.damageRolls["0"].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
+				itemData.system.runes.potency = thisWeapon.pot;
 				for (var rI of thisWeapon.runes) {
 					let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
 					if (runeData != null && "fileURL" in runeData) {
 						runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
-						newWeapon.runes.property.push(runeData);
+						itemData.system.runes.property.push(runeData);
 					}
 				}
 				if (thisWeapon.mat != null && thisWeapon.mat != "") {
 					if (thisWeapon.mat.match(/([^\s]*) \((.*)\)/)) {
 						let matParse = thisWeapon.mat.match(/([^\s]*) \((.*)\)/);
-						newWeapon.material.type = matParse[1].toLowerCase();
-						newWeapon.material.grade = matParse[2].toLowerCase();
+						itemData.system.material.type = matParse[1].toLowerCase();
+						itemData.system.material.grade = matParse[2].toLowerCase();
 					} else {
-						newWeapon.material.type = thisWeapon.mat.toLowerCase();
+						itemData.system.material.type = thisWeapon.mat.toLowerCase();
 					}
 				}
-				newWeapon.id = trueID;
-				parsedData.basicAttacks.push(newAttackData);
+				itemData.id = trueID;
+				characterData.basicAttacks.push(newAttackData);
 			}
 		} else {
-			unfoundData.push(thisWeapon.name);
+			if (thisWeapon.name != "Fist") {
+				unfoundData.push(thisWeapon.name);
+			}
 		}
 	}
 
 	let unarmedAttack = {
-		"actionCost": 1, "actionType": "action", "bonus": unarmedProf, "damage": [{ "die": "d4", "dice": 1, "damageType": "bludgeoning" }],
-		"description": "", "effects": [], "isMelee": true, "group": "",
-		"name": "Fist", "traits": ["agile", "finesse", "nonlethal", "unarmed"], "linkedWeapon": "unarmed", "category": "unarmed", "type": "action"
+		"name": "Fist",
+		"system": {
+			"actionCost": 1, "actionType": "action", "bonus": unarmedProf, "damageRolls": { "0": { "die": "d4", "dice": 1, "damageType": "bludgeoning" } },
+			"description": { "value": "" }, "attackEffects": [], "isMelee": true, "group": "",
+			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "linkedWeapon": "unarmed", "category": "unarmed"
+		},
+		"type": "melee"
 	}
-	unarmedAttack.damage[0].damage = String(unarmedAttack.damage[0].dice) + unarmedAttack.damage[0].die + ((Number(parsedData.abilities.str) != 0) ? "+" + Number(parsedData.abilities.str) : "");
-	parsedData.basicAttacks.push(unarmedAttack);
+	unarmedAttack.system.damageRolls["0"].damage = String(unarmedAttack.system.damageRolls["0"].dice) + unarmedAttack.system.damageRolls["0"].die + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
+	characterData.basicAttacks.push(unarmedAttack);
 
 	//Other Items
 	message_window("Importing " + data.name, "Importing Gear");
@@ -486,36 +500,38 @@ function parse_pathbuilder_export(data) {
 		}
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
-				parse_feature(tempData.baseName, rest_call(tempData.fileURL), parsedData);
-				let trueID = tempData.id + String(Object.keys(parsedData.itemList).length - 1);
-				parsedData.itemList[trueID].quantity = data.equipment[e][1];
-				parsedData.itemList[trueID].id = trueID;
-				parsedData.itemList[trueID].equipped = true;
+				let itemData = rest_call(tempData.fileURL)
+				//parse_feature(tempData.baseName, rest_call(tempData.fileURL), characterData);
+				let trueID = tempData.id + String(Object.keys(characterData.itemList).length);
+				characterData.itemList[trueID] = itemData;
+				itemData.system.quantity = data.equipment[e][1];
+				itemData.id = trueID;
+				itemData.system.equipped = true;
 				if (eqName == "Handwraps of Mighty Blows") {
 					let handwrapsLevels = { 0: { 0: 0 }, 1: { 0: 2, 1: 4 }, 2: { 1: 10, 2: 12 }, 3: { 2: 16, 3: 19 } };
 					let handwrapsBonus = data.equipment[e][0].match(/\+([0-9])/);
 					let handwrapsStrike = data.equipment[e][0].match(/((Minor|Major|Greater) )?(Striking)/);
 					if (handwrapsBonus != null) {
-						parsedData.itemList[trueID].runes.potency = handwrapsBonus[1];
+						itemData.system.runes.potency = handwrapsBonus[1];
 						handwrapsBonus = handwrapsBonus[1];
 					} else {
 						handwrapsBonus = 0;
 					}
 					if (handwrapsStrike != null) {
 						if (handwrapsStrike[2] == null) {
-							parsedData.itemList[trueID].runes.striking = 1;
+							itemData.system.runes.striking = 1;
 							handwrapsStrike = 1;
 						} else if (handwrapsStrike[2] == "Greater") {
-							parsedData.itemList[trueID].runes.striking = 2;
+							itemData.system.runes.striking = 2;
 							handwrapsStrike = 2;
 						} else if (handwrapsStrike[2] == "Major") {
-							parsedData.itemList[trueID].runes.striking = 3;
+							itemData.system.runes.striking = 3;
 							handwrapsStrike = 3;
 						}
 					} else {
 						handwrapsStrike = 0;
 					}
-					parsedData.itemList[trueID].level = handwrapsLevels[handwrapsBonus][handwrapsStrike];
+					itemData.system.level.value = handwrapsLevels[handwrapsBonus][handwrapsStrike];
 				}
 			}
 		} else {
@@ -523,18 +539,18 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
-	parsedData.pets = data.pets;
-	parsedData.familiars = data.familiars;
+	characterData.pets = data.pets;
+	characterData.familiars = data.familiars;
 
 	//Familiars
 	message_window("Importing " + data.name, "Importing Familiars");
-	for (var f in parsedData.familiars) {
-		parsedData.familiars[f].familiarAbilities = [];
-		for (var a in parsedData.familiars[f].abilities) {
-			let ability = parsedData.familiars[f].abilities[a];
+	for (var f in characterData.familiars) {
+		characterData.familiars[f].familiarAbilities = [];
+		for (var a in characterData.familiars[f].abilities) {
+			let ability = characterData.familiars[f].abilities[a];
 			let tempData = find_object_data(ability);
 			if (tempData != null) {
-				parsedData.familiars[f].familiarAbilities.push(tempData);
+				characterData.familiars[f].familiarAbilities.push(tempData);
 			} else if (ability != "Darkvision") {
 				MapTool.chat.broadcast("Couldn't find familiar ability " + ability);
 			} else {
@@ -543,14 +559,30 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
-	//MapTool.chat.broadcast(JSON.stringify(parsedData.itemList));
+	for (var f in characterData.features) {
+		let featureData = characterData.features[f];
+		//MapTool.chat.broadcast(JSON.stringify(featureData));
+		if ("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "passive" && featureData.system.category != "offensive") {
+			if (featureData.system.description.value.length < 100 && featureData.system.category == "defensive") {
+				characterData.passiveDefenses.push(featureData);
+			} else {
+				characterData.passiveSkills.push(featureData);
+			}
+		} else if (("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "action") || featureData.system.category == "offensive") {
+			characterData.offensiveActions.push(featureData);
+		} else if ("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "reaction") {
+			characterData.rections.push(featureData);
+		}
+	}
+
+	//MapTool.chat.broadcast(JSON.stringify(characterData.itemList));
 
 	if (unfoundData.length > 0) {
 		message_window("Importing " + data.name, "<b>The following features/items could not be located/assigned.</b><br />" + unfoundData.join("<br />"));
 	} else {
 		close_message_window("Importing " + data.name);
 	}
-	return parsedData;
+	return characterData;
 }
 
 MTScript.registerMacro("ca.pf2e.parse_pathbuilder_export", parse_pathbuilder_export);

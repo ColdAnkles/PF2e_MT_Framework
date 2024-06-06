@@ -11,11 +11,11 @@ function display_speeds(token) {
 	let speedPenalty = 0;
 	let tokenStr = Number(token.getProperty("str"));
 
-	if (equipArmor != null) {
-		if ("strReq" in equipArmor && tokenStr >= equipArmor.strReq && equipArmor.speedPenalty != 0) {
-			speedPenalty = equipArmor.speedPenalty + 5; //plus five as penalty is negative
+	if (equipArmor != null && get_token_type(token) == "PC") { //NPC Speed Precalculated with Armor Penalties
+		if ("strReq" in equipArmor.system && tokenStr >= equipArmor.system.strReq && equipArmor.system.speedPenalty != 0) {
+			speedPenalty = equipArmor.system.speedPenalty + 5; //plus five as penalty is negative
 		} else {
-			speedPenalty = equipArmor.speedPenalty;
+			speedPenalty = equipArmor.system.speedPenalty;
 		}
 	}
 

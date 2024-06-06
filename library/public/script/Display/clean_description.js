@@ -415,7 +415,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	let localize_matches = cleanDescription.match(/@Localize\[.*\]/gm);
 	for (var m in localize_matches) {
-		let replaceString = parse_localize(localize_matches[m], additionalData);
+		let replaceString = clean_description(parse_localize(localize_matches[m], additionalData), removeLineBreaks, removeHR, removeP, additionalData);
 		cleanDescription = cleanDescription.replaceAll(localize_matches[m], replaceString);
 	}
 

@@ -10,7 +10,7 @@ function display_save_bonuses(tokenID) {
 
 	let armorResilient = 0;
 	if (eqArmor != null) {
-		armorResilient = eqArmor.runes.resilient;
+		armorResilient = eqArmor.system.runes.resilient;
 	}
 
 	let fortitudeBonus = calculate_bonus(tokenID, ["fortitude", "saving-throw"]);

@@ -1,8 +1,8 @@
 "use strict";
 
-function rules_modify_flags(rules, apply = True, actor, item) {
+function rules_modify_actor(rules, apply = True, actor, item) {
 
-    let charFlags = JSON.parse(actor.getProperty("creatureFlags"))
+    let charFlags = JSON.parse(actor.getProperty("foundryActor"))
     //MapTool.chat.broadcast(JSON.stringify(charFlags));
 
     for (var r in rules) {
@@ -32,5 +32,5 @@ function rules_modify_flags(rules, apply = True, actor, item) {
     }
     //MapTool.chat.broadcast(JSON.stringify(charFlags));
 
-    actor.setProperty("creatureFlags", JSON.stringify(charFlags));
+    actor.setProperty("foundryActor", JSON.stringify(charFlags));
 }
