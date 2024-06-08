@@ -26,38 +26,54 @@ function attack_action(actionData, actingToken) {
 	let inventory = null;
 	let itemData = null;
 
-	if (get_token_type(actingToken) == "PC") {
+	try {
 		inventory = JSON.parse(actingToken.getProperty("inventory"));
-		itemData = inventory[actionData.linkedWeapon];
-
-		if (itemData == null && !actionData.linkedWeapon == "unarmed") {
-			MapTool.chat.broadcast("Linked Weapon Missing!");
-			return
-		} else if (itemData == null && actionData.linkedWeapon == "unarmed") {
-			itemData = find_handwraps(actingToken);
+		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
+			itemData = inventory[actionData.flags.pf2e.linkedWeapon];
+		}
+		if (get_token_type(actingToken) == "PC") {
+			if (itemData == null && !actionData.flags.pf2e.linkedWeapon == "unarmed") {
+				MapTool.chat.broadcast("Linked Weapon Missing!");
+				return
+			} else if (itemData == null && actionData.flags.pf2e.linkedWeapon == "unarmed") {
+				itemData = find_handwraps(actingToken);
+				if (itemData != null) {
+					actionData.system.damageRolls[0].dice = itemData.system.runes.striking + 1;
+					actionData.system.traits.value = actionData.system.traits.value.concat(itemData.system.traits.value);
+					itemData.system.category = "unarmed";
+					itemData.system.group = "brawling";
+				}
+			}
 			if (itemData != null) {
-				actionData.damage[0].dice = itemData.runes.striking + 1;
-				actionData.traits = actionData.traits.concat(itemData.traits);
-				itemData.category = "unarmed";
-				itemData.group = "brawling";
+				if (itemData.system.material.type != null) {
+					if (itemData.system.material.grade != null) {
+						actionData.system.materials = [itemData.system.material.grade + " " + itemData.system.material.type];
+					} else {
+						actionData.system.materials = [itemData.system.material.type];
+					}
+				} else {
+					actionData.system.materials = [];
+				}
 			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in attack_action during item-getting");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("casterToken: " + String(actingToken));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
-	if (itemData != null) {
-		if (itemData.material.type != null) {
-			if (itemData.material.grade != null) {
-				actionData.materials = [itemData.material.grade + " " + itemData.material.type];
-			} else {
-				actionData.materials = [itemData.material.type];
-			}
-		} else {
-			actionData.materials = [];
-		}
-	} else {
-	}
+
+	//MapTool.chat.broadcast(JSON.stringify(actionData));
+	//MapTool.chat.broadcast(JSON.stringify(itemData));
 
 	let tokLevel = Number(actingToken.getProperty("level"));
-	let profBon = (calculate_proficiency(((itemData != null) ? itemData.category : actionData.category), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
+	let profBon = null;
+	if (((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) {
+		profBon = (calculate_proficiency(((itemData != null) ? itemData.system.category : actionData.system.category), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
+	} else {
+		profBon = actionData.system.bonus.value - tokLevel;
+	}
 	let attack_bonus = tokLevel + profBon;
 	//MapTool.chat.broadcast("Token Level: " + String(tokLevel))
 	//MapTool.chat.broadcast("profBon: " + String(profBon))
@@ -66,7 +82,7 @@ function attack_action(actionData, actingToken) {
 
 	let attackScopes = ["attack", "attack-roll", "weapon-attack"];
 	let damageScopes = ["strike-damage"];
-	if (actionData.isMelee) {
+	if (actionData.system.isMelee || actionData.type == "melee") {
 		attackScopes.push("melee-attack");
 		damageScopes.push("melee-damage");
 	} else {
@@ -96,11 +112,14 @@ function attack_action(actionData, actingToken) {
 			if ("property" in thisEffect) {
 				if (thisEffect.property == "materials") {
 					if (thisEffect.mode == "add") {
-						actionData.materials.push(thisEffect.value);
+						if (!("materials" in actionData.system)) {
+							actionData.system.materials = [];
+						}
+						actionData.system.materials.push(thisEffect.value);
 					}
 				} else if (thisEffect.property == "weapon-traits") {
 					if (thisEffect.mode == "add") {
-						actionData.traits.push(thisEffect.value);
+						actionData.system.traits.value.push(thisEffect.value);
 					}
 				}
 			}
@@ -112,13 +131,13 @@ function attack_action(actionData, actingToken) {
 	if ("WeaponPotency" in effect_bonus_raw.otherEffects && itemData != null) {
 		let currBonus = effect_bonus_raw.bonuses.item;
 		effect_bonus_raw.bonuses.item = Math.max(currBonus, Number(effect_bonus_raw.otherEffects.WeaponPotency));
-		itemData.runes.potency = effect_bonus_raw.otherEffects.WeaponPotency;
+		itemData.system.runes.potency = effect_bonus_raw.otherEffects.WeaponPotency;
 	}
 
 	if ("Striking" in effect_bonus_raw.otherEffects && itemData != null) {
-		actionData.damage[0].dice = Math.max(actionData.damage[0].dice, effect_bonus_raw.otherEffects.Striking + 1);
-		itemData.damage.dice = actionData.damage[0].dice;
-		itemData.runes.striking = effect_bonus_raw.otherEffects.Striking;
+		actionData.system.damageRolls[0].dice = Math.max(actionData.system.damageRolls[0].dice, effect_bonus_raw.otherEffects.Striking + 1);
+		itemData.system.damage.dice = actionData.system.damageRolls[0].dice;
+		itemData.system.runes.striking = effect_bonus_raw.otherEffects.Striking;
 	}
 
 	let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, ((itemData != null) ? itemData : actionData));
@@ -129,8 +148,8 @@ function attack_action(actionData, actingToken) {
 			if ("mode" in damage_bonus_raw.otherEffects.ItemAlteration && damage_bonus_raw.otherEffects.ItemAlteration.mode == "upgrade") {
 				if ("property" in damage_bonus_raw.otherEffects.ItemAlteration) {
 					if (damage_bonus_raw.otherEffects.ItemAlteration.property == "damage-dice-faces") {
-						let currentDie = actionData.damage[0].die;
-						actionData.damage[0].die = dieUpgrades[currentDie];
+						let currentDie = actionData.system.damageRolls[0].die;
+						actionData.system.damageRolls[0].die = dieUpgrades[currentDie];
 					}
 				}
 			}
@@ -144,62 +163,72 @@ function attack_action(actionData, actingToken) {
 	let MAP_Penalty = 5;
 	let additionalAttackBonuses = [];
 	let additionalDamageList = [];
-	for (var t in actionData.traits) {
-		let traitName = actionData.traits[t];
-		if (traitName == "agile") {
-			MAP_Penalty = 4;
-		} else if (traitName.includes("fatal")) {
-			fatalDie = traitName.split("-")[1];
+	try {
+		for (var t in actionData.system.traits.value) {
+			let traitName = actionData.system.traits.value[t];
+			if (traitName == "agile") {
+				MAP_Penalty = 4;
+			} else if (traitName.includes("fatal")) {
+				fatalDie = traitName.split("-")[1];
 
-		} else if (traitName.includes("deadly")) {
-			deadlyDie = traitName.split("-")[1];
+			} else if (traitName.includes("deadly")) {
+				deadlyDie = traitName.split("-")[1];
 
-		} else if (traitName == "backstabber") {
-			if (itemData != null) {
-				if (itemData.runes.potency == 3) {
-					additionalDamageList.push("+2 (4) precision damage");
+			} else if (traitName == "backstabber") {
+				if (itemData != null) {
+					if (itemData.runes.potency == 3) {
+						additionalDamageList.push("+2 (4) precision damage");
+					} else {
+						additionalDamageList.push("+1 (2) precision damage");
+					}
+				}
+
+			} else if (traitName == "backswing" && effect_bonus_raw.bonuses.circumstance == 0 && currentAttackCount > 0) {
+				additionalAttackBonuses.push("+1 (Backswing (c))")
+
+			} else if (traitName == "forceful" && itemData != null && currentAttackCount > 0) {
+				let bonus = 0;
+				if (currentAttackCount > 1) {
+					bonus = 2 * itemData.damage.dice;
 				} else {
-					additionalDamageList.push("+1 (2) precision damage");
+					bonus = itemData.damage.dice;
+				}
+				if (bonus > damage_bonus_raw.bonuses.circumstance) {
+					additionalDamageList.push("+" + String(bonus) + " (" + String(Number(2 * bonus)) + ") (Forceful (c))")
+				}
+
+			} else if (traitName.includes("jousting")) {
+				if (itemData != null && itemData.system.damage.dice > damage_bonus_raw.bonuses.circumstance) {
+					additionalDamageList.push("+" + String(itemData.system.damage.dice) + " (" + String(Number(2 * itemData.system.damage.dice)) + ") (Jousting (c))");
+				}
+				let joustDie = traitName.split("-")[1];
+				actionData.system.damageRolls["joustOneHanded"] = { "damage": String(itemData.system.damage.dice) + joustDie + "+" + Number(actingToken.getProperty("str")), "damageType": "piercing (one-handed)" };
+
+			} else if (itemData != null && traitName.includes("two-hand")) {
+				let twoHandDie = traitName.split("-")[2];
+				actionData.system.damageRolls["twoHanded"] = { "damage": String(itemData.system.damage.dice) + twoHandDie + "+" + Number(actingToken.getProperty("str")), "damageType": itemData.system.damage.damageType + " (two-handed)" };
+
+			} else if (traitName == "propulsive" && get_token_type(actingToken) == "PC") {
+				MapTool.chat.broadcast("Propulsive Trait not Implemented");
+
+			} else if (traitName == "sweep" && effect_bonus_raw.bonuses.circumstance == 0 && currentAttackCount > 0) {
+				additionalAttackBonuses.push("+1 (Sweep (c))");
+
+			} else if (traitName == "twin" && currentAttackCount > 0) {
+				if (itemData != null && itemData.system.damage.dice > damage_bonus_raw.bonuses.circumstance) {
+					additionalAttackBonuses.push("+" + String(itemData.system.damage.dice) + " (Twin (c))");
 				}
 			}
-
-		} else if (traitName == "backswing" && effect_bonus_raw.bonuses.circumstance == 0 && currentAttackCount > 0) {
-			additionalAttackBonuses.push("+1 (Backswing (c))")
-
-		} else if (traitName == "forceful" && itemData != null && currentAttackCount > 0) {
-			let bonus = 0;
-			if (currentAttackCount > 1) {
-				bonus = 2 * itemData.damage.dice;
-			} else {
-				bonus = itemData.damage.dice;
-			}
-			if (bonus > damage_bonus_raw.bonuses.circumstance) {
-				additionalDamageList.push("+" + String(bonus) + " (" + String(Number(2 * bonus)) + ") (Forceful (c))")
-			}
-
-		} else if (traitName.includes("jousting")) {
-			if (itemData != null && itemData.damage.dice > damage_bonus_raw.bonuses.circumstance) {
-				additionalDamageList.push("+" + String(itemData.damage.dice) + " (" + String(Number(2 * itemData.damage.dice)) + ") (Jousting (c))");
-			}
-			let joustDie = traitName.split("-")[1];
-			actionData.damage["joustOneHanded"] = { "damage": String(itemData.damage.dice) + joustDie + "+" + Number(actingToken.getProperty("str")), "damageType": "piercing (one-handed)" };
-
-		} else if (itemData != null && traitName.includes("two-hand")) {
-			let twoHandDie = traitName.split("-")[2];
-			actionData.damage["twoHanded"] = { "damage": String(itemData.damage.dice) + twoHandDie + "+" + Number(actingToken.getProperty("str")), "damageType": itemData.damage.damageType + " (two-handed)" };
-
-		} else if (traitName == "propulsive" && get_token_type(actingToken) == "PC") {
-			MapTool.chat.broadcast("Propulsive Trait not Implemented");
-
-		} else if (traitName == "sweep" && effect_bonus_raw.bonuses.circumstance == 0 && currentAttackCount > 0) {
-			additionalAttackBonuses.push("+1 (Sweep (c))");
-
-		} else if (traitName == "twin" && currentAttackCount > 0) {
-			if (itemData != null && itemData.damage.dice > damage_bonus_raw.bonuses.circumstance) {
-				additionalAttackBonuses.push("+" + String(itemData.damage.dice) + " (Twin (c))");
-			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in attack_action during trait-setup");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("casterToken: " + String(actingToken));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
+
 
 	let damageDetails = [];
 	let critDamageDetails = [];
@@ -209,45 +238,62 @@ function attack_action(actionData, actingToken) {
 
 	let strBon = Number(actingToken.getProperty("str"));
 	let dexBon = Number(actingToken.getProperty("dex"));
-	if (actionData.isMelee || (actionData.traits.includes("thrown") && !actionData.isMelee)) {
-		damage_bonus += strBon;
-	} else if (actionData.traits.includes("propulsive") && !actionData.isMelee) {
-		if (strBon >= 0) {
-			damage_bonus += floor(strBon / 2);
-		} else {
-			damage_bonus += strBon;
+	try {
+		if (get_token_type(actingToken) == "PC") {
+			if (actionData.isMelee || actionData.type == "melee" || (actionData.system.traits.value.includes("thrown") && !actionData.isMelee)) {
+				damage_bonus += strBon;
+			} else if (actionData.system.traits.value.includes("propulsive") && !actionData.isMelee) {
+				if (strBon >= 0) {
+					damage_bonus += floor(strBon / 2);
+				} else {
+					damage_bonus += strBon;
+				}
+			}
+			actionData.system.damageRolls[0].damage = String(actionData.system.damageRolls[0].dice) + actionData.system.damageRolls[0].die + ((itemData != null && itemData.system.damageBonus != null && itemData.system.damageBonus > 0) ? "+" + String(itemData.system.damageBonus) : "");
+			if (actionData.system.traits.value.includes("finesse")) {
+				attack_bonus += Math.max(strBon, dexBon);
+			} else if (actionData.isMelee || actionData.type == "melee") {
+				attack_bonus += strBon;
+			} else if (!actionData.isMelee || actionData.type == "ranged") {
+				attack_bonus += dexBon;
+			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in attack_action during bonus-setup");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("casterToken: " + String(actingToken));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
-	if (get_token_type(actingToken) == "PC") {
-		actionData.damage[0].damage = String(actionData.damage[0].dice) + actionData.damage[0].die + ((itemData != null && itemData.damageBonus != null && itemData.damageBonus > 0) ? "+" + String(itemData.damageBonus) : "");
-		if (actionData.traits.includes("finesse")) {
-			attack_bonus += Math.max(strBon, dexBon);
-		} else if (actionData.isMelee) {
-			attack_bonus += strBon;
-		} else if (!actionData.isMelee) {
-			attack_bonus += dexBon;
+	try {
+		for (var d in actionData.system.damageRolls) {
+			let damageData = actionData.system.damageRolls[d];
+			if (damage_bonus != 0) {
+				damageData.damage += "+" + String(damage_bonus)
+			}
+			let rolledDamage = roll_dice(damageData.damage);
+			damageDetails.push(damageData.damage + " = " + String(rolledDamage) + (("category" in damageData) ? " " + damageData.category + " " : " ") + damageData.damageType);
+			let critDamage = rolledDamage * 2;
+			let critDice = "(" + damageData.damage + ")x2 = " + String(critDamage);
+			if (fatalDie != "") {
+				let critRoll = damageData.damage.replaceAll(/d[0-9]*/g, fatalDie)
+				critDamage = Number(roll_dice(critRoll)) + Number(roll_dice(fatalDie));
+				critDice = "(" + critRoll + ")x2 + 1" + fatalDie + " = " + String(critDamage);
+			} else if (deadlyDie != "") {
+				critDamage += Number(roll_dice(deadlyDie));
+				critDice = "(" + damageData.damage + ")x2 + " + deadlyDie + " = " + String(critDamage);
+			}
+			critDamageDetails.push(critDice + " " + damageData.damageType);
 		}
-	}
-
-	for (var d in actionData.damage) {
-		let damageData = actionData.damage[d];
-		if (damage_bonus != 0) {
-			damageData.damage += "+" + String(damage_bonus)
-		}
-		let rolledDamage = roll_dice(damageData.damage);
-		damageDetails.push(damageData.damage + " = " + String(rolledDamage) + " " + damageData.damageType);
-		let critDamage = rolledDamage * 2;
-		let critDice = "(" + damageData.damage + ")x2 = " + String(critDamage);
-		if (fatalDie != "") {
-			let critRoll = damageData.damage.replaceAll(/d[0-9]*/g, fatalDie)
-			critDamage = Number(roll_dice(critRoll)) + Number(roll_dice(fatalDie));
-			critDice = "(" + critRoll + ")x2 + 1" + fatalDie + " = " + String(critDamage);
-		} else if (deadlyDie != "") {
-			critDamage += Number(roll_dice(deadlyDie));
-			critDice = "(" + damageData.damage + ")x2 + " + deadlyDie + " = " + String(critDamage);
-		}
-		critDamageDetails.push(critDice + " " + damageData.damageType);
+	} catch (e) {
+		MapTool.chat.broadcast("Error in attack_action during damage-rolls");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("casterToken: " + String(actingToken));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + ((itemData != null && get_token_type(actingToken) == "PC") ? Math.max(effect_bonus_raw.bonuses.item, itemData.runes.potency) : effect_bonus_raw.bonuses.item) + effect_bonus_raw.bonuses.none +
@@ -261,59 +307,71 @@ function attack_action(actionData, actingToken) {
 
 	let attackMod = attack_bonus + effect_bonus - map_malus;
 	let attackResult = dTwenty + attackMod;
-
-	let displayData = { "description": "", "name": actingToken.getName() + " - " + actionData.name + " " + pos_neg_sign(attackMod) };
-	displayData.appliedEffects = effect_bonus_raw.appliedEffects;
-	displayData.traits = actionData.traits;
-	displayData.description = "<i>Attack Roll</i><br /><div style='font-size:10px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span> "
-	if (attack_bonus != 0) {
-		displayData.description += pos_neg_sign(attack_bonus, true);
-	}
-	if (effect_bonus != 0) {
-		displayData.description += " " + pos_neg_sign(effect_bonus, true);
-	}
-	if (map_malus != 0) {
-		displayData.description += " " + pos_neg_sign(-map_malus, true);
-	}
-	displayData.description += " = " + String(attackResult) + " " + additionalAttackBonuses.join(", ");
-
-	displayData.description = displayData.description + "</div></b><i>Damage</i><br />";
-	for (var s in damageDetails) {
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + damageDetails[s] + "</div>";
-	}
-
-	displayData.description = displayData.description + "</b><i>Critical Damage</i><br />"
-
-	for (var s in critDamageDetails) {
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + critDamageDetails[s] + "</div>";
-	}
-
-	if (additionalDamageList.length > 0) {
-		displayData.description = displayData.description + "</b><i>Additional Damage (Crit)</i><br />"
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + additionalDamageList.join(", ") + "</div>";
-	}
-
-	if (actionData.effects.length > 1 && typeof (actionData.effects == "object")) {
-		displayData.description = displayData.description + "</b><i>Additional Effects</i><br />"
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects.join(", ").replaceAll("-", " ")) + "</div>";
-	} else if (actionData.effects.length == 1 && typeof (actionData.effects) == "object") {
-		displayData.description = displayData.description + "</b><i>Additional Effects</i><br />"
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects[0].replaceAll("-", " ")) + "</div>";
-	} else if (actionData.effects.length > 0 && (typeof (attackData.effects) == "string")) {
-		displayData.description = displayData.description + "</b><i>Additional Effects</i><br />"
-		displayData.description = displayData.description + "<div style='font-size:10px'><b>" + capitalise(actionData.effects.replaceAll("-", " ")) + "</div>";
-	}
-
-	displayData.runes = [];
-	if (itemData != null) {
-		for (var r in itemData.runes.property) {
-			displayData.runes.push(itemData.runes.property[r].name);
+	let displayData = { "name": actingToken.getName() + " - " + actionData.name + " " + pos_neg_sign(attackMod), "system": { "actionType": { "value": "action" }, "actions": { "value": 1 }, "description": { "value": "" } } };
+	try {
+		displayData.system.appliedEffects = effect_bonus_raw.appliedEffects;
+		displayData.system.traits = actionData.system.traits;
+		displayData.system.description.value = "<i>Attack Roll</i><br /><div style='font-size:10px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span> "
+		if (attack_bonus != 0) {
+			displayData.system.description.value += pos_neg_sign(attack_bonus, true);
 		}
-	}
-	displayData.materials = actionData.materials;
+		if (effect_bonus != 0) {
+			displayData.system.description.value += " " + pos_neg_sign(effect_bonus, true);
+		}
+		if (map_malus != 0) {
+			displayData.system.description.value += " " + pos_neg_sign(-map_malus, true);
+		}
+		displayData.system.description.value += " = " + String(attackResult) + " " + additionalAttackBonuses.join(", ");
 
-	if (!(isNaN(initiative)) && "increaseMAP" in actionData && actionData.increaseMAP) {
-		actingToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
+		displayData.system.description.value = displayData.system.description.value + "</div></b><i>Damage</i><br />";
+		for (var s in damageDetails) {
+			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + damageDetails[s] + "</div>";
+		}
+
+		displayData.system.description.value = displayData.system.description.value + "</b><i>Critical Damage</i><br />"
+
+		for (var s in critDamageDetails) {
+			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + critDamageDetails[s] + "</div>";
+		}
+
+		if (additionalDamageList.length > 0) {
+			displayData.system.description.value = displayData.system.description.value + "</b><i>Additional Damage (Crit)</i><br />"
+			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + additionalDamageList.join(", ") + "</div>";
+		}
+
+		if (actionData.system.attackEffects.value.length > 1 && typeof (actionData.system.attackEffects.value == "object")) {
+			displayData.system.description.value = displayData.system.description.value + "</b><i>Additional Effects</i><br />"
+			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.join(", ").replaceAll("-", " ")) + "</div>";
+		} else if (actionData.system.attackEffects.value.length == 1 && typeof (actionData.system.attackEffects.value) == "object") {
+			displayData.system.description.value = displayData.system.description.value + "</b><i>Additional Effects</i><br />"
+			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value[0].replaceAll("-", " ")) + "</div>";
+		} else if (actionData.system.attackEffects.value.length > 0 && (typeof (attackData.system.attackEffects.value) == "string")) {
+			displayData.system.description.value = displayData.system.description.value + "</b><i>Additional Effects</i><br />"
+			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.replaceAll("-", " ")) + "</div>";
+		}
+
+		displayData.system.runes = [];
+		if (itemData != null) {
+			for (var r in itemData.system.runes.property) {
+				displayData.system.runes.push(itemData.system.runes.property[r].name);
+			}
+		}
+		displayData.system.materials = actionData.system.materials;
+
+		if (!(isNaN(initiative)) && "increaseMAP" in actionData.system && actionData.system.increaseMAP) {
+			actingToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in attack_action during description-setup");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("casterToken: " + String(actingToken));
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("damageDetails: " + JSON.stringify(damageDetails));
+		MapTool.chat.broadcast("critDamageDetails: " + JSON.stringify(critDamageDetails));
+		MapTool.chat.broadcast("additionalDamageList: " + JSON.stringify(additionalDamageList));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	chat_display(displayData, true, { "level": actingToken.level });

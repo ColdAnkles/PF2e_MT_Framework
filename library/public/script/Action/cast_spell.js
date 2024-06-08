@@ -98,7 +98,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 			actionData.system.actions.value = spellData.system.time.value;
 			for (var overlay in spellData.system.overlays) {
 				if (!("time" in spellData.system.overlays[overlay].system)) {
-					actionData.overlays.push(overlay);
+					actionData.system.overlays.push(overlay);
 				}
 			}
 		} else if (spellData.system.time.value.includes("to") && additionalData == null) {

@@ -50,11 +50,11 @@ function spell_action(actionData, actingToken) {
 	}
 
 
+	let hh_targetType = null;
+	let alt_hh_test = null;
 	try {
-		let hh_targetType = null;
-		let alt_hh_test = null;
 		if (((spellData.name == "Heal" || spellData.name == "Harm") && actionData.actionCost == "2") || spellData.name == "Lay on Hands") {
-			MTScript.evalMacro("[h: targetChoice=\"Living\"][h: input(\"targetChoice|Living,Dead|Target Type|LIST|VALUE=STRING\")]");
+			MTScript.evalMacro("[h: targetChoice=\"Living\"][h: input(\"targetChoice|Living,Undead|Target Type|LIST|VALUE=STRING\")]");
 
 			hh_targetType = MTScript.getVariable("targetChoice");
 			if (hh_targetType == "Living") {
@@ -100,14 +100,14 @@ function spell_action(actionData, actingToken) {
 	try {
 		if ("overlays" in actionData.system) {
 			for (var o in actionData.system.overlays) {
-				let overlayData = spellData.system.overlays[actionData.overlays[o]];
+				let overlayData = spellData.system.overlays[actionData.system.overlays[o]];
 				if (overlayData.overlayType == "override") {
 					if (hh_targetType != null && "name" in overlayData && overlayData.name != null && (!(overlayData.name.toUpperCase().includes(hh_targetType.toUpperCase())) && !(overlayData.name.toUpperCase().includes(alt_hh_test.toUpperCase())))) {
 						continue;
 					};
 					for (var key in overlayData.system) {
 						if (typeof (overlayData.system[key]) == "object" && overlayData.system[key] != null && "value" in overlayData.system[key] && Object.keys(overlayData.system[key]).length == 1 && key != "traits") {
-							spellData[key] = overlayData.system[key].value;
+							spellData.system[key].value = overlayData.system[key].value;
 						} else if (key == "damage" || key == "heightening") {
 							if (!(key in spellData)) {
 								spellData.system[key] = {};
@@ -277,12 +277,12 @@ function spell_action(actionData, actingToken) {
 	}
 
 	try {
-		if (spellData.defense != null && "save" in spellData.defense && spellData.defense.save.statistic != "") {
+		if (spellData.system.defense != null && "save" in spellData.system.defense && spellData.system.defense.save.statistic != "") {
 			displayData.system.description.value += "<div style='font-size:10px'><b>";
-			if (spellData.defense.save.basic == "basic") {
+			if (spellData.system.defense.save.basic == "basic") {
 				displayData.system.description.value += "Basic "
 			}
-			displayData.system.description.value += capitalise(spellData.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
+			displayData.system.description.value += capitalise(spellData.system.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in spell_action during spell-save");
@@ -316,7 +316,7 @@ function spell_action(actionData, actingToken) {
 	}
 
 	try {
-		if ("damage" in spellData && Object.keys(spellData.damage).length > 0) {
+		if ("damage" in spellData.system && Object.keys(spellData.system.damage).length > 0) {
 			if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
 				displayData.system.description.value += "<i>Healing</i><br />";
 			} else {
@@ -346,9 +346,9 @@ function spell_action(actionData, actingToken) {
 			let damage_bonus = damage_bonus_raw.bonuses.circumstance + damage_bonus_raw.bonuses.status + damage_bonus_raw.bonuses.item + damage_bonus_raw.bonuses.none +
 				damage_bonus_raw.maluses.circumstance + damage_bonus_raw.maluses.status + damage_bonus_raw.maluses.item + damage_bonus_raw.maluses.none;
 			//MapTool.chat.broadcast(String(damage_bonus));
-			for (var d in spellData.damage) {
+			for (var d in spellData.system.damage) {
 				displayData.system.description.value += "<div style='font-size:10px'><b>";
-				let damageData = spellData.damage[d];
+				let damageData = spellData.system.damage[d];
 				if (damage_bonus != 0) {
 					damageData.formula += "+" + String(damage_bonus)
 				}

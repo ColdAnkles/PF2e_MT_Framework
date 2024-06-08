@@ -12,7 +12,8 @@ function build_hazard_view(itemName, tokenID = null) {
 		if ("fileURL" in itemData) {
 			itemData = rest_call(itemData["fileURL"], "");
 		}
-		itemData = parse_feature(itemBaseName, itemData);
+		//itemData = parse_feature(itemBaseName, itemData);
+		itemData = parse_hazard(itemData);
 	} else {
 		itemData = read_hazard_properties(tokenID);
 	}
@@ -21,25 +22,34 @@ function build_hazard_view(itemName, tokenID = null) {
 
 	let HTMLString = "";
 
-	HTMLString += "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + itemData.level + "</span></h1>";
-	if (itemData.rarity != "common") {
-		HTMLString += "<span class='trait" + itemData.rarity + "'>" + capitalise(itemData.rarity) + "</span>";
-	}
-	for (var t in itemData.traits) {
-		HTMLString += "<span class='trait'>" + capitalise(itemData.traits[t]) + "</span>";
-	}
-	HTMLString += "<br />"
-	if (itemData.source != "") {
-		HTMLString += "<b>Source </b><span class='ext-link'>" + itemData.source + "</span><br />";
-	}
+	try{
+		HTMLString += "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + itemData.level + "</span></h1>";
+		if (itemData.rarity != "common") {
+			HTMLString += "<span class='trait" + itemData.rarity + "'>" + capitalise(itemData.rarity) + "</span>";
+		}
+		for (var t in itemData.traits) {
+			HTMLString += "<span class='trait'>" + capitalise(itemData.traits[t]) + "</span>";
+		}
+		HTMLString += "<br />"
+		if (itemData.source != "") {
+			HTMLString += "<b>Source </b><span class='ext-link'>" + itemData.source + "</span><br />";
+		}
 
-	HTMLString += "<b>Complexity</b> " + ((itemData.isComplex) ? "Complex" : "Simple") + "<br />";
-	HTMLString += "<b>Stealth</b> DC " + String(itemData.stealth.dc) + " " + clean_description(itemData.stealth.details, true, true, true) + "<br />";
+		HTMLString += "<b>Complexity</b> " + ((itemData.isComplex) ? "Complex" : "Simple") + "<br />";
+		HTMLString += "<b>Stealth</b> DC " + String(itemData.stealth.dc) + " " + clean_description(itemData.stealth.details, true, true, true) + "<br />";
 
-	HTMLString += "<b>Description</b> " + clean_description(itemData.description, true, true, true) + "<br />";
-	HTMLString += "<hr />";
+		HTMLString += "<b>Description</b> " + clean_description(itemData.description, true, true, true) + "<br />";
+		HTMLString += "<hr />";
 
-	HTMLString += "<b>Disable</b> " + clean_description(itemData.disable, true, true, true) + "<br />";
+		HTMLString += "<b>Disable</b> " + clean_description(itemData.disable, true, true, true) + "<br />";
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_hazard_view during basic-step");
+		MapTool.chat.broadcast("itemName: " + itemName);
+		MapTool.chat.broadcast("tokenID: " + String(tokenID));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	for (var pSkill in itemData.passiveSkills) {
 		let skillData = itemData.passiveSkills[pSkill];
