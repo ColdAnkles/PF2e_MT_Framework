@@ -59,8 +59,9 @@ function build_hazard_view(itemName, tokenID = null) {
 		}
 		HTMLString += skillData.subText + "<br />";
 	}
-
-	HTMLString += "<b>AC</b> " + itemData.ac;
+	if(itemData.maxHP>0){
+		HTMLString += "<b>AC</b> " + itemData.ac;
+	}
 	if (itemData.saves.fortitude > 0) {
 		HTMLString += ", <b>Fort</b> " + itemData.saves.fortitude;
 	} if (itemData.saves.reflex > 0) {
@@ -73,7 +74,9 @@ function build_hazard_view(itemName, tokenID = null) {
 	if (itemData.hardness > 0) {
 		HTMLString += "<b>Hardness</b> " + String(itemData.hardness) + ", ";
 	}
-	HTMLString += "<b>HP</b> " + String(itemData.maxHP) + " (BT " + String(itemData.maxHP / 2) + ")";
+	if(itemData.maxHP>0){
+		HTMLString += "<b>HP</b> " + String(itemData.maxHP) + " (BT " + String(itemData.maxHP / 2) + ")";
+	}
 
 	if (itemData.immunities.length > 0) {
 		itemData.immunities.sort((a, b) => {
@@ -108,35 +111,43 @@ function build_hazard_view(itemName, tokenID = null) {
 	}
 	HTMLString += "<br />";
 
-	for (var feat in itemData.otherDefenses) {
-		let featData = itemData.otherDefenses[feat];
-		const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
-		if (!(regex.test(HTMLString))) {
-			//MapTool.chat.broadcast(JSON.stringify(featData));
-			let iconLookup = featData.actionType;
-			if (featData.actionCost != null) {
-				iconLookup = String(featData.actionCost) + iconLookup;
-			}
-			featData.description = clean_description(featData.description);
-			let traitText = "";
-			if (featData.traits.length > 0) {
-				traitText = " (" + featData.traits.join(", ") + ")";
-			}
-			let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup) + " " + featData.description;
-			//MapTool.chat.broadcast(featString.replace("<","&lt;"));
-			HTMLString += featString;
-			const testPattern = /<\/ul>$/
-			if (!(testPattern.test(featString))) {
-				HTMLString += "<br />";
+	try{
+		for (var feat in itemData.features) {
+			let featData = itemData.features[feat];
+			const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
+			if (!(regex.test(HTMLString))) {
+				//MapTool.chat.broadcast(JSON.stringify(featData));
+				let iconLookup = featData.system.actionType.value;
+				if (featData.system.actions.value != null) {
+					iconLookup = String(featData.system.actions.value) + iconLookup;
+				}
+				let traitText = "";
+				if (featData.system.traits.value.length > 0) {
+					traitText = " (" + featData.system.traits.value.join(", ") + ")";
+				}
+				let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup, true) + " " + clean_description(featData.system.description.value);
+				//MapTool.chat.broadcast(featString.replace("<","&lt;"));
+				HTMLString += featString;
+				const testPattern = /<\/ul>$/
+				if (!(testPattern.test(featString))) {
+					HTMLString += "<br />";
+				}
 			}
 		}
+	}catch(e){
+		MapTool.chat.broadcast("Error in build_hazard_view during features");
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 	HTMLString += "<hr/>";
 	if (itemData.routine != "") {
 		HTMLString += "<b>Routine</b> " + clean_description(itemData.routine, true, true, true);
 		HTMLString += "<hr />"
 	}
-	HTMLString += "<b>Reset</b> " + clean_description(itemData.reset, true, true, true);
+	if(itemData.reset != ""){
+		HTMLString += "<b>Reset</b> " + clean_description(itemData.reset, true, true, true);
+	}
 
 
 

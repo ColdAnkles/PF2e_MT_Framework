@@ -5,6 +5,7 @@ function build_creature_view(creatureName, tokenID = null) {
 	let token = null;
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
 
+	let additionalData = { "rollDice": false };
 
 	try{
 		if (tokenID == null) {
@@ -35,13 +36,20 @@ function build_creature_view(creatureName, tokenID = null) {
 		return;
 	}
 
-	let additionalData = { "rollDice": false, "level": creatureData.level };
+	additionalData.level = creatureData.level;
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData.senses));
 
 	let HTMLString = "";
-
-	HTMLString += "<h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
+	try{
+		HTMLString += "<h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_creature_view during header-step");
+		MapTool.chat.broadcast("creatureName: " + creatureName);
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	try{
 		if (creatureData.rarity != "common" && creatureData.rarity != "") {
@@ -131,21 +139,21 @@ function build_creature_view(creatureName, tokenID = null) {
 		return;
 	}
 
-	try{
-		for (var pSkill in creatureData.passiveSkills) {
-			let skillData = creatureData.passiveSkills[pSkill];
-			HTMLString += "<b>" + skillData.name + "</b> ";
-			if (skillData.system.traits.length > 0) {
-				HTMLString += " (" + skillData.traits.join(", ") + ") ";
-			}
-			additionalData.action = skillData;
-			HTMLString += clean_description(skillData.system.description.value, true, true, true, additionalData) + "<br />";
-		}
-	} catch (e) {
-		MapTool.chat.broadcast("Error in build_creature_view during skills-step");
-		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
-	}
+	//try {
+	//	for (var pSkill in creatureData.passiveSkills) {
+	//		let skillData = creatureData.passiveSkills[pSkill];
+	//		HTMLString += "<b>" + skillData.name + "</b> ";
+	//		if (skillData.system.traits.length > 0) {
+	//			HTMLString += " (" + skillData.traits.join(", ") + ") ";
+	//		}
+	//		additionalData.action = skillData;
+	//		HTMLString += clean_description(skillData.system.description.value, true, true, true, additionalData) + "<br />";
+	//	}
+	//} catch (e) {
+	////	MapTool.chat.broadcast("Error in build_creature_view during skills-step");
+	//MapTool.chat.broadcast("" + e + "\n" + e.stack);
+	//	return;
+	//}
 
 	HTMLString += "<hr />";
 	HTMLString += "<b>AC</b> " + creatureData.ac.value;
@@ -259,11 +267,11 @@ function build_creature_view(creatureName, tokenID = null) {
 		return;
 	}
 
-	try{
-		for (var feat in creatureData.reactions) {
-			let featData = creatureData.reactions[feat];
-			let featString = "<b>" + featData.name + "</b> " + icon_img("reaction", true) + " " + clean_description(featData.system.description.value);
-			HTMLString += featString + "<br />";
+	//try{
+	//	for (var feat in creatureData.reactions) {
+	//		let featData = creatureData.reactions[feat];
+	//		let featString = "<b>" + featData.name + "</b> " + icon_img("reaction", true) + " " + clean_description(featData.system.description.value);
+	//		HTMLString += featString + "<br />";
 
 			//const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
 			//if (!(regex.test(HTMLString))) {
@@ -286,12 +294,12 @@ function build_creature_view(creatureName, tokenID = null) {
 			//		HTMLString += "<br />";
 			//	}
 			//}
-		}
-	} catch (e) {
-		MapTool.chat.broadcast("Error in build_creature_view during reactions-step");
-		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
-	}
+	//	}
+	//} catch (e) {
+	//	MapTool.chat.broadcast("Error in build_creature_view during reactions-step");
+	//	MapTool.chat.broadcast("" + e + "\n" + e.stack);
+	//	return;
+	//}
 	HTMLString += "<hr />";
 
 	try{
@@ -438,7 +446,7 @@ function build_creature_view(creatureName, tokenID = null) {
 					levelsPrinted.push(spellData.system.castLevel.value);
 				} else if (!(spellData.system.traits.value.includes("cantrip")) && !(levelsPrinted.includes(spellData.system.castLevel.value))) {
 					spellString = spellString + "; <b>" + String(spellData.system.castLevel.value) + getOrdinal(spellData.system.castLevel.value) + "</b> ";
-					levelsPrinted.push(spellData.system.castLevel);
+					levelsPrinted.push(spellData.system.castLevel.value);
 				} else {
 					spellString = spellString + ", ";
 				}

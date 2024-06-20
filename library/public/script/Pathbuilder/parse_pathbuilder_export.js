@@ -96,6 +96,8 @@ function parse_pathbuilder_export(data) {
 		classData = rest_call(classData.fileURL);
 	}
 
+	characterData.foundryActor = {"name":data.name,"flags":{},"system":{}};
+
 	//__STATS__	
 	characterData.abilities = {};
 	characterData.abilities.str = Math.floor((data.abilities.str - 10) / 2);
@@ -197,7 +199,8 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.spells[l].list[s];
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.system.castLevel = castLevel;
+					spellData.system.castLevel = {"value":castLevel};
+					spellData.system.group = { "value": newCastingRules.name }
 					newCastingRules.spells.push(spellData)
 				}
 			}
@@ -226,7 +229,8 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.focusCantrips[l].replaceAll(" (Amped)", "");
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.system.castLevel = focusLevel;
+					spellData.system.castLevel = {"value":focusLevel};
+					spellData.system.group = { "value": newCastingRules.name }
 				}
 				newCastingRules.spells.push(spellData)
 			}
@@ -234,7 +238,8 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.focusSpells[l].replaceAll(" (Amped)", "");
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.system.castLevel = focusLevel;
+					spellData.system.castLevel = {"value":focusLevel};
+					spellData.system.group = { "value": newCastingRules.name }
 				}
 				newCastingRules.spells.push(spellData)
 			}
@@ -472,7 +477,7 @@ function parse_pathbuilder_export(data) {
 	let unarmedAttack = {
 		"name": "Fist",
 		"system": {
-			"actionCost": 1, "actionType": "action", "bonus": unarmedProf, "damageRolls": { "0": { "die": "d4", "dice": 1, "damageType": "bludgeoning" } },
+			"actions": {"value":1}, "actionType": {"value":"action"}, "bonus": {"value":unarmedProf}, "damageRolls": { "0": { "die": "d4", "dice": 1, "damageType": "bludgeoning" } },
 			"description": { "value": "" }, "attackEffects": [], "isMelee": true, "group": "",
 			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "linkedWeapon": "unarmed", "category": "unarmed"
 		},

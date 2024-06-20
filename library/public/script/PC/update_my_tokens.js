@@ -20,3 +20,5 @@ function update_my_tokens(token) {
 	//MapTool.chat.broadcast(JSON.stringify(validTokenList));
 	token.setProperty("pcTokens", JSON.stringify(validTokenList));
 }
+
+MTScript.registerMacro("ca.pf2e.update_my_tokens", update_my_tokens);

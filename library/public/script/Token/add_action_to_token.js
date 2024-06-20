@@ -88,7 +88,7 @@ function add_action_to_token(actionData, tokenID, token) {
 		} catch (e) {
 			MapTool.chat.broadcast("Error in add_action_to_token during type=basic");
 			MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
-			MapTool.chat.broadcast("tokenID: " + String(tokenID));
+			MapTool.chat.broadcast("token: " + String(token));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
 			return;
 		}
@@ -117,7 +117,7 @@ function add_action_to_token(actionData, tokenID, token) {
 		} catch (e) {
 			MapTool.chat.broadcast("Error in add_action_to_token during type=personal-feat-action-melee-ranged");
 			MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
-			MapTool.chat.broadcast("tokenID: " + String(tokenID));
+			MapTool.chat.broadcast("token: " + String(token));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
 			return;
 		}
@@ -150,6 +150,9 @@ function add_action_to_token(actionData, tokenID, token) {
 
 			if (!("actions" in actionData.system)) {
 				actionData.system.actions = { "value": null };
+			}
+			if (!("actionType" in actionData.system)){
+				actionData.system.actionType = { "value": null };
 			}
 
 			if (!isNaN(lookupSpell.system.time.value)) {

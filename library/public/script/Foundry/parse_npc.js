@@ -86,7 +86,6 @@ function parse_npc(rawData, parseRaw = false) {
 		npcData.spellRules.rituals = {"name":"Rituals", "spells":[], "spellDC": rawData.system.spellcasting.rituals.dc, "spellAttack": 0, "type": "ritual" };
 	}
 	npcData.offensiveActions = [];
-	npcData.reactions = [];
 	npcData.features = {};
 
 	let errorItem = null;
@@ -94,39 +93,7 @@ function parse_npc(rawData, parseRaw = false) {
 		for (var i in rawData.items) {
 			let itemData = rawData.items[i];
 			errorItem = itemData;
-			if (itemData.type == "lore") {
-				let newSkill = { "string": itemData.name + " +" + itemData.system.mod.value, "name": itemData.name, "bonus": itemData.system.mod.value };
-				npcData.skillList.push(newSkill);
-			} else if (itemData.type == "item" || itemData.type == "shield" || itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable") {
-				npcData.itemList[itemData._id] = itemData;
-			} else if (itemData.type == "melee" || itemData.type == "ranged") {
-				npcData.basicAttacks.push(itemData);
-			} else if (itemData.type == "spellcastingEntry") {
-				let newSpellEntry = { "name": itemData.name, "spells": [], "spellDC": itemData.system.spelldc.dc, "spellAttack": itemData.system.spelldc.value, "type": itemData.system.prepared.value }
-				if ("autoHeightenLevel" in itemData.system && "value" in itemData.system.autoHeightenLevel && itemData.system.autoHeightenLevel.value != null) {
-					newSpellEntry["autoHeighten"] = itemData.system.autoHeightenLevel.value
-				} else {
-					newSpellEntry["autoHeighten"] = Math.ceil(npcData.level / 2);
-				}
-				npcData.spellRules[itemData._id] = newSpellEntry;
-			} else if (itemData.type == "spell") {
-				if (itemData.system.traits.value.includes("cantrip") || itemData.system.traits.value.includes("focus")) {
-					itemData.system.castLevel = { "value": npcData.spellRules[itemData.system.location.value].autoHeighten };
-				} else {
-					itemData.system.castLevel = itemData.system.level;
-				}
-				itemData.system.actionType = { "value": "spell" };
-				itemData.system.creatureLevel = { "value": npcData.level };
-				if(itemData.system.location.value!=null){
-					itemData.system.group = { "value": npcData.spellRules[itemData.system.location.value].name };
-					npcData.spellRules[itemData.system.location.value].spells.push(itemData);
-				}else if("ritual" in itemData.system){
-					itemData.system.group = { "value": npcData.spellRules["rituals"].name };
-					npcData.spellRules["rituals"].spells.push(itemData);
-				}
-			} else {
-				npcData.features[itemData.name] = itemData;
-			}
+			parse_item(itemData, npcData);
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in parse_npc during items-step");
@@ -188,11 +155,11 @@ function parse_npc(rawData, parseRaw = false) {
 			} else if (("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "action") || featureData.system.category == "offensive") {
 				npcData.offensiveActions.push(featureData);
 			} else if ("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "reaction") {
-				npcData.reactions.push(featureData);
+				npcData.otherDefenses.push(featureData);
 			}
 		}
 	} catch (e) {
-		MapTool.chat.broadcast("Error in build_creature_view during features-step");
+		MapTool.chat.broadcast("Error in parse_npc during features-step");
 		MapTool.chat.broadcast("npcData: " + JSON.stringify(npcData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
