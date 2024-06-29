@@ -432,7 +432,7 @@ function parse_pathbuilder_export(data) {
 						"description": { "value": "" }, "attackEffects": { "custom": "", "value": [] },
 						"traits": itemData.system.traits, "category": itemData.system.category, "group": itemData.system.group
 					},
-					"type": ((itemData.system.isMelee) ? "melee" : "ranged"),
+					"type": ((itemData.system.range==null) ? "melee" : "ranged"),
 					"flags": { "pf2e": {} }
 				}
 				if (thisWeapon.str == "striking") {
@@ -478,9 +478,10 @@ function parse_pathbuilder_export(data) {
 		"name": "Fist",
 		"system": {
 			"actions": {"value":1}, "actionType": {"value":"action"}, "bonus": {"value":unarmedProf}, "damageRolls": { "0": { "die": "d4", "dice": 1, "damageType": "bludgeoning" } },
-			"description": { "value": "" }, "attackEffects": [], "isMelee": true, "group": "",
-			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "linkedWeapon": "unarmed", "category": "unarmed"
+			"description": { "value": "" }, "attackEffects": {"value":[]}, "isMelee": true, "group": "",
+			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "category": "unarmed"
 		},
+		"flags": { "pf2e": {"linkedWeapon": "unarmed"} },
 		"type": "melee"
 	}
 	unarmedAttack.system.damageRolls["0"].damage = String(unarmedAttack.system.damageRolls["0"].dice) + unarmedAttack.system.damageRolls["0"].die + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");

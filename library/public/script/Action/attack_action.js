@@ -128,34 +128,45 @@ function attack_action(actionData, actingToken) {
 		}
 	}
 
-	if ("WeaponPotency" in effect_bonus_raw.otherEffects && itemData != null) {
-		let currBonus = effect_bonus_raw.bonuses.item;
-		effect_bonus_raw.bonuses.item = Math.max(currBonus, Number(effect_bonus_raw.otherEffects.WeaponPotency));
-		itemData.system.runes.potency = effect_bonus_raw.otherEffects.WeaponPotency;
-	}
+	let damage_bonus_raw = null;
 
-	if ("Striking" in effect_bonus_raw.otherEffects && itemData != null) {
-		actionData.system.damageRolls[0].dice = Math.max(actionData.system.damageRolls[0].dice, effect_bonus_raw.otherEffects.Striking + 1);
-		itemData.system.damage.dice = actionData.system.damageRolls[0].dice;
-		itemData.system.runes.striking = effect_bonus_raw.otherEffects.Striking;
-	}
+	try{
+		if ("WeaponPotency" in effect_bonus_raw.otherEffects && itemData != null) {
+			let currBonus = effect_bonus_raw.bonuses.item;
+			effect_bonus_raw.bonuses.item = Math.max(currBonus, Number(effect_bonus_raw.otherEffects.WeaponPotency));
+			itemData.system.runes.potency = effect_bonus_raw.otherEffects.WeaponPotency;
+		}
 
-	let damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, ((itemData != null) ? itemData : actionData));
-	//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
+		if ("Striking" in effect_bonus_raw.otherEffects && itemData != null) {
+			actionData.system.damageRolls[0].dice = Math.max(actionData.system.damageRolls[0].dice, effect_bonus_raw.otherEffects.Striking + 1);
+			itemData.system.damage.dice = actionData.system.damageRolls[0].dice;
+			itemData.system.runes.striking = effect_bonus_raw.otherEffects.Striking;
+		}
 
-	if ("otherEffects" in damage_bonus_raw) {
-		if ("ItemAlteration" in damage_bonus_raw.otherEffects) {
-			if ("mode" in damage_bonus_raw.otherEffects.ItemAlteration && damage_bonus_raw.otherEffects.ItemAlteration.mode == "upgrade") {
-				if ("property" in damage_bonus_raw.otherEffects.ItemAlteration) {
-					if (damage_bonus_raw.otherEffects.ItemAlteration.property == "damage-dice-faces") {
-						let currentDie = actionData.system.damageRolls[0].die;
-						actionData.system.damageRolls[0].die = dieUpgrades[currentDie];
+		damage_bonus_raw = calculate_bonus(actingToken, damageScopes, true, ((itemData != null) ? itemData : actionData));
+		//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
+
+		if ("otherEffects" in damage_bonus_raw) {
+			if ("ItemAlteration" in damage_bonus_raw.otherEffects) {
+				if ("mode" in damage_bonus_raw.otherEffects.ItemAlteration && damage_bonus_raw.otherEffects.ItemAlteration.mode == "upgrade") {
+					if ("property" in damage_bonus_raw.otherEffects.ItemAlteration) {
+						if (damage_bonus_raw.otherEffects.ItemAlteration.property == "damage-dice-faces") {
+							let currentDie = actionData.system.damageRolls[0].die;
+							actionData.system.damageRolls[0].die = dieUpgrades[currentDie];
+						}
 					}
 				}
+			} else if ("strike-damage" in damage_bonus_raw.otherEffects) {
+				damage_bonus_raw.bonuses.none += damage_bonus_raw.otherEffects["strike-damage"].value;
 			}
-		} else if ("strike-damage" in damage_bonus_raw.otherEffects) {
-			damage_bonus_raw.bonuses.none += damage_bonus_raw.otherEffects["strike-damage"].value;
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in attack_action during damage-step");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("casterToken: " + String(actingToken));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	let deadlyDie = "";
@@ -176,7 +187,7 @@ function attack_action(actionData, actingToken) {
 
 			} else if (traitName == "backstabber") {
 				if (itemData != null) {
-					if (itemData.runes.potency == 3) {
+					if (itemData.system.runes.potency == 3) {
 						additionalDamageList.push("+2 (4) precision damage");
 					} else {
 						additionalDamageList.push("+1 (2) precision damage");
@@ -206,7 +217,7 @@ function attack_action(actionData, actingToken) {
 
 			} else if (itemData != null && traitName.includes("two-hand")) {
 				let twoHandDie = traitName.split("-")[2];
-				actionData.system.damageRolls["twoHanded"] = { "damage": String(itemData.system.damage.dice) + twoHandDie + "+" + Number(actingToken.getProperty("str")), "damageType": itemData.system.damage.damageType + " (two-handed)" };
+				actionData.system.damageRolls["twoHanded"] = { "damage": String(itemData.system.damage.dice) + twoHandDie + ((Number(actingToken.getProperty("str"))!=0)?"+" + Number(actingToken.getProperty("str")):""), "damageType": itemData.system.damage.damageType + " (two-handed)" };
 
 			} else if (traitName == "propulsive" && get_token_type(actingToken) == "PC") {
 				MapTool.chat.broadcast("Propulsive Trait not Implemented");
@@ -296,7 +307,7 @@ function attack_action(actionData, actingToken) {
 		return;
 	}
 
-	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + ((itemData != null && get_token_type(actingToken) == "PC") ? Math.max(effect_bonus_raw.bonuses.item, itemData.runes.potency) : effect_bonus_raw.bonuses.item) + effect_bonus_raw.bonuses.none +
+	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + ((itemData != null && get_token_type(actingToken) == "PC") ? Math.max(effect_bonus_raw.bonuses.item, itemData.system.runes.potency) : effect_bonus_raw.bonuses.item) + effect_bonus_raw.bonuses.none +
 		effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
 
 	let map_malus = currentAttackCount * MAP_Penalty;
