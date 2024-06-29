@@ -173,10 +173,10 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 					let libToken = MapTool.tokens.getTokenByID(casterToken.getProperty("myID"));
 					libToken.setProperty("spellRules", JSON.stringify(spellCasting));
 				}
-			} else if (spellData.traits.value.includes("focus") && (!("focus" in resources) || resources.focus.current <= 0)) {
+			} else if (spellData.system.traits.value.includes("focus") && (!("focus" in resources) || resources.focus.current <= 0)) {
 				message_window("No Focus Point!", "You've expended all your focus points!");
 				return;
-			} else if (spellData.traits.value.includes("focus") && ("focus" in resources) && resources.focus.current > 0) {
+			} else if (spellData.system.traits.value.includes("focus") && ("focus" in resources) && resources.focus.current > 0) {
 				resources.focus.current -= 1;
 				casterToken.setProperty("resources", JSON.stringify(resources));
 				if (!(casterToken.getName().includes("Lib"))) {

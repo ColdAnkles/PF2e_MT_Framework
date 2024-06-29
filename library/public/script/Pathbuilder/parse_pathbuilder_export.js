@@ -265,7 +265,42 @@ function parse_pathbuilder_export(data) {
 	characterData.languages = data.languages;
 	characterData.itemList = {};
 	characterData.features = {};
-	characterData.foundryActor = { "system": { "attributes": { "shield": null } }, "flags": { "pf2e": {} } };
+	characterData.foundryActor = {
+		"system": {
+			"abilities": {
+				"cha": {"mod": characterData.abilities.cha},
+				"con": {"mod": characterData.abilities.con},
+				"dex": {"mod": characterData.abilities.dex},
+				"int": {"mod": characterData.abilities.int},
+				"str": {"mod": characterData.abilities.str},
+				"wis": {"mod": characterData.abilities.wis}
+			},
+			"attributes": {
+				"shield": null,
+				"ac": {
+                	"details": "",
+                	"value": characterData.ac
+            	},
+				"hp": {
+					"details": "",
+					"max": characterData.hp.max,
+					"temp": 0,
+					"value": characterData.hp.max
+				},
+				"speed": {
+					"otherSpeeds": [],
+					"value": characterData.speeds.base
+				},
+				"initiative": {
+					"statistic": "perception"
+				},
+				"perception": {
+					"details": "",
+					"mod": characterData.perception,
+					"senses": []
+				},
+			} 
+		}, "flags": { "pf2e": {} } };
 
 	let features_to_parse = [];
 	let featSubChoices = [];
