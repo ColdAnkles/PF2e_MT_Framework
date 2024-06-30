@@ -1,13 +1,14 @@
 "use strict";
 
-function parse_item(itemData, parentObject){
+function parse_item(itemData, parentObject) {
     if (itemData.type == "lore") {
         let newSkill = { "string": itemData.name + " +" + itemData.system.mod.value, "name": itemData.name, "bonus": itemData.system.mod.value };
         parentObject.skillList.push(newSkill);
     } else if (itemData.type == "item" || itemData.type == "shield" || itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable") {
         parentObject.itemList[itemData._id] = itemData;
-        if(itemData.type=="shield" && (!("shield" in parentObject.foundryActor.system.attributes) || parentObject.foundryActor.system.attributes.shield==null)){
-            parentObject.foundryActor.system.attributes.shield=itemData;
+        if (itemData.type == "shield" && (!("shield" in parentObject.foundryActor.system.attributes) || parentObject.foundryActor.system.attributes.shield == null)) {
+            itemData.system.equipped = true;
+            parentObject.foundryActor.system.attributes.shield = itemData;
         }
     } else if (itemData.type == "melee" || itemData.type == "ranged") {
         parentObject.basicAttacks.push(itemData);
@@ -27,10 +28,10 @@ function parse_item(itemData, parentObject){
         }
         itemData.system.actionType = { "value": "spell" };
         itemData.system.creatureLevel = { "value": parentObject.level };
-        if(itemData.system.location.value!=null){
+        if (itemData.system.location.value != null) {
             itemData.system.group = { "value": parentObject.spellRules[itemData.system.location.value].name };
             parentObject.spellRules[itemData.system.location.value].spells.push(itemData);
-        }else if("ritual" in itemData.system){
+        } else if ("ritual" in itemData.system) {
             itemData.system.group = { "value": parentObject.spellRules["rituals"].name };
             parentObject.spellRules["rituals"].spells.push(itemData);
         }

@@ -130,7 +130,7 @@ function attack_action(actionData, actingToken) {
 
 	let damage_bonus_raw = null;
 
-	try{
+	try {
 		if ("WeaponPotency" in effect_bonus_raw.otherEffects && itemData != null) {
 			let currBonus = effect_bonus_raw.bonuses.item;
 			effect_bonus_raw.bonuses.item = Math.max(currBonus, Number(effect_bonus_raw.otherEffects.WeaponPotency));
@@ -217,7 +217,7 @@ function attack_action(actionData, actingToken) {
 
 			} else if (itemData != null && traitName.includes("two-hand")) {
 				let twoHandDie = traitName.split("-")[2];
-				actionData.system.damageRolls["twoHanded"] = { "damage": String(itemData.system.damage.dice) + twoHandDie + ((Number(actingToken.getProperty("str"))!=0)?"+" + Number(actingToken.getProperty("str")):""), "damageType": itemData.system.damage.damageType + " (two-handed)" };
+				actionData.system.damageRolls["twoHanded"] = { "damage": String(itemData.system.damage.dice) + twoHandDie + ((Number(actingToken.getProperty("str")) != 0) ? "+" + Number(actingToken.getProperty("str")) : ""), "damageType": itemData.system.damage.damageType + " (two-handed)" };
 
 			} else if (traitName == "propulsive" && get_token_type(actingToken) == "PC") {
 				MapTool.chat.broadcast("Propulsive Trait not Implemented");

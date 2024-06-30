@@ -22,7 +22,7 @@ function build_hazard_view(itemName, tokenID = null) {
 
 	let HTMLString = "";
 
-	try{
+	try {
 		HTMLString += "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + itemData.level + "</span></h1>";
 		if (itemData.rarity != "common") {
 			HTMLString += "<span class='trait" + itemData.rarity + "'>" + capitalise(itemData.rarity) + "</span>";
@@ -59,7 +59,7 @@ function build_hazard_view(itemName, tokenID = null) {
 		}
 		HTMLString += skillData.subText + "<br />";
 	}
-	if(itemData.maxHP>0){
+	if (itemData.maxHP > 0) {
 		HTMLString += "<b>AC</b> " + itemData.ac;
 	}
 	if (itemData.saves.fortitude > 0) {
@@ -74,7 +74,7 @@ function build_hazard_view(itemName, tokenID = null) {
 	if (itemData.hardness > 0) {
 		HTMLString += "<b>Hardness</b> " + String(itemData.hardness) + ", ";
 	}
-	if(itemData.maxHP>0){
+	if (itemData.maxHP > 0) {
 		HTMLString += "<b>HP</b> " + String(itemData.maxHP) + " (BT " + String(itemData.maxHP / 2) + ")";
 	}
 
@@ -111,7 +111,7 @@ function build_hazard_view(itemName, tokenID = null) {
 	}
 	HTMLString += "<br />";
 
-	try{
+	try {
 		for (var feat in itemData.features) {
 			let featData = itemData.features[feat];
 			const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
@@ -134,7 +134,7 @@ function build_hazard_view(itemName, tokenID = null) {
 				}
 			}
 		}
-	}catch(e){
+	} catch (e) {
 		MapTool.chat.broadcast("Error in build_hazard_view during features");
 		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
@@ -145,7 +145,7 @@ function build_hazard_view(itemName, tokenID = null) {
 		HTMLString += "<b>Routine</b> " + clean_description(itemData.routine, true, true, true);
 		HTMLString += "<hr />"
 	}
-	if(itemData.reset != ""){
+	if (itemData.reset != "") {
 		HTMLString += "<b>Reset</b> " + clean_description(itemData.reset, true, true, true);
 	}
 

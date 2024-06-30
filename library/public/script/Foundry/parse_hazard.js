@@ -67,7 +67,7 @@ function parse_hazard(rawData, parseRaw = false) {
 	//}
 
 	let errorItem = null;
-	try{
+	try {
 		for (var i in rawData.items) {
 			let itemData = rawData.items[i];
 			errorItem = itemData;
@@ -82,7 +82,7 @@ function parse_hazard(rawData, parseRaw = false) {
 		return;
 	}
 
-	try{
+	try {
 		for (var f in hazardData.features) {
 			let featureData = hazardData.features[f];
 			//MapTool.chat.broadcast(JSON.stringify(featureData));

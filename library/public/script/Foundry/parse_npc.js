@@ -9,7 +9,7 @@ function parse_npc(rawData, parseRaw = false) {
 
 	//MapTool.chat.broadcast(JSON.stringify(rawData));
 
-	try{
+	try {
 		npcData.type = "npc";
 		npcData.name = rawData.name;
 		npcData.level = rawData.system.details.level.value;
@@ -36,7 +36,7 @@ function parse_npc(rawData, parseRaw = false) {
 		npcData.source = rawData.system.details.publication.title;
 
 		npcData.resources = rawData.system.resources;
-		if(rawData.type == "npc"){
+		if (rawData.type == "npc") {
 			npcData.senses = [];
 			for (var s in rawData.system.perception.senses) {
 				npcData.senses.push(rawData.system.perception.senses[s].type);
@@ -53,7 +53,7 @@ function parse_npc(rawData, parseRaw = false) {
 			}
 
 			npcData.speeds = { "base": rawData.system.attributes.speed.value, "other": rawData.system.attributes.speed.otherSpeeds };
-	
+
 			npcData.languages = rawData.system.details.languages.value;
 			if ("custom" in rawData.system.details.languages && rawData.system.details.languages.custom != "") {
 				npcData.languages.push(rawData.system.details.languages.custom);
@@ -82,14 +82,14 @@ function parse_npc(rawData, parseRaw = false) {
 	npcData.otherDefenses = [];
 	npcData.basicAttacks = [];
 	npcData.spellRules = {};
-	if ("spellcasting" in rawData.system && "rituals" in rawData.system.spellcasting){
-		npcData.spellRules.rituals = {"name":"Rituals", "spells":[], "spellDC": rawData.system.spellcasting.rituals.dc, "spellAttack": 0, "type": "ritual" };
+	if ("spellcasting" in rawData.system && "rituals" in rawData.system.spellcasting) {
+		npcData.spellRules.rituals = { "name": "Rituals", "spells": [], "spellDC": rawData.system.spellcasting.rituals.dc, "spellAttack": 0, "type": "ritual" };
 	}
 	npcData.offensiveActions = [];
 	npcData.features = {};
 
 	let errorItem = null;
-	try{
+	try {
 		for (var i in rawData.items) {
 			let itemData = rawData.items[i];
 			errorItem = itemData;
@@ -104,7 +104,7 @@ function parse_npc(rawData, parseRaw = false) {
 		return;
 	}
 
-	try{
+	try {
 		for (var t in npcData.traits) {
 			let traitInherit = trait_inheritance(npcData.traits[t]);
 			if (!("immunities" in rawData.system.attributes)) {
@@ -142,7 +142,7 @@ function parse_npc(rawData, parseRaw = false) {
 		npcData.spellRules[castData.name] = castData;
 	}
 
-	try{
+	try {
 		for (var f in npcData.features) {
 			let featureData = npcData.features[f];
 			//MapTool.chat.broadcast(JSON.stringify(featureData));

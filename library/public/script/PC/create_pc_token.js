@@ -18,7 +18,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		}
 	}
 
-	try{
+	try {
 		for (var a in pcData.basicAttacks) {
 			let actionData = pcData.basicAttacks[a];
 			actionData.group = "";
@@ -30,7 +30,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		return;
 	}
 
-	try{
+	try {
 		for (var a in pcData.offensiveActions) {
 			let actionData = pcData.offensiveActions[a];
 			actionData.group = "4. Abilities";
@@ -42,7 +42,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		return;
 	}
 
-	try{
+	try {
 		for (var a in pcData.otherDefenses) {
 			let actionData = pcData.otherDefenses[a];
 			actionData.group = "4. Abilities";
@@ -54,7 +54,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		return;
 	}
 
-	try{
+	try {
 		for (var a in pcData.passiveDefenses) {
 			let actionData = pcData.passiveDefenses[a];
 			actionData.group = "4. Abilities";
@@ -66,7 +66,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		return;
 	}
 
-	try{
+	try {
 		for (var a in pcData.passiveSkills) {
 			let actionData = pcData.passiveSkills[a];
 			actionData.group = "4. Abilities";
@@ -78,7 +78,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		return;
 	}
 
-	try{
+	try {
 		let addedRefocus = false;
 		for (var s in pcData.spellRules) {
 			let spellSource = pcData.spellRules[s];

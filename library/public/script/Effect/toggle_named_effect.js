@@ -51,15 +51,24 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 
 	let newAttacks = rules_grant_attack(effectData.rules);
 
-	if (addonExists("Lib:DateTime")) {
-		let effectDuration = effectData.duration;
-		if (effectDuration.unit == "days" || effectDuration.unit != "hours" || effectDuration.unit != "minutes") {
-			let dtDurationUnit = capitalise(effectDuration.unit);
-			let dtDurationAdd = effectDuration.value;
-			let dtData = { "Save": "Save", "setEventName": effectData.name + " Expires", "selectedNumber": dtDurationAdd, "numberType": dtDurationUnit, "setExpires": true, "setDescription": effectData.name + " expires on " + affectedCreature.getName() }
-			MTScript.setVariable("dtData", dtData);
-			MTScript.evalMacro("[h: datetime.QuickEvent(dtData)]")
+	try {
+		if (addonExists("Lib:DateTime")) {
+			let effectDuration = effectData.duration;
+			if (effectDuration.unit == "days" || effectDuration.unit != "hours" || effectDuration.unit != "minutes") {
+				let dtDurationUnit = capitalise(effectDuration.unit);
+				let dtDurationAdd = effectDuration.value;
+				let dtData = { "Save": "Save", "setEventName": effectData.name + " Expires", "selectedNumber": dtDurationAdd, "numberType": dtDurationUnit, "setExpires": true, "setDescription": effectData.name + " expires on " + affectedCreature.getName() }
+				MTScript.setVariable("dtData", dtData);
+				MTScript.evalMacro("[h: datetime.QuickEvent(dtData)]")
+			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in toggle_named_effect during datetime-integration");
+		MapTool.chat.broadcast("effectName: " + String(effectName));
+		MapTool.chat.broadcast("token: " + String(token));
+		MapTool.chat.broadcast("addonExists(\"Lib:DateTime\"): " + JSON.stringify(addonExists("Lib:DateTime")));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(newAttacks));

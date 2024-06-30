@@ -37,10 +37,10 @@ function calculate_ac(tokenID) {
 		}
 	}
 
-	if (eqShield != null && eqShield != "null" && "raised" in eqShield && eqShield.raised) {
-		if ("ac" in eqShield) {
+	if (eqShield != null && eqShield != "null" && get_actor_data(token, "system.attributes.shield.raised")) {
+		if ("ac" in eqShield.system) {
 			shieldBonus = eqShield.system.ac;
-		} else if ("acBonus" in eqShield) {
+		} else if ("acBonus" in eqShield.system) {
 			shieldBonus = eqShield.system.acBonus;
 		}
 	}

@@ -158,6 +158,19 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                             }
                         }
                     }
+                } else if (slug == "shield") {
+                    let eqShield = get_equipped_shield(actor)
+                    let effectSlug = pText.split(":")[2];
+                    if (effectSlug == "equipped") {
+                        predicate_resolution = predicate_resolution && (eqShield != null && eqShield.system.equipped);
+                        break;
+                    } else if (effectSlug == "broken") {
+                        predicate_resolution = predicate_resolution && (eqShield != null && eqShield.system.hp.value < (eqShield.system.hp.max / 2))
+                        break;
+                    } else if (effectSlug == "destroyed") {
+                        predicate_resolution = predicate_resolution && (eqShield != null && eqShield.system.hp.value == 0)
+                        break;
+                    }
                 }
             } else if (pText.match(/^action:/)) {
                 let actionSlug = pText.split(":")[1];

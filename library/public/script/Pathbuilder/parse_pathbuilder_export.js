@@ -96,7 +96,7 @@ function parse_pathbuilder_export(data) {
 		classData = rest_call(classData.fileURL);
 	}
 
-	characterData.foundryActor = {"name":data.name,"flags":{},"system":{}};
+	characterData.foundryActor = { "name": data.name, "flags": {}, "system": {} };
 
 	//__STATS__	
 	characterData.abilities = {};
@@ -199,7 +199,7 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.spells[l].list[s];
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.system.castLevel = {"value":castLevel};
+					spellData.system.castLevel = { "value": castLevel };
 					spellData.system.group = { "value": newCastingRules.name }
 					newCastingRules.spells.push(spellData)
 				}
@@ -229,7 +229,7 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.focusCantrips[l].replaceAll(" (Amped)", "");
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.system.castLevel = {"value":focusLevel};
+					spellData.system.castLevel = { "value": focusLevel };
 					spellData.system.group = { "value": newCastingRules.name }
 				}
 				newCastingRules.spells.push(spellData)
@@ -238,7 +238,7 @@ function parse_pathbuilder_export(data) {
 				let spellName = castingData.focusSpells[l].replaceAll(" (Amped)", "");
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
-					spellData.system.castLevel = {"value":focusLevel};
+					spellData.system.castLevel = { "value": focusLevel };
 					spellData.system.group = { "value": newCastingRules.name }
 				}
 				newCastingRules.spells.push(spellData)
@@ -268,19 +268,19 @@ function parse_pathbuilder_export(data) {
 	characterData.foundryActor = {
 		"system": {
 			"abilities": {
-				"cha": {"mod": characterData.abilities.cha},
-				"con": {"mod": characterData.abilities.con},
-				"dex": {"mod": characterData.abilities.dex},
-				"int": {"mod": characterData.abilities.int},
-				"str": {"mod": characterData.abilities.str},
-				"wis": {"mod": characterData.abilities.wis}
+				"cha": { "mod": characterData.abilities.cha },
+				"con": { "mod": characterData.abilities.con },
+				"dex": { "mod": characterData.abilities.dex },
+				"int": { "mod": characterData.abilities.int },
+				"str": { "mod": characterData.abilities.str },
+				"wis": { "mod": characterData.abilities.wis }
 			},
 			"attributes": {
 				"shield": null,
 				"ac": {
-                	"details": "",
-                	"value": characterData.ac
-            	},
+					"details": "",
+					"value": characterData.ac
+				},
 				"hp": {
 					"details": "",
 					"max": characterData.hp.max,
@@ -299,8 +299,9 @@ function parse_pathbuilder_export(data) {
 					"mod": characterData.perception,
 					"senses": []
 				},
-			} 
-		}, "flags": { "pf2e": {} } };
+			}
+		}, "flags": { "pf2e": {} }
+	};
 
 	let features_to_parse = [];
 	let featSubChoices = [];
@@ -467,7 +468,7 @@ function parse_pathbuilder_export(data) {
 						"description": { "value": "" }, "attackEffects": { "custom": "", "value": [] },
 						"traits": itemData.system.traits, "category": itemData.system.category, "group": itemData.system.group
 					},
-					"type": ((itemData.system.range==null) ? "melee" : "ranged"),
+					"type": ((itemData.system.range == null) ? "melee" : "ranged"),
 					"flags": { "pf2e": {} }
 				}
 				if (thisWeapon.str == "striking") {
@@ -512,11 +513,11 @@ function parse_pathbuilder_export(data) {
 	let unarmedAttack = {
 		"name": "Fist",
 		"system": {
-			"actions": {"value":1}, "actionType": {"value":"action"}, "bonus": {"value":unarmedProf}, "damageRolls": { "0": { "die": "d4", "dice": 1, "damageType": "bludgeoning" } },
-			"description": { "value": "" }, "attackEffects": {"value":[]}, "isMelee": true, "group": "",
+			"actions": { "value": 1 }, "actionType": { "value": "action" }, "bonus": { "value": unarmedProf }, "damageRolls": { "0": { "die": "d4", "dice": 1, "damageType": "bludgeoning" } },
+			"description": { "value": "" }, "attackEffects": { "value": [] }, "isMelee": true, "group": "",
 			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "category": "unarmed"
 		},
-		"flags": { "pf2e": {"linkedWeapon": "unarmed"} },
+		"flags": { "pf2e": { "linkedWeapon": "unarmed" } },
 		"type": "melee"
 	}
 	unarmedAttack.system.damageRolls["0"].damage = String(unarmedAttack.system.damageRolls["0"].dice) + unarmedAttack.system.damageRolls["0"].die + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");

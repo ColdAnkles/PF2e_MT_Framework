@@ -24,6 +24,10 @@ function create_npc(newNPCTokenID, creatureName) {
 		}
 	}
 
+	if (creatureData.foundryActor.system.attributes.shield != null) {
+		add_action_to_token({ "name": "Raise a Shield", "type": "basic", "system": { "group": "", "description": { "value": "" } } }, newNPCTokenID);
+	}
+
 	let allPossible = creatureData.basicAttacks;
 	allPossible = allPossible.concat(creatureData.offensiveActions);
 	allPossible = allPossible.concat(creatureData.otherDefenses);

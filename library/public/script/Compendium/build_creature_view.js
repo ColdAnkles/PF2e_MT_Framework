@@ -7,7 +7,7 @@ function build_creature_view(creatureName, tokenID = null) {
 
 	let additionalData = { "rollDice": false };
 
-	try{
+	try {
 		if (tokenID == null) {
 			//let libToken = get_runtime("libToken");
 			//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
@@ -41,7 +41,7 @@ function build_creature_view(creatureName, tokenID = null) {
 	//MapTool.chat.broadcast(JSON.stringify(creatureData.senses));
 
 	let HTMLString = "";
-	try{
+	try {
 		HTMLString += "<h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_creature_view during header-step");
@@ -51,7 +51,7 @@ function build_creature_view(creatureName, tokenID = null) {
 		return;
 	}
 
-	try{
+	try {
 		if (creatureData.rarity != "common" && creatureData.rarity != "") {
 			let normalRarity = capitalise(creatureData.rarity).split('-')[0];
 			if ("traitDescription" + normalRarity in traitGlossary && traitGlossary["traitDescription" + normalRarity] != null) {
@@ -67,7 +67,7 @@ function build_creature_view(creatureName, tokenID = null) {
 	}
 	//HTMLString += "<span class='traitalignment'>" + capitalise(creatureData.alignment) + "</span>";
 	let normalSize = capitalise(creatureData.size).split('-')[0];
-	try{
+	try {
 		if ("traitDescription" + normalSize in traitGlossary && traitGlossary["traitDescription" + normalSize] != null) {
 			HTMLString += "<span class='traitsize' title=\"" + traitGlossary["traitDescription" + normalSize] + "\">" + capitalise(creatureData.size) + "</span>"
 		} else {
@@ -116,7 +116,7 @@ function build_creature_view(creatureName, tokenID = null) {
 	HTMLString += "<b>Wis</b> " + pos_neg_sign(creatureData.abilities.wis) + ", ";
 	HTMLString += "<b>Cha</b> " + pos_neg_sign(creatureData.abilities.cha) + "<br />";
 
-	try{
+	try {
 		let itemText = "";
 		for (var i in creatureData.itemList) {
 			let itemData = creatureData.itemList[i];
@@ -164,7 +164,7 @@ function build_creature_view(creatureName, tokenID = null) {
 	HTMLString += "<b>Ref</b> +" + creatureData.saves.reflex + ", "
 	HTMLString += "<b>Will</b> +" + creatureData.saves.will
 
-	try{
+	try {
 		if (creatureData.passiveDefenses.length > 0) {
 			HTMLString += ";";
 			for (var d in creatureData.passiveDefenses) {
@@ -255,7 +255,7 @@ function build_creature_view(creatureName, tokenID = null) {
 
 	HTMLString += "<br />";
 
-	try{
+	try {
 		for (var feat in creatureData.passiveSkills) {
 			let featData = creatureData.passiveSkills[feat];
 			let featString = "<b>" + featData.name + "</b> " + clean_description(featData.system.description.value);
@@ -273,27 +273,27 @@ function build_creature_view(creatureName, tokenID = null) {
 	//		let featString = "<b>" + featData.name + "</b> " + icon_img("reaction", true) + " " + clean_description(featData.system.description.value);
 	//		HTMLString += featString + "<br />";
 
-			//const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
-			//if (!(regex.test(HTMLString))) {
-			//	//MapTool.chat.broadcast(JSON.stringify(featData));
-			//	let iconLookup = featData.actionType;
-			//	if (featData.actionCost != null) {
-			//		iconLookup = String(featData.actionCost) + iconLookup;
-			//	}
-			//	additionalData.action = featData;
-			//	featData.description = clean_description(featData.description, true, true, true, additionalData);
-			//	let traitText = "";
-			//	if (featData.traits.length > 0) {
-			//		traitText = " (" + featData.traits.join(", ") + ")";
-			//	}
-			//	let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup, true) + " " + featData.description;
-			//	//MapTool.chat.broadcast(featString.replace("<","&lt;"));
-			//	HTMLString += featString;
-			//	const testPattern = /<\/ul>$/
-			//	if (!(testPattern.test(featString))) {
-			//		HTMLString += "<br />";
-			//	}
-			//}
+	//const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
+	//if (!(regex.test(HTMLString))) {
+	//	//MapTool.chat.broadcast(JSON.stringify(featData));
+	//	let iconLookup = featData.actionType;
+	//	if (featData.actionCost != null) {
+	//		iconLookup = String(featData.actionCost) + iconLookup;
+	//	}
+	//	additionalData.action = featData;
+	//	featData.description = clean_description(featData.description, true, true, true, additionalData);
+	//	let traitText = "";
+	//	if (featData.traits.length > 0) {
+	//		traitText = " (" + featData.traits.join(", ") + ")";
+	//	}
+	//	let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup, true) + " " + featData.description;
+	//	//MapTool.chat.broadcast(featString.replace("<","&lt;"));
+	//	HTMLString += featString;
+	//	const testPattern = /<\/ul>$/
+	//	if (!(testPattern.test(featString))) {
+	//		HTMLString += "<br />";
+	//	}
+	//}
 	//	}
 	//} catch (e) {
 	//	MapTool.chat.broadcast("Error in build_creature_view during reactions-step");
@@ -302,7 +302,7 @@ function build_creature_view(creatureName, tokenID = null) {
 	//}
 	HTMLString += "<hr />";
 
-	try{
+	try {
 		if (tokenID != null) {
 			let baseSpeed = Number(creatureData.speeds.base);
 			let speedBonus = calculate_bonus(tokenID, ["speed", "land-speed"]);
@@ -341,7 +341,7 @@ function build_creature_view(creatureName, tokenID = null) {
 		return;
 	}
 
-	try{
+	try {
 		for (var w in creatureData.basicAttacks) {
 			let attackData = creatureData.basicAttacks[w];
 			//MapTool.chat.broadcast(JSON.stringify(attackData));
@@ -390,7 +390,7 @@ function build_creature_view(creatureName, tokenID = null) {
 		return;
 	}
 
-	try{
+	try {
 		for (var s in creatureData.spellRules) {
 			let theRules = creatureData.spellRules[s];
 			//MapTool.chat.broadcast(s);
@@ -423,7 +423,7 @@ function build_creature_view(creatureName, tokenID = null) {
 					return 1;
 				}
 			});
-			HTMLString += "<b>" + theRules.name + "</b> DC " + theRules.spellDC + ((theRules.name!="Rituals")?", attack +" + theRules.spellAttack:"");
+			HTMLString += "<b>" + theRules.name + "</b> DC " + theRules.spellDC + ((theRules.name != "Rituals") ? ", attack +" + theRules.spellAttack : "");
 			if (theRules.type == "focus") {
 				HTMLString += " (" + creatureData.resources.focus.value + " Focus Point)";
 			}
@@ -462,7 +462,7 @@ function build_creature_view(creatureName, tokenID = null) {
 		return;
 	}
 
-	try{
+	try {
 		for (var o in creatureData.offensiveActions) {
 			let actionData = creatureData.offensiveActions[o];
 			//MapTool.chat.broadcast(JSON.stringify(actionData));

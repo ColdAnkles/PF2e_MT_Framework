@@ -13,7 +13,31 @@ function get_actor_data(actor, varName) {
     } catch {
         result = null;
     }
+
+    let activeEffects = Object.assign({}, JSON.parse(actor.getProperty("activeEffects")), JSON.parse(actor.getProperty("specialEffects")), get_equipped_items(actor));
+    let arrayEntries = JSON.parse(actor.getProperty("passiveSkills")).concat(JSON.parse(actor.getProperty("otherDefenses")));
+
+    for (var i in arrayEntries) {
+        activeEffects[String(i) + "_arrayEntry"] = arrayEntries[i];
+    }
+
+    for (var e in activeEffects) {
+        for (var r in activeEffects[e].rules) {
+            let ruleData = activeEffects[e].rules[r]
+            //MapTool.chat.broadcast(JSON.stringify(ruleData))
+            if ("path" in ruleData && ruleData.path == varName) {
+                if (("predicate" in ruleData && predicate_check(ruleData.predicate, [], actor, null)) || !("predicate" in ruleData)) {
+                    result = ruleData.value;
+                }
+            }
+        }
+    }
+
     return result;
 }
 
-MTScript.registerMacro("ca.pf2e.get_actor_data", get_actor_data);
+function get_actor_data_mtscript(actor, varName) {
+    return JSON.stringify(get_actor_data(actor, varName));
+}
+
+MTScript.registerMacro("ca.pf2e.get_actor_data", get_actor_data_mtscript);

@@ -151,7 +151,7 @@ function add_action_to_token(actionData, tokenID, token) {
 			if (!("actions" in actionData.system)) {
 				actionData.system.actions = { "value": null };
 			}
-			if (!("actionType" in actionData.system)){
+			if (!("actionType" in actionData.system)) {
 				actionData.system.actionType = { "value": null };
 			}
 
