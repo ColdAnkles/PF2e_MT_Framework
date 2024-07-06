@@ -369,8 +369,8 @@ function attack_action(actionData, actingToken) {
 		}
 		displayData.system.materials = actionData.system.materials;
 
-		if (!(isNaN(initiative)) && "increaseMAP" in actionData.system && actionData.system.increaseMAP) {
-			actingToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
+		if (!(isNaN(initiative)) && "increaseMAP" in actionData && actionData.increaseMAP) {
+			actingToken.setProperty("attacksThisRound", String((currentAttackCount + 1)));
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in attack_action during description-setup");

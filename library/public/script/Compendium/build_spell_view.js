@@ -26,92 +26,160 @@ function build_spell_view(spellName) {
 		spellData = rest_call(spellData["fileURL"], "");
 	}
 
-	spellData = parse_spell(spellBaseName, spellData);
+	//spellData = parse_spell(spellBaseName, spellData);
 
 	//MapTool.chat.broadcast(JSON.stringify(spellData));
 
 	let HTMLString = "";
 
-	HTMLString += "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellData.category) + " " + spellData.level + "</span></h1>";
+	let spellCategory = "spell";
 
-	if (spellData.traits.rarity != "common") {
-		let normalRarity = capitalise(spellData.traits.rarity).split('-')[0];
-		if ("traitDescription" + normalRarity in traitGlossary && traitGlossary["traitDescription" + normalRarity] != null) {
-			HTMLString += "<span class='trait" + spellData.traits.rarity + "' title=\"" + traitGlossary["traitDescription" + normalRarity] + "\">" + capitalise(spellData.traits.rarity) + "</span>";
-		} else {
-			HTMLString += "<span class='trait" + spellData.traits.rarity + "'>" + capitalise(spellData.traits.rarity) + "</span>";
-		}
-	}
-	for (var t in spellData.traits.value) {
-		let traitName = spellData.traits.value[t];
-		let traitNormal = capitalise(traitName).split('-')[0];
-		if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
-			HTMLString += "<span class='trait' title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + capitalise(traitName) + "</span>";
-		} else {
-			HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
-		}
-	}
-	HTMLString += "<br />"
-	HTMLString += "<b>Source </b><span class='ext-link'>" + spellData.publication.title + "</span><br />";
-	if (spellData.traits.traditions.length > 0) {
-		HTMLString += "<b>Traditions</b> " + capitalise(spellData.traits.traditions.join(", "));
-		HTMLString += "<br />";
+	if (spellData.system.traits.value.includes("cantrip")) {
+		spellCategory = "cantrip";
+	} else if (spellData.system.traits.value.includes("focus")) {
+		spellCategory = "focus";
 	}
 
-	HTMLString += "<b>Cast</b> ";
-	if (!isNaN(spellData.time)) {
-		HTMLString += icon_img(spellData.time + "action", true);
-	} else if (spellData.time.includes("to")) {
-		let first = spellData.time.split(" to ")[0];
-		let second = spellData.time.split(" to ")[1];
-		if (isNaN(second)) {
-			HTMLString += icon_img(first + "action", true) + " to " + second;
-		} else {
-			HTMLString += icon_img(first + "action", true) + " to " + icon_img(second + "action");
-		}
-	} else if (spellData.time == "reaction") {
-		HTMLString += icon_img("reaction", true);
-	} else {
-		HTMLString += spellData.time;
-	}
+	HTMLString += "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellCategory) + " " + spellData.system.level.value + "</span></h1>";
 
-	if ("components" in spellData) {
-		let components = [];
-		for (var k in spellData.components) {
-			if (spellData.components[k]) {
-				components.push(k);
+	try {
+		if (spellData.system.traits.rarity != "common") {
+			let normalRarity = capitalise(spellData.system.traits.rarity).split('-')[0];
+			if ("traitDescription" + normalRarity in traitGlossary && traitGlossary["traitDescription" + normalRarity] != null) {
+				HTMLString += "<span class='trait" + spellData.system.traits.rarity + "' title=\"" + traitGlossary["traitDescription" + normalRarity] + "\">" + capitalise(spellData.system.traits.rarity) + "</span>";
+			} else {
+				HTMLString += "<span class='trait" + spellData.system.traits.rarity + "'>" + capitalise(spellData.system.traits.rarity) + "</span>";
 			}
 		}
-		HTMLString += " " + components.join(", ") + "<br />";
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during rarity-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
-
-	if (spellData.area != null) {
-		HTMLString += "<b>Area</b> " + spellData.area.details + "; <b>Targets</b> " + spellData.target + "<br />";
-	} else if (spellData.range != null && spellData.range != "") {
-		HTMLString += "<b>Range</b> " + spellData.range + "; <b>Targets</b> " + spellData.target + "<br />";
-	}
-
-	if (spellData.spellType == "save" && spellData.save.statistic != "") {
-		HTMLString += "<b>Saving Throw</b> ";
-		if (spellData.save.basic) {
-			HTMLString += "basic ";
+	try {
+		for (var t in spellData.system.traits.value) {
+			let traitName = spellData.system.traits.value[t];
+			let traitNormal = capitalise(traitName).split('-')[0];
+			if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
+				HTMLString += "<span class='trait' title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + capitalise(traitName) + "</span>";
+			} else {
+				HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
+			}
 		}
-		HTMLString += capitalise(spellData.save.statistic);
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during traits-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
-	let hasDuration = spellData.duration != null && spellData.duration != "" && spellData.duration.value != "" && spellData.duration.value != null;
-	if (spellData.spellType == "save" && spellData.save.statistic != "" && hasDuration) {
-		HTMLString += "; ";
-	} else if (spellData.spellType == "save" && spellData.save.statistic != "") {
-		HTMLString += "<br />";
+	HTMLString += "<br />"
+	try {
+		HTMLString += "<b>Source </b><span class='ext-link'>" + spellData.system.publication.title + "</span><br />";
+		if (spellData.system.traits.traditions.length > 0) {
+			HTMLString += "<b>Traditions</b> " + capitalise(spellData.system.traits.traditions.join(", "));
+			HTMLString += "<br />";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during traditions-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
-	if (hasDuration) {
-		HTMLString += "<b>Duration</b> " + spellData.duration.value;
-		HTMLString += "<br />";
+
+	try {
+		HTMLString += "<b>Cast</b> ";
+		if (!isNaN(spellData.system.time.value)) {
+			HTMLString += icon_img(spellData.system.time.value + "action", true);
+		} else if (spellData.system.time.value.includes("to")) {
+			let first = spellData.system.time.value.split(" to ")[0];
+			let second = spellData.system.time.value.split(" to ")[1];
+			if (isNaN(second)) {
+				HTMLString += icon_img(first + "action", true) + " to " + second;
+			} else {
+				HTMLString += icon_img(first + "action", true) + " to " + icon_img(second + "action", true) + " ";
+			}
+		} else if (spellData.system.time.value == "reaction") {
+			HTMLString += icon_img("reaction", true);
+		} else {
+			HTMLString += spellData.system.time.value;
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during time-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		if ("components" in spellData.system) {
+			let components = [];
+			for (var k in spellData.system.components) {
+				if (spellData.system.components[k]) {
+					components.push(k);
+				}
+			}
+			HTMLString += " " + components.join(", ") + "<br />";
+		} else {
+			HTMLString += "<br />";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during components-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		if (spellData.system.area != null) {
+			HTMLString += "<b>Area</b> " + spellData.system.area.details + "; <b>Targets</b> " + spellData.system.target.value + "<br />";
+		} else if (spellData.system.range.value != null && spellData.system.range.value != "") {
+			HTMLString += "<b>Range</b> " + spellData.system.range.value + "; <b>Targets</b> " + spellData.system.target.value + "<br />";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during area-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		if (spellData.system.spellType == "save" && spellData.system.save.statistic != "") {
+			HTMLString += "<b>Saving Throw</b> ";
+			if (spellData.system.save.basic) {
+				HTMLString += "basic ";
+			}
+			HTMLString += capitalise(spellData.system.save.statistic);
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during save-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	let hasDuration = spellData.system.duration != null && spellData.system.duration != "" && spellData.system.duration.value != "" && spellData.system.duration.value != null;
+
+	try {
+		if (spellData.system.spellType == "save" && spellData.system.save.statistic != "" && hasDuration) {
+			HTMLString += "; ";
+		} else if (spellData.system.spellType == "save" && spellData.system.save.statistic != "") {
+			HTMLString += "<br />";
+		}
+		if (hasDuration) {
+			HTMLString += "<b>Duration</b> " + spellData.system.duration.value;
+			HTMLString += "<br />";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during duration-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	HTMLString += "<hr />";
 
-	HTMLString += clean_description(spellData.description, false, false, false, { "rollDice": false, "level": spellData.level });
+	HTMLString += clean_description(spellData.system.description.value, false, false, false, { "rollDice": false, "level": spellData.system.level.value });
 
 
 	return HTMLString;

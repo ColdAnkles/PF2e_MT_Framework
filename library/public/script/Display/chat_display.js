@@ -54,7 +54,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	outputText = outputText + "</tr></table>";
 
 	try {
-		if ("traits" in displayData.system && displayData.system.traits.value.length > 0) {
+		if ("traits" in displayData.system && "value" in displayData.system.traits && displayData.system.traits.value.length > 0) {
 			outputText = outputText + "<table border='0', bgcolor='#5a0308', style='font-size:13pt;font-family:Century Gothic;font-weight:bold;border-spacing:0px'>";
 			for (var t in displayData.system.traits.value) {
 				let traitName = displayData.system.traits.value[t];

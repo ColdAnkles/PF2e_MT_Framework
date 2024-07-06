@@ -3,7 +3,8 @@
     {"name": "onInit", "mts": "onInit"},
     {"name": "onFirstInit", "mts": "onFirstInit" }
   ],
-  "legacyEvents": [{
-    "name": "onInitiativeChange", "mts": "onInitiativeChange"}
+  "legacyEvents": [
+    { "name": "onInitiativeChange", "mts": "onInitiativeChange"},
+    { "name": "onTokenMove", "mts": "onTokenMove" }
   ]
 }

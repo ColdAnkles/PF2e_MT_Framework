@@ -22,8 +22,8 @@ function display_conditions(token) {
 		}
 		let conditionData = tokenConditions[sorted[c]];
 		outputString = outputString + sorted[c];
-		if (conditionData.value.isValued) {
-			outputString = outputString + " " + conditionData.value.value;
+		if (conditionData.system.value.isValued) {
+			outputString = outputString + " " + conditionData.system.value.value;
 		}
 		outputString = outputString + separator;
 		counter += 1;

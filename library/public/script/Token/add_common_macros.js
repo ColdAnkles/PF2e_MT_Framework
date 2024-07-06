@@ -16,15 +16,16 @@ function add_common_macros(tokenID) {
     { "label": "Flat Check", "playerEditable": 0, "command": "[h: js.ca.pf2e.flat_check(myID)]", "tooltip": "Attempt Flat Check.", "sortBy": "", "group": "1. Common" },
     { "label": "Other Actions", "playerEditable": 0, "command": "[h: ca.pf2e.Compendium_Window(json.set(\"{}\",\"window\",\"action\",\"tokenID\",currentToken()))]", "tooltip": "View other actions.", "sortBy": "", "group": "3. Additional" },
     { "label": "Increase MAP", "playerEditable": 0, "command": "[h: js.ca.pf2e.increase_map(myID))]", "tooltip": "Increase your MAP by 1.", "sortBy": "", "group": "3. Additional" },
-    { "label": "Daily Preparations", "playerEditable": 0, "command": "[h: js.ca.pf2e.daily_preparations(myID)]", "tooltip": "Perform Daily Preparations.", "group": "3. Additional" }
+    { "label": "Daily Preparations", "playerEditable": 0, "command": "[h: js.ca.pf2e.daily_preparations(myID)]", "tooltip": "Perform Daily Preparations.", "group": "3. Additional" },
+    { "label": "Inventory", "playerEditable": 0, "command": "[h: js.ca.pf2e.view_inventory(myID)]", "tooltip": "View Inventory", "sortBy": "", "group": "1. Common" }
     ]
     for (var m in commonMacros) {
         createMacro(commonMacros[m], tokenID);
     }
 
     if (get_token_type(tokenID) == "PC") {
-        let PCMacros = [{ "label": "Inventory", "playerEditable": 0, "command": "[h: js.ca.pf2e.view_inventory(myID)]", "tooltip": "View Inventory", "sortBy": "", "group": "1. Common" },
-        { "label": "Recall Knowledge", "playerEditable": 0, "command": "[h: js.ca.pf2e.simple_action(\"Recall Knowledge\",currentToken())]", "tooltip": "Recall Knowledge", "sortBy": "", "group": "1. Common" }]
+        let PCMacros = [
+            { "label": "Recall Knowledge", "playerEditable": 0, "command": "[h: js.ca.pf2e.simple_action(\"Recall Knowledge\",currentToken())]", "tooltip": "Recall Knowledge", "sortBy": "", "group": "1. Common" }]
         for (var m in PCMacros) {
             createMacro(PCMacros[m], tokenID);
         }

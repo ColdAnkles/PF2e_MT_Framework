@@ -1,0 +1,5 @@
+[h:itemName=macro.args]
+[h: center=getViewCenter(0,";")]
+[h: xCoord=getStrProp(center,"centerX")]
+[h: yCoord=getStrProp(center,"centerY")]
+[h: js.ca.pf2e.spawn_item_by_name(itemName,json.set("{}","x",xCoord,"y",yCoord))]

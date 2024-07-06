@@ -36,6 +36,8 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
     }
     if (itemType == "hazard") {
         returnHTML += "<th>Spawn Link</th>";
+    } else if (itemType == "consumable" || itemType == "weapon" || itemType == "armor" || itemType == "shield" || itemType == "item") {
+        returnHTML += "<th>Spawn Item</th>";
     }
 
     let odd = 1;
@@ -91,6 +93,8 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
         }
         if (itemType == "hazard") {
             returnHTML += "<td width=0%>" + create_macroLink("Make Token", "Spawn_Hazard@Lib:ca.pf2e", thisItem.name);
+        } else if (itemType == "consumable" || itemType == "weapon" || itemType == "armor" || itemType == "shield" || itemType == "item") {
+            returnHTML += "<td width=0%>" + create_macroLink("Spawn Item", "Spawn_Item@Lib:ca.pf2e", thisItem.name);
         }
         returnHTML += "</tr>";
     }

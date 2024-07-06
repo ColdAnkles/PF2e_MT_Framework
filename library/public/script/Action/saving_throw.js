@@ -19,12 +19,21 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 
 		try {
 
-			let cBonus = ("cBonus" in saveData) ? saveData.cBonus : 0;
-			let sBonus = ("sBonus" in saveData) ? saveData.sBonus : 0;
-			let iBonus = ("iBonus" in saveData) ? saveData.iBonus : 0;
-			let cMalus = ("cMalus" in saveData) ? saveData.cMalus : 0;
-			let sMalus = ("sMalus" in saveData) ? saveData.sMalus : 0;
-			let iMalus = ("iMalus" in saveData) ? saveData.iMalus : 0;
+			let cBonus = 0;
+			let sBonus = 0;
+			let iBonus = 0;
+			let cMalus = 0;
+			let sMalus = 0;
+			let iMalus = 0;
+			
+			if (saveData != null){
+				cBonus = ("cBonus" in saveData) ? saveData.cBonus : 0;
+				sBonus = ("sBonus" in saveData) ? saveData.sBonus : 0;
+				iBonus = ("iBonus" in saveData) ? saveData.iBonus : 0;
+				cMalus = ("cMalus" in saveData) ? saveData.cMalus : 0;
+				sMalus = ("sMalus" in saveData) ? saveData.sMalus : 0;
+				iMalus = ("iMalus" in saveData) ? saveData.iMalus : 0;
+			}
 
 			let queryHTML = "<html>";
 
@@ -154,7 +163,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 
 			let basic_bonus = Number(saveToken.getProperty(saveData.saveName));
 			let misc_bonus = Number(saveData.miscBonus);
-			let effect_bonus_raw = calculate_bonus(saveToken.getId(), saveData.saveName, true);
+			let effect_bonus_raw = calculate_bonus(saveToken.getId(), [saveData.saveName,"saving-throw"], true);
 
 			for (var k in saveData) {
 				if (k.includes("specialEffect")) {

@@ -1,3 +1,5 @@
+"use strict";
+
 function capitalise(aString) {
 	if (aString == "" || aString == null) {
 		return "";

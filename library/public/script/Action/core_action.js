@@ -16,20 +16,28 @@ function core_action(actionData, actingToken) {
 		}
 
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
+		//MapTool.chat.broadcast(String(initiative));
+		//MapTool.chat.broadcast(String(actionsLeft));
 
 		if ("requirements" in actionData.system && actionData.system.requirements != null && "value" in actionData.system.requirements && actionData.system.requirements.value != "") {
 			MapTool.chat.broadcast("Test Requirements:\n" + JSON.stringify(actionData.system.requirements));
 		}
 
-		if (isNaN(initiative) || (actionData.actionType == "action" && actionsLeft >= actionData.system.actions.value)) {
+		if (isNaN(initiative)) {
 			canAct = true;
-		} else if (actionData.system.actionType.value == "action") {
+		} else if ("actionType" in actionData.system && actionData.system.actionType == "action" && "actions" in actionData.system && "value" in actionData.system.actions && actionsLeft >= actionData.system.actions.value){
+			canAct = true;
+		} else if ((actionData.type == "ranged" || actionData.type == "melee") && actionsLeft >= 1) {
+			canAct = true;
+		} else if ((actionData.type == "ranged" || actionData.type == "melee") && actionsLeft <= 0) {
 			failAct = "Insufficient Actions";
-		} else if (isNaN(initiative) || (actionData.system.actionType.value == "reaction" && (reactionsLeft >= actionData.system.actions.value || actionData.system.actions.value == null))) {
+		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "action") {
+			failAct = "Insufficient Actions";
+		} else if (isNaN(initiative) || ("actionType" in actionData.system && actionData.system.actionType.value == "reaction" && ("actions" in actionData.system && "value" in actionData.system.actions && (reactionsLeft >= actionData.system.actions.value || actionData.system.actions.value == null)))) {
 			canAct = true;
-		} else if (actionData.system.actionType.value == "reaction") {
+		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "reaction") {
 			failAct = "Insufficient Reactions";
-		} else if (actionData.system.actionType.value == "passive") {
+		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "passive") {
 			canAct = true;
 		}
 	} catch (e) {
@@ -54,9 +62,9 @@ function core_action(actionData, actingToken) {
 					MTScript.setVariable("increaseMAP", 1);
 					MTScript.setVariable("spendAction", 1);
 					MTScript.evalMacro("[h: input(\"useMap|1|Use MAP|CHECK\",\"increaseMAP|1|Increase MAP|CHECK\",\"spendAction|1|Spend Action|CHECK\")]");
-					actionData.useMAP = MTScript.getVariable("useMAP") == 1;
-					actionData.increaseMAP = MTScript.getVariable("increaseMAP") == 1;
-					actionData.spendAction = MTScript.getVariable("spendAction") == 1;
+					actionData.useMAP = (Number(MTScript.getVariable("useMAP")) == 1);
+					actionData.increaseMAP = (Number(MTScript.getVariable("increaseMAP")) == 1);
+					actionData.spendAction = (Number(MTScript.getVariable("spendAction")) == 1);
 				}
 
 				attack_action(actionData, actingToken);
@@ -118,11 +126,14 @@ function core_action(actionData, actingToken) {
 			}
 		}
 
+		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		try {
 			if (!(isNaN(initiative)) && ("spendAction" in actionData && actionData.spendAction)) {
-				if (actionData.actionType == "action") {
+				if ("actionType" in actionData.system && actionData.system.actionType == "action" && "actions" in actionData.system) {
 					actingToken.setProperty("actionsLeft", String(actionsLeft - actionData.system.actions.value));
-				} else if (actionData.actionType == "reaction") {
+				}else if (actionData.type == "melee" || actionData.type == "ranged") {
+					actingToken.setProperty("actionsLeft", String(actionsLeft - 1));
+				} else if (actionData.system.actionType == "reaction") {
 					actingToken.setProperty("reactionsLeft", String(reactionsLeft - actionData.system.actions.value));
 				}
 				update_action_bank(actingToken);

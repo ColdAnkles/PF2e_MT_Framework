@@ -73,6 +73,7 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 	for (var c in activeConditions) {
 		let conditionData = JSON.parse(JSON.stringify(activeConditions[c]));
 		//MapTool.chat.broadcast(JSON.stringify(conditionData));
+		//MapTool.chat.broadcast(JSON.stringify(conditionData.name));
 		let conditionBonuses = get_effect_bonus(conditionData, bonusScopes, token);
 		conditionData.bonus = conditionBonuses;
 		//MapTool.chat.broadcast(JSON.stringify(conditionBonuses));

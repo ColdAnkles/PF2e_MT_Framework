@@ -15,13 +15,27 @@ function view_inventory(tokenID, inventoryAction = null) {
             } else if (key.includes("equip_")) {
                 actionItem = inventory[key.replace("equip_", "")];
                 action = "equip";
+            } else if (key.includes("drop_")) {
+                actionItem = inventory[key.replace("drop_", "")];
+                action = "drop";
+            } else if (key.includes("pickup_")) {
+                actionItem = key.replace("pickup_", "");
+                action = "pickup";
             }
         }
-        if (action == "share") {
-            chat_display(actionItem);
-        } else if (action == "equip") {
-            actionItem.equipped = !actionItem.equipped;
-            token.setProperty("inventory", JSON.stringify(inventory));
+        if (actionItem != "") {
+            if (action == "share") {
+                chat_display(actionItem);
+            } else if (action == "equip") {
+                actionItem.system.equipped = !actionItem.system.equipped;
+                token.setProperty("inventory", JSON.stringify(inventory));
+            } else if (action == "drop") {
+                drop_item(token, actionItem._id);
+                inventory = JSON.parse(token.getProperty("inventory"));
+            } else if (action == "pickup") {
+                pickup_item(token, actionItem);
+                inventory = JSON.parse(token.getProperty("inventory"));
+            }
         }
     }
 
@@ -30,17 +44,39 @@ function view_inventory(tokenID, inventoryAction = null) {
     let inventoryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/NethysCSS.css'/><h1 class='feel-title'>" + tokenName + "'s Inventory</h1>";
     inventoryHTML += "<table width=100%><form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
     inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'>";
-    inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Equip</th><th>Use</th></tr>";
+    inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Equip</th><th>Use</th><th>Drop</th></tr>";
 
     for (var itemID in inventory) {
         let thisItem = inventory[itemID];
-        inventoryHTML += "<tr><td>" + thisItem.name + "</td><td>" + String(thisItem.quantity) + "</td><td><input type='submit' name='equip_" + thisItem.id + "' value='" + ((thisItem.equipped) ? "Unequip" : "Equip") + "'></td><td><input type='submit' name='share_" + thisItem.id + "' value='Submit'></td></tr>"
+        inventoryHTML += "<tr><td>" + thisItem.name + "</td><td>" + String(thisItem.system.quantity) + "</td><td><input type='submit' name='equip_" + thisItem._id + "' value='" + ((thisItem.system.equipped) ? "Unequip" : "Equip") + "'></td>"
+        inventoryHTML += "<td><input type='submit' name='share_" + thisItem._id + "' value='Submit'></td>";
+        inventoryHTML += "<td><input type='submit' name='drop_" + thisItem._id + "' value='Drop'></tr>";
     }
 
     inventoryHTML += "</form></table></html>"
 
+    let groundItems = find_items_on_ground(token);
+
+    if (groundItems.length > 0) {
+        inventoryHTML += "<br /><br /><h1 class='feel-title'>The Ground</h1>"
+        inventoryHTML += "<table width=100%><form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+        inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'>";
+        inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Pick Up</th></tr>";
+
+        for (var item in groundItems) {
+            let thisItem = JSON.parse(groundItems[item].getProperty("ItemData"));
+            inventoryHTML += "<tr><td>" + thisItem.name + "</td><td>" + String(thisItem.system.quantity) + "</td>"
+            inventoryHTML += "<td><input type='submit' name='pickup_" + groundItems[item].getId() + "' value='Pick Up'></tr>";
+        }
+
+        inventoryHTML += "</form></table></html>"
+
+    }
+
+
     MTScript.setVariable("frameHTML", inventoryHTML);
-    MTScript.evalMacro("[frame5('Inventory', 'width=500; height=600; temporary=1; noframe=0; input=1'):{[r: frameHTML]}]")
+    MTScript.setVariable("frameName", token.getName() + "\'s Inventory")
+    MTScript.evalMacro("[frame5(frameName, 'width=500; height=600; temporary=1; noframe=0; input=1'):{[r: frameHTML]}]")
 
 
 
