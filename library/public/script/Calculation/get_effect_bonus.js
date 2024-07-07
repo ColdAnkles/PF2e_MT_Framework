@@ -20,6 +20,9 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				//MapTool.chat.broadcast(JSON.stringify(ruleData.selector));
 				//let selector = selector_inheritance(foundry_calc_value(ruleData.selector, actor, item));
 				//Note to self - doing the foundry calc value tends to turn strings like AC into the acutal actor ac or similar
+				if (ruleData.selector.includes("|")){
+					ruleData.selector = foundry_calc_value(ruleData.selector, actor, item)
+				}
 				let selector = selector_inheritance(ruleData.selector);
 				//MapTool.chat.broadcast(JSON.stringify(selector));
 				let intersect = selector.filter(value => bonusScopes.includes(value));

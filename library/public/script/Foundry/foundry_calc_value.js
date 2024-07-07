@@ -85,20 +85,24 @@ function foundry_calc_value(value, actor, item) {
 				}
 			}
 		} else {
-			value = value.replace(/^{/, "").replace(/}$/, "");
-			if (value.includes("flags")) {
-				let splitStrings = value.split(".");
-				let flagKey = splitStrings[splitStrings.length - 1];
-				if (actor != null) {
-					let flagList = JSON.parse(actor.getProperty("foundryActor"));
-					if (flagKey in flagList) {
-						return flagList[flagKey];
-					} else {
-						return value;
+			try{
+				value = value.replace(/^{/, "").replace(/}$/, "");
+				if (value.includes("flags")) {
+					let splitStrings = value.split("|");
+					let flagKey = splitStrings[splitStrings.length - 1];
+					if (actor != null) {
+						let testValue = get_actor_data(actor, flagKey);
+						return testValue;
 					}
 				}
+				return value;
+			} catch (e) {
+				MapTool.chat.broadcast("Error in foundry_calc_value during flag-check");
+				MapTool.chat.broadcast("actor: " + String(actor));
+				MapTool.chat.broadcast("value: " + JSON.stringify(value));
+				MapTool.chat.broadcast("" + e + "\n" + e.stack);
+				return;
 			}
-			return value;
 		}
 		//MapTool.chat.broadcast(value);
 		newValue = eval(value);

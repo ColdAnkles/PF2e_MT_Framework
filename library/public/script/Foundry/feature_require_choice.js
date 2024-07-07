@@ -2,13 +2,13 @@
 
 function feature_require_choice(feature, assignDict, possibleSelections = []) {
     let tagData = JSON.parse(read_data("pf2e_tagData"));
-    let rules = feature.rules;
+    let rules = feature.system.rules;
     let nameSplit = feature.name.split(".");
     let choiceTitle = nameSplit[nameSplit.length - 1];
     MTScript.setVariable("choiceTitle", choiceTitle);
     //MapTool.chat.broadcast(JSON.stringify(possibleSelections));
     //MapTool.chat.broadcast(JSON.stringify(feature));
-    //MapTool.chat.broadcast(JSON.stringify(assignDict));
+    //MapTool.chat.broadcast(JSON.stringify(assignDict.flags));
     let chosenValues = [];
     for (var r in rules) {
         let newRule = rules[r];
@@ -24,6 +24,8 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             }
             if (choicePrompt.includes("Feat")) {
                 continue;
+            } else if (newRule.itemType == "feat") {
+                continue;
             }
             let choiceFlag = newRule.flag;
             //MapTool.chat.broadcast(feature.name)
@@ -36,34 +38,41 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             }
             let choices = [];
             //MapTool.chat.broadcast(String(newRule.choices.constructor.name));
-            if (newRule.choices == "weaponGroups") {
-                choices = ["Axe", "Bomb", "Bow", "Brawling", "Club", "Crossbow", "Dart", "Firearm", "Flail", "Hammer", "Knife", "Pick", "Polearm", "Shield", "Sling", "Spear", "Sword"];
-            } else if (newRule.choices.constructor.name == "Object") {
-                if ("filter" in newRule.choices) {
-                    for (var c in newRule.choices.filter) {
-                        if (typeof (newRule.choices.filter[c]) == "string" && newRule.choices.filter[c].includes(":tag:")) {
-                            let filterSplit = newRule.choices.filter[c].split(":");
-                            let tagKey = filterSplit[filterSplit.length - 1];
-                            choices = choices.concat(tagData[tagKey]);
+            try{
+                if (newRule.choices == "weaponGroups") {
+                    choices = ["Axe", "Bomb", "Bow", "Brawling", "Club", "Crossbow", "Dart", "Firearm", "Flail", "Hammer", "Knife", "Pick", "Polearm", "Shield", "Sling", "Spear", "Sword"];
+                } else if (newRule.choices.constructor.name == "Object") {
+                    if ("filter" in newRule.choices) {
+                        for (var c in newRule.choices.filter) {
+                            if (typeof (newRule.choices.filter[c]) == "string" && newRule.choices.filter[c].includes(":tag:")) {
+                                let filterSplit = newRule.choices.filter[c].split(":");
+                                let tagKey = filterSplit[filterSplit.length - 1];
+                                choices = choices.concat(tagData[tagKey]);
+                            }
                         }
                     }
-                }
-            } else if (newRule.choices.constructor.name == "Array") {
-                for (var e in newRule.choices) {
-                    let pChoice = newRule.choices[e];
-                    if (typeof (pChoice) == "String") {
-                        choices.push(capitalise(pChoice));
-                    } else if (typeof (pChoice) == "object") {
-                        if ("value" in pChoice) {
-                            if (pChoice.value.includes("system.")) {
-                                let choiceSplit = pChoice.value.split(".");
-                                choices.push(capitalise(choiceSplit[choiceSplit.length - 2]));
-                            } else {
-                                choices.push(capitalise(pChoice.value));
+                } else if (newRule.choices.constructor.name == "Array") {
+                    for (var e in newRule.choices) {
+                        let pChoice = newRule.choices[e];
+                        if (typeof (pChoice) == "String") {
+                            choices.push(capitalise(pChoice));
+                        } else if (typeof (pChoice) == "object") {
+                            if ("value" in pChoice) {
+                                if (pChoice.value.includes("system.")) {
+                                    let choiceSplit = pChoice.value.split(".");
+                                    choices.push(capitalise(choiceSplit[choiceSplit.length - 2]));
+                                } else {
+                                    choices.push(capitalise(pChoice.value));
+                                }
                             }
                         }
                     }
                 }
+            } catch (e) {
+                MapTool.chat.broadcast("Error in feature_require_source during choice-list-setup");
+                MapTool.chat.broadcast("newRule: " + JSON.stringify(newRule));
+                MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                return;
             }
             let choiceResult = null;
             //MapTool.chat.broadcast(JSON.stringify(choices));
@@ -75,20 +84,38 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 choices = intersect;
             }
             //MapTool.chat.broadcast(String(choiceResult));
-
-            if (choiceResult == null) {
-                MTScript.setVariable("choices", JSON.stringify(choices));
-                MTScript.setVariable("prompt", choicePrompt);
-                MTScript.evalMacro("[h: choice=json.get(choices,0)][h: input(\"dummyVar|\"+choiceTitle+\"||LABEL|SPAN=TRUE\",\"choice|\"+choices+\"|\"+prompt+\"|LIST|VALUE=STRING DELIMITER=JSON\")]");
-                choiceResult = MTScript.getVariable("choice");
+            try{
+                if (choiceResult == null && choices.length>0) {
+                    MTScript.setVariable("choices", JSON.stringify(choices));
+                    MTScript.setVariable("prompt", choicePrompt);
+                    MTScript.evalMacro("[h: choice=json.get(choices,0)][h: input(\"dummyVar|\"+choiceTitle+\"||LABEL|SPAN=TRUE\",\"choice|\"+choices+\"|\"+prompt+\"|LIST|VALUE=STRING DELIMITER=JSON\")]");
+                    choiceResult = MTScript.getVariable("choice");
+                } else if (choices.length == 0){
+                    //MapTool.chat.broadcast("Error: No choices available for " + feature.name);
+                    return;
+                }
+            } catch (e) {
+                MapTool.chat.broadcast("Error in feature_require_source during ask-choice");
+                MapTool.chat.broadcast("choices: " + JSON.stringify(choices));
+                MapTool.chat.broadcast("newRule: " + JSON.stringify(newRule));
+                MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                return;
             }
             //MapTool.chat.broadcast(choiceResult);
-            if ("flags" in assignDict && "pf2e" in assignDict.flags && "ruleSelections" in assignDict.flags.pf2e && choiceFlag in assignDict.flags.pf2e.ruleSelections) {
-                assignDict.flags.pf2e.ruleSelections[choiceFlag].push(choiceResult.toLowerCase());
-            } else {
-                assignDict.flags.pf2e.ruleSelection[choiceFlag] = [choiceResult.toLowerCase()];
+            try{
+                if ("flags" in assignDict && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && choiceFlag in assignDict.flags.pf2e.ruleSelections) {
+                    assignDict.flags.pf2e.rulesSelections[choiceFlag].push(choiceResult.toLowerCase());
+                } else {
+                    assignDict.flags.pf2e.rulesSelections[choiceFlag] = [choiceResult.toLowerCase()];
+                }
+                chosenValues.push(choiceResult);
+            } catch (e) {
+                MapTool.chat.broadcast("Error in feature_require_source during assign-ruleSelection");
+                MapTool.chat.broadcast("assignDict.flags: " + JSON.stringify(assignDict.flags));
+                MapTool.chat.broadcast("choiceResult: " + choiceResult);
+                MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                return;
             }
-            chosenValues.push(choiceResult);
         }
     }
     return chosenValues;
