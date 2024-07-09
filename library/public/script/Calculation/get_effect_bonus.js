@@ -37,10 +37,10 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
 			return;
 		}
-		if ("key" in ruleData && ["GrantItem", "Resistance"].includes(ruleData.key)) {
+		if ("key" in ruleData && ["GrantItem", "Resistance", "Weakness"].includes(ruleData.key) && !(bonusScopes.includes(ruleData.key))) {
 			continue;
 		}
-		if ("key" in ruleData && ["CricitalSpecialization"].includes(ruleData.key) && !bonusScopes.includes("attack")) {
+		if ("key" in ruleData && ["CriticalSpecialization"].includes(ruleData.key) && !bonusScopes.includes("attack")) {
 			continue;
 		}
 		if ("key" in ruleData && ruleData.key.includes("Proficiency") && !bonusScopes.includes("proficiency")) {
@@ -140,6 +140,11 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				returnData.otherEffects["Critical Specialization"] = true;
 			} else if (ruleData.key == "MartialProficiency") {
 				returnData.otherEffects["AdjustProficiency"] = { "profName": "Martial", "value": ruleData.value };
+			} else if (ruleData.key == "Weakness") {
+				if (!("additionalWeakness" in returnData.otherEffects)){
+					returnData.otherEffects.additionalWeakness = [];
+				}
+				returnData.otherEffects.additionalWeakness.push({"type":ruleData.type, "value":foundry_calc_value(ruleData.value, actor, effectData.sourceItem)});
 			}
 		}
 	}

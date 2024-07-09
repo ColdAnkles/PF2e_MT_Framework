@@ -297,7 +297,7 @@ function spell_action(actionData, actingToken) {
 	try {
 		//Special case for magic missile
 		if (spellData.name == "Magic Missile" || spellData.name == "Force Barrage") {
-			let totalDarts = (Math.floor((actionData.castLevel - 1) / 2) + 1) * actionData.actionCost;
+			let totalDarts = (Math.floor((actionData.system.castLevel.value - 1) / 2) + 1) * actionData.actionCost;
 			//MapTool.chat.broadcast((Math.floor((actionData.castLevel-1)/2)+1) + " * " + actionData.actionCost + " = " + String(totalDarts));
 			for (let i = 1; i < totalDarts; i += 1) {
 				spellData.damage["dart" + String(i)] = spellData.damage[0];
@@ -322,14 +322,14 @@ function spell_action(actionData, actingToken) {
 			} else {
 				displayData.system.description.value += "<i>Damage</i><br />";
 			}
-			if ("heightening" in spellData && (spellData.heightening.type == "fixed")) {
+			if ("heightening" in spellData.system && (spellData.system.heightening.type == "fixed")) {
 				let found = false;
 				let heightenVal = null;
-				let testIndex = actionData.castLevel
+				let testIndex = actionData.system.castLevel.value
 				while (!found) {
-					if (testIndex in spellData.heightening.levels) {
+					if (testIndex in spellData.system.heightening.levels) {
 						found = true;
-						heightenVal = spellData.heightening.levels[testIndex];
+						heightenVal = spellData.system.heightening.levels[testIndex];
 					} else if (testIndex <= 0) {
 						found = true;
 					} else {
@@ -337,7 +337,18 @@ function spell_action(actionData, actingToken) {
 					}
 				}
 				if (heightenVal != null) {
-					spellData.damage = heightenVal.damage;
+					spellData.system.damage = heightenVal.damage;
+				}
+			} else if ("heightening" in spellData.system && (spellData.system.heightening.type == "interval")){
+				let addTimes = Math.floor((actionData.system.castLevel.value - spellData.system.level.value)/spellData.system.heightening.interval)
+				if (addTimes!=0){
+					for (var hd in spellData.system.heightening.damage){
+						if (hd in spellData.system.damage){
+							for (var at=0; at < addTimes; at++){
+								spellData.system.damage[hd].formula += " + " + spellData.system.heightening.damage[hd]
+							}
+						}
+					}
 				}
 			}
 

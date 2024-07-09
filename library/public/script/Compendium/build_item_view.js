@@ -19,7 +19,7 @@ function build_item_view(itemType, itemName) {
 
 	try {
 		HTMLString += "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + (("level" in itemData.system) ? itemData.system.level.value : "") + "</span></h1>";
-		if (itemData.system.traits.rarity != "common") {
+		if ("traits" in itemData.system && "rarity" in itemData.system.traits && itemData.system.traits.rarity != "common") {
 			let normalRarity = capitalise(itemData.system.traits.rarity).split('-')[0];
 			if ("traitDescription" + normalRarity in traitGlossary && traitGlossary["traitDescription" + normalRarity] != null) {
 				HTMLString += "<span class='trait" + itemData.system.traits.rarity + "' title=\"" + traitGlossary["traitDescription" + normalRarity] + "\">" + capitalise(itemData.system.traits.rarity) + "</span>";

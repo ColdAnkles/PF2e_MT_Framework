@@ -73,12 +73,12 @@ function foundry_calc_value(value, actor, item) {
 						MapTool.chat.broadcast("Error! No item when parsing value " + value);
 						return null;
 					}
-					if (isNaN(Number(item.level))) {
-						if ("value" in item.level) {
-							value = value.replaceAll(foundMatches[m], item.level.value);
+					if (isNaN(Number(item.system.level))) {
+						if ("value" in item.system.level) {
+							value = value.replaceAll(foundMatches[m], item.system.level.value);
 						}
 					} else {
-						value = value.replaceAll(foundMatches[m], item.level);
+						value = value.replaceAll(foundMatches[m], item.system.level);
 					}
 				} else {
 					MapTool.chat.broadcast("Error! No match for " + splitStrings[0]);

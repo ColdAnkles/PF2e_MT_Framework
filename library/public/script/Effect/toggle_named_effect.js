@@ -42,6 +42,10 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 		return;
 	}
 
+	if ("fileURL" in effectData){
+		effectData = rest_call(effectData.fileURL);
+	}
+
 	effectData.applyTime = { "round": currentRound, "initiative": currentInitiative };
 
 	effectData.sourceItem = effectSource;
