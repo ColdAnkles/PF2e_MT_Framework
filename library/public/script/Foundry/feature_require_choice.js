@@ -50,6 +50,10 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                                 choices = choices.concat(tagData[tagKey]);
                             }
                         }
+                    } else if ("config" in newRule.choices) {
+                        if (newRule.choices.config == "skills") {
+                            choices = ["Acrobatics", "Arcana","Athletics","Crafting","Deception","Diplomacy","Intimidation","Medicine","Nature","Occultism","Performance","Religion","Society","Stealth","Survival","Thievery","Lore"];
+                        }
                     }
                 } else if (newRule.choices.constructor.name == "Array") {
                     for (var e in newRule.choices) {
@@ -69,7 +73,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                     }
                 }
             } catch (e) {
-                MapTool.chat.broadcast("Error in feature_require_source during choice-list-setup");
+                MapTool.chat.broadcast("Error in feature_require_choice during choice-list-setup");
                 MapTool.chat.broadcast("newRule: " + JSON.stringify(newRule));
                 MapTool.chat.broadcast("" + e + "\n" + e.stack);
                 return;
@@ -95,7 +99,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                     return;
                 }
             } catch (e) {
-                MapTool.chat.broadcast("Error in feature_require_source during ask-choice");
+                MapTool.chat.broadcast("Error in feature_require_choice during ask-choice");
                 MapTool.chat.broadcast("choices: " + JSON.stringify(choices));
                 MapTool.chat.broadcast("newRule: " + JSON.stringify(newRule));
                 MapTool.chat.broadcast("" + e + "\n" + e.stack);
@@ -103,16 +107,18 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             }
             //MapTool.chat.broadcast(choiceResult);
             try{
-                if ("flags" in assignDict && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && choiceFlag in assignDict.flags.pf2e.ruleSelections) {
+                if ("flags" in assignDict && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && choiceFlag in assignDict.flags.pf2e.rulesSelections) {
                     assignDict.flags.pf2e.rulesSelections[choiceFlag].push(choiceResult.toLowerCase());
                 } else {
                     assignDict.flags.pf2e.rulesSelections[choiceFlag] = [choiceResult.toLowerCase()];
                 }
                 chosenValues.push(choiceResult);
             } catch (e) {
-                MapTool.chat.broadcast("Error in feature_require_source during assign-ruleSelection");
-                MapTool.chat.broadcast("assignDict.flags: " + JSON.stringify(assignDict.flags));
+                MapTool.chat.broadcast("Error in feature_require_choice during assign-ruleSelection");
+                MapTool.chat.broadcast("assignDict.flags.pf2e.rulesSelections: " + JSON.stringify(assignDict.flags.pf2e.rulesSelections));
+                MapTool.chat.broadcast("choiceFlag: " + choiceFlag);
                 MapTool.chat.broadcast("choiceResult: " + choiceResult);
+                MapTool.chat.broadcast("chosenValues: " + JSON.stringify(chosenValues));
                 MapTool.chat.broadcast("" + e + "\n" + e.stack);
                 return;
             }

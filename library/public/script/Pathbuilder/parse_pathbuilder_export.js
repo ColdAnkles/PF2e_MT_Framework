@@ -224,6 +224,8 @@ function parse_pathbuilder_export(data) {
 				newCastingRules.spellAttack = characterData.abilities[j];
 			}
 			newCastingRules.spellDC = 10 + newCastingRules.spellAttack;
+			newCastingRules.totalSlots = [0];
+			newCastingRules.currentSlots = [0];
 			let focusLevel = Math.max(1, Math.floor(data.level / 2));
 			for (var l in castingData.focusCantrips) {
 				let spellName = castingData.focusCantrips[l].replaceAll(" (Amped)", "");

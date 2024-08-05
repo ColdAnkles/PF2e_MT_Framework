@@ -193,6 +193,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		MapTool.chat.broadcast("casterToken: " + String(casterToken));
 		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData));
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("castingData: " + JSON.stringify(castingData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
