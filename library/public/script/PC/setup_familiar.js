@@ -26,8 +26,8 @@ function setup_familiar(baseData) {
     newFamiliarData.weaknesses = [];
     newFamiliarData.alignment = "";
     newFamiliarData.rarity = "common";
-    newFamiliarData.skillList = [];
-    newFamiliarData.itemList = {};
+    newFamiliarData.proficiencies = [];
+    newFamiliarData.inventory = {};
     newFamiliarData.passiveSkills = [];
     newFamiliarData.passiveDefenses = [];
     newFamiliarData.otherDefenses = [];
@@ -36,8 +36,7 @@ function setup_familiar(baseData) {
     newFamiliarData.offensiveActions = [];
     newFamiliarData.languages = [];
     newFamiliarData.resources = {};
-    newFamiliarData.itemList = {};
-    newFamiliarData.skillList = [];
+    newFamiliarData.proficiencies = [];
     newFamiliarData.perception = PCData.level + 3;
 
     if (familiarDataRaw.abilities.includes("Darkvision")) {
@@ -75,10 +74,10 @@ function setup_familiar(baseData) {
 
     for (var s in skills) {
         if (s != "Perception" && s != "Acrobatics" && s != "Stealth") {
-            newFamiliarData.skillList.push({ "name": s, "bonus": PCData.level, "string": (s + " +" + String(PCData.level)) });
+            newFamiliarData.proficiencies.push({ "name": s, "bonus": PCData.level, "string": (s + " +" + String(PCData.level)) });
         } else {
             let skillBonus = Number(PCData.level + Math.max(3, bestSpellAbility));
-            newFamiliarData.skillList.push({ "name": s, "bonus": skillBonus, "string": (s + " +" + String(skillBonus)) });
+            newFamiliarData.proficiencies.push({ "name": s, "bonus": skillBonus, "string": (s + " +" + String(skillBonus)) });
             if (s == "Perception") {
                 newFamiliarData.perception = skillBonus;
             }

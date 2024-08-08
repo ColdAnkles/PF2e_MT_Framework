@@ -4,6 +4,16 @@
 [h, if(isPC(token)),code:{
 	[h: tokenType = "PC"]
 };{}]
+[h: foundryActor = getProperty("foundryActor",token)]
+[h: isSimple = (json.contains(foundryActor,"simple") && json.get(foundryActor,"simple"))]
+[h, if(isSimple), code:{
+	[h: ans = input("initResult|0|Initiative|TEXT")]
+	[h: abort(ans)]
+	[h: addToInitiative(false, initResult, token)]
+	[h: sortInitiative()]
+	[h: return(0)]
+};{}]
+
 [h, if(json.length(macro.args)==1), code:{
 	[h: ans = input("skillName|Acrobatics,Arcana,Athletics,Crafting,Deception,Diplomacy,Intimidation,Medicine,Nature,Occultism,Perception,Performance,Religion,Society,Stealth,Survival,Thievery|Initiative Skill|LIST|SELECT=10 VALUE=STRING")]
 	[h: abort(ans)]

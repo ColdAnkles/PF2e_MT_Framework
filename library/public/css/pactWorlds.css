@@ -1,0 +1,245 @@
+h1.title, .hd-1, h1.feel-title {
+  margin-bottom: 10px;
+  margin-left: -2px;
+  color: #2b4f6a;
+  background-color: #c4e8ef;
+  padding: 4px 9px;
+  min-height: 26px;
+  line-height: 1em;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+h1, .hd-1 {
+  font-size: 1.75em;
+  margin-bottom: 0.00em;
+  margin-top: 1.00em;
+  text-indent: 0.00em;
+  font-weight: bold;
+  font-style: normal;
+  font-variant: small-caps;
+}
+
+h3, .hd-3 {
+  font-size: 1.50em;
+  margin-bottom: 0.00em;
+  margin-top: 1.00em;
+  text-indent: 0.00em;
+  font-weight: bold;
+  font-style: normal;
+  font-variant: small-caps;
+}
+
+h3, .hd-3 {
+  font-size: 1.25em;
+  margin-bottom: 0.00em;
+  margin-top: 1.00em;
+  text-indent: 0.00em;
+  font-weight: bold;
+  font-style: normal;
+  font-variant: small-caps;
+}
+
+.title, .feel-title {
+  display: flex;
+  justify-content: flex-start;
+  white-space: nowrap;
+  align-items: center;
+}
+
+img {
+	/*filter: invert(1);*/
+	vertical-align: middle;
+}
+
+hr {
+  border-style: solid;
+}
+
+body {
+	background-color: white;
+	color: black;
+	line-height:24px;
+	margin-right: 1.00em;
+}
+
+a:link {  
+  font-style: italic;
+  color: #5c3d94;
+}
+
+.ext-link {
+  font-style: italic;
+  color: #5c3d94;
+}
+
+.trait {
+  border-color: #a0d8e4;
+  background-color: #2b4f6a;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traitalignment {
+  background-color: #4287f5;
+  border-color: #a0d8e4;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traitsize {
+  background-color: #478c42;
+  border-color: #a0d8e4;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traituncommon {
+  background-color: #c45500;
+  border-color: #a0d8e4;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traitrare {
+  background-color: #0c1466;
+  border-color: #a0d8e4;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+.traitunique {
+  background-color: #800080;
+  border-color: #a0d8e4;
+  border-style: double;
+  border-width: 2px;
+  color: white;
+  font-size: 1.1em;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: left;
+  text-indent: 0.00em;
+  display: inline-block;
+  margin: 0.1em 0;
+}
+
+tbody:first-child tr:first-child td{
+  border-top: 1px solid #ffffff;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #000000;
+  position: relative;
+}
+
+tr{
+  background-color: #ffffff;
+}
+
+td:first-child, th:first-child {
+  border-left: 1px solid #ffffff;
+}
+
+th {
+  background-color: #2b4f6a;
+  border-top: 0px solid #ffffff;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  color: #ffffff;
+  font-variant: small-caps;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 4px 12px 4px 4px;
+  position: sticky;
+  text-align: start;
+  top: 0px;
+}
+
+td {
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  padding: 4px 12px 4px 4px;
+}
+
+table tr:nth-child(2n+1) td {
+  background-color: #d1d2d2;
+}
+
+th a:link{
+  font-style: normal;
+  color: #ffffff;
+}
+
+td a:link {  
+  font-style: normal;
+  color: #000000;
+}
+
+table tr td:first-child,
+table tr th:first-child {
+  border-left: 0;
+}
+table tr td:last-child,
+table tr th:last-child {
+  border-right: 0;
+}

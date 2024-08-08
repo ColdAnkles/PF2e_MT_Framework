@@ -1,7 +1,9 @@
 "use strict";
 
 function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToken = null) {
-    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/NethysCSS.css'/><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
+
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/"+themeData.css+"'/><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
     let itemList = JSON.parse(read_data("pf2e_" + itemType));
     let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
 

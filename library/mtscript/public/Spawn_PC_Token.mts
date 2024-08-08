@@ -37,3 +37,4 @@
 [h: js.ca.pf2e.create_pc_token(newToken, sourceTokenID)]
 [h: setOwner(getOwners("JSON", sourceTokenID, "Player Characters"), newToken)]
 [h: setTokenImage(getTokenImage("", sourceTokenID, "Player Characters"), newToken)]
+[h: setName(tokenName, newToken)]

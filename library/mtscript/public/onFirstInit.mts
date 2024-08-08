@@ -39,6 +39,7 @@
 }]
 
 [h: setLibProperty("image_dict", imageDict, "Lib:ca.pf2e")]
+[h: setLibProperty("selectedTheme", "Golarion", "Lib:ca.pf2e")]
 
 <!-- First Time Init Only-->
 [h: setMapName("Grasslands", "Player Characters")]

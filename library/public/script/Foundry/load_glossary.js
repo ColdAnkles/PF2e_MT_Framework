@@ -1,6 +1,6 @@
 "use strict";
 
-function load_glossary(string) {
+function load_glossary() {
     MTScript.evalMacro("[h: output = library.getContents('ca.pf2e')]")
     let libContents = JSON.parse(MTScript.getVariable("output"));
     let glossary = null;

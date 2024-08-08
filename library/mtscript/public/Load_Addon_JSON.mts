@@ -11,3 +11,4 @@
     };{}]
 }]
 [h: js.ca.pf2e.load_glossary()]
+[h: js.ca.pf2e.setup_themes()]

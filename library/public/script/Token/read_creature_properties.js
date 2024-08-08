@@ -36,7 +36,7 @@ function read_creature_properties(token) {
 	creatureData.passiveDefenses = JSON.parse(token.getProperty("passiveDefenses"));
 
 	//__SKILLS__
-	creatureData.skillList = JSON.parse(token.getProperty("proficiencies"));
+	creatureData.proficiencies = JSON.parse(token.getProperty("proficiencies"));
 	creatureData.perception = token.getProperty("perception");
 	creatureData.passiveSkills = JSON.parse(token.getProperty("passiveSkills"));
 
@@ -55,7 +55,7 @@ function read_creature_properties(token) {
 	creatureData.size = token.getProperty("size");
 	creatureData.languages = JSON.parse(token.getProperty("languages"));
 	creatureData.resources = JSON.parse(token.getProperty("resources"));
-	creatureData.itemList = JSON.parse(token.getProperty("inventory"));
+	creatureData.inventory = JSON.parse(token.getProperty("inventory"));
 	creatureData.pets = JSON.parse(token.getProperty("pets"));
 	if (creatureData.pets == null) {
 		creatureData.pets = {};

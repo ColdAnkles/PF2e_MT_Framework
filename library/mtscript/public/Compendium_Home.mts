@@ -1,6 +1,7 @@
 [frame5("Compendium", "width=300; height=600; temporary=0; noframe=0; input=1"):{
 	<html>
-	<link rel="stylesheet" type="text/css" href="lib://ca.pf2e/css/NethysCSS.css">
+	[h: cssName = "lib://ca.pf2e/css/" + json.get(json.get(getLibProperty("pf2e_themes","Lib:ca.pf2e"), getLibProperty("selectedTheme","Lib:ca.pf2e")),"css")]
+	<link rel="stylesheet" type="text/css" href=[r:cssName]>
 
 	
 	<h1 style="padding-bottom:0px;margin-bottom:8px">

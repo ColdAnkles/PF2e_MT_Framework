@@ -42,8 +42,8 @@ function parse_hazard(rawData, parseRaw = false) {
 	}
 
 
-	hazardData.skillList = [];
-	hazardData.itemList = {};
+	hazardData.proficiencies = [];
+	hazardData.inventory = {};
 	hazardData.passiveSkills = [];
 	hazardData.passiveDefenses = [];
 	hazardData.otherDefenses = [];

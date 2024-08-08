@@ -5,8 +5,8 @@
 [h:tokenID=json.get(macro.args,"tokenID")]
 
 [dialog5(tokenName, "width=1000; height=700; temporary=1; noframe=0; input=1"):{
-
-<link rel="stylesheet" type="text/css" href="lib://ca.pf2e/css/NethysCSS.css"/>
+	[h: cssName = "lib://ca.pf2e/css/" + json.get(json.get(getLibProperty("pf2e_themes","Lib:ca.pf2e"), getLibProperty("selectedTheme","Lib:ca.pf2e")),"css")]
+	<link rel="stylesheet" type="text/css" href=[r:cssName]>
 
 
 [r, if(tokenID=="null"), code:{

@@ -4,6 +4,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	//MapTool.chat.broadcast(JSON.stringify(displayData));
 
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
 	additionalData.invertImages = false;
 

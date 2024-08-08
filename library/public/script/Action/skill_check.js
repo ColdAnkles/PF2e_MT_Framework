@@ -6,6 +6,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 	if (typeof (checkToken) == "string") {
 		checkToken = MapTool.tokens.getTokenByID(checkToken);
 	}
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
 	let skills = {
 		"Acrobatics": { "name": "Acrobatics", "stat": "dex" },
@@ -82,7 +83,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 
 
-			queryHTML += "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/NethysCSS.css\"><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+			queryHTML += "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/"+themeData.css+"\"><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 			queryHTML += "<input type='hidden' name='checkTokenID' value='" + checkToken.getId() + "'>";
 			queryHTML += "<input type='hidden' name='tokenType' value='" + tokenType + "'>";
 			queryHTML += "<input type='hidden' name='secretCheck' value='0'>";

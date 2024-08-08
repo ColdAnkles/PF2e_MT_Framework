@@ -8,7 +8,8 @@
 	[h: pbID = "-1"]
 }]
 [h, if(existingID==""), code:{
-	[r: ca.pf2e.Spawn_PC_Lib(pbID)]
+	[h: data = json.set("{}","pathbuilderID",pbID,"isPB",true)]
+	[r: ca.pf2e.Spawn_PC_Lib(data)]
 };{
 	[r: ca.pf2e.Update_PC_Lib(json.set("{}","pbID",pbID,"tokenID",existingID))]
 }]

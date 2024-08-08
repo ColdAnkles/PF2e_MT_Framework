@@ -39,6 +39,7 @@ function build_creature_view(creatureName, tokenID = null) {
 	additionalData.level = creatureData.level;
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData.senses));
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
 	let HTMLString = "";
 	try {
@@ -89,25 +90,31 @@ function build_creature_view(creatureName, tokenID = null) {
 	}
 
 	HTMLString += "<br />"
-	if (tokenID != null) {
-		HTMLString += "<img style='float:right;margin:5px' src=" + getTokenImage(tokenID, 200) + "></img>";
-	}
-	if ("source" in creatureData) {
-		HTMLString += "<b>Source </b><span class='ext-link'>" + creatureData.source + "</span><br />";
-	}
-	HTMLString += "<b>Perception</b> +" + creatureData.perception + "; " + creatureData.senses.join(", ") + "<br />";
-	if (creatureData.languages.length > 0) {
-		HTMLString += "<b>Languages</b> " + creatureData.languages.join(", ");
-		HTMLString += "<br />";
+	try{
+		if (tokenID != null) {
+			HTMLString += "<img style='float:right;margin:5px' src=" + getTokenImage(tokenID, 200) + "></img>";
+		}
+		if ("source" in creatureData) {
+			HTMLString += "<b>Source </b><span class='ext-link'>" + creatureData.source + "</span><br />";
+		}
+		HTMLString += "<b>Perception</b> +" + creatureData.perception + "; " + creatureData.senses.join(", ") + "<br />";
+		if (creatureData.languages.length > 0) {
+			HTMLString += "<b>Languages</b> " + creatureData.languages.join(", ");
+			HTMLString += "<br />";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_creature_view during senses-languages");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
-	let skillList = [];
-	for (var s in creatureData.skillList) {
-		skillList.push(creatureData.skillList[s].string);
+	let proficiencies = [];
+	for (var s in creatureData.proficiencies) {
+		proficiencies.push(creatureData.proficiencies[s].string);
 	}
 
-	if (creatureData.skillList.length > 0) {
-		HTMLString += "<b>Skills</b> " + skillList.join(", ") + "<br/>";
+	if (creatureData.proficiencies.length > 0) {
+		HTMLString += "<b>Skills</b> " + proficiencies.join(", ") + "<br/>";
 	}
 	HTMLString += "<b>Str</b> " + pos_neg_sign(creatureData.abilities.str) + ", ";
 	HTMLString += "<b>Dex</b> " + pos_neg_sign(creatureData.abilities.dex) + ", ";
@@ -118,8 +125,8 @@ function build_creature_view(creatureName, tokenID = null) {
 
 	try {
 		let itemText = "";
-		for (var i in creatureData.itemList) {
-			let itemData = creatureData.itemList[i];
+		for (var i in creatureData.inventory) {
+			let itemData = creatureData.inventory[i];
 			if (itemData.quantity > 1) {
 				itemText = itemText + itemData.quantity + " ";
 			}
@@ -130,7 +137,7 @@ function build_creature_view(creatureName, tokenID = null) {
 			itemText = itemText + ", ";
 		}
 
-		if (Object.keys(creatureData.itemList).length > 0) {
+		if (Object.keys(creatureData.inventory).length > 0) {
 			HTMLString += "<b>Items</b> " + itemText.substring(0, itemText.length - 2) + "<br />";
 		}
 	} catch (e) {
@@ -267,39 +274,6 @@ function build_creature_view(creatureName, tokenID = null) {
 		return;
 	}
 
-	//try{
-	//	for (var feat in creatureData.reactions) {
-	//		let featData = creatureData.reactions[feat];
-	//		let featString = "<b>" + featData.name + "</b> " + icon_img("reaction", true) + " " + clean_description(featData.system.description.value);
-	//		HTMLString += featString + "<br />";
-
-	//const regex = new RegExp(featData.name.replaceAll("(", "\\(").replaceAll(")", "\\)"), "gmi");
-	//if (!(regex.test(HTMLString))) {
-	//	//MapTool.chat.broadcast(JSON.stringify(featData));
-	//	let iconLookup = featData.actionType;
-	//	if (featData.actionCost != null) {
-	//		iconLookup = String(featData.actionCost) + iconLookup;
-	//	}
-	//	additionalData.action = featData;
-	//	featData.description = clean_description(featData.description, true, true, true, additionalData);
-	//	let traitText = "";
-	//	if (featData.traits.length > 0) {
-	//		traitText = " (" + featData.traits.join(", ") + ")";
-	//	}
-	//	let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup, true) + " " + featData.description;
-	//	//MapTool.chat.broadcast(featString.replace("<","&lt;"));
-	//	HTMLString += featString;
-	//	const testPattern = /<\/ul>$/
-	//	if (!(testPattern.test(featString))) {
-	//		HTMLString += "<br />";
-	//	}
-	//}
-	//	}
-	//} catch (e) {
-	//	MapTool.chat.broadcast("Error in build_creature_view during reactions-step");
-	//	MapTool.chat.broadcast("" + e + "\n" + e.stack);
-	//	return;
-	//}
 	HTMLString += "<hr />";
 
 	try {
@@ -351,7 +325,7 @@ function build_creature_view(creatureName, tokenID = null) {
 			} else {
 				attackString = "<b>Ranged</b> ";
 			}
-			attackString = attackString + icon_img("1action", true) + " " + attackData.name + " +" + attackData.system.bonus.value;
+			attackString = attackString + icon_img("1action", themeData.icons=="W") + " " + attackData.name + " +" + attackData.system.bonus.value;
 			if ("agile" in attackData.system.traits) {
 				attackString = attackString + " [" + pos_neg_sign(attackData.system.bonus.value - 4) + "/" + pos_neg_sign(attackData.system.bonus.value - 8) + "] ";
 			} else {
@@ -469,7 +443,7 @@ function build_creature_view(creatureName, tokenID = null) {
 			HTMLString += "<b>" + actionData.name + "</b> ";
 			let actionCost = actionData.system.actions.value
 			if (actionCost == 1 || actionCost == 2 || actionCost == 3) {
-				HTMLString += icon_img(String(actionCost) + "action", true) + " ";
+				HTMLString += icon_img(String(actionCost) + "action", themeData.icons=="W") + " ";
 			}
 			if (actionData.system.traits.length > 0) {
 				HTMLString += "(" + actionData.traits.join(", ") + ") ";

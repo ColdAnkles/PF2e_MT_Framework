@@ -1,6 +1,7 @@
 [h: js.ca.pf2e.get_foundry_sources()]
 [dialog5("Source Management", "width=450; height=600; temporary=1; noframe=0; input=1"):{
-    <link rel="stylesheet" type="text/css" href="lib://ca.pf2e/css/NethysCSS.css"/>
+    [h: cssName = "lib://ca.pf2e/css/" + json.get(json.get(getLibProperty("pf2e_themes","Lib:ca.pf2e"), getLibProperty("selectedTheme","Lib:ca.pf2e")),"css")]
+	<link rel="stylesheet" type="text/css" href=[r:cssName]>
 	<h1 class="feel-title">Foundry Data Packs</h1>
     [h: sourceList = data.getData("addon:", "ca.pf2e", "pf2e_source")]
     <table>

@@ -48,7 +48,7 @@ function setup_animal_companion(baseData) {
             "barding": parseInt(baseData.barding_val)
         }
 
-        companionData.skillList = [{ "bonus": parseInt(baseData.perceptionVal), "name": "Perception", "string": "" },
+        companionData.proficiencies = [{ "bonus": parseInt(baseData.perceptionVal), "name": "Perception", "string": "" },
         { "bonus": parseInt(baseData.unarmored_val), "name": "Unarmored", "string": "" },
         { "bonus": parseInt(baseData.barding_val), "name": "Barding", "string": "" },
         { "bonus": parseInt(baseData.unarmed_val), "name": "Unarmed", "string": "" }]
@@ -59,7 +59,7 @@ function setup_animal_companion(baseData) {
                 newProf.bonus = parseInt(companionData.skills[s]);
                 newProf.name = capitalise(s);
                 newProf.string = newProf.name + " +" + String(newProf.bonus);
-                companionData.skillList.push(newProf);
+                companionData.proficiencies.push(newProf);
             }
         }
 
@@ -103,8 +103,8 @@ function setup_animal_companion(baseData) {
         companionData.weaknesses = [];
         companionData.alignment = "";
         companionData.rarity = "common";
-        companionData.skillList = [];
-        companionData.itemList = {};
+        companionData.proficiencies = [];
+        companionData.inventory = {};
         companionData.passiveSkills = [];
         companionData.passiveDefenses = [];
         companionData.otherDefenses = [];
@@ -113,7 +113,6 @@ function setup_animal_companion(baseData) {
         companionData.offensiveActions = [];
         companionData.languages = [];
         companionData.resources = {};
-        companionData.itemList = {};
 
         var counter = 0;
         while (counter < baseData.totalAttacks) {
@@ -181,7 +180,7 @@ function setup_animal_companion(baseData) {
         if (!("saves" in companionData)) { companionData.saves = { "fortitude": 2 + companionData.level, "reflex": 2 + companionData.level, "will": 2 + companionData.level }; }
 
         if (!("proficiencies" in companionData)) {
-            companionData.skillList = [{ "bonus": 2, "name": "Perception", "string": "" },
+            companionData.proficiencies = [{ "bonus": 2, "name": "Perception", "string": "" },
             { "bonus": 2, "name": "Unarmored", "string": "" },
             { "bonus": 2, "name": "Barding", "string": "" },
             { "bonus": 2, "name": "Unarmed", "string": "" }]
@@ -226,8 +225,8 @@ function setup_animal_companion(baseData) {
         if (!("senses" in companionData)) { companionData.senses = ""; }
         if (!("traits" in companionData)) { companionData.traits = ["minion", "animal"]; }
         if (!("supportBenefit" in companionData)) { companionData.supportBenefit = ""; }
-        if (!("skillList" in companionData)) { companionData.skillList = []; }
-        if (!("itemList" in companionData)) { companionData.itemList = {}; }
+        if (!("proficiencies" in companionData)) { companionData.proficiencies = []; }
+        if (!("inventory" in companionData)) { companionData.inventory = {}; }
         if (!("passiveSkills" in companionData)) { companionData.passiveSkills = []; }
         if (!("passiveDefenses" in companionData)) { companionData.passiveDefenses = []; }
         if (!("otherDefenses" in companionData)) { companionData.otherDefenses = []; }
@@ -241,7 +240,6 @@ function setup_animal_companion(baseData) {
         if (!("rarity" in companionData)) { companionData.rarity = ""; }
         if (!("languages" in companionData)) { companionData.languages = []; }
         if (!("resources" in companionData)) { companionData.resources = {}; }
-        if (!("itemList" in companionData)) { companionData.itemList = {}; }
 
         if (companionData.mature) {
             companionData.abilities.str += 1;
@@ -288,7 +286,10 @@ function setup_animal_companion(baseData) {
 
     //MapTool.chat.broadcast(JSON.stringify(baseData));
     if (!("save" in baseData)) {
-        let queryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/NethysCSS.css'/><p><form action='macro://Animal_Companion_Setup_To_JS@Lib:ca.pf2e/self/impersonated?'><h1 class='feel-title'>Animal Companion</h1>"
+
+        let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+        
+        let queryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/"+themeData.css+"'/><p><form action='macro://Animal_Companion_Setup_To_JS@Lib:ca.pf2e/self/impersonated?'><h1 class='feel-title'>Animal Companion</h1>"
         queryHTML += "<input type='hidden' name='ownerID' value='" + String(companionData.ownerID) + "'>";
         queryHTML += "<table style='width:100%'><tbody>"
         queryHTML += "<tr><td colspan=1 style='text-align:right'><b>Name</b></td><td colspan=2><input type='input' name='nameVal' value='" + companionData.name + "'></input></td>\
@@ -446,8 +447,8 @@ function setup_animal_companion(baseData) {
         companionData.senses = companionData.senses.split(/,(?![^(]*\)) /);
         companionData.offensiveActions.push({ "actionCost": 0, "actionType": "passive", "bonus": 0, "damage": [], "name": "Support Benefit", "traits": [], "effects": [], "description": companionData.supportBenefit, "type": "personal" });
         delete companionData.supportBenefit;
-        for (var s in companionData.skillList) {
-            companionData.skillList[s].bonus += companionData.level;
+        for (var s in companionData.proficiencies) {
+            companionData.proficiencies[s].bonus += companionData.level;
         }
         delete companionData.skills;
         companionData.rarity = "common";

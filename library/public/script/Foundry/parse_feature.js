@@ -20,7 +20,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 	if (itemData.type == "lore") {
 		let newSkill = { "string": itemData.name + " +" + itemData.system.mod.value, "name": itemData.name, "bonus": itemData.system.mod.value };
 		if (!simpleReturn) {
-			assignDict.skillList.push(newSkill);
+			assignDict.proficiencies.push(newSkill);
 		}
 		returnObject = newSkill;
 
@@ -92,7 +92,7 @@ function parse_feature(featureName, feature, assignDict = null) {
 		newItem.equipped = false;
 		if (!simpleReturn) {
 			//Assign with a length number on the end in case multiple unique items with same ID
-			assignDict.itemList[itemData._id + String(Object.keys(assignDict.itemList).length)] = newItem;
+			assignDict.inventory[itemData._id + String(Object.keys(assignDict.inventory).length)] = newItem;
 		}
 
 		returnObject = newItem;

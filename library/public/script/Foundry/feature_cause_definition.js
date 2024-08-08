@@ -10,7 +10,7 @@ function feature_cause_definition(feature, PCdata) {
                 let profBonus = (2 * newRule.value) + PCdata.level
                 let newProf = { "name": "Martial", "predicate": newRule.definition, "bonus": profBonus, "string": "Martial +" + String(profBonus) + " (" + newRule.slug + ")" }
                 //MapTool.chat.broadcast(JSON.stringify(newProf));
-                PCdata.skillList.push(newProf);
+                PCdata.proficiencies.push(newProf);
             }
         }
     }

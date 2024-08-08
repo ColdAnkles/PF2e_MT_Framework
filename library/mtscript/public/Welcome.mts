@@ -1,7 +1,8 @@
 [frame5("Welcome", "width=1000; height=700; temporary=0; noframe=0; input=1"):{
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="lib://ca.pf2e/css/NethysCSS.css"/>
+    [h: cssName = "lib://ca.pf2e/css/" + json.get(json.get(getLibProperty("pf2e_themes","Lib:ca.pf2e"), getLibProperty("selectedTheme","Lib:ca.pf2e")),"css")]
+	<link rel="stylesheet" type="text/css" href=[r:cssName]>
     </head>
     <body>
         <h1 class='title'>Welcome!</h1>

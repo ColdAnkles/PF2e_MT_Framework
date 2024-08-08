@@ -149,11 +149,11 @@ function parse_pathbuilder_export(data) {
 
 	//__SKILLS__	
 	let unarmedProf = 0;
-	characterData.skillList = [];
+	characterData.proficiencies = [];
 	for (var p in data.proficiencies) {
 		if (data.proficiencies[p] != 0 && p != "fortitude" && p != "reflex" && p != "will") {
 			let newProf = { "bonus": data.proficiencies[p] + data.level, "name": capitalise(p), "string": capitalise(p) + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
-			characterData.skillList.push(newProf);
+			characterData.proficiencies.push(newProf);
 			if (p == "unarmed") {
 				unarmedProf = newProf.bonus;
 			}
@@ -161,7 +161,7 @@ function parse_pathbuilder_export(data) {
 	}
 	for (var l in data.lores) {
 		let newProf = { "bonus": data.lores[l][1] + data.level + characterData.abilities.int, "name": "Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
-		characterData.skillList.push(newProf);
+		characterData.proficiencies.push(newProf);
 	}
 	if (data.proficiencies.perception > 0) {
 		characterData.perception = data.proficiencies.perception + data.level + characterData.abilities.wis;
@@ -265,7 +265,7 @@ function parse_pathbuilder_export(data) {
 	characterData.traits = [data.ancestry, data.class];
 	characterData.size = data.sizeName;
 	characterData.languages = data.languages;
-	characterData.itemList = {};
+	characterData.inventory = {};
 	characterData.features = {};
 	characterData.foundryActor = {
 		"system": {
@@ -396,12 +396,6 @@ function parse_pathbuilder_export(data) {
 				let newAttacks = rules_grant_attack(featureData.system.rules);
 				for (var a in newAttacks) {
 					let newAttack = newAttacks[a];
-					//for (var p in characterData.skillList) {
-					//	if (characterData.skillList[p].name.toUpperCase() == newAttack.category.toUpperCase()) {
-					//		newAttack.bonus = characterData.skillList[p].bonus;
-					//		break;
-					//	}
-					//}
 					newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
 				}
 				grantedAttacks = grantedAttacks.concat(newAttacks);
@@ -421,8 +415,8 @@ function parse_pathbuilder_export(data) {
 		let tempData = find_object_data(thisArmor.name, "item");
 		if ("fileURL" in tempData) {
 			let itemData = rest_call(tempData.fileURL);
-			let trueID = itemData._id + String(Object.keys(characterData.itemList).length);
-			characterData.itemList[trueID] = itemData;
+			let trueID = itemData._id + String(Object.keys(characterData.inventory).length);
+			characterData.inventory[trueID] = itemData;
 			//parse_feature(tempData.baseName, itemData, characterData);
 			itemData.system.quantity = thisArmor.qty;
 			itemData.system.equipped = thisArmor.worn;
@@ -460,8 +454,8 @@ function parse_pathbuilder_export(data) {
 				//	unfoundData.push(thisWeapon.name);
 				//	continue;
 				//}
-				let trueID = tempData.id + String(Object.keys(characterData.itemList).length);
-				characterData.itemList[trueID] = itemData;
+				let trueID = tempData.id + String(Object.keys(characterData.inventory).length);
+				characterData.inventory[trueID] = itemData;
 				itemData.system.quantity = thisWeapon.qty;
 				let newAttackData = {
 					"name": itemData.name,
@@ -546,8 +540,8 @@ function parse_pathbuilder_export(data) {
 			if ("fileURL" in tempData) {
 				let itemData = rest_call(tempData.fileURL)
 				//parse_feature(tempData.baseName, rest_call(tempData.fileURL), characterData);
-				let trueID = tempData.id + String(Object.keys(characterData.itemList).length);
-				characterData.itemList[trueID] = itemData;
+				let trueID = tempData.id + String(Object.keys(characterData.inventory).length);
+				characterData.inventory[trueID] = itemData;
 				itemData.system.quantity = data.equipment[e][1];
 				itemData.id = trueID;
 				itemData.system.equipped = true;
@@ -619,7 +613,7 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
-	//MapTool.chat.broadcast(JSON.stringify(characterData.itemList));
+	//MapTool.chat.broadcast(JSON.stringify(characterData.inventory));
 
 	if (unfoundData.length > 0) {
 		message_window("Importing " + data.name, "<b>The following features/items could not be located/assigned.</b><br />" + unfoundData.join("<br />"));

@@ -75,8 +75,8 @@ function parse_npc(rawData, parseRaw = false) {
 		return;
 	}
 
-	npcData.skillList = [];
-	npcData.itemList = {};
+	npcData.proficiencies = [];
+	npcData.inventory = {};
 	npcData.passiveSkills = [];
 	npcData.passiveDefenses = [];
 	npcData.otherDefenses = [];

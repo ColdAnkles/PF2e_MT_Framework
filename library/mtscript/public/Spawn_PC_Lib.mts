@@ -1,4 +1,5 @@
-[h: pathbuilderID=macro.args]
+[h: data=json.get(macro.args,0)]
+[h: isPB = json.get(data,"isPB")]
 
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
@@ -9,7 +10,12 @@
 [h: setPC(newToken)]
 [h: setHasSight(1, newToken)]
 
-[h: js.ca.pf2e.create_pc_lib(pathbuilderID, newToken)]
+[h, if(isPB), code:{
+	[h: pathbuilderID = json.get(data,"pathbuilderID")]
+	[h: js.ca.pf2e.create_pc_lib(pathbuilderID, newToken)]
+};{
+	[h: js.ca.pf2e.create_simple_pc_lib(json.get(data,"simpleData"), newToken)]
+}]
 [h: tokenMaps = getTokenMap(newToken)]
 [h, if(!json.contains(tokenMaps,"Player Characters")), code:{
 	[h: moveTokenToMap(newToken, "Player Characters")]

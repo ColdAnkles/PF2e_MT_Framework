@@ -15,6 +15,7 @@ function build_compendium_home() {
 		HTMLString = HTMLString + "<b>" + create_macroLink(pcName, "Creature_View_Frame@Lib:ca.pf2e", JSON.stringify({ "name": pcName, "tokenID": pcList[pc].getId() })) + "</b>" + ((isPet) ? "" : " <span style='font-size:10px'>" + create_macroLink("Reimport", "Import_Pathbuilder_PC@Lib:ca.pf2e", pcList[pc].getId()) + "</span>") + "<br />";
 	}
 	HTMLString = HTMLString + "<u>" + create_macroLink("Import from Pathbuilder", "Import_Pathbuilder_PC@Lib:ca.pf2e", "") + "</u><br />";
+	HTMLString = HTMLString + "<u>" + create_macroLink("Create Simple Token", "Create_Simple_PC@Lib:ca.pf2e", "") + "</u><br />";
 
 	HTMLString = HTMLString + "<h2>" + create_macroLink("Items", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "item" })) + "</h2>";
 	HTMLString = HTMLString + "<h2>" + create_macroLink("Spells", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells" })) + "</h2>";

@@ -6,6 +6,7 @@ function build_spell_view(spellName) {
 	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
 	let property = JSON.parse(read_data("pf2e_spell"));
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
 	if (!(spellName in property)) {
 		let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
@@ -90,17 +91,17 @@ function build_spell_view(spellName) {
 	try {
 		HTMLString += "<b>Cast</b> ";
 		if (!isNaN(spellData.system.time.value)) {
-			HTMLString += icon_img(spellData.system.time.value + "action", true);
+			HTMLString += icon_img(spellData.system.time.value + "action", themeData.icons=="W");
 		} else if (spellData.system.time.value.includes("to")) {
 			let first = spellData.system.time.value.split(" to ")[0];
 			let second = spellData.system.time.value.split(" to ")[1];
 			if (isNaN(second)) {
-				HTMLString += icon_img(first + "action", true) + " to " + second;
+				HTMLString += icon_img(first + "action", themeData.icons=="W") + " to " + second;
 			} else {
-				HTMLString += icon_img(first + "action", true) + " to " + icon_img(second + "action", true) + " ";
+				HTMLString += icon_img(first + "action", themeData.icons=="W") + " to " + icon_img(second + "action", themeData.icons=="W") + " ";
 			}
 		} else if (spellData.system.time.value == "reaction") {
-			HTMLString += icon_img("reaction", true);
+			HTMLString += icon_img("reaction", themeData.icons=="W");
 		} else {
 			HTMLString += spellData.system.time.value;
 		}

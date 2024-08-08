@@ -6,66 +6,121 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));
-
-	token.setName(creatureData.name);
-	//__STATS__
-	for (var s in creatureData.abilities) {
-		token.setProperty(s, parseInt(creatureData.abilities[s]));
+	try{
+		token.setName(creatureData.name);
+		//__STATS__
+		for (var s in creatureData.abilities) {
+			token.setProperty(s, parseInt(creatureData.abilities[s]));
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error write_creature_properties during name-abilities");
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	//__HEALTH__
-	if ("current" in creatureData.hp) {
-		token.setProperty("HP", parseInt(creatureData.hp.current));
-	} else {
-		token.setProperty("HP", parseInt(creatureData.hp.max));
-	}
-	token.setProperty("MaxHP", parseInt(creatureData.hp.max));
-	if ("temp" in creatureData.hp && !isNaN(creatureData.hp.temp)) {
-		token.setProperty("TempHP", parseInt(creatureData.hp.temp));
-	} else {
-		token.setProperty("TempHP", "0");
+	try{
+		if ("current" in creatureData.hp) {
+			token.setProperty("HP", parseInt(creatureData.hp.current));
+		} else {
+			token.setProperty("HP", parseInt(creatureData.hp.max));
+		}
+		token.setProperty("MaxHP", parseInt(creatureData.hp.max));
+		if ("temp" in creatureData.hp && !isNaN(creatureData.hp.temp)) {
+			token.setProperty("TempHP", parseInt(creatureData.hp.temp));
+		} else {
+			token.setProperty("TempHP", "0");
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error write_creature_properties during hp");
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	//__OFFENSE__
-	token.setProperty("basicAttacks", JSON.stringify(creatureData.basicAttacks));
-	token.setProperty("offensiveActions", JSON.stringify(creatureData.offensiveActions));
+	try{
+		token.setProperty("basicAttacks", JSON.stringify(creatureData.basicAttacks));
+		token.setProperty("offensiveActions", JSON.stringify(creatureData.offensiveActions));
+	} catch (e) {
+		MapTool.chat.broadcast("Error write_creature_properties during offense");
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	//__DEFENSES__
-	token.setProperty("AC", parseInt(creatureData.ac.value));
-	for (var s in creatureData.saves) {
-		token.setProperty(s, parseInt(creatureData.saves[s]));
-		token.setProperty(s + "DC", parseInt(Number(creatureData.saves[s]) + 10));
+	try{
+		token.setProperty("AC", parseInt(creatureData.ac.value));
+		for (var s in creatureData.saves) {
+			token.setProperty(s, parseInt(creatureData.saves[s]));
+			token.setProperty(s + "DC", parseInt(Number(creatureData.saves[s]) + 10));
+		}
+		token.setProperty("weaknesses", JSON.stringify(creatureData.weaknesses));
+		token.setProperty("resistances", JSON.stringify(creatureData.resistances));
+		token.setProperty("immunities", JSON.stringify(creatureData.immunities));
+		token.setProperty("otherDefenses", JSON.stringify(creatureData.otherDefenses));
+		token.setProperty("passiveDefenses", JSON.stringify(creatureData.passiveDefenses));
+	} catch (e) {
+		MapTool.chat.broadcast("Error write_creature_properties during defemses");
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
-	token.setProperty("weaknesses", JSON.stringify(creatureData.weaknesses));
-	token.setProperty("resistances", JSON.stringify(creatureData.resistances));
-	token.setProperty("immunities", JSON.stringify(creatureData.immunities));
-	token.setProperty("otherDefenses", JSON.stringify(creatureData.otherDefenses));
-	token.setProperty("passiveDefenses", JSON.stringify(creatureData.passiveDefenses));
 
 	//__SKILLS__
-	token.setProperty("proficiencies", JSON.stringify(creatureData.skillList));
-	token.setProperty("perception", parseInt(creatureData.perception));
-	token.setProperty("passiveSkills", JSON.stringify(creatureData.passiveSkills));
+	try{
+		token.setProperty("proficiencies", JSON.stringify(creatureData.proficiencies));
+		token.setProperty("perception", parseInt(creatureData.perception));
+		token.setProperty("passiveSkills", JSON.stringify(creatureData.passiveSkills));
+	} catch (e) {
+		MapTool.chat.broadcast("Error write_creature_properties during skills");
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	//__MAGIC__
-	token.setProperty("spellRules", JSON.stringify(creatureData.spellRules));
+	try{
+		token.setProperty("spellRules", JSON.stringify(creatureData.spellRules));
+	} catch (e) {
+		MapTool.chat.broadcast("Error write_creature_properties during magic");
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	//__MISC__
-	//token.setProperty("type", creatureData.creatureType);
-	token.setProperty("alignment", creatureData.alignment);
-	token.setProperty("level", parseInt(creatureData.level));
-	token.setProperty("baseSpeed", parseInt(creatureData.speeds.base));
-	token.setProperty("otherSpeed", JSON.stringify(creatureData.speeds.other));
-	token.setProperty("rarity", creatureData.rarity);
-	token.setProperty("traits", JSON.stringify(creatureData.traits));
-	token.setProperty("senses", JSON.stringify(creatureData.senses));
-	token.setProperty("size", creatureData.size);
-	token.setProperty("languages", JSON.stringify(creatureData.languages));
-	token.setProperty("resources", JSON.stringify(creatureData.resources));
-	token.setProperty("inventory", JSON.stringify(creatureData.itemList));
+	try{
+		//token.setProperty("type", creatureData.creatureType);
+		token.setProperty("alignment", creatureData.alignment);
+		token.setProperty("level", parseInt(creatureData.level));
+		token.setProperty("baseSpeed", parseInt(creatureData.speeds.base));
+		token.setProperty("otherSpeed", JSON.stringify(creatureData.speeds.other));
+		token.setProperty("rarity", creatureData.rarity);
+		token.setProperty("traits", JSON.stringify(creatureData.traits));
+		token.setProperty("senses", JSON.stringify(creatureData.senses));
+		token.setProperty("size", creatureData.size);
+		token.setProperty("languages", JSON.stringify(creatureData.languages));
+		token.setProperty("resources", JSON.stringify(creatureData.resources));
+		token.setProperty("inventory", JSON.stringify(creatureData.inventory));
+	} catch (e) {
+		MapTool.chat.broadcast("Error write_creature_properties during misc");
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
-	if ("pets" in creatureData && creatureData.pets != null) {
-		token.setProperty("pets", JSON.stringify(creatureData.pets));
+	try{
+		if ("pets" in creatureData && creatureData.pets != null) {
+			token.setProperty("pets", JSON.stringify(creatureData.pets));
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error write_creature_properties during pets");
+		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	//__CALCULATION_DATA__

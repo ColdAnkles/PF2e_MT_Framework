@@ -15,6 +15,8 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 		specialEffects = {};
 	}
 
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+
 	if (saveData === null || (saveData != null && saveData.partial)) {
 
 		try {
@@ -43,7 +45,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 				saveStrings[s] = { "name": saves[s], "string": (capitalise(saves[s]) + " " + pos_neg_sign(saveToken.getProperty(saves[s]))) };
 			}
 
-			queryHTML = queryHTML + "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/NethysCSS.css\"><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+			queryHTML = queryHTML + "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/"+themeData.css+"\"><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 			queryHTML = queryHTML + "<input type='hidden' name='saveTokenID' value='" + saveToken.getId() + "'>";
 			queryHTML = queryHTML + "<input type='hidden' name='secretCheck' value='0'>";
 
