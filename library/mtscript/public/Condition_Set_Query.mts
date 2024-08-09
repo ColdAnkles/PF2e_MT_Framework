@@ -2,7 +2,22 @@
 [h: tokenID = json.get(macro.args,1)]
 [h: tokenName = getName(tokenID)]
 [h: conditionDict = getLibProperty("pf2e_condition")]
+
 [h: tempConditionName = replace(conditionName," \\(Time\\)","")]
+
+[h, if(!json.contains(conditionDict,tempConditionName)), code:{
+	[h: allStates = getTokenStates("json")]
+	[h, if(json.contains(allStates,tempConditionName)),code:{
+		[h: setState(tempConditionName, !getState(tempConditionName, tokenID), tokenID)]
+	};{}]
+	[h, if(json.contains(allStates,tempConditionName) && getState(tempConditionName, tokenID)),code:{
+		[h: broadcast(getName(tokenID) + " became " + tempConditionName)]
+	};{
+		[h: broadcast(getName(tokenID) + " lost " + tempConditionName)]
+	}]
+	[h: return(0)]
+};{}]
+
 [h: conditionData = json.get(conditionDict, tempConditionName)]
 [h: currentConditions = getProperty("conditionDetails", tokenID)]
 [h, if(json.contains(currentConditions, conditionName)), code:{

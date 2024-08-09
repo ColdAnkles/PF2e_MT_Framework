@@ -2,5 +2,13 @@
     "comment":"Pathfinder 2E Dark Theme",
     "themeName":"Argrinyxia",
     "css":"argrinyxia.css",
-    "icons":"W"
+    "icons":"W",
+    "colours":{
+        "titleBackground":"#522e2c",
+        "titleText":"#cbc18f",
+        "traitOuter":"#5a0308",
+        "traitInner":"#d9c484",
+        "traitText":"white",
+        "standardBackground":"#ffffff"
+    }
 }

@@ -3,10 +3,17 @@
 function build_compendium_home() {
 	MTScript.evalMacro("[h: playerData=player.getInfo()]");
 	let isGM = JSON.parse(MTScript.getVariable("playerData")).role == "GM";
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
-	let HTMLString = "";
+	let HTMLString = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/"+themeData.css+"'>";
+
+	HTMLString += "<h1 style='padding-bottom:0px;margin-bottom:8px'>";
+	HTMLString += "<img src="+icon_img("compendium", themeData.icons=="W", true)+" style='width:40;height:40;'/>&nbsp";
+	HTMLString += create_macroLink("<font size=6>Compendium</font>","Compendium_Home@Lib:ca.pf2e","") + "</h1>";
 
 	HTMLString = HTMLString + "</p><h2>Characters</h2><p>";
+
+	HTMLString += "<body>";
 
 	let pcList = find_pc_libs();
 	for (var pc in pcList) {
@@ -28,8 +35,10 @@ function build_compendium_home() {
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Creature List", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures" })) + "</h2>";
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Source Management", "Enabled_Sources_Window@Lib:ca.pf2e", "") + "</h2>";
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Source Importing", "Source_Management_Window@Lib:ca.pf2e", "") + "</h2>";
+		HTMLString = HTMLString + "<h2>" + create_macroLink("Change Theme", "Change_Theme@Lib:ca.pf2e", "") + "</h2>";
 	}
 
+	HTMLString+= "</body></html>";
 
 	return HTMLString;
 }

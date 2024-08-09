@@ -2,5 +2,14 @@
     "comment":"Starfinder 2E Light Theme",
     "themeName":"Pact Worlds",
     "css":"pactWorlds.css",
-    "icons":"B"
+    "icons":"B",
+    "colours":{
+        "titleBackground":"#2b4f6a",
+        "titleText":"#c4e8ef",
+        "traitOuter":"#2b4f6a",
+        "traitInner":"#a0d8e4",
+        "traitBorder":"#2b4f6a",
+        "traitText":"white",
+        "standardBackground":"white"
+    }
 }
