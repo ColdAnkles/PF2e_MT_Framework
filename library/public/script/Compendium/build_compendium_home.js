@@ -38,6 +38,8 @@ function build_compendium_home() {
 		HTMLString = HTMLString + "<h2>" + create_macroLink("Change Theme", "Change_Theme@Lib:ca.pf2e", "") + "</h2>";
 	}
 
+	HTMLString = HTMLString + "<h2>" + create_macroLink("Credits", "Credits@Lib:ca.pf2e", "") + "</h2>";
+
 	HTMLString+= "</body></html>";
 
 	return HTMLString;

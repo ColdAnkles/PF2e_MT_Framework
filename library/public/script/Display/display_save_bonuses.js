@@ -3,10 +3,10 @@
 function display_save_bonuses(tokenID) {
 	let token = MapTool.tokens.getTokenByID(tokenID);
 
-	let foundryActor = JSON.parse(token.getProperty("foundryActor"));
-	if ("simple" in foundryActor && foundryActor.simple){
-		return "Fort: " + pos_neg_sign(token.getProperty("fortitude")) + ", Ref: " + pos_neg_sign(token.getProperty("reflex")) + ", Will: " + pos_neg_sign(token.getProperty("will"));
-	}
+	//let foundryActor = JSON.parse(token.getProperty("foundryActor"));
+	//if ("simple" in foundryActor && foundryActor.simple){
+	//	return "Fort: " + pos_neg_sign(token.getProperty("fortitude")) + ", Ref: " + pos_neg_sign(token.getProperty("reflex")) + ", Will: " + pos_neg_sign(token.getProperty("will"));
+	//}
 
 	let fortitude = Number(token.getProperty("fortitude"));
 	let will = Number(token.getProperty("will"));

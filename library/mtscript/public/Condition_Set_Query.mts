@@ -8,13 +8,8 @@
 [h, if(!json.contains(conditionDict,tempConditionName)), code:{
 	[h: allStates = getTokenStates("json")]
 	[h, if(json.contains(allStates,tempConditionName)),code:{
-		[h: setState(tempConditionName, !getState(tempConditionName, tokenID), tokenID)]
+		[h: js.ca.pf2e.set_condition(conditionName, tokenID)]
 	};{}]
-	[h, if(json.contains(allStates,tempConditionName) && getState(tempConditionName, tokenID)),code:{
-		[h: broadcast(getName(tokenID) + " became " + tempConditionName)]
-	};{
-		[h: broadcast(getName(tokenID) + " lost " + tempConditionName)]
-	}]
 	[h: return(0)]
 };{}]
 
@@ -35,5 +30,5 @@
 	[h: abort(ans)]
 	[h: js.ca.pf2e.set_condition(conditionName, tokenID, conditionValue)]	
 };{
-	[h: js.ca.pf2e.set_condition(conditionName, tokenID)]	
+	[h: js.ca.pf2e.set_condition(conditionName, tokenID)]
 }]

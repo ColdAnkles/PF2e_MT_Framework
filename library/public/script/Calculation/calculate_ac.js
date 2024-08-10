@@ -3,13 +3,14 @@
 function calculate_ac(tokenID) {
 	let token = MapTool.tokens.getTokenByID(tokenID);
 
-	let foundryActor = JSON.parse(token.getProperty("foundryActor"));
-	if ("simple" in foundryActor && foundryActor.simple){
-		return token.getProperty("ac");
-	}
-
 	//let base_ac = Number(token.getProperty("AC"));
 	let base_ac = 10;
+
+	let foundryActor = JSON.parse(token.getProperty("foundryActor"));
+	if ("simple" in foundryActor && foundryActor.simple){
+		base_ac = Number(token.getProperty("ac"));
+	}
+	
 	let dex_bonus = Number(token.getProperty("dex"));
 	let bonuses = calculate_bonus(tokenID, "ac");
 	let eqArmor = get_equipped_armor(token);

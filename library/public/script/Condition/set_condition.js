@@ -3,6 +3,8 @@
 function set_condition(conditionName, token, conditionValue = null, silent = false) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
+		token = token.getProperty("myID");
+		token = MapTool.tokens.getTokenByID(token);
 	}
 
 	let autoDecrease = true;
@@ -14,7 +16,34 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("pf2e_condition"));
 	let property = JSON.parse(read_data("pf2e_condition"));
-	let conditionData = property[trueConditionName];
+	let conditionData = null
+
+	if (!(trueConditionName in property)){
+		conditionData = {
+			"_id":"specialUnknownCondition",
+			"name":trueConditionName,
+			"system":{
+				"description":{"value":conditionName},
+				"duration": {
+					"expiry": null,
+					"unit": "unlimited",
+					"value": 0
+				},
+				"overrides": [],
+				"rules": [],
+				"traits": {
+					"value": []
+				},
+				"value": {
+					"isValued": false,
+					"value": null
+				}
+				},
+			"type": "condition"
+			}
+	}else{
+		conditionData = property[trueConditionName];
+	}
 
 	if ("fileURL" in conditionData){
 		conditionData = rest_call(conditionData["fileURL"]);
@@ -43,15 +72,6 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 		return;
 	}
 
-	//MapTool.chat.broadcast(conditionName);
-	//MapTool.chat.broadcast(String(token));
-	//MapTool.chat.broadcast(JSON.stringify(tokenConditions));
-	//MapTool.chat.broadcast(JSON.stringify(conditionData));
-	//MapTool.chat.broadcast(String(conditionValue) + " (" + typeof(conditionValue)+")");
-
-	//MTScript.setVariable("tokenID", token.getId());
-	//MTScript.setVariable("stateName", conditionName);
-
 	let conditionApplication = 0;
 	try{
 		if (conditionName in tokenConditions && (conditionValue == null || conditionValue == 0)) {
@@ -71,7 +91,10 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in set_condition during apply-condition");
+		MapTool.chat.broadcast("token: " + String(token));
+		MapTool.chat.broadcast("trueConditionName: " + trueConditionName);
 		MapTool.chat.broadcast("conditionData: " + JSON.stringify(conditionData));
+		MapTool.chat.broadcast("tokenConditions: " + JSON.stringify(tokenConditions));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
