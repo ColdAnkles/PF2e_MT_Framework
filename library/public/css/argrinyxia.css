@@ -192,6 +192,11 @@ table {
   position: relative;
 }
 
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 tr{
   background-color: #342C19;
 }

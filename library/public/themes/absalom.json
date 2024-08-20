@@ -2,5 +2,14 @@
     "comment":"Pathfinder 2E Light Theme",
     "themeName":"Absalom",
     "css":"absalom.css",
-    "icons":"B"
+    "icons":"B",
+    "colours":{
+        "titleBackground":"#522e2c",
+        "titleText":"#cbc18f",
+        "traitOuter":"#5a0308",
+        "traitInner":"#d9c484",
+        "traitText":"white",
+        "standardBackground":"#DBD0BC",
+        "standardText":"#000000"
+    }
 }

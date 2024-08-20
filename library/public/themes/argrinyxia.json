@@ -9,6 +9,7 @@
         "traitOuter":"#5a0308",
         "traitInner":"#d9c484",
         "traitText":"white",
-        "standardBackground":"#ffffff"
+        "standardBackground":"#ffffff",
+        "standardText":"#000000"
     }
 }

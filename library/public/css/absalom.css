@@ -2,7 +2,7 @@ h1.title, .hd-1, h1.feel-title {
   margin-bottom: 10px;
   margin-left: -2px;
   color: #cbc18f;
-  background-color: #522e2c;
+  background-color: #5D0000;
   padding: 4px 9px;
   min-height: 26px;
   line-height: 1em;
@@ -57,25 +57,25 @@ hr {
 }
 
 body {
-	background-color: black;
-	color: white;
+	background-color: #DBD0BC;
+	color: black;
 	line-height:24px;
 	margin-right: 1.00em;
 }
 
 a:link {  
   font-style: italic;
-  color: #00ffff;
+  color: #0000ff;;
 }
 
 .ext-link {
   font-style: italic;
-  color: #00ffff;
+  color: #0000ff;;
 }
 
 .trait {
   border-color: #d8c483;
-  background-color: #522e2c;
+  background-color: #5D0000;
   border-style: double;
   border-width: 2px;
   color: white;
@@ -182,29 +182,34 @@ a:link {
 }
 
 tbody:first-child tr:first-child td{
-  border-top: 1px solid #ffffff;
+  border-top: 1px solid black;
 }
 
 table {
   border-collapse: separate;
   border-spacing: 0;
-  color: #ffffff;
+  color: black;
   position: relative;
 }
 
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 tr{
-  background-color: #342C19;
+  background-color: #ede3c7;
 }
 
 td:first-child, th:first-child {
-  border-left: 1px solid #ffffff;
+  border-left: 1px solid black;
 }
 
 th {
-  background-color: #522e2c;
-  border-top: 1px solid #ffffff;
-  border-right: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
+  background-color: #5D0000;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
   color: #cbc18f;
   font-variant: small-caps;
   font-size: 20px;
@@ -216,13 +221,13 @@ th {
 }
 
 td {
-  border-right: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
   padding: 4px 12px 4px 4px;
 }
 
 table tr:nth-child(2n+1) td {
-  background-color: #64542F;
+  background-color: #F4EEE0;
 }
 
 th a:link{
@@ -232,14 +237,5 @@ th a:link{
 
 td a:link {  
   font-style: normal;
-  color: #ffffff;
-}
-
-table tr td:first-child,
-table tr th:first-child {
-  border-left: 0;
-}
-table tr td:last-child,
-table tr th:last-child {
-  border-right: 0;
+  color: black;
 }

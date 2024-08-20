@@ -10,6 +10,7 @@
         "traitInner":"#a0d8e4",
         "traitBorder":"#2b4f6a",
         "traitText":"white",
-        "standardBackground":"white"
+        "standardBackground":"white",
+        "standardText":"black"
     }
 }

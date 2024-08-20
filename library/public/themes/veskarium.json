@@ -2,5 +2,15 @@
     "comment":"Starfinder 2E Dark Theme",
     "themeName":"Veskarium",
     "css":"veskarium.css",
-    "icons":"W"
+    "icons":"W",
+    "colours":{
+        "titleBackground":"#2b4f6a",
+        "titleText":"#c4e8ef",
+        "traitOuter":"#2b4f6a",
+        "traitInner":"#a0d8e4",
+        "traitBorder":"#2b4f6a",
+        "traitText":"white",
+        "standardBackground":"black",
+        "standardText":"white"
+    }
 }
