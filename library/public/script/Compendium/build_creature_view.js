@@ -1,24 +1,25 @@
 "use strict";
 
-function build_creature_view(creatureName, tokenID = null) {
-	let creatureData = null;
+function build_creature_view(creatureName, tokenID = null, creatureData = null) {
 	let token = null;
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
 
 	let additionalData = { "rollDice": false };
 
 	try {
-		if (tokenID == null) {
-			//let libToken = get_runtime("libToken");
-			//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
-			let property = JSON.parse(read_data("pf2e_npc"));
-			creatureData = property[creatureName];
-			creatureData = rest_call(creatureData["fileURL"], "");
+		if (creatureData == null){
+			if (tokenID == null) {
+				//let libToken = get_runtime("libToken");
+				//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
+				let property = JSON.parse(read_data("pf2e_npc"));
+				creatureData = property[creatureName];
+				creatureData = rest_call(creatureData["fileURL"], "");
 
-			creatureData = parse_npc(creatureData);
-		} else {
-			token = MapTool.tokens.getTokenByID(tokenID);
-			creatureData = read_creature_properties(tokenID);
+				creatureData = parse_npc(creatureData);
+			} else {
+				token = MapTool.tokens.getTokenByID(tokenID);
+				creatureData = read_creature_properties(tokenID);
+			}
 		}
 		//MapTool.chat.broadcast(JSON.stringify(creatureData));
 

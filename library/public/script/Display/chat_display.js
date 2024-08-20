@@ -89,8 +89,8 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 			additionalData.gm = false;
 			additionalData.replaceGMRolls = true;
 			normalDesc = clean_description(normalDesc, false, false, false, additionalData);
-			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'>" + normalDesc + "</div>";
-			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'>" + gmDesc + "</div>";
+			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'>" + normalDesc + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'>" + gmDesc + "</div>";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in chat_display during description display");
@@ -103,8 +103,8 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	try {
 		if ("appliedEffects" in displayData.system && displayData.system.appliedEffects != null && displayData.system.appliedEffects.length > 0) {
-			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'><i>Applied Effects</i><br />" + displayData.system.appliedEffects.join(", ") + "</div>";
-			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'><i>Applied Effects</i><br />" + displayData.system.appliedEffects.join(", ") + "</div>";
+			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'><i>Applied Effects</i><br />" + displayData.system.appliedEffects.join(", ") + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'><i>Applied Effects</i><br />" + displayData.system.appliedEffects.join(", ") + "</div>";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in chat_display during applied effect display");
@@ -122,8 +122,8 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 				runeStrings.push(
 					create_macroLink(displayData.system.runes[r], "Item_View_Frame@Lib:ca.pf2e", { "itemType": "item", "itemName": displayData.system.runes[r] }));
 			}
-			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
-			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
+			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in chat_display during rune display");
@@ -140,8 +140,8 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 			for (var r in displayData.system.materials) {
 				materialStrings.push(capitalise(displayData.system.materials[r]));
 			}
-			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
-			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
+			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'><i>Material</i><br />" + materialStrings.join(", ") + "</div>";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in chat_display during material display");
@@ -154,8 +154,8 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	try {
 		if ("remasterFrom" in displayData.system && displayData.system.remasterFrom != null && displayData.system.remasterFrom != "") {
-			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'><i>Remastered From</i><br />" + displayData.system.remasterFrom + "</div>";
-			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"'><i>Remastered From</i><br />" + displayData.system.remasterFrom + "</div>";
+			outputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'><i>Remastered From</i><br />" + displayData.system.remasterFrom + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:"+themeData.colours.standardBackground+"; color:"+themeData.colours.standardText+"'><i>Remastered From</i><br />" + displayData.system.remasterFrom + "</div>";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in chat_display during remaster-from display");

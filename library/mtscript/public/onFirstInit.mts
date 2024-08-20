@@ -42,6 +42,9 @@
 [h: setLibProperty("selectedTheme", "Argrinyxia", "Lib:ca.pf2e")]
 
 <!-- First Time Init Only-->
+[h: customContentVar = json.set("{}","action","{}","ancestry","{}","background","{}","class","{}","condition","{}","effect","{}","feat","{}","hazard","{}","heritage","{}","item","{}","npc","{}","spell","{}","vehicle","{}")]
+[h: setLibProperty("customContent",customContentVar, "Lib:ca.pf2e")]
+
 [h: setMapName("Grasslands", "Player Characters")]
 [h: ca.pf2e.Load_Addon_JSON()]
 [h: ca.pf2e.Create_GM_Macros()]
