@@ -85,7 +85,7 @@ function foundry_calc_value(value, actor, item) {
 				}
 			}
 		} else {
-			try{
+			try {
 				value = value.replace(/^{/, "").replace(/}$/, "");
 				if (value.includes("flags")) {
 					let splitStrings = value.split("|");

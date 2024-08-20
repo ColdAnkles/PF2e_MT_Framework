@@ -27,8 +27,8 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 			let cMalus = 0;
 			let sMalus = 0;
 			let iMalus = 0;
-			
-			if (saveData != null){
+
+			if (saveData != null) {
 				cBonus = ("cBonus" in saveData) ? saveData.cBonus : 0;
 				sBonus = ("sBonus" in saveData) ? saveData.sBonus : 0;
 				iBonus = ("iBonus" in saveData) ? saveData.iBonus : 0;
@@ -45,7 +45,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 				saveStrings[s] = { "name": saves[s], "string": (capitalise(saves[s]) + " " + pos_neg_sign(saveToken.getProperty(saves[s]))) };
 			}
 
-			queryHTML = queryHTML + "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/"+themeData.css+"\"><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+			queryHTML = queryHTML + "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 			queryHTML = queryHTML + "<input type='hidden' name='saveTokenID' value='" + saveToken.getId() + "'>";
 			queryHTML = queryHTML + "<input type='hidden' name='secretCheck' value='0'>";
 
@@ -165,7 +165,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 
 			let basic_bonus = Number(saveToken.getProperty(saveData.saveName));
 			let misc_bonus = Number(saveData.miscBonus);
-			let effect_bonus_raw = calculate_bonus(saveToken.getId(), [saveData.saveName,"saving-throw"], true);
+			let effect_bonus_raw = calculate_bonus(saveToken.getId(), [saveData.saveName, "saving-throw"], true);
 
 			for (var k in saveData) {
 				if (k.includes("specialEffect")) {

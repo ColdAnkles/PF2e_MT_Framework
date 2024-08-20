@@ -25,7 +25,7 @@ function core_action(actionData, actingToken) {
 
 		if (isNaN(initiative)) {
 			canAct = true;
-		} else if ("actionType" in actionData.system && actionData.system.actionType == "action" && "actions" in actionData.system && "value" in actionData.system.actions && actionsLeft >= actionData.system.actions.value){
+		} else if ("actionType" in actionData.system && actionData.system.actionType == "action" && "actions" in actionData.system && "value" in actionData.system.actions && actionsLeft >= actionData.system.actions.value) {
 			canAct = true;
 		} else if ((actionData.type == "ranged" || actionData.type == "melee") && actionsLeft >= 1) {
 			canAct = true;
@@ -131,7 +131,7 @@ function core_action(actionData, actingToken) {
 			if (!(isNaN(initiative)) && ("spendAction" in actionData && actionData.spendAction)) {
 				if ("actionType" in actionData.system && actionData.system.actionType == "action" && "actions" in actionData.system) {
 					actingToken.setProperty("actionsLeft", String(actionsLeft - actionData.system.actions.value));
-				}else if (actionData.type == "melee" || actionData.type == "ranged") {
+				} else if (actionData.type == "melee" || actionData.type == "ranged") {
 					actingToken.setProperty("actionsLeft", String(actionsLeft - 1));
 				} else if (actionData.system.actionType == "reaction") {
 					actingToken.setProperty("reactionsLeft", String(reactionsLeft - actionData.system.actions.value));

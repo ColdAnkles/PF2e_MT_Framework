@@ -38,7 +38,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             }
             let choices = [];
             //MapTool.chat.broadcast(String(newRule.choices.constructor.name));
-            try{
+            try {
                 if (newRule.choices == "weaponGroups") {
                     choices = ["Axe", "Bomb", "Bow", "Brawling", "Club", "Crossbow", "Dart", "Firearm", "Flail", "Hammer", "Knife", "Pick", "Polearm", "Shield", "Sling", "Spear", "Sword"];
                 } else if (newRule.choices.constructor.name == "Object") {
@@ -52,7 +52,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                         }
                     } else if ("config" in newRule.choices) {
                         if (newRule.choices.config == "skills") {
-                            choices = ["Acrobatics", "Arcana","Athletics","Crafting","Deception","Diplomacy","Intimidation","Medicine","Nature","Occultism","Performance","Religion","Society","Stealth","Survival","Thievery","Lore"];
+                            choices = ["Acrobatics", "Arcana", "Athletics", "Crafting", "Deception", "Diplomacy", "Intimidation", "Medicine", "Nature", "Occultism", "Performance", "Religion", "Society", "Stealth", "Survival", "Thievery", "Lore"];
                         }
                     }
                 } else if (newRule.choices.constructor.name == "Array") {
@@ -88,13 +88,13 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 choices = intersect;
             }
             //MapTool.chat.broadcast(String(choiceResult));
-            try{
-                if (choiceResult == null && choices.length>0) {
+            try {
+                if (choiceResult == null && choices.length > 0) {
                     MTScript.setVariable("choices", JSON.stringify(choices));
                     MTScript.setVariable("prompt", choicePrompt);
                     MTScript.evalMacro("[h: choice=json.get(choices,0)][h: input(\"dummyVar|\"+choiceTitle+\"||LABEL|SPAN=TRUE\",\"choice|\"+choices+\"|\"+prompt+\"|LIST|VALUE=STRING DELIMITER=JSON\")]");
                     choiceResult = MTScript.getVariable("choice");
-                } else if (choices.length == 0){
+                } else if (choices.length == 0) {
                     //MapTool.chat.broadcast("Error: No choices available for " + feature.name);
                     return;
                 }
@@ -106,7 +106,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 return;
             }
             //MapTool.chat.broadcast(choiceResult);
-            try{
+            try {
                 if ("flags" in assignDict && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && choiceFlag in assignDict.flags.pf2e.rulesSelections) {
                     assignDict.flags.pf2e.rulesSelections[choiceFlag].push(choiceResult.toLowerCase());
                 } else {

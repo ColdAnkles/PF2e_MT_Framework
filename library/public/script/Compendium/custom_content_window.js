@@ -5,12 +5,12 @@ function custom_content_window() {
     let returnHTML = "<body>";
 
     for (var key in customContent) {
-        if (key!="npc"){
-            returnHTML += "<h2>"+capitalise(key)+"</h2>";
-        }else{
+        if (key != "npc") {
+            returnHTML += "<h2>" + capitalise(key) + "</h2>";
+        } else {
             returnHTML += "<h2>NPC</h2>";
         }
-        for (var contentEntry in customContent[key]){
+        for (var contentEntry in customContent[key]) {
             returnHTML += contentEntry; //TODO deleting and editing entries
         }
     }

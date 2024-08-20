@@ -4,9 +4,9 @@ function create_pc_token(newPCTokenID, pcLibID) {
 
 	let pcData = read_creature_properties(pcLibID)
 
-	if ("simple" in pcData.foundryActor && pcData.foundryActor.simple){
-			add_common_macros(newPCTokenID,true);
-		} else {
+	if ("simple" in pcData.foundryActor && pcData.foundryActor.simple) {
+		add_common_macros(newPCTokenID, true);
+	} else {
 
 		//__ADDING_STANDARD_MACROS
 		add_common_macros(newPCTokenID);

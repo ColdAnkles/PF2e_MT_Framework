@@ -58,20 +58,20 @@ function change_hp(tokenID, changeHPData = null) {
 			if (changeHPData.currentHPChange <= 0) {
 				kill_creature(tokenID);
 			} else {
-				chat_display({ "name": tokenDisplayName + " HP Set!", "system":{ "description": {"value":tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" }}}, true);
+				chat_display({ "name": tokenDisplayName + " HP Set!", "system": { "description": { "value": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" } } }, true);
 			}
 		} else if (changeHPData.currentMaxHPChange != tokenCurrentMaxHP) {
 			token.setProperty("MaxHP", String(changeHPData.currentMaxHPChange));
 		} else if (changeHPData.currentTempHPChange != tokenCurrentTempHP) {
 			token.setProperty("TempHP", String(changeHPData.currentTempHPChange));
-			chat_display({ "name": tokenDisplayName + " changed Temp HP!","system":{ "description": {"value":tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" }}}, true);
+			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "description": { "value": tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" } } }, true);
 		} else if (changeHPData.hpChangeType == "tempHP") {
 			tokenCurrentTempHP = Math.max(tokenCurrentTempHP, changeHPData.hpChangeVal);
 			token.setProperty("TempHP", String(tokenCurrentTempHP));
-			chat_display({ "name": tokenDisplayName + " changed Temp HP!","system":{ "description": {"value":tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" }}}, true);
+			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "description": { "value": tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" } } }, true);
 		} else {
 			if (changeHPData.hpChangeType == "lethal") {
-				chat_display({ "name": tokenDisplayName + " takes damage!","system":{ "description": {"value":tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!" }}}, true);
+				chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!" } } }, true);
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
 				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
 				if (tokenCurrentHP <= 0) {
@@ -86,7 +86,7 @@ function change_hp(tokenID, changeHPData = null) {
 					zero_hp(tokenID);
 				}
 			} else if (changeHPData.hpChangeType == "nonlethal") {
-				chat_display({ "name": tokenDisplayName + " takes damage!","system":{ "description": {"value":tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!" }}}, true);
+				chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!" } } }, true);
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
 				tokenCurrentHP = tokenCurrentHP + tokenCurrentTempHP;
 				if (tokenCurrentHP <= 0) {
@@ -109,9 +109,9 @@ function change_hp(tokenID, changeHPData = null) {
 				token.setProperty("HP", String(tokenCurrentHP));
 				if (get_state("Dead", token)) {
 					set_state("Dead", 0, token);
-					chat_display({ "name": tokenDisplayName + " resurrected!","system":{ "description": {"value":tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" }}}, true);
+					chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
 				} else {
-					chat_display({ "name": tokenDisplayName + " healed!","system":{ "description": {"value":tokenDisplayName + " heals " + String(healVal) + "!" }}}, true);
+					chat_display({ "name": tokenDisplayName + " healed!", "system": { "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
 				}
 			}
 		}

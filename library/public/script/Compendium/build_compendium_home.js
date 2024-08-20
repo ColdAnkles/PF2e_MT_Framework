@@ -5,11 +5,11 @@ function build_compendium_home() {
 	let isGM = JSON.parse(MTScript.getVariable("playerData")).role == "GM";
 	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
-	let HTMLString = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/"+themeData.css+"'>";
+	let HTMLString = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'>";
 
 	HTMLString += "<h1 style='padding-bottom:0px;margin-bottom:8px'>";
-	HTMLString += "<img src="+icon_img("compendium", themeData.icons=="W", true)+" style='width:40;height:40;'/>&nbsp";
-	HTMLString += create_macroLink("<font size=6>Compendium</font>","Compendium_Home@Lib:ca.pf2e","") + "</h1>";
+	HTMLString += "<img src=" + icon_img("compendium", themeData.icons == "W", true) + " style='width:40;height:40;'/>&nbsp";
+	HTMLString += create_macroLink("<font size=6>Compendium</font>", "Compendium_Home@Lib:ca.pf2e", "") + "</h1>";
 
 	HTMLString += "</p><h3>Characters</h2><p>";
 
@@ -42,7 +42,7 @@ function build_compendium_home() {
 
 	HTMLString += "<h3>" + create_macroLink("Credits", "Credits@Lib:ca.pf2e", "") + "</h2>";
 
-	HTMLString+= "</body></html>";
+	HTMLString += "</body></html>";
 
 	return HTMLString;
 }

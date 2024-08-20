@@ -81,7 +81,7 @@ function attack_action(actionData, actingToken) {
 	let initiative = get_initiative(actingToken.getId());
 
 	let attackScopes = ["attack", "attack-roll", "weapon-attack"];
-	let damageScopes = ["strike-damage","damage"];
+	let damageScopes = ["strike-damage", "damage"];
 	if (actionData.system.isMelee || actionData.type == "melee") {
 		attackScopes.push("melee-attack");
 		damageScopes.push("melee-damage");

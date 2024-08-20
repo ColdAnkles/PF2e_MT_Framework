@@ -15,12 +15,12 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 			continue; //Skip choice entries as they should already be resolved?
 		}
 		returnData.query = ("removeAfterRoll" in ruleData && ruleData.removeAfterRoll == "if-enabled") || ("choices" in ruleData) || returnData.query;
-		try{
+		try {
 			if ("selector" in ruleData) {
 				//MapTool.chat.broadcast(JSON.stringify(ruleData.selector));
 				//let selector = selector_inheritance(foundry_calc_value(ruleData.selector, actor, item));
 				//Note to self - doing the foundry calc value tends to turn strings like AC into the acutal actor ac or similar
-				if (ruleData.selector.includes("|")){
+				if (ruleData.selector.includes("|")) {
 					ruleData.selector = foundry_calc_value(ruleData.selector, actor, item)
 				}
 				let selector = selector_inheritance(ruleData.selector);
@@ -49,7 +49,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 		if ("definition" in ruleData) {
 			continue
 		}
-		try{
+		try {
 			if ("predicate" in ruleData) {
 				if (!predicate_check(ruleData.predicate, bonusScopes, actor, item)) {
 					continue;
@@ -63,7 +63,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 		}
 		//MapTool.chat.broadcast(JSON.stringify(ruleData));
 		if ("mode" in ruleData && ruleData.mode == "override") {
-			try{
+			try {
 				if (ruleData.path == "system.attributes.shield" && bonusScopes.includes("ac")) {
 					//MapTool.chat.broadcast(JSON.stringify(ruleData));
 					let shieldData = null;
@@ -88,7 +88,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 			//MapTool.chat.broadcast(JSON.stringify(ruleData));
 		} else {
 			if (ruleData.key == "FlatModifier") {
-				try{
+				try {
 					ruleData.value = foundry_calc_value(ruleData.value, actor, effectData);
 					if (ruleData.value < 0) {
 						if (!("type" in ruleData)) {
@@ -141,10 +141,10 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 			} else if (ruleData.key == "MartialProficiency") {
 				returnData.otherEffects["AdjustProficiency"] = { "profName": "Martial", "value": ruleData.value };
 			} else if (ruleData.key == "Weakness") {
-				if (!("additionalWeakness" in returnData.otherEffects)){
+				if (!("additionalWeakness" in returnData.otherEffects)) {
 					returnData.otherEffects.additionalWeakness = [];
 				}
-				returnData.otherEffects.additionalWeakness.push({"type":ruleData.type, "value":foundry_calc_value(ruleData.value, actor, effectData.sourceItem)});
+				returnData.otherEffects.additionalWeakness.push({ "type": ruleData.type, "value": foundry_calc_value(ruleData.value, actor, effectData.sourceItem) });
 			}
 		}
 	}

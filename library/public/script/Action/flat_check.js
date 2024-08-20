@@ -8,7 +8,7 @@ function flat_check(token) {
 	MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 	let dTwenty = String(MTScript.getVariable("dTwenty"));
 
-	chat_display({ "name": token.getName() + " attempts a flat check!", "system":{"description": {"value":"Flat Check Result: " + dTwenty }}}, true);
+	chat_display({ "name": token.getName() + " attempts a flat check!", "system": { "description": { "value": "Flat Check Result: " + dTwenty } } }, true);
 
 }
 

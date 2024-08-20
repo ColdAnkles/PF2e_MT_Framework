@@ -7,7 +7,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	let additionalData = { "rollDice": false };
 
 	try {
-		if (creatureData == null){
+		if (creatureData == null) {
 			if (tokenID == null) {
 				//let libToken = get_runtime("libToken");
 				//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
@@ -91,7 +91,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	}
 
 	HTMLString += "<br />"
-	try{
+	try {
 		if (tokenID != null) {
 			HTMLString += "<img style='float:right;margin:5px' src=" + getTokenImage(tokenID, 200) + "></img>";
 		}
@@ -326,7 +326,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 			} else {
 				attackString = "<b>Ranged</b> ";
 			}
-			attackString = attackString + icon_img("1action", themeData.icons=="W") + " " + attackData.name + " +" + attackData.system.bonus.value;
+			attackString = attackString + icon_img("1action", themeData.icons == "W") + " " + attackData.name + " +" + attackData.system.bonus.value;
 			if ("agile" in attackData.system.traits) {
 				attackString = attackString + " [" + pos_neg_sign(attackData.system.bonus.value - 4) + "/" + pos_neg_sign(attackData.system.bonus.value - 8) + "] ";
 			} else {
@@ -444,7 +444,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 			HTMLString += "<b>" + actionData.name + "</b> ";
 			let actionCost = actionData.system.actions.value
 			if (actionCost == 1 || actionCost == 2 || actionCost == 3) {
-				HTMLString += icon_img(String(actionCost) + "action", themeData.icons=="W") + " ";
+				HTMLString += icon_img(String(actionCost) + "action", themeData.icons == "W") + " ";
 			}
 			if (actionData.system.traits.length > 0) {
 				HTMLString += "(" + actionData.traits.join(", ") + ") ";

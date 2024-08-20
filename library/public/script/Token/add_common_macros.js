@@ -1,6 +1,6 @@
 "use strict";
 
-function add_common_macros(tokenID, isSimple=false) {
+function add_common_macros(tokenID, isSimple = false) {
 
     if (!isSimple) {
         let commonMacros = [{ "label": "Change HP", "playerEditable": 0, "command": "[h: js.ca.pf2e.change_hp(currentToken())]", "tooltip": "Change Token HP", "sortBy": "", "group": "1. Common" },
@@ -32,7 +32,8 @@ function add_common_macros(tokenID, isSimple=false) {
                 createMacro(PCMacros[m], tokenID);
             }
         }
-    }else{let commonMacros = [{ "label": "Change HP", "playerEditable": 0, "command": "[h: js.ca.pf2e.change_hp(currentToken())]", "tooltip": "Change Token HP", "sortBy": "", "group": "1. Common" },
+    } else {
+        let commonMacros = [{ "label": "Change HP", "playerEditable": 0, "command": "[h: js.ca.pf2e.change_hp(currentToken())]", "tooltip": "Change Token HP", "sortBy": "", "group": "1. Common" },
         { "label": "Character Sheet", "playerEditable": 0, "command": "[r: ca.pf2e.Creature_View_Frame(json.set(\"{}\",\"name\",getName(),\"tokenID\",myID))]", "tooltip": "View Character Sheet", "sortBy": "", "group": "1. Common" },
         { "label": "End Turn", "playerEditable": 0, "command": "[h: js.ca.pf2e.end_turn(currentToken())]", "tooltip": "End Turn", "sortBy": "", "group": "2. Encounter" },
         { "label": "Initiative", "playerEditable": 0, "command": "[h: ca.pf2e.Roll_Initiative(currentToken())]", "tooltip": "Roll Initiative", "sortBy": "", "group": "2. Encounter" },
@@ -41,7 +42,7 @@ function add_common_macros(tokenID, isSimple=false) {
         { "label": "View Active Effects", "playerEditable": 0, "command": "[h: ca.pf2e.View_Active_Effects(json.set(\"{}\",\"tokenID\",currentToken()))]", "tooltip": "View current active effects.", "sortBy": "", "group": "1. Common" },
         { "label": "Flat Check", "playerEditable": 0, "command": "[h: js.ca.pf2e.flat_check(myID)]", "tooltip": "Attempt Flat Check.", "sortBy": "", "group": "1. Common" },
         ]
-        
+
         for (var m in commonMacros) {
             createMacro(commonMacros[m], tokenID);
         }

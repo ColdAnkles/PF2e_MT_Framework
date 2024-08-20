@@ -302,7 +302,7 @@ function parse_pathbuilder_export(data) {
 					"senses": []
 				},
 			}
-		}, "flags": { "pf2e": { "rulesSelections":{ } } }
+		}, "flags": { "pf2e": { "rulesSelections": {} } }
 	};
 
 	let features_to_parse = [];

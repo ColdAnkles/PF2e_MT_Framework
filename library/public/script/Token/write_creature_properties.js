@@ -6,7 +6,7 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));
-	try{
+	try {
 		token.setName(creatureData.name);
 		//__STATS__
 		for (var s in creatureData.abilities) {
@@ -20,7 +20,7 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__HEALTH__
-	try{
+	try {
 		if ("current" in creatureData.hp) {
 			token.setProperty("HP", parseInt(creatureData.hp.current));
 		} else {
@@ -40,7 +40,7 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__OFFENSE__
-	try{
+	try {
 		token.setProperty("basicAttacks", JSON.stringify(creatureData.basicAttacks));
 		token.setProperty("offensiveActions", JSON.stringify(creatureData.offensiveActions));
 	} catch (e) {
@@ -51,7 +51,7 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__DEFENSES__
-	try{
+	try {
 		token.setProperty("AC", parseInt(creatureData.ac.value));
 		for (var s in creatureData.saves) {
 			token.setProperty(s, parseInt(creatureData.saves[s]));
@@ -70,7 +70,7 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__SKILLS__
-	try{
+	try {
 		token.setProperty("proficiencies", JSON.stringify(creatureData.proficiencies));
 		token.setProperty("perception", parseInt(creatureData.perception));
 		token.setProperty("passiveSkills", JSON.stringify(creatureData.passiveSkills));
@@ -82,7 +82,7 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__MAGIC__
-	try{
+	try {
 		token.setProperty("spellRules", JSON.stringify(creatureData.spellRules));
 	} catch (e) {
 		MapTool.chat.broadcast("Error write_creature_properties during magic");
@@ -92,7 +92,7 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__MISC__
-	try{
+	try {
 		//token.setProperty("type", creatureData.creatureType);
 		token.setProperty("alignment", creatureData.alignment);
 		token.setProperty("level", parseInt(creatureData.level));
@@ -112,7 +112,7 @@ function write_creature_properties(creatureData, token) {
 		return;
 	}
 
-	try{
+	try {
 		if ("pets" in creatureData && creatureData.pets != null) {
 			token.setProperty("pets", JSON.stringify(creatureData.pets));
 		}

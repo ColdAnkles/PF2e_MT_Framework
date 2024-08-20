@@ -7,10 +7,10 @@ function calculate_ac(tokenID) {
 	let base_ac = 10;
 
 	let foundryActor = JSON.parse(token.getProperty("foundryActor"));
-	if ("simple" in foundryActor && foundryActor.simple){
+	if ("simple" in foundryActor && foundryActor.simple) {
 		base_ac = Number(token.getProperty("ac"));
 	}
-	
+
 	let dex_bonus = Number(token.getProperty("dex"));
 	let bonuses = calculate_bonus(tokenID, "ac");
 	let eqArmor = get_equipped_armor(token);

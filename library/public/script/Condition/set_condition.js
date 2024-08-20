@@ -18,12 +18,12 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	let property = JSON.parse(read_data("pf2e_condition"));
 	let conditionData = null
 
-	if (!(trueConditionName in property)){
+	if (!(trueConditionName in property)) {
 		conditionData = {
-			"_id":"specialUnknownCondition",
-			"name":trueConditionName,
-			"system":{
-				"description":{"value":conditionName},
+			"_id": "specialUnknownCondition",
+			"name": trueConditionName,
+			"system": {
+				"description": { "value": conditionName },
 				"duration": {
 					"expiry": null,
 					"unit": "unlimited",
@@ -38,14 +38,14 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 					"isValued": false,
 					"value": null
 				}
-				},
+			},
 			"type": "condition"
-			}
-	}else{
+		}
+	} else {
 		conditionData = property[trueConditionName];
 	}
 
-	if ("fileURL" in conditionData){
+	if ("fileURL" in conditionData) {
 		conditionData = rest_call(conditionData["fileURL"]);
 	}
 
@@ -73,7 +73,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	}
 
 	let conditionApplication = 0;
-	try{
+	try {
 		if (conditionName in tokenConditions && (conditionValue == null || conditionValue == 0)) {
 			delete tokenConditions[conditionName];
 			//MapTool.chat.broadcast("Removing condition: " + conditionName);
@@ -109,7 +109,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	}
 
 	//MapTool.chat.broadcast("conditionApplication: " + String(conditionApplication));
-	try{
+	try {
 		for (var r in conditionData.system.rules) {
 			let ruleData = conditionData.system.rules[r];
 			if (conditionData.system.value.isValued) {
@@ -144,7 +144,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 		return;
 	}
 
-	try{
+	try {
 		tokenConditions = JSON.parse(token.getProperty("conditionDetails"));
 		for (var c in tokenConditions) {
 			//MapTool.chat.broadcast(JSON.stringify(tokenConditions[c]));

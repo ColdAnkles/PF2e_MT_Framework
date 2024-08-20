@@ -5,7 +5,7 @@ function is_pc(tokenID) {
 	if (typeof (tokenID) != "string") {
 		tokenMap = tokenID.getMapName();
 		tokenID = tokenID.getId();
-	}else{
+	} else {
 		tokenMap = MapTool.tokens.getTokenByID(tokenID).getMapName();
 	}
 

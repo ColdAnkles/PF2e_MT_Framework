@@ -339,12 +339,12 @@ function spell_action(actionData, actingToken) {
 				if (heightenVal != null) {
 					spellData.system.damage = heightenVal.damage;
 				}
-			} else if ("heightening" in spellData.system && (spellData.system.heightening.type == "interval")){
-				let addTimes = Math.floor((actionData.system.castLevel.value - spellData.system.level.value)/spellData.system.heightening.interval)
-				if (addTimes!=0){
-					for (var hd in spellData.system.heightening.damage){
-						if (hd in spellData.system.damage){
-							for (var at=0; at < addTimes; at++){
+			} else if ("heightening" in spellData.system && (spellData.system.heightening.type == "interval")) {
+				let addTimes = Math.floor((actionData.system.castLevel.value - spellData.system.level.value) / spellData.system.heightening.interval)
+				if (addTimes != 0) {
+					for (var hd in spellData.system.heightening.damage) {
+						if (hd in spellData.system.damage) {
+							for (var at = 0; at < addTimes; at++) {
 								spellData.system.damage[hd].formula += " + " + spellData.system.heightening.damage[hd]
 							}
 						}
