@@ -6,10 +6,14 @@ function build_creature_list(sortKey, sortDir, searchKey = "") {
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>Creatures</h1>";
     let creatureList = JSON.parse(read_data("pf2e_npc"));
     let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
+    let customNPCs = JSON.parse(read_data("customContent")).npc
 
     let creatureSorted = [];
     for (var s in creatureList) {
         creatureSorted.push(creatureList[s]);
+    }
+    for (var s in customNPCs) {
+        creatureSorted.push(customNPCs[s]);
     }
     creatureSorted.sort(sort_by(sortKey, sortDir == "d", (a) => ((typeof (a) == "string") ? a.toUpperCase() : a)));
 

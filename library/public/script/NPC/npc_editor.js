@@ -4,12 +4,22 @@ function npc_editor(inputData) {
     let npcData = null;
     let foundrySizes = ["tiny", "sm", "med", "huge", "lg", "grg"];
     var sizeList = ["tiny", "small", "medium", "huge", "large", "gargantuan"];
+    var rarityList = ["common", "uncommon", "rare", "legendary", "unique"];
     let page = "General";
+    let weaponNames = {};
+    let weaponIDs = {};
 
     if ("untouchedData" in inputData) {
 
         npcData = JSON.parse(decode(inputData.untouchedData));
         inputData.untouchedData = "";
+        for (var s in npcData.items) {
+            let itemData = npcData.items[s]
+            if (itemData.type == "weapon") {
+                weaponNames[itemData._id] = itemData.name;
+                weaponIDs[itemData.name] = itemData._id;
+            }
+        }
 
         //MapTool.chat.broadcast(JSON.stringify(inputData));
 
@@ -22,6 +32,9 @@ function npc_editor(inputData) {
 
         if ("nameVal" in inputData) {
             npcData.name = inputData.nameVal;
+        }
+        if ("rarityVal" in inputData) {
+            npcData.system.traits.rarity = inputData.rarityVal.toLowerCase();
         }
         if ("levelVal" in inputData) {
             npcData.system.details.level.value = Number(inputData.levelVal);
@@ -71,6 +84,9 @@ function npc_editor(inputData) {
         if ("traitVal" in inputData) {
             npcData.system.traits.value = inputData.traitVal.split(", ");
         }
+        if ("sourceVal" in inputData) {
+            npcData.system.details.publication.title = inputData.sourceVal;
+        }
         if ("skillCount" in inputData) {
             for (let i = 0; i < inputData.skillCount; i++) {
                 let updateSkillName = inputData["skillName_" + String(i)].toLowerCase();
@@ -95,42 +111,77 @@ function npc_editor(inputData) {
                 if (("delItem_" + i) in inputData) {
                     delItem = i;
                 }
-                if (("itemNameVal_"+i) in inputData) {
-                    npcData.items[i].name = inputData["itemNameVal_"+i];
+                let itemData = npcData.items[i];
+                if (("itemNameVal_" + i) in inputData) {
+                    itemData.name = inputData["itemNameVal_" + i];
                 }
-                if (("itemAttackBonus_"+i) in inputData) {
-                    npcData.items[i].system.bonus.value = Number(inputData["itemAttackBonus_"+i]);
+                if (("itemAttackBonus_" + i) in inputData) {
+                    itemData.system.bonus.value = Number(inputData["itemAttackBonus_" + i]);
                 }
-                if (("itemDamageCount_"+i) in inputData){
-                    for(let d = 0; d< inputData["itemDamageCount_"+i];i++){
-                        let damageID = inputData["itemDamageID_"+i+"_"+d];
-                        if (("itemAttackDamageDamage_"+i+"_"+damageID) in inputData){
-                            npcData.items[i].system.damageRolls[damageID].damage = inputData["itemAttackDamageDamage_"+i+"_"+damageID];
+                if (("itemDamageCount_" + i) in inputData) {
+                    for (let d = 0; d < inputData["itemDamageCount_" + i]; d++) {
+                        let damageID = inputData["itemDamageID_" + i + "_" + d];
+                        if (("itemAttackDamageDamage_" + i + "_" + damageID) in inputData) {
+                            itemData.system.damageRolls[damageID].damage = inputData["itemAttackDamageDamage_" + i + "_" + damageID];
                         }
-                        if (("itemAttackDamageType_"+i+"_"+damageID) in inputData){
-                            npcData.items[i].system.damageRolls[damageID].damageType = inputData["itemAttackDamageType_"+i+"_"+damageID];
+                        if (("itemAttackDamageType_" + i + "_" + damageID) in inputData) {
+                            itemData.system.damageRolls[damageID].damageType = inputData["itemAttackDamageType_" + i + "_" + damageID];
                         }
                     }
                 }
-                if (("itemTraitVal_"+i) in inputData){
-                    npcData.items[i].system.traits.value = inputData["itemTraitVal_"+i].split(", ");
+                if (("itemTraitVal_" + i) in inputData) {
+                    itemData.system.traits.value = inputData["itemTraitVal_" + i].split(", ");
                 }
-                
+                if (("itemWeaponLink_" + i) in inputData) {
+                    if (!("flags" in itemData)) {
+                        itemData.flags = { "pf2e": { "linkedWeapon": null } }
+                    } else if (!("pf2e" in itemData.flags)) {
+                        itemData.flags.pf2e = { "linkedWeapon": null }
+                    }
+                    itemData.flags.pf2e.linkedWeapon = weaponIDs[inputData["itemWeaponLink_" + i]];
+                }
+
             }
             if (delItem != null) {
                 npcData.items.splice(delItem, 1);
             }
         }
+        if ("addAttack" in inputData) {
+            npcData.items.push({ "_id": generate_uid(20), "flags": { "pf2e": { "linkedWeapon": null } }, "img": "systems/pf2e/icons/default-icons/melee.svg", "name": "New Attack", "sort": 99999999, "system": { "attack": { "value": "" }, "attackEffects": { "custom": "", "value": [] }, "bonus": { "value": 15 }, "damageRolls": { "mjadst6lj09xzqchu9ct": { "damage": "1d10", "damageType": "slashing" } }, "description": { "value": "" }, "publication": { "license": "OGL", "remaster": false, "title": "" }, "rules": [], "slug": null, "traits": { "rarity": "common", "value": [] }, "weaponType": { "value": "melee" } }, "type": "melee" })
+        }
+        if ("addItem" in inputData) {
+            let allItems = JSON.parse(read_data("pf2e_item"));
+            if (inputData.newItemName in allItems) {
+                npcData.items.push(allItems[inputData.newItemName]);
+            }
+        }
     } else {
         npcData = inputData;
+        for (var s in npcData.items) {
+            let itemData = npcData.items[s]
+            if (itemData.type == "weapon") {
+                weaponNames[itemData._id] = itemData.name;
+                weaponIDs[itemData.name] = itemData._id;
+            }
+        }
     }
 
     if ("save" in inputData) {
+        //Set Filtering Data for Creature List
+        npcData.baseName = npcData.name.toLowerCase().replaceAll(" ", "-");
+        npcData.level = npcData.system.details.level.value;
+        npcData.rarity = npcData.system.traits.rarity;
+        npcData.size = npcData.system.traits.size.value;
+        npcData.source = npcData.system.details.publication.title;
+        npcData.traits = npcData.system.traits.value;
+
         let customContent = JSON.parse(read_data("customContent"));
         customContent.npc[npcData.name] = npcData;
+        if(!customContent.source.includes(npcData.system.details.publication.title)){
+            customContent.source.push(npcData.system.details.publication.title);
+        }
         write_data("customContent", JSON.stringify(customContent));
         MTScript.evalMacro("[h: closeFrame(\"Edit NPC\")]");
-        //TODO INSERT CUSTOM CONTENT INTO DATA
         return;
     }
 
@@ -146,8 +197,12 @@ function npc_editor(inputData) {
 
     if (page == "General") {
         outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='5'><input type='input' name='nameVal' value='" + npcData.name + "'></input></th></tr></thead><tbody>";
-        outputHTML += "<tr><td>Level</td><td colspan='5'><input type='input' name='levelVal' value='" + npcData.system.details.level.value + "' size=3></input></td>";
-        outputHTML += "</tr><tr><td>STR</td><td>DEX</td><td>CON</td><td>INT</td><td>WIS<br></td><td>CHA<br></td></tr><tr>";
+        outputHTML += "<tr><td>Level</td><td><input type='input' name='levelVal' value='" + npcData.system.details.level.value + "' size=3></input></td>\
+        <td colspan='4'><select name='rarityVal'>";
+        for (var s in rarityList) {
+            outputHTML += "<option " + ((rarityList[s] == npcData.system.traits.rarity) ? "selected" : "") + ">" + capitalise(rarityList[s]) + "</option>";
+        }
+        outputHTML += "</select></td></tr><tr><td>STR</td><td>DEX</td><td>CON</td><td>INT</td><td>WIS<br></td><td>CHA<br></td></tr><tr>";
         outputHTML += "<td><input type='input' name='strModVal' value='" + npcData.system.abilities.str.mod + "' size=3></input></td>";
         outputHTML += "<td><input type='input' name='dexModVal' value='" + npcData.system.abilities.dex.mod + "' size=3></input></td>";
         outputHTML += "<td><input type='input' name='conModVal' value='" + npcData.system.abilities.con.mod + "' size=3></input></td>";
@@ -173,9 +228,10 @@ function npc_editor(inputData) {
         outputHTML += "</tr>";
         outputHTML += "<tr><td colspan='6' style='text-align:center'>Traits</td></tr>";
         outputHTML += "<tr><td colspan='6'><input type='input' name='traitVal' value='" + npcData.system.traits.value.join(", ") + "' size=50></input></td></tr>";
+        outputHTML += "<tr><td>Source :</td><td colspan='5'><input type='input' name='sourceVal' value='" + npcData.system.details.publication.title + "' size=40></input></td></tr>";
     } else if (page == "Skills") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>"+npcData.name+"</th></tr></thead><tbody>";
+        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='3' style='text-align:center'>Skills</td></tr>";
         let skillCounter = 0;
         for (var s in npcData.system.skills) {
@@ -189,58 +245,69 @@ function npc_editor(inputData) {
         outputHTML += "<input type='hidden' name='skillCount' value='" + skillCounter + "'></input>"
     } else if (page == "Items") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>"+npcData.name+"</th></tr></thead><tbody>";
-        outputHTML += "<tr><td colspan='6' style='text-align:center'>Items</td></tr>";
-        outputHTML += "<tr><td colspan='6'><table class='center'>";
+        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>" + npcData.name + "</th></tr></thead><tbody>";
+        outputHTML += "<tr><td colspan='3' style='text-align:center'>Items</td></tr>";
         let itemCounter = 0;
         for (var s in npcData.items) {
             let itemData = npcData.items[s]
-            let itemTypes = ["weapon","armor","shield","item","consumable"];
-            if (itemTypes.includes(itemData.type)){
+            let itemTypes = ["weapon", "armor", "shield", "item", "consumable"];
+            if (itemTypes.includes(itemData.type)) {
                 outputHTML += "<tr><td>" + itemData.name + "</td><td>" + capitalise(itemData.type) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
             }
             itemCounter++;
         }
-        outputHTML += "</table></td></tr>";
+        outputHTML += "<tr><td colspan='2'><input type='input' name='newItemName' value='New Item' size=10></input></td>\
+        <td><input type='submit' name='addItem' value='Add Item'></input></td></tr>";
         outputHTML += "<input type='hidden' name='itemCount' value='" + itemCounter + "'></input>"
-        //TODO ADD ITEM
 
     } else if (page == "Attacks") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='6'>"+npcData.name+"</th></tr></thead><tbody>";
+        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='6'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='6' style='text-align:center'>Attacks</td></tr>";
+        outputHTML += "<tr><td colspan='6' class='hd-1'></td></tr>"
         let itemCounter = 0;
         for (var s in npcData.items) {
             let itemData = npcData.items[s]
-            if (["melee","ranged"].includes(itemData.type)){
-                outputHTML += "<tr><td colspan='4'><input type='input' name='itemNameVal_"+itemCounter+"' value='" + itemData.name + "' size=10></input></td><td colspan='2'><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
-                outputHTML += "<td colspan='3'>" + capitalise(itemData.type) + "</td><td colspan='3'>Bonus: <input type='input' name='itemAttackBonus_"+itemCounter+"' value='" + itemData.system.bonus.value + "' size=4></input></td></tr>"
+            if (["melee", "ranged"].includes(itemData.type)) {
+                outputHTML += "<tr><td colspan='4'><input type='input' name='itemNameVal_" + itemCounter + "' value='" + itemData.name + "' size=10></input></td><td colspan='2'><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
+                outputHTML += "<td colspan='3'>" + capitalise(itemData.type) + "</td><td colspan='3'>Bonus: <input type='input' name='itemAttackBonus_" + itemCounter + "' value='" + itemData.system.bonus.value + "' size=4></input></td></tr>"
                 outputHTML += "<tr><td colspan=6 style='text-align:center'>Damage</td></tr>";
                 let damageCounter = 0;
-                for (var d in itemData.system.damageRolls){
-                    outputHTML += "<tr><td colspan='3'><input type='input' name='itemAttackDamageDamage_"+itemCounter+"_"+d+"' value='"+itemData.system.damageRolls[d].damage+"'></input></td>\
-                    <td colspan='3'><input type='input' name='itemAttackDamageType_"+itemCounter+"_"+d+"' value='"+itemData.system.damageRolls[d].damageType+"'></input></td></tr>"
-                    outputHTML += "<input type='hidden' name='itemDamageID_"+itemCounter+"_"+damageCounter+"' value='" + d + "'></input>"
+                for (var d in itemData.system.damageRolls) {
+                    outputHTML += "<tr><td colspan='3'><input type='input' name='itemAttackDamageDamage_" + itemCounter + "_" + d + "' value='" + itemData.system.damageRolls[d].damage + "' size=10></input></td>\
+                    <td colspan='3'><input type='input' name='itemAttackDamageType_"+ itemCounter + "_" + d + "' value='" + itemData.system.damageRolls[d].damageType + "'></input></td></tr>"
+                    outputHTML += "<input type='hidden' name='itemDamageID_" + itemCounter + "_" + damageCounter + "' value='" + d + "'></input>"
                     damageCounter++;
                 }
-                outputHTML += "<td>Traits: </td><td colspan='5'><input type='input' name='itemTraitVal_"+itemCounter+"' value='"+itemData.system.traits.value.join(", ")+"'></input></td></tr>"
-                outputHTML += "<tr><td colspan='6'></td></tr>"
-                outputHTML += "<input type='hidden' name='itemDamageCount_"+itemCounter+"' value='" + damageCounter + "'></input>"
+                outputHTML += "<td>Traits: </td><td colspan='5'><input type='input' name='itemTraitVal_" + itemCounter + "' value='" + itemData.system.traits.value.join(", ") + "'></input></td></tr>"
+                outputHTML += "<tr><td>Linked Weapon</td><td colspan='5'><select name='itemWeaponLink_" + itemCounter + "'><option>None</option>";
+
+                var linkedWeapon = null;
+                if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e) {
+                    linkedWeapon = itemData.flags.pf2e.linkedWeapon;
+                }
+                for (var w in weaponNames) {
+                    outputHTML += "<option " + ((w == linkedWeapon) ? "selected" : "") + ">" + weaponNames[w] + "</option>";
+                }
+                outputHTML += "</select></td></tr>";
+
+                outputHTML += "<tr><td colspan='6' class='hd-1'></td></tr>"
+                outputHTML += "<input type='hidden' name='itemDamageCount_" + itemCounter + "' value='" + damageCounter + "'></input>"
             }
             itemCounter++;
         }
         outputHTML += "<input type='hidden' name='itemCount' value='" + itemCounter + "'></input>"
-        //TODO ADD ATTACK
+        outputHTML += "<tr><td colspan='6' style='text-align:center'><input type='submit' name='addAttack' value='Add Attack'></input></td></tr>";
 
     } else if (page == "Spells") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>"+npcData.name+"</th></tr></thead><tbody>";
+        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='6' style='text-align:center'>Spellcasting</td></tr>";
         outputHTML += "<tr><td colspan='6'><table class='center'>";
         let itemCounter = 0;
         for (var s in npcData.items) {
             let itemData = npcData.items[s]
-            if (["spellcastingEntry","spell"].includes(itemData.type)){
+            if (["spellcastingEntry", "spell"].includes(itemData.type)) {
                 outputHTML += "<tr><td>" + itemData.name + "</td><td>" + capitalise(itemData.type) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
             }
             itemCounter++;
@@ -251,13 +318,13 @@ function npc_editor(inputData) {
 
     } else if (page == "Features") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>"+npcData.name+"</th></tr></thead><tbody>";
-        outputHTML += "<tr><td colspan='6' style='text-align:center'>Spellcasting</td></tr>";
+        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>" + npcData.name + "</th></tr></thead><tbody>";
+        outputHTML += "<tr><td colspan='6' style='text-align:center'>Features</td></tr>";
         outputHTML += "<tr><td colspan='6'><table class='center'>";
         let itemCounter = 0;
         for (var s in npcData.items) {
             let itemData = npcData.items[s]
-            if (["action"].includes(itemData.type)){
+            if (["action"].includes(itemData.type)) {
                 outputHTML += "<tr><td>" + itemData.name + "</td><td>" + capitalise(itemData.type) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
             }
             itemCounter++;
@@ -298,7 +365,7 @@ function npc_editor(inputData) {
     }
 
     outputHTML += "<tr>\
-    <td colspan='"+String(colspan)+"' style='text-align:center'>\
+    <td colspan='"+ String(colspan) + "' style='text-align:center'>\
     <input type='submit' name='setPage' value='" + prevPage + "'></input>\
     <input type='submit' name='update' value='Update'></input>\
     <input type='submit' name='save' value='Save'></input>\

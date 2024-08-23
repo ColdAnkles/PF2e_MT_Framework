@@ -13,7 +13,9 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 				//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
 				let property = JSON.parse(read_data("pf2e_npc"));
 				creatureData = property[creatureName];
-				creatureData = rest_call(creatureData["fileURL"], "");
+				if ("fileURL" in creatureData) {
+					creatureData = rest_call(creatureData["fileURL"], "");
+				}
 
 				creatureData = parse_npc(creatureData);
 			} else {
