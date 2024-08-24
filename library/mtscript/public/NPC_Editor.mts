@@ -6,6 +6,10 @@
 [h, if(type=="UNKNOWN"), code:{
     [h: allNPC = getLibProperty("pf2e_npc","lib:ca.pf2e")]
     [h: npcData = json.get(allNPC, macro.args)]
+    [h, if(!json.contains(npcData,"name")), code:{
+        [h: allNPC = json.get(getLibProperty("customContent","lib:ca.pf2e"),"npc")]
+        [h: npcData = json.get(allNPC, macro.args)]
+    };{}]
     [h, if(json.contains(npcData, "fileURL")), code:{
         [h: npcData = REST.get(json.get(npcData,"fileURL"))]
     };{}]

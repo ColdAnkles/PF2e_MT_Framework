@@ -3,11 +3,15 @@
 function npc_editor(inputData) {
     let npcData = null;
     let foundrySizes = ["tiny", "sm", "med", "huge", "lg", "grg"];
-    var sizeList = ["tiny", "small", "medium", "huge", "large", "gargantuan"];
-    var rarityList = ["common", "uncommon", "rare", "legendary", "unique"];
+    let sizeList = ["tiny", "small", "medium", "huge", "large", "gargantuan"];
+    let rarityList = ["common", "uncommon", "rare", "legendary", "unique"];
+    let castingTypes = ["focus", "innate", "prepared"];
+    let castingTraditions = ["arcane", "divine", "occult", "primal"];
     let page = "General";
     let weaponNames = {};
     let weaponIDs = {};
+    let spellCastingNames = {};
+    let spellCastingIDs = {};
 
     if ("untouchedData" in inputData) {
 
@@ -18,6 +22,9 @@ function npc_editor(inputData) {
             if (itemData.type == "weapon") {
                 weaponNames[itemData._id] = itemData.name;
                 weaponIDs[itemData.name] = itemData._id;
+            } else if (itemData.type == "spellcastingEntry") {
+                spellCastingNames[itemData._id] = itemData.name;
+                spellCastingIDs[itemData.name] = itemData._id;
             }
         }
 
@@ -62,6 +69,7 @@ function npc_editor(inputData) {
         }
         if ("hpMaxVal" in inputData) {
             npcData.system.attributes.hp.max = Number(inputData.hpMaxVal);
+            npcData.system.attributes.hp.value = Number(inputData.hpMaxVal);
         }
         if ("baseSpeedVal" in inputData) {
             npcData.system.attributes.speed.value = Number(inputData.baseSpeedVal);
@@ -140,6 +148,19 @@ function npc_editor(inputData) {
                     }
                     itemData.flags.pf2e.linkedWeapon = weaponIDs[inputData["itemWeaponLink_" + i]];
                 }
+                if (("itemCastBonusVal_" + i) in inputData) {
+                    itemData.system.spelldc.value = inputData["itemCastBonusVal_" + i];
+                }
+                if (("itemCastDCVal_" + i) in inputData) {
+                    itemData.system.spelldc.dc = inputData["itemCastDCVal_" + i];
+                }
+                if (("itemCastingTradition_" + i) in inputData) {
+                    itemData.system.tradition.value = inputData["itemCastingTradition_" + i].toLowerCase();
+                }
+                if (("itemCastingType_" + i) in inputData) {
+                    itemData.system.prepared.value = inputData["itemCastingType_" + i].toLowerCase();
+                }
+
 
             }
             if (delItem != null) {
@@ -165,6 +186,7 @@ function npc_editor(inputData) {
             }
         }
     }
+    npcData.system.attributes.ac.details = "";
 
     if ("save" in inputData) {
         //Set Filtering Data for Creature List
@@ -177,7 +199,7 @@ function npc_editor(inputData) {
 
         let customContent = JSON.parse(read_data("customContent"));
         customContent.npc[npcData.name] = npcData;
-        if(!customContent.source.includes(npcData.system.details.publication.title)){
+        if (!customContent.source.includes(npcData.system.details.publication.title)) {
             customContent.source.push(npcData.system.details.publication.title);
         }
         write_data("customContent", JSON.stringify(customContent));
@@ -231,7 +253,7 @@ function npc_editor(inputData) {
         outputHTML += "<tr><td>Source :</td><td colspan='5'><input type='input' name='sourceVal' value='" + npcData.system.details.publication.title + "' size=40></input></td></tr>";
     } else if (page == "Skills") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>" + npcData.name + "</th></tr></thead><tbody>";
+        outputHTML += "<table class='center'><thead><tr><th colspan='3' style='text-align:center'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='3' style='text-align:center'>Skills</td></tr>";
         let skillCounter = 0;
         for (var s in npcData.system.skills) {
@@ -245,7 +267,7 @@ function npc_editor(inputData) {
         outputHTML += "<input type='hidden' name='skillCount' value='" + skillCounter + "'></input>"
     } else if (page == "Items") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>" + npcData.name + "</th></tr></thead><tbody>";
+        outputHTML += "<table class='center'><thead><tr><th colspan='3' style='text-align:center'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='3' style='text-align:center'>Items</td></tr>";
         let itemCounter = 0;
         for (var s in npcData.items) {
@@ -262,7 +284,7 @@ function npc_editor(inputData) {
 
     } else if (page == "Attacks") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='6'>" + npcData.name + "</th></tr></thead><tbody>";
+        outputHTML += "<table class='center'><thead><tr><th colspan='6' style='text-align:center'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='6' style='text-align:center'>Attacks</td></tr>";
         outputHTML += "<tr><td colspan='6' class='hd-1'></td></tr>"
         let itemCounter = 0;
@@ -301,24 +323,46 @@ function npc_editor(inputData) {
 
     } else if (page == "Spells") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>" + npcData.name + "</th></tr></thead><tbody>";
-        outputHTML += "<tr><td colspan='6' style='text-align:center'>Spellcasting</td></tr>";
-        outputHTML += "<tr><td colspan='6'><table class='center'>";
+        outputHTML += "<table class='center'><thead><tr><th colspan='4' style='text-align:center'>" + npcData.name + "</th></tr></thead><tbody>";
+        outputHTML += "<tr><td colspan='4' style='text-align:center'>Spellcasting</td></tr>";
+        let spellHTML = "";
         let itemCounter = 0;
         for (var s in npcData.items) {
             let itemData = npcData.items[s]
-            if (["spellcastingEntry", "spell"].includes(itemData.type)) {
-                outputHTML += "<tr><td>" + itemData.name + "</td><td>" + capitalise(itemData.type) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
+            if (itemData.type == "spellcastingEntry") {
+                outputHTML += "<tr><td colspan='2'><input type='input' name='itemNameVal_" + itemCounter + "' value='" + itemData.name + "' size=30></input></td><td><select name='itemCastingType_" + itemCounter + "'>";
+                for (var c in castingTypes) {
+                    outputHTML += "<option  " + ((castingTypes[c] == itemData.system.prepared.value) ? "selected" : "") + ">" + capitalise(castingTypes[c]) + "</option>";
+                }
+                outputHTML += "</select></td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>";
+                outputHTML += "<tr><td colspan='4' style='text-align:center'>Tradition: <select name='itemCastingTradition_" + itemCounter + "'>";
+                for (var c in castingTraditions) {
+                    outputHTML += "<option  " + ((castingTraditions[c] == itemData.system.tradition.value) ? "selected" : "") + ">" + capitalise(castingTraditions[c]) + "</option>";
+                }
+                outputHTML += "<tr><td>Bonus:</td><td><input type='input' name='itemCastBonusVal_" + itemCounter + "' value='" + itemData.system.spelldc.value + "' size=5></input></td>\
+                <td>DC: </td><td><input type='input' name='itemCastDCVal_" + itemCounter + "' value='" + itemData.system.spelldc.dc + "' size=5></input></td></tr>";
+                outputHTML += "</select></td></tr>";
+            } else if (itemData.type == "spell") {
+                let isCantrip = itemData.system.traits.value.includes("cantrip");
+                let isFocus = itemData.system.traits.value.includes("focus");
+                let spellType = "Spell";
+                if (isCantrip) {
+                    spellType = "Cantrip";
+                } else if (isFocus && !isCantrip) {
+                    spellType = "Focus";
+                }
+                spellHTML += "<tr><td colspan='2'>" + itemData.name + "</td><td>" + spellType + " " + String(itemData.system.level.value) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
+                //WHICH CASTING ENTRY DOES IT BELONG TO? itemdata.system.location.value
             }
             itemCounter++;
         }
-        outputHTML += "</table></td></tr>";
+        outputHTML += spellHTML;
         outputHTML += "<input type='hidden' name='itemCount' value='" + itemCounter + "'></input>"
         //TODO ADD SPELL CASTING and SPELLS
 
     } else if (page == "Features") {
 
-        outputHTML += "<table class='center'><thead><tr><th>Name:</th><th colspan='3'>" + npcData.name + "</th></tr></thead><tbody>";
+        outputHTML += "<table class='center'><thead><tr><th colspan='3' style='text-align:center'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='6' style='text-align:center'>Features</td></tr>";
         outputHTML += "<tr><td colspan='6'><table class='center'>";
         let itemCounter = 0;

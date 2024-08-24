@@ -6,8 +6,14 @@ function create_npc(newNPCTokenID, creatureName) {
 	//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
 	let property = JSON.parse(read_data("pf2e_npc"));
 	let creatureData = property[creatureName];
+	if (creatureData == null) {
+		property = JSON.parse(read_data("customContent")).npc;
+		creatureData = property[creatureName];
+	}
 	if ("fileURL" in creatureData) {
 		creatureData = parse_npc(rest_call(creatureData["fileURL"], ""));
+	} else {
+		creatureData = parse_npc(creatureData);
 	}
 
 	write_creature_properties(creatureData, newToken);

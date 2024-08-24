@@ -13,7 +13,11 @@ function custom_content_window() {
         }
         returnHTML += "</th></tr></thead>";
         for (var contentEntry in customContent[key]) {
-            returnHTML += "<tr><td>" + contentEntry + "</td><td>" + create_macroLink("Edit", "Custom_Content_Window_Link@Lib:ca.pf2e", { "key": key, "entry": contentEntry, "action": "edit" }) + "</td><td>" + create_macroLink("Delete", "Custom_Content_Window_Link@Lib:ca.pf2e", { "key": key, "entry": contentEntry, "action": "delete" }) + "</td></tr>";
+            let contentDisplay = contentEntry;
+            if (!isNaN(contentDisplay)) {
+                contentDisplay = customContent[key][contentEntry]
+            }
+            returnHTML += "<tr><td>" + contentDisplay + "</td><td>" + create_macroLink("Edit", "Custom_Content_Window_Link@Lib:ca.pf2e", { "key": key, "entry": contentEntry, "action": "edit" }) + "</td><td>" + create_macroLink("Delete", "Custom_Content_Window_Link@Lib:ca.pf2e", { "key": key, "entry": contentEntry, "action": "delete" }) + "</td></tr>";
         }
     }
 

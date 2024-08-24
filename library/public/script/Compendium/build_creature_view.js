@@ -9,10 +9,12 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	try {
 		if (creatureData == null) {
 			if (tokenID == null) {
-				//let libToken = get_runtime("libToken");
-				//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
 				let property = JSON.parse(read_data("pf2e_npc"));
 				creatureData = property[creatureName];
+				if (creatureData == null) {
+					property = JSON.parse(read_data("customContent")).npc;
+					creatureData = property[creatureName];
+				}
 				if ("fileURL" in creatureData) {
 					creatureData = rest_call(creatureData["fileURL"], "");
 				}
