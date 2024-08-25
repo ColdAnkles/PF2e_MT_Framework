@@ -12,6 +12,8 @@ function npc_editor(inputData) {
     let weaponIDs = {};
     let spellCastingNames = {};
     let spellCastingIDs = {};
+    let spellNames = {};
+    let spellIDs = {};
 
     if ("untouchedData" in inputData) {
 
@@ -25,6 +27,9 @@ function npc_editor(inputData) {
             } else if (itemData.type == "spellcastingEntry") {
                 spellCastingNames[itemData._id] = itemData.name;
                 spellCastingIDs[itemData.name] = itemData._id;
+            } else if (itemData.type == "spell") {
+                spellNames[itemData._id] = itemData.name;
+                spellIDs[itemData.name] = itemData._id;
             }
         }
 
@@ -160,8 +165,6 @@ function npc_editor(inputData) {
                 if (("itemCastingType_" + i) in inputData) {
                     itemData.system.prepared.value = inputData["itemCastingType_" + i].toLowerCase();
                 }
-
-
             }
             if (delItem != null) {
                 npcData.items.splice(delItem, 1);
@@ -173,7 +176,42 @@ function npc_editor(inputData) {
         if ("addItem" in inputData) {
             let allItems = JSON.parse(read_data("pf2e_item"));
             if (inputData.newItemName in allItems) {
-                npcData.items.push(allItems[inputData.newItemName]);
+                let newItemData = allItems[inputData.newItemName];
+                if ("fileURL" in newItemData) {
+                    newItemData = rest_call(newItemData["fileURL"], "");
+                }
+                npcData.items.push(newItemData);
+                if (newItemData.type == "weapon") {
+                    weaponNames[newItemData._id] = newItemData.name;
+                    weaponIDs[newItemData.name] = newItemData._id;
+                }
+            } else if (inputData.newItemName in customContent.items) {
+                let newItemData = customContent.items[inputData.newItemName];
+                npcData.items.push(newItemData);
+                if (newItemData.type == "weapon") {
+                    weaponNames[newItemData._id] = newItemData.name;
+                    weaponIDs[newItemData.name] = newItemData._id;
+                }
+            }
+        }
+        if ("addSpell" in inputData) {
+            let allSpells = JSON.parse(read_data("pf2e_spell"));
+            for (var s in spellCastingNames) {
+                if (("addSpellName_" + s) in inputData) {
+                    let newSpellName = inputData["addSpellName_" + s];
+                    if (newSpellName != "New Spell") {
+                        if (newSpellName in allSpells) {
+                            let newSpell = allSpells[newSpellName];
+                            if (newSpell != null && "fileURL" in newSpell) {
+                                newSpell = rest_call(newSpell["fileURL"], "");
+                            }
+                            newSpell.system.location = { "value": s };
+                            npcData.items.push(newSpell);
+                            spellIDs[newSpell.name] = newSpell._id;
+                            spellNames[newSpell._id] = newSpell.name;
+                        }
+                    }
+                }
             }
         }
     } else {
@@ -286,7 +324,7 @@ function npc_editor(inputData) {
 
         outputHTML += "<table class='center'><thead><tr><th colspan='6' style='text-align:center'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='6' style='text-align:center'>Attacks</td></tr>";
-        outputHTML += "<tr><td colspan='6' class='hd-1'></td></tr>"
+        outputHTML += "<tr><td colspan='6' style='background-color:" + themeData.colours.titleBackground + "'></td></tr>"
         let itemCounter = 0;
         for (var s in npcData.items) {
             let itemData = npcData.items[s]
@@ -313,7 +351,7 @@ function npc_editor(inputData) {
                 }
                 outputHTML += "</select></td></tr>";
 
-                outputHTML += "<tr><td colspan='6' class='hd-1'></td></tr>"
+                outputHTML += "<tr><td colspan='6' style='background-color:" + themeData.colours.titleBackground + "'></td></tr>";
                 outputHTML += "<input type='hidden' name='itemDamageCount_" + itemCounter + "' value='" + damageCounter + "'></input>"
             }
             itemCounter++;
@@ -325,24 +363,27 @@ function npc_editor(inputData) {
 
         outputHTML += "<table class='center'><thead><tr><th colspan='4' style='text-align:center'>" + npcData.name + "</th></tr></thead><tbody>";
         outputHTML += "<tr><td colspan='4' style='text-align:center'>Spellcasting</td></tr>";
-        let spellHTML = "";
+        let castingHTML = {};
+        let spellHTML = {};
         let itemCounter = 0;
         for (var s in npcData.items) {
             let itemData = npcData.items[s]
             if (itemData.type == "spellcastingEntry") {
-                outputHTML += "<tr><td colspan='2'><input type='input' name='itemNameVal_" + itemCounter + "' value='" + itemData.name + "' size=30></input></td><td><select name='itemCastingType_" + itemCounter + "'>";
+                let castID = itemData._id;
+                castingHTML[castID] = "<tr><td colspan='2'><input type='input' name='itemNameVal_" + itemCounter + "' value='" + itemData.name + "' size=30></input></td><td><select name='itemCastingType_" + itemCounter + "'>";
                 for (var c in castingTypes) {
-                    outputHTML += "<option  " + ((castingTypes[c] == itemData.system.prepared.value) ? "selected" : "") + ">" + capitalise(castingTypes[c]) + "</option>";
+                    castingHTML[castID] += "<option  " + ((castingTypes[c] == itemData.system.prepared.value) ? "selected" : "") + ">" + capitalise(castingTypes[c]) + "</option>";
                 }
-                outputHTML += "</select></td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>";
-                outputHTML += "<tr><td colspan='4' style='text-align:center'>Tradition: <select name='itemCastingTradition_" + itemCounter + "'>";
+                castingHTML[castID] += "</select></td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>";
+                castingHTML[castID] += "<tr><td colspan='4' style='text-align:center'>Tradition: <select name='itemCastingTradition_" + itemCounter + "'>";
                 for (var c in castingTraditions) {
-                    outputHTML += "<option  " + ((castingTraditions[c] == itemData.system.tradition.value) ? "selected" : "") + ">" + capitalise(castingTraditions[c]) + "</option>";
+                    castingHTML[castID] += "<option  " + ((castingTraditions[c] == itemData.system.tradition.value) ? "selected" : "") + ">" + capitalise(castingTraditions[c]) + "</option>";
                 }
-                outputHTML += "<tr><td>Bonus:</td><td><input type='input' name='itemCastBonusVal_" + itemCounter + "' value='" + itemData.system.spelldc.value + "' size=5></input></td>\
+                castingHTML[castID] += "<tr><td>Bonus:</td><td><input type='input' name='itemCastBonusVal_" + itemCounter + "' value='" + itemData.system.spelldc.value + "' size=5></input></td>\
                 <td>DC: </td><td><input type='input' name='itemCastDCVal_" + itemCounter + "' value='" + itemData.system.spelldc.dc + "' size=5></input></td></tr>";
-                outputHTML += "</select></td></tr>";
+                castingHTML[castID] += "</select></td></tr>";
             } else if (itemData.type == "spell") {
+                let parentCasting = itemData.system.location.value;
                 let isCantrip = itemData.system.traits.value.includes("cantrip");
                 let isFocus = itemData.system.traits.value.includes("focus");
                 let spellType = "Spell";
@@ -351,14 +392,21 @@ function npc_editor(inputData) {
                 } else if (isFocus && !isCantrip) {
                     spellType = "Focus";
                 }
-                spellHTML += "<tr><td colspan='2'>" + itemData.name + "</td><td>" + spellType + " " + String(itemData.system.level.value) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
-                //WHICH CASTING ENTRY DOES IT BELONG TO? itemdata.system.location.value
+                if(!parentCasting in spellHTML){
+                    spellHTML = "";
+                }
+                spellHTML[parentCasting] += "<tr><td colspan='2'>" + itemData.name + "</td><td>" + spellType + " " + String(itemData.system.level.value) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
+
             }
             itemCounter++;
         }
-        outputHTML += spellHTML;
-        outputHTML += "<input type='hidden' name='itemCount' value='" + itemCounter + "'></input>"
-        //TODO ADD SPELL CASTING and SPELLS
+        for (var s in castingHTML) {
+            outputHTML += castingHTML[s];
+            outputHTML += spellHTML[s];
+            outputHTML += "<tr><td colspan='3'><input type='input' name='addSpellName_" + s + "' value='New Spell' size=30></input></td><td colspan='3'><input type='submit' name='addSpell' value='Add Spell'></td></tr>";
+            outputHTML += "<tr><td colspan='6' style='background-color:" + themeData.colours.titleBackground + "'></td></tr>";
+        }
+        outputHTML += "<input type='hidden' name='itemCount' value='" + itemCounter + "'></input>";
 
     } else if (page == "Features") {
 
