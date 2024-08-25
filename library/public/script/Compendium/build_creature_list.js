@@ -30,7 +30,7 @@ function build_creature_list(sortKey, sortDir, searchKey = "") {
     returnHTML += "<th width=10% align=center>Traits</th>";
     returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures", "sort": "level", "dir": ((sortKey == "level") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures", "sort": "source", "dir": ((sortKey == "source") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
-    returnHTML += "<th>Spawn Link</th>";
+    returnHTML += "<th>Spawn</th>";
 
     let odd = 1;
     let sizeDict = { "sm": "small", "med": "medium", "huge": "huge", "lg": "large", "grg": "gargantuan", "tiny": "tiny" };
@@ -64,7 +64,7 @@ function build_creature_list(sortKey, sortDir, searchKey = "") {
         returnHTML += "<td>" + capitalise(thisCreature.traits.join(", ")) + "</td>";
         returnHTML += "<td align=center>" + String(thisCreature.level) + "</td>";
         returnHTML += "<td align=center>" + thisCreature.source + "</td>";
-        returnHTML += "<td width=0%>" + create_macroLink("Make Token", "Spawn_NPC@Lib:ca.pf2e", thisCreature.name);
+        returnHTML += "<td width=0%>" + create_macroLink("Weak", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name,"weak"]) +"<br />"+ create_macroLink("Normal", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name,"normal"]) +"<br />"+ create_macroLink("Elite", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name,"elite"]);
 
     }
     return returnHTML;

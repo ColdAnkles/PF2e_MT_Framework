@@ -13,7 +13,7 @@ function parse_item(itemData, parentObject) {
     } else if (itemData.type == "melee" || itemData.type == "ranged") {
         parentObject.basicAttacks.push(itemData);
     } else if (itemData.type == "spellcastingEntry") {
-        let newSpellEntry = { "name": itemData.name, "spells": [], "spellDC": itemData.system.spelldc.dc, "spellAttack": itemData.system.spelldc.value, "type": itemData.system.prepared.value }
+        let newSpellEntry = { "name": itemData.name, "spells": [], "spellDC": itemData.system.spelldc.dc, "spellAttack": itemData.system.spelldc.value, "type": itemData.system.prepared.value, "description": itemData.system.description.value }
         if ("autoHeightenLevel" in itemData.system && "value" in itemData.system.autoHeightenLevel && itemData.system.autoHeightenLevel.value != null) {
             newSpellEntry["autoHeighten"] = itemData.system.autoHeightenLevel.value
         } else {

@@ -404,7 +404,10 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 			});
 			HTMLString += "<b>" + theRules.name + "</b> DC " + theRules.spellDC + ((theRules.name != "Rituals") ? ", attack +" + theRules.spellAttack : "");
 			if (theRules.type == "focus") {
-				HTMLString += " (" + creatureData.resources.focus.value + " Focus Point)";
+				HTMLString += " " + creatureData.resources.focus.value + " Focus Point";
+			}
+			if ("description" in theRules && theRules.description != "") {
+				HTMLString += " (" + theRules.description + ")";
 			}
 			let levelsPrinted = [];
 			let firstCantrip = false;

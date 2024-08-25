@@ -1,6 +1,6 @@
 "use strict";
 
-function create_npc(newNPCTokenID, creatureName) {
+function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 	let newToken = MapTool.tokens.getTokenByID(newNPCTokenID);
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
@@ -11,10 +11,9 @@ function create_npc(newNPCTokenID, creatureName) {
 		creatureData = property[creatureName];
 	}
 	if ("fileURL" in creatureData) {
-		creatureData = parse_npc(rest_call(creatureData["fileURL"], ""));
-	} else {
-		creatureData = parse_npc(creatureData);
+		creatureData = rest_call(creatureData["fileURL"], "");
 	}
+	creatureData = parse_npc(creatureData, false, variant);
 
 	write_creature_properties(creatureData, newToken);
 

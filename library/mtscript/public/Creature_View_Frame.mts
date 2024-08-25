@@ -11,7 +11,7 @@
 
 [r, if(tokenID=="null"), code:{
 <p class='topbar'>
-	[r:macroLink("Make Token","Spawn_NPC@Lib:ca.pf2e","none",tokenName)]&nbsp; [r:macroLink("Edit Creature","NPC_Editor@Lib:ca.pf2e","none",tokenName)]&nbsp;
+	Make Token: [r:macroLink("Weak","Spawn_NPC@Lib:ca.pf2e","none",json.append("[]",tokenName,"weak"))]&nbsp;[r:macroLink("Normal","Spawn_NPC@Lib:ca.pf2e","none",json.append("[]",tokenName,"normal"))]&nbsp;[r:macroLink("Elite","Spawn_NPC@Lib:ca.pf2e","none",json.append("[]",tokenName,"elite"))]&nbsp; [r:macroLink("Edit Creature","NPC_Editor@Lib:ca.pf2e","none",tokenName)]&nbsp;
 </p>
 };{}]
 

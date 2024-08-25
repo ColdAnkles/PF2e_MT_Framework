@@ -1,4 +1,5 @@
-[h:tokenName=macro.args]
+[h: tokenName=json.get(macro.args,0)]
+[h: variant = json.get(macro.args,1)]
 
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
@@ -7,7 +8,7 @@
 [h: newToken = createToken(val)]
 [h: setPropertyType("PF2E_Character", newToken)]
 
-[h: js.ca.pf2e.create_npc(newToken, tokenName)]
+[h: js.ca.pf2e.create_npc(newToken, tokenName, variant)]
 [h: tokenSize = getProperty("size",newToken)]
 [h: setSize(tokenSize,newToken)]
 [h: setHasSight(1, newToken)]

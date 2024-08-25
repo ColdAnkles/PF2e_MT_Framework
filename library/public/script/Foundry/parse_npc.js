@@ -1,10 +1,94 @@
 "use strict";
 
-function parse_npc(rawData, parseRaw = false) {
+function parse_npc(rawData, parseRaw = false, variant = "normal") {
 	let npcData = {};
 
 	if (parseRaw) {
 		rawData = JSON.parse(rawData);
+	}
+
+	//Weak and Elite Variances TODO: Other Offensive Abilities DC, Damage, and Modifiers.
+	if (variant != "normal") {
+		let initialLevel = rawData.system.details.level.value;
+		if (variant == "elite") {
+			rawData.name = "Elite " + rawData.name;
+			if (initialLevel <= 0) {
+				rawData.system.details.level.value += 2;
+			} else {
+				rawData.system.details.level.value += 1;
+			}
+			if (initialLevel <= 1) {
+				rawData.system.attributes.hp.max += 10;
+			} else if (initialLevel >= 2 && initialLevel <= 4) {
+				rawData.system.attributes.hp.max += 15;
+			} else if (initialLevel >= 5 && initialLevel <= 19) {
+				rawData.system.attributes.hp.max += 20;
+			} else if (initialLevel >= 20) {
+				rawData.system.attributes.hp.max += 30;
+			}
+			rawData.system.attributes.ac.value += 2;
+			for (var save in rawData.system.saves) {
+				rawData.system.saves[save].value += 2;
+			}
+			rawData.system.perception.mod += 2;
+			for (var skill in rawData.system.skills) {
+				rawData.system.skills[skill].base += 2;
+			}
+			for (var i in rawData.items) {
+				let itemData = rawData.items[i];
+				if (itemData.type == "melee" || itemData.type == "ranged") {
+					itemData.system.bonus.value += 2;
+					for (var d in itemData.system.damageRolls) {
+						let damageData = itemData.system.damageRolls[d];
+						damageData.damage = group_dice(damageData.damage + "+2");
+						break; //only adds the +2 once
+					}
+				} else if (itemData.type == "spellcastingEntry") {
+					itemData.system.spelldc.dc += 2;
+					itemData.system.spelldc.value += 2;
+					itemData.system.description.value = "+4 dmg";
+				}
+			}
+		} else if (variant == "weak") {
+			rawData.name = "Weak " + rawData.name;
+			if (initialLevel == 1) {
+				rawData.system.details.level.value -= 2;
+			} else {
+				rawData.system.details.level.value -= 1;
+			}
+			if (initialLevel >= 1 && initialLevel <= 2) {
+				rawData.system.attributes.hp.max -= 10;
+			} else if (initialLevel >= 3 && initialLevel <= 5) {
+				rawData.system.attributes.hp.max -= 15;
+			} else if (initialLevel >= 6 && initialLevel <= 20) {
+				rawData.system.attributes.hp.max -= 20;
+			} else if (initialLevel >= 21) {
+				rawData.system.attributes.hp.max -= 30;
+			}
+			rawData.system.attributes.ac.value -= 2;
+			for (var save in rawData.system.saves) {
+				rawData.system.saves[save].value -= 2;
+			}
+			rawData.system.perception.mod -= 2;
+			for (var skill in rawData.system.skills) {
+				rawData.system.skills[skill].base -= 2;
+			}
+			for (var i in rawData.items) {
+				let itemData = rawData.items[i];
+				if (itemData.type == "melee" || itemData.type == "ranged") {
+					itemData.system.bonus.value -= 2;
+					for (var d in itemData.system.damageRolls) {
+						let damageData = itemData.system.damageRolls[d];
+						damageData.damage = group_dice(damageData.damage + "-2");
+						break; //only adds the -2 once
+					}
+				} else if (itemData.type == "spellcastingEntry") {
+					itemData.system.spelldc.dc -= 2;
+					itemData.system.spelldc.value -= 2;
+					itemData.system.description.value = "-4 dmg";
+				}
+			}
+		}
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(rawData));
@@ -76,6 +160,11 @@ function parse_npc(rawData, parseRaw = false) {
 	}
 
 	npcData.proficiencies = [];
+	for (var s in rawData.system.skills) {
+		let prof = rawData.system.skills[s].base;
+		npcData.proficiencies.push({ "string": capitalise(s) + " +" + prof, "name": s, "bonus": prof });
+	}
+
 	npcData.inventory = {};
 	npcData.passiveSkills = [];
 	npcData.passiveDefenses = [];
