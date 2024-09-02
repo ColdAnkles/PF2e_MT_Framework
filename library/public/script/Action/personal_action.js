@@ -22,8 +22,8 @@ function personal_action(actionName, actingToken) {
 
 		for (var o in allPossible) {
 			let actionData = allPossible[o];
-			actionData.spendAction = true;
 			if (actionData.name == actionName) {
+				actionData.spendAction = true;
 				core_action(actionData, actingToken);
 				return;
 			}

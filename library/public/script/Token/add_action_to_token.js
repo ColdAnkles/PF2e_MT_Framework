@@ -62,6 +62,7 @@ function add_action_to_token(actionData, tokenID, token) {
 	if (token == null) {
 		token = MapTool.tokens.getTokenByID(tokenID);
 	}
+	let variant = JSON.parse(token.getProperty("foundryActor")).variant;
 	if (actionData.type == "basic") {
 
 		try {
@@ -79,7 +80,7 @@ function add_action_to_token(actionData, tokenID, token) {
 				lookupAction = rest_call(lookupAction.fileURL);
 			}
 
-			let actionDesc = chat_display(lookupAction, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token });
+			let actionDesc = chat_display(lookupAction, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": lookupAction });
 			let props = { "label": action_icon_label(lookupAction.system.actionType.value, lookupAction.system.actions.value) + " " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pf2e.simple_action(\"" + actionData.name + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
 			if ("group" in actionData) {
 				props.group = actionData.group;
@@ -108,7 +109,7 @@ function add_action_to_token(actionData, tokenID, token) {
 					actionLabel = actionLabel + " " + icon_img("ranged");
 				}
 			}
-			let actionDesc = chat_display(actionData, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token });
+			let actionDesc = chat_display(actionData, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": actionData });
 			let props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.personal_action(\"" + actionData.name + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
 			if ("group" in actionData.system) {
 				props.group = actionData.system.group;
@@ -225,7 +226,7 @@ function add_action_to_token(actionData, tokenID, token) {
 
 			let spellLabel = action_icon_label(actionData.system.actionType.value, actionData.system.actions.value) + " " + actionData.name;
 			actionData.name = spellName;
-			let tooltipDescription = chat_display(actionData, false, { "level": actionData.system.castLevel.value, "rollDice": false });
+			let tooltipDescription = chat_display(actionData, false, { "level": actionData.system.castLevel.value, "rollDice": false, "variant": variant, "action": actionData });
 
 			let sortNum = actionData.system.castLevel.value;
 			if (actionData.system.traits.value.includes("cantrip")) {

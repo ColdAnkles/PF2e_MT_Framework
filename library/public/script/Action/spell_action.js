@@ -28,6 +28,7 @@ function spell_action(actionData, actingToken) {
 	let tokenSpell = null;
 	let castData = null;
 	let disableCrit = false;
+	let variant = JSON.parse(actingToken.getProperty("foundryActor")).variant;
 
 	try {
 		for (var spellcasting in spellRules) {
@@ -277,7 +278,7 @@ function spell_action(actionData, actingToken) {
 	}
 
 	try {
-		if (spellData.system.defense != null && "save" in spellData.system.defense && spellData.system.defense.save.statistic != "") {
+		if (spellData.system.defense != null && "save" in spellData.system.defense && spellData.system.defense.save != null && "statistic" in spellData.system.defense.save && spellData.system.defense.save.statistic != "") {
 			displayData.system.description.value += "<div style='font-size:10px'><b>";
 			if (spellData.system.defense.save.basic == "basic") {
 				displayData.system.description.value += "Basic "
@@ -356,6 +357,11 @@ function spell_action(actionData, actingToken) {
 			//MapTool.chat.broadcast(JSON.stringify(damage_bonus_raw));
 			let damage_bonus = damage_bonus_raw.bonuses.circumstance + damage_bonus_raw.bonuses.status + damage_bonus_raw.bonuses.item + damage_bonus_raw.bonuses.none +
 				damage_bonus_raw.maluses.circumstance + damage_bonus_raw.maluses.status + damage_bonus_raw.maluses.item + damage_bonus_raw.maluses.none;
+			if (variant == "elite") {
+				damage_bonus += 4;
+			} else if (variant == "weak") {
+				damage_bonus -= 4;
+			}
 			//MapTool.chat.broadcast(String(damage_bonus));
 			for (var d in spellData.system.damage) {
 				displayData.system.description.value += "<div style='font-size:10px'><b>";
@@ -448,5 +454,5 @@ function spell_action(actionData, actingToken) {
 		return;
 	}
 
-	chat_display(displayData, true, { "level": actionData.system.castLevel.value, "rollDice": true, "item": spellData });
+	chat_display(displayData, true, { "level": actionData.system.castLevel.value, "rollDice": true, "item": spellData, "action": spellData, "variant": variant });
 }

@@ -108,8 +108,8 @@ function core_action(actionData, actingToken) {
 				if (actionData.system.traits.value.includes("skill")) {
 					doCheck = true;
 				}
-
-				chat_display(actionData, true, { "rollDice": true, "actor": actingToken, "action": actionData });
+				let foundryActor = JSON.parse(actingToken.getProperty("foundryActor"));
+				chat_display(actionData, true, { "rollDice": true, "actor": actingToken, "action": actionData, "variant": foundryActor.variant });
 
 				if (doSave) {
 					saving_throw(actingToken, saveData, { "applyEffect": actionData.name });

@@ -42,6 +42,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	}
 
 	additionalData.level = creatureData.level;
+	additionalData.variant = creatureData.foundryActor.variant;
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData.senses));
 	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
@@ -182,7 +183,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 			for (var d in creatureData.passiveDefenses) {
 				HTMLString += " " + creatureData.passiveDefenses[d].name;
 				if (creatureData.passiveDefenses[d].system.description.value.length > 0) {
-					HTMLString += " (" + clean_description(creatureData.passiveDefenses[d].system.description.value) + ")";
+					HTMLString += " (" + clean_description(creatureData.passiveDefenses[d].system.description.value, true, true, true, additionalData) + ")";
 				}
 			}
 		}
@@ -270,7 +271,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	try {
 		for (var feat in creatureData.passiveSkills) {
 			let featData = creatureData.passiveSkills[feat];
-			let featString = "<b>" + featData.name + "</b> " + clean_description(featData.system.description.value);
+			let featString = "<b>" + featData.name + "</b> " + clean_description(featData.system.description.value, true, true, true, additionalData);
 			HTMLString += featString + "<br />";
 		}
 	} catch (e) {

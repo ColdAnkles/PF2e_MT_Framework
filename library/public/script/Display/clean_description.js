@@ -51,24 +51,39 @@ function parse_template(templateString) {
 
 function parse_damage(damageString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
 	let parsed = parse_foundry_strings(damageString);
+	let addDamage = 0;
+
+	//MapTool.chat.broadcast(JSON.stringify(additionalData));
+
+	if (additionalData.variant == "elite" && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
+		addDamage = 2;
+	} else if (additionalData.variant == "weak" && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
+		addDamage = -2;
+	}
+	if (additionalData.action.system.description.value.toLowerCase().includes("recharge") || additionalData.action.type == "spell") {
+		addDamage = addDamage * 2;
+	}
 	//MapTool.chat.broadcast(JSON.stringify(parsed));
 	let diceMatch = parsed.bracketContents.match(/([0-9d +-]+)/gm);
 	//MapTool.chat.broadcast(JSON.stringify(diceMatch));
 	if (additionalData.rollDice || !diceMatch[0].includes("d")) {
 		if (diceMatch.length > 0) {
 			diceMatch = diceMatch[0];
-			let rolledDice = roll_dice(diceMatch);
+			let finalDice = group_dice(diceMatch + "+" + String(addDamage));
+			let rolledDice = roll_dice(finalDice);
 			if (!diceMatch.includes("d")) {
 				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, String(rolledDice));
 			} else {
-				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, diceMatch + " (" + String(rolledDice) + ") ");
+				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, finalDice + " (" + String(rolledDice) + ") ");
 			}
 			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 $2").replaceAll(/(.*)\[(.*)\]/gm, "$1 $2");
 		} else {
-			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 $2").replaceAll(/(.*)\[(.*)\]/gm, "$1 $2");
+			let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
+			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " $2").replaceAll(/(.*)\[(.*)\]/gm, dice + " $2");
 		}
 	} else {
-		return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 $2").replaceAll(/(.*)\[(.*)\]/gm, "$1 $2");
+		let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
+		return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " $2").replaceAll(/(.*)\[(.*)\]/gm, dice + " $2");
 	}
 }
 
@@ -131,16 +146,37 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 
 }
 
-function parse_check(checkString) {
+function parse_check(checkString, additionalData = { "variant": "normal" }) {
 	let parsed = parse_foundry_strings(checkString);
-
-	if (("type" in parsed.bracketDetail && "dc" in parsed.bracketDetail)) {
-		return "DC " + parsed.bracketDetail.dc.join(" ") + " " + parsed.bracketDetail.type.join(", ");
-	} else if ("type" in parsed.bracketDetail) {
-		return parsed.bracketDetail.type.join(", ");
-	} else {
-
+	let data = parsed.bracketContents.split("|");
+	let dcMod = 0;
+	if (additionalData.variant == "elite") {
+		dcMod = 2;
+	} else if (additionalData.variant == "weak") {
+		dcMod = -2;
 	}
+
+	checkString = "";
+
+	for (var i in data) {
+		i = data[i];
+		if (i.includes("dc")) {
+			checkString += "DC " + String(Number(i.split(":")[1]) + dcMod) + " ";
+		}
+	}
+
+	if (data.includes("basic")) {
+		checkString += "basic "
+	}
+
+	if (data.includes("will")) {
+		checkString += "Will"
+	} else if (data.includes("reflex")) {
+		checkString += "Reflex"
+	} else if (data.includes("fortitude") || data.includes("fort")) {
+		checkString += "Fortitude"
+	}
+
 	return checkString;
 }
 
@@ -403,7 +439,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	let check_matches = cleanDescription.match(/(@Check\[[^\[\]]*\])({[^\[\]]*})?/gm);
 	for (var m in check_matches) {
-		let replaceString = parse_check(check_matches[m]);
+		let replaceString = parse_check(check_matches[m], additionalData);
 		cleanDescription = cleanDescription.replaceAll(check_matches[m], replaceString);
 	}
 
@@ -415,7 +451,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	let localize_matches = cleanDescription.match(/@Localize\[.*\]/gm);
 	for (var m in localize_matches) {
-		let replaceString = clean_description(parse_localize(localize_matches[m], additionalData), removeLineBreaks, removeHR, removeP, additionalData);
+		let replaceString = clean_description(parse_localize(localize_matches[m], additionalData), false, removeHR, false, additionalData);
 		cleanDescription = cleanDescription.replaceAll(localize_matches[m], replaceString);
 	}
 

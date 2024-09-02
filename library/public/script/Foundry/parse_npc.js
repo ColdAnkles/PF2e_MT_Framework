@@ -10,6 +10,7 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 	//Weak and Elite Variances TODO: Other Offensive Abilities DC, Damage, and Modifiers.
 	if (variant != "normal") {
 		let initialLevel = rawData.system.details.level.value;
+		npcData.specialEffects = {};
 		if (variant == "elite") {
 			rawData.name = "Elite " + rawData.name;
 			if (initialLevel <= 0) {
@@ -49,7 +50,9 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 					itemData.system.description.value = "+4 dmg";
 				}
 			}
-		} else if (variant == "weak") {
+			rawData.variant = "elite";
+			npcData.variant = "elite";
+			} else if (variant == "weak") {
 			rawData.name = "Weak " + rawData.name;
 			if (initialLevel == 1) {
 				rawData.system.details.level.value -= 2;
@@ -88,7 +91,12 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 					itemData.system.description.value = "-4 dmg";
 				}
 			}
+			rawData.variant = "weak";
+			npcData.variant = "weak";
 		}
+	} else {
+		rawData.variant = "normal";
+		npcData.variant = "normal";
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(rawData));
