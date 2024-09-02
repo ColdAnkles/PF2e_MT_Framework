@@ -17,9 +17,9 @@
 
 <body>
 <p>[r, if(tokenID=="null"), code:{
-	[js.ca.pf2e.build_hazard_view(tokenName)]</p>
+	[r: js.ca.pf2e.build_hazard_view(tokenName)]</p>
 };{
-	[js.ca.pf2e.build_hazard_view(tokenName, tokenID)]</p>
+	[r: js.ca.pf2e.build_hazard_view(tokenName, tokenID)]</p>
 }]
 </body>
 }]

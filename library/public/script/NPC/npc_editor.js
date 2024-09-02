@@ -14,6 +14,8 @@ function npc_editor(inputData) {
     let spellCastingIDs = {};
     let spellNames = {};
     let spellIDs = {};
+    let spellCastLevels = {};
+    let castTypeMap = {};
 
     if ("untouchedData" in inputData) {
 
@@ -27,6 +29,21 @@ function npc_editor(inputData) {
             } else if (itemData.type == "spellcastingEntry") {
                 spellCastingNames[itemData._id] = itemData.name;
                 spellCastingIDs[itemData.name] = itemData._id;
+                castTypeMap[itemData._id] = itemData.system.prepared.value;
+                if (itemData.system.prepared.value == "prepared") {
+                    var rankCounter = 1;
+                    while (("slot" + rankCounter) in itemData.system.slots) {
+                        let slotData = itemData.system.slots[("slot" + rankCounter)];
+                        for (var spell in slotData.prepared) {
+                            spell = slotData.prepared[spell];
+                            if (!(spell.id in spellCastLevels)) {
+                                spellCastLevels[spell.id] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                            }
+                            spellCastLevels[spell.id][rankCounter]++;
+                        }
+                        rankCounter++;
+                    }
+                }
             } else if (itemData.type == "spell") {
                 spellNames[itemData._id] = itemData.name;
                 spellIDs[itemData.name] = itemData._id;
@@ -392,17 +409,29 @@ function npc_editor(inputData) {
                 } else if (isFocus && !isCantrip) {
                     spellType = "Focus";
                 }
-                if(!parentCasting in spellHTML){
-                    spellHTML = "";
+                if (!(parentCasting in spellHTML)) {
+                    spellHTML[parentCasting] = "";
                 }
                 spellHTML[parentCasting] += "<tr><td colspan='2'>" + itemData.name + "</td><td>" + spellType + " " + String(itemData.system.level.value) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
-
+                if (castTypeMap[parentCasting] == "prepared" && !isCantrip) {
+                    spellHTML[parentCasting] += "<tr><td colspan='4'><table width='100%'><tr>";
+                    spellHTML[parentCasting] += "<td>1st</td><td>2nd</td><td>3rd</td><td>4th</td><td>5th</td><td>6th</td><td>7th</td><td>8th</td><td>9th</td></tr><tr>"
+                    for (var rank in spellCastLevels[itemData._id]) {
+                        if (rank == 0) {
+                            continue;
+                        }
+                        spellHTML[parentCasting] += "<td>" + spellCastLevels[itemData._id][rank] + "</td>"
+                    }
+                    spellHTML[parentCasting] += "</tr></table></td></tr>";
+                }
             }
             itemCounter++;
         }
         for (var s in castingHTML) {
             outputHTML += castingHTML[s];
-            outputHTML += spellHTML[s];
+            if(s in spellHTML){
+                outputHTML += spellHTML[s];
+            }
             outputHTML += "<tr><td colspan='3'><input type='input' name='addSpellName_" + s + "' value='New Spell' size=30></input></td><td colspan='3'><input type='submit' name='addSpell' value='Add Spell'></td></tr>";
             outputHTML += "<tr><td colspan='6' style='background-color:" + themeData.colours.titleBackground + "'></td></tr>";
         }
@@ -465,7 +494,7 @@ function npc_editor(inputData) {
     outputHTML += "</tbody></table></form>";
 
     MTScript.setVariable("outputHTML", outputHTML);
-    MTScript.evalMacro("[frame5(\"Edit NPC\", \"width=450; height=700; temporary=1; noframe=0; input=1\"):{[r: outputHTML]}]");
+    MTScript.evalMacro("[frame5(\"Edit NPC\", \"width=500; height=700; temporary=1; noframe=0; input=1\"):{[r: outputHTML]}]");
 }
 
 MTScript.registerMacro('ca.pf2e.npc_editor', npc_editor);

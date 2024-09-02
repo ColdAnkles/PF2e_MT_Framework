@@ -19,5 +19,5 @@
     [h: cssName = "lib://ca.pf2e/css/" + json.get(json.get(getLibProperty("pf2e_themes","Lib:ca.pf2e"), getLibProperty("selectedTheme","Lib:ca.pf2e")),"css")]
 	<link rel="stylesheet" type="text/css" href=[r:cssName]>
 
-    [js.ca.pf2e.active_effect_view(tokenID)]</p>
+    [r: js.ca.pf2e.active_effect_view(tokenID)]</p>
 }]

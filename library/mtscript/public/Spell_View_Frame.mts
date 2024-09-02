@@ -6,6 +6,6 @@
 	<link rel="stylesheet" type="text/css" href=[r:cssName]>
 
 <body>
-<p>[js.ca.pf2e.build_spell_view(spellName)]</p>
+<p>[r: js.ca.pf2e.build_spell_view(spellName)]</p>
 </body>
 }]
