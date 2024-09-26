@@ -19,6 +19,13 @@ function npc_editor(inputData) {
 
     if ("untouchedData" in inputData) {
 
+        if ("currentPage" in inputData) {
+            page = inputData.currentPage;
+        }
+        if ("setPage" in inputData) {
+            page = inputData.setPage;
+        }
+
         npcData = JSON.parse(decode(inputData.untouchedData));
         inputData.untouchedData = "";
         for (var s in npcData.items) {
@@ -30,34 +37,41 @@ function npc_editor(inputData) {
                 spellCastingNames[itemData._id] = itemData.name;
                 spellCastingIDs[itemData.name] = itemData._id;
                 castTypeMap[itemData._id] = itemData.system.prepared.value;
-                if (itemData.system.prepared.value == "prepared") {
-                    var rankCounter = 1;
-                    while (("slot" + rankCounter) in itemData.system.slots) {
-                        let slotData = itemData.system.slots[("slot" + rankCounter)];
-                        for (var spell in slotData.prepared) {
-                            spell = slotData.prepared[spell];
-                            if (!(spell.id in spellCastLevels)) {
-                                spellCastLevels[spell.id] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                            }
-                            spellCastLevels[spell.id][rankCounter]++;
-                        }
-                        rankCounter++;
-                    }
-                }
             } else if (itemData.type == "spell") {
                 spellNames[itemData._id] = itemData.name;
                 spellIDs[itemData.name] = itemData._id;
+                let parentCasting = null;
+                try {
+                    parentCasting = itemData.system.location.value;
+                    if (itemData.system.traits.value.includes("cantrip") && !(itemData.system.traits.value.includes("focus")) && page == "Spells") {
+                        for (var p in npcData.items) {
+                            if (npcData.items[p]._id == parentCasting) {
+                                parentCasting = npcData.items[p];
+                                break;
+                            }
+                        }
+                        let found = false;
+                        for (var c in parentCasting.system.slots.slot0.prepared){
+                            if (parentCasting.system.slots.slot0.prepared[c].id==itemData._id){
+                                found=true;
+                            }
+                        }
+                        if (!found){
+                            parentCasting.system.slots.slot0.max++;
+                            parentCasting.system.slots.slot0.prepared.push({ "id": itemData._id });
+                        }
+                    }
+                } catch (e) {
+                    MapTool.chat.broadcast("Error in spell_cantrip_apply");
+                    MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+                    MapTool.chat.broadcast("parentCasting: " + JSON.stringify(parentCasting));
+                    MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                    return;
+                }
             }
         }
 
         //MapTool.chat.broadcast(JSON.stringify(inputData));
-
-        if ("currentPage" in inputData) {
-            page = inputData.currentPage;
-        }
-        if ("setPage" in inputData) {
-            page = inputData.setPage;
-        }
 
         if ("nameVal" in inputData) {
             npcData.name = inputData.nameVal;
@@ -182,6 +196,47 @@ function npc_editor(inputData) {
                 if (("itemCastingType_" + i) in inputData) {
                     itemData.system.prepared.value = inputData["itemCastingType_" + i].toLowerCase();
                 }
+                if (itemData.type == "spell") {
+                    for (var rank = 1; rank <= 9; rank++) {
+                        let parentCasting = itemData.system.location.value;
+                        try {
+                            if (("spellCastCount_" + i + "_rank_" + rank) in inputData) {
+                                for (var p in npcData.items) {
+                                    if (npcData.items[p]._id == parentCasting) {
+                                        parentCasting = npcData.items[p];
+                                        break;
+                                    }
+                                }
+                                let foundIndexes = [];
+                                if (!(String("slot" + rank) in parentCasting.system.slots)){
+                                    parentCasting.system.slots[String("slot" + rank)] = {"max":0,"prepared":[]};
+                                }
+                                for (var c = 0; c < parentCasting.system.slots["slot" + rank].prepared.length; c++){
+                                    if (parentCasting.system.slots["slot" + rank].prepared[c].id == itemData._id){
+                                        foundIndexes.push(c);
+                                    }
+                                }
+                                parentCasting.system.slots["slot" + rank].max -= foundIndexes.length;
+                                for( var delIdx = foundIndexes.length-1; delIdx>=0; delIdx--){
+                                    parentCasting.system.slots["slot" + rank].prepared.splice(foundIndexes[delIdx],1);
+                                }
+                                
+                                for (var c = 0; c < inputData["spellCastCount_" + i + "_rank_" + rank]; c++) {
+                                    parentCasting.system.slots["slot" + rank].prepared.push({ "id": itemData._id });
+                                    parentCasting.system.slots["slot" + rank].max++;
+                                }
+                            }
+                        } catch (e) {
+                            MapTool.chat.broadcast("Error in spell_cast_count_update");
+                            MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+                            MapTool.chat.broadcast("parentCasting: " + JSON.stringify(parentCasting));
+                            MapTool.chat.broadcast("i: " + String(i));
+                            MapTool.chat.broadcast("rank: " + String(rank));
+                            MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                            return;
+                        }
+                    }
+                }
             }
             if (delItem != null) {
                 npcData.items.splice(delItem, 1);
@@ -231,6 +286,40 @@ function npc_editor(inputData) {
                 }
             }
         }
+
+        //Recalculate after alterations
+        spellCastLevels = {};
+        for (var s in npcData.items) {
+            let itemData = npcData.items[s]
+            if (itemData.type == "weapon") {
+                weaponNames[itemData._id] = itemData.name;
+                weaponIDs[itemData.name] = itemData._id;
+            } else if (itemData.type == "spellcastingEntry") {
+                spellCastingNames[itemData._id] = itemData.name;
+                spellCastingIDs[itemData.name] = itemData._id;
+                castTypeMap[itemData._id] = itemData.system.prepared.value;
+                if (itemData.system.prepared.value == "prepared") {
+                    var rankCounter = 1;
+                    while (("slot" + rankCounter) in itemData.system.slots) {
+                        let slotData = itemData.system.slots[("slot" + rankCounter)];
+                        for (var spell in slotData.prepared) {
+                            spell = slotData.prepared[spell];
+                            if (!(spell.id in spellCastLevels)) {
+                                spellCastLevels[spell.id] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                            }
+                            spellCastLevels[spell.id][rankCounter]++;
+                        }
+                        rankCounter++;
+                    }
+                }
+            } else if (itemData.type == "spell") {
+                spellNames[itemData._id] = itemData.name;
+                spellIDs[itemData.name] = itemData._id;
+                if (!(itemData._id in spellCastLevels)) {
+                    spellCastLevels[itemData._id] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                }
+            }
+        }
     } else {
         npcData = inputData;
         for (var s in npcData.items) {
@@ -238,6 +327,30 @@ function npc_editor(inputData) {
             if (itemData.type == "weapon") {
                 weaponNames[itemData._id] = itemData.name;
                 weaponIDs[itemData.name] = itemData._id;
+            } else if (itemData.type == "spellcastingEntry") {
+                spellCastingNames[itemData._id] = itemData.name;
+                spellCastingIDs[itemData.name] = itemData._id;
+                castTypeMap[itemData._id] = itemData.system.prepared.value;
+                if (itemData.system.prepared.value == "prepared") {
+                    var rankCounter = 1;
+                    while (("slot" + rankCounter) in itemData.system.slots) {
+                        let slotData = itemData.system.slots[("slot" + rankCounter)];
+                        for (var spell in slotData.prepared) {
+                            spell = slotData.prepared[spell];
+                            if (!(spell.id in spellCastLevels)) {
+                                spellCastLevels[spell.id] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                            }
+                            spellCastLevels[spell.id][rankCounter]++;
+                        }
+                        rankCounter++;
+                    }
+                }
+            } else if (itemData.type == "spell") {
+                spellNames[itemData._id] = itemData.name;
+                spellIDs[itemData.name] = itemData._id;
+                if (!(itemData._id in spellCastLevels)) {
+                    spellCastLevels[itemData._id] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                }
             }
         }
     }
@@ -420,7 +533,7 @@ function npc_editor(inputData) {
                         if (rank == 0) {
                             continue;
                         }
-                        spellHTML[parentCasting] += "<td>" + spellCastLevels[itemData._id][rank] + "</td>"
+                        spellHTML[parentCasting] += "<td><input type='input' name='spellCastCount_" + itemCounter + "_rank_" + rank + "' value='" + spellCastLevels[itemData._id][rank] + "' size=1 ></input></td>"
                     }
                     spellHTML[parentCasting] += "</tr></table></td></tr>";
                 }
@@ -429,7 +542,7 @@ function npc_editor(inputData) {
         }
         for (var s in castingHTML) {
             outputHTML += castingHTML[s];
-            if(s in spellHTML){
+            if (s in spellHTML) {
                 outputHTML += spellHTML[s];
             }
             outputHTML += "<tr><td colspan='3'><input type='input' name='addSpellName_" + s + "' value='New Spell' size=30></input></td><td colspan='3'><input type='submit' name='addSpell' value='Add Spell'></td></tr>";

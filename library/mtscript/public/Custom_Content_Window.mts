@@ -2,5 +2,5 @@
     [h: cssName = "lib://ca.pf2e/css/" + json.get(json.get(getLibProperty("pf2e_themes","Lib:ca.pf2e"), getLibProperty("selectedTheme","Lib:ca.pf2e")),"css")]
 	<link rel="stylesheet" type="text/css" href=[r:cssName]>
 	<h1 class="feel-title">Custom Content</h1>
-    [js.ca.pf2e.custom_content_window(macro.args)]
+    [r: js.ca.pf2e.custom_content_window(macro.args)]
 }]
