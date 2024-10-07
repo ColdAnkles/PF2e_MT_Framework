@@ -170,12 +170,12 @@ function import-source-file {
         $storeData.category = $data.system.category
         $storeData.requirements = $data.system.requirements
         $storeData.description = $data.system.description.value
-        $storeData.source = $data.system.details.publication.title;
+        $storeData.source = $data.system.publication.title;
     }
     elseif ($data.type -eq "ancestry") {
         $storeData.traits = $data.system.traits.value
         $storeData.rarity = $data.system.traits.rarity
-        $storeData.source = $data.system.details.publication.title
+        $storeData.source = $data.system.publication.title
     }
     elseif ($data.type -eq "condition") {
         $storeData.description = $data.system.description.value
