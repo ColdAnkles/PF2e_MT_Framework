@@ -61,7 +61,11 @@ function calculate_ac(tokenID) {
 
 	let totalAC = base_ac;
 	if (get_token_type(token) == "PC") {
-		dex_bonus = Math.max(0, Math.min(dex_bonus, dexCap));
+		if (!("simple" in foundryActor && foundryActor.simple)) {
+			dex_bonus = Math.max(0, Math.min(dex_bonus, dexCap));
+		}else{
+			dex_bonus = 0;
+		}
 
 		bonuses = Math.max(bonuses.bonuses.circumstance, shieldBonus) + bonuses.bonuses.status + Math.max(bonuses.bonuses.item, armorBonus) + bonuses.maluses.circumstance + bonuses.maluses.status + bonuses.maluses.item + bonuses.bonuses.proficiency;
 		//MapTool.chat.broadcast(String(base_ac) + "+"+String(bonuses) + "+" + String(dex_bonus) + "+"+String(profBonus));

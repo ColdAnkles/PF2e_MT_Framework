@@ -3,7 +3,7 @@
 function create_simple_pc_lib(simpleData, tokenID) {
 
     let PCData = {
-        "name": "Lib:" + simpleData.name,
+        "name": simpleData.name,
         "hp": { "max": simpleData.maxHP, "details": "", "current": simpleData.maxHP, "temp": 0 },
         "abilities": { "str": simpleData.str, "dex": simpleData.dex, "con": simpleData.con, "int": simpleData.int, "wis": simpleData.wis, "cha": simpleData.cha },
         "ac": { "value": simpleData.ac, "details": "" },

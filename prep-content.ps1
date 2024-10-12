@@ -58,9 +58,6 @@ function import-all-sources {
     ForEach ($source in $sourceList) {
         $splitArray = $source -split "\\"
         $sourceName = $splitArray[$splitArray.length - 1 ]
-        if ($sourceName -eq "heritages") {
-            Write-Host "Testing"
-        }
         if (!$script:unwantedPacks.Contains($sourceName)) {
             #Write-Host "Importing " $sourceName
             import-source $source $sourceName
@@ -139,7 +136,9 @@ function import-source-file {
     $storeData.name = $data.name
     $storeData.type = $data.type
     $storeData.id = $data._id
-    $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master" + $subPath + "/" + $fileName
+    $storeData.items = $data.items
+    $storeData.system = $data.system
+    #$storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master" + $subPath + "/" + $fileName
     $baseNameSplit = $fileName -split "\.";
     $storeData.baseName = $baseNameSplit[0]
 
@@ -250,7 +249,20 @@ function import-source-file {
     if ( !$packData.ContainsKey("pf2e_" + $storedata.type)) {
         $packData["pf2e_" + $storedata.type] = @{}
     }
-    $packData["pf2e_" + $storedata.type][$storeData.name] = $storeData
+    if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name)){
+        $packData["pf2e_" + $storedata.type][$storeData.name] = $storeData
+    }else{
+        $inserted=$false
+        $insertCount=1
+        while(!$inserted){
+            if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name+$insertCount)){
+                $packData["pf2e_" + $storedata.type][$storeData.name+$insertCount] = $storeData
+                $inserted=$true
+            }else{
+                $insertCount++
+            }
+        }
+    }
 
 }
 
@@ -295,8 +307,10 @@ $tagData = @{}
 $foundSources = [System.Collections.ArrayList]@()
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "download") {
+    Write-Host "Downloading Data"
     get-master-zip
     Write-Host "Downloaded Foundry Data"
+    Write-Host "Expanding Data"
     expand-master-zip
     Write-Host "Expanded Data"
 }
@@ -306,13 +320,16 @@ if ($runFuncs -eq "all" -or $runFuncs -eq "lang") {
 }
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "source") {
+    Write-Host "Preparing Sources"
     get-foundry-sources
     Write-Host "Source Data Prepared"
 }
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "import") {
+    Write-Host "Importing Sources"
     import-all-sources
     Write-Host "Sources Imported"
+    Write-Host "Writing Files"
     write-data-files
-    Write-Host "Data Written"
+    Write-Host "Files Written"
 }

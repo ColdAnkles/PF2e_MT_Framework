@@ -1,6 +1,6 @@
 "use strict";
 
-function build_creature_list(sortKey, sortDir, searchKey = "") {
+function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", maxLevel = "") {
 
     let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>Creatures</h1>";
@@ -19,7 +19,9 @@ function build_creature_list(sortKey, sortDir, searchKey = "") {
 
     returnHTML += "<form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
     <div><input name='searchKey' placeholder='Search' value='"+ searchKey + "'></input>\
-    <input type='submit' name='searchButton' value='Search'></input>\
+    <input name='minLevel' placeholder='Minimum Level' value='"+ minLevel + "'></input>\
+    <input name='maxLevel' placeholder='Maximum Level' value='"+ maxLevel + "'></input>\
+    <input type='submit' name='filterButton' value='Filter'></input>\
     <input type='hidden' name='window' value='creatures'></input>\
     <input type='hidden' name='sort' value='"+ sortKey + "'></input>\
     <input type='hidden' name='dir' value='"+ sortDir + "'></input></div></form>";
@@ -42,9 +44,13 @@ function build_creature_list(sortKey, sortDir, searchKey = "") {
             continue;
         }
 
+        if ((minLevel!="" && thisCreature.level < minLevel) || (maxLevel!="" && thisCreature.level > maxLevel)){
+            continue;
+        }
+
         if (searchKey != "") {
             var re = new RegExp(searchKey, 'gi');
-            if (!(thisCreature.name.match(re))) {
+            if (!(thisCreature.name.match(re)) && !(thisCreature.source.match(re))) {
                 continue;
             }
         }

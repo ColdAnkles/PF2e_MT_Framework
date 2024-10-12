@@ -15,7 +15,7 @@ function createGMMacros(tokenID) {
     for (var m in GMMacros) {
         createMacro(GMMacros[m], tokenID);
     }
-    let conditionMacroList = ["Blinded", "Broken", "Clumsy", "Confused", "Controlled", "Dazzled", "Deafened", "Doomed", "Drained", "Dying", "Encumbered", "Enfeebled", "Fascinated", "Fatigued", "Fleeing", "Frightened", "Frightened (Time)", "Grabbed", "Immobilized", "Invisible", "Off-Guard", "Paralyzed", "Petrified", "Prone", "Quickened", "Restrained", "Sickened", "Slowed", "Slowed (Time)", "Stunned", "Stunned (Time)", "Stupefied", "Unconscious", "Wounded"];
+    let conditionMacroList = ["Blinded", "Broken", "Clumsy", "Confused", "Controlled", "Dazzled", "Deafened", "Doomed", "Drained", "Dying", "Encumbered", "Enfeebled", "Fascinated", "Fatigued", "Fleeing", "Frightened", "Frightened (Time)", "Grabbed", "Immobilized", "Invisible", "Off-Guard", "Paralyzed", "Petrified", "Prone", "Quickened", "Restrained", "Sickened", "Slowed", "Slowed (Time)", "Stunned", "Stunned (Time)", "Stupefied", "Unconscious", "Wounded", "Untethered", "Glitching"];
     for (var m in conditionMacroList) {
         let conditionName = conditionMacroList[m];
         let dat = { "label": conditionName, "playerEditable": 0, "command": "[h: ca.pf2e.Condition_Set_Basic(\"" + conditionName + "\")]", "tooltip": "Add " + conditionName + " to Selected Token.", "group": "2. Conditions" };

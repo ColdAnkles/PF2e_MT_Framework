@@ -4,6 +4,8 @@
 [h,if(!json.contains(macro.args,"sort")):sort="name";sort=json.get(macro.args,"sort")]
 [h,if(!json.contains(macro.args,"dir")):dir="a";dir=json.get(macro.args,"dir")]
 [h,if(!json.contains(macro.args,"searchKey")):searchKey="";searchKey=json.get(macro.args,"searchKey")]
+[h,if(!json.contains(macro.args,"minLevel")):minLevel="";minLevel=json.get(macro.args,"minLevel")]
+[h,if(!json.contains(macro.args,"maxLevel")):maxLevel="";maxLevel=json.get(macro.args,"maxLevel")]
 [h,if(!json.contains(macro.args,"tokenID")):tokenID=json.null;tokenID=json.get(macro.args,"tokenID")]
 [h: windowType = json.get(macro.args,"window")]
 
@@ -55,7 +57,7 @@
         [r: js.ca.pf2e.build_spell_list(sort, dir, searchKey)]
     }]
     [r, if(windowType=="creatures"), code:{
-        [r: js.ca.pf2e.build_creature_list(sort, dir, searchKey)]
+        [r: js.ca.pf2e.build_creature_list(sort, dir, searchKey, minLevel, maxLevel)]
     }]
     [r, if(windowType=="feat" || windowType=="item" || windowType=="hazard" || windowType=="effect" || windowType=="action"), code:{
         [r: js.ca.pf2e.build_item_list(windowType, sort, dir, searchKey, tokenID)]
