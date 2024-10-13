@@ -43,12 +43,22 @@ function action_icon_label(actionType, actionCount) {
 
 function add_action_to_token(actionData, tokenID, token) {
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
+	let actionKey = actionData.name;
 	if (!("type" in actionData)) {
 		if ("actionType" in actionData.system) {
 			actionData.type = actionData.system.actionType.value;
 		} else {
 			let property = JSON.parse(read_data("pf2e_action"));
 			let lookupAction = property[actionData.name];
+			if ("source" in actionData) {
+				lookupAction = property[actionData.name + "|" + actionData.source];
+				actionKey = actionData.name + "|" + actionData.source;
+			}
+			if (lookupAction == null) {
+				lookupAction = property[actionData.name + "|Pathfinder Player Core"];
+				actionKey = actionData.name + "|Pathfinder Player Core";
+			}
+
 			if (lookupAction == null) {
 				actionData.type = "basic";
 			} else {
@@ -70,6 +80,14 @@ function add_action_to_token(actionData, tokenID, token) {
 			//let property = JSON.parse(libToken.getProperty("pf2e_action"));
 			let property = JSON.parse(read_data("pf2e_action"));
 			let lookupAction = property[actionData.name];
+			if ("source" in actionData) {
+				lookupAction = property[actionData.name + "|" + actionData.source];
+				actionKey = actionData.name + "|" + actionData.source;
+			}
+			if (lookupAction == null) {
+				lookupAction = property[actionData.name + "|Pathfinder Player Core"];
+				actionKey = actionData.name + "|Pathfinder Player Core";
+			}
 
 			if (lookupAction == null) {
 				MapTool.chat.broadcast("Cannot find action: " + actionData.name);
@@ -81,7 +99,7 @@ function add_action_to_token(actionData, tokenID, token) {
 			}
 
 			let actionDesc = chat_display(lookupAction, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": lookupAction });
-			let props = { "label": action_icon_label(lookupAction.system.actionType.value, lookupAction.system.actions.value) + " " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pf2e.simple_action(\"" + actionData.name + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
+			let props = { "label": action_icon_label(lookupAction.system.actionType.value, lookupAction.system.actions.value) + " " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pf2e.simple_action(\"" + actionKey + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
 			if ("group" in actionData) {
 				props.group = actionData.group;
 			}

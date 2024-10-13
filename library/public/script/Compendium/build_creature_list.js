@@ -10,9 +10,11 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
 
     let creatureSorted = [];
     for (var s in creatureList) {
+        creatureList[s].key = s;
         creatureSorted.push(creatureList[s]);
     }
     for (var s in customNPCs) {
+        customNPCs[s].key = s;
         creatureSorted.push(customNPCs[s]);
     }
     creatureSorted.sort(sort_by(sortKey, sortDir == "d", (a) => ((typeof (a) == "string") ? a.toUpperCase() : a)));
@@ -64,13 +66,13 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
         }
 
         let capitalName = capitalise(thisCreature.name);
-        returnHTML += "<td>" + create_macroLink(capitalName, "Creature_View_Frame@Lib:ca.pf2e", { "name": thisCreature.name, "tokenID": "null" }) + "</td>";
+        returnHTML += "<td>" + create_macroLink(capitalName, "Creature_View_Frame@Lib:ca.pf2e", { "name": thisCreature.key, "tokenID": "null" }) + "</td>";
         returnHTML += "<td>" + capitalise(sizeDict[thisCreature.size]) + "</td>";
         returnHTML += "<td>" + capitalise(thisCreature.rarity) + "</td>";
         returnHTML += "<td>" + capitalise(thisCreature.traits.join(", ")) + "</td>";
         returnHTML += "<td align=center>" + String(thisCreature.level) + "</td>";
         returnHTML += "<td align=center>" + thisCreature.source + "</td>";
-        returnHTML += "<td width=0%>" + create_macroLink("Weak", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name, "weak"]) + "<br />" + create_macroLink("Normal", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name, "normal"]) + "<br />" + create_macroLink("Elite", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name, "elite"]);
+        returnHTML += "<td width=0%>" + create_macroLink("Weak", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.key, "weak"]) + "<br />" + create_macroLink("Normal", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.key, "normal"]) + "<br />" + create_macroLink("Elite", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.key, "elite"]);
 
     }
     return returnHTML;

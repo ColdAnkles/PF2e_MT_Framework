@@ -250,20 +250,8 @@ function import-source-file {
         $packData["pf2e_" + $storedata.type] = @{}
     }
     if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name)){
-        $packData["pf2e_" + $storedata.type][$storeData.name] = $storeData
-    }else{
-        $inserted=$false
-        $insertCount=1
-        while(!$inserted){
-            if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name+$insertCount)){
-                $packData["pf2e_" + $storedata.type][$storeData.name+$insertCount] = $storeData
-                $inserted=$true
-            }else{
-                $insertCount++
-            }
-        }
+        $packData["pf2e_" + $storedata.type][$storeData.name+"|"+$storeData.source] = $storeData
     }
-
 }
 
 function import-lang-file {
