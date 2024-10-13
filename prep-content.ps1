@@ -48,7 +48,7 @@ function get-foundry-sources {
         }
     }
 
-    $sources | ConvertTo-Json -depth 100 | Out-File -Encoding ascii ".\library\public\data\pf2e_source.json"
+    $sources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii ".\library\public\data\pf2e_source.json"
 }
 
 function import-all-sources {

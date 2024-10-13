@@ -36,7 +36,7 @@ function build_compendium_home() {
 		HTMLString += "<h3>" + create_macroLink("Creature List", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures" })) + "</h2>";
 		HTMLString += "<h3>" + create_macroLink("Source Management", "Enabled_Sources_Window@Lib:ca.pf2e", "") + "</h2>";
 		HTMLString += "<h3>" + create_macroLink("Custom Content", "Custom_Content_Window@Lib:ca.pf2e", "") + "</h2>";
-		HTMLString += "<h3>" + create_macroLink("Source Importing", "Source_Management_Window@Lib:ca.pf2e", "") + "</h2>";
+		//HTMLString += "<h3>" + create_macroLink("Source Importing", "Source_Management_Window@Lib:ca.pf2e", "") + "</h2>";
 		HTMLString += "<h3>" + create_macroLink("Change Theme", "Change_Theme@Lib:ca.pf2e", "") + "</h2>";
 	}
 

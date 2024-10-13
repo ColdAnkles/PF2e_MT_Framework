@@ -25,7 +25,7 @@ function core_action(actionData, actingToken) {
 
 		if (isNaN(initiative)) {
 			canAct = true;
-		} else if ("actionType" in actionData.system && actionData.system.actionType == "action" && "actions" in actionData.system && "value" in actionData.system.actions && actionsLeft >= actionData.system.actions.value) {
+		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "action" && "actions" in actionData.system && "value" in actionData.system.actions && actionsLeft >= actionData.system.actions.value) {
 			canAct = true;
 		} else if ((actionData.type == "ranged" || actionData.type == "melee") && actionsLeft >= 1) {
 			canAct = true;
@@ -129,7 +129,7 @@ function core_action(actionData, actingToken) {
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		try {
 			if (!(isNaN(initiative)) && ("spendAction" in actionData && actionData.spendAction)) {
-				if ("actionType" in actionData.system && actionData.system.actionType == "action" && "actions" in actionData.system) {
+				if ("actionType" in actionData.system && actionData.system.actionType.value == "action" && "actions" in actionData.system) {
 					actingToken.setProperty("actionsLeft", String(actionsLeft - actionData.system.actions.value));
 				} else if (actionData.type == "melee" || actionData.type == "ranged") {
 					actingToken.setProperty("actionsLeft", String(actionsLeft - 1));

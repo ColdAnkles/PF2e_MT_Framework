@@ -11,76 +11,122 @@ function on_turn_begin(turnToken, turnData = {}) {
 
 	let currentConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
 
-	if (currentConditions == null) {
-		currentConditions = {};
-		turnToken.setProperty("conditionDetails", JSON.stringify(currentConditions));
+	try {
+		if (currentConditions == null) {
+			currentConditions = {};
+			turnToken.setProperty("conditionDetails", JSON.stringify(currentConditions));
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in on_turn_begin during null-conditions");
+		MapTool.chat.broadcast("turnToken: " + String(turnToken));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(currentConditions));
 
 	let subBy = 0;
 
-	if ("Stunned" in currentConditions || "Stunned (Time)" in currentConditions) {
-		let stunnedValue = 0;
-		if ("Stunned" in currentConditions && "Stunned (Time)" in currentConditions) {
-			stunnedValue = max(currentConditions.Slowed.value.value, currentConditions["Stunned (Time)"].value.value);
-		} else if ("Stunned" in currentConditions) {
-			stunnedValue = currentConditions.Slowed.value.value;
-		} else if ("Stunned (Time)" in currentConditions) {
-			stunnedValue = currentConditions["Stunned (Time)"].value.value;
-		}
-		subBy = min(stunnedValue, newActionCount);
-		//MapTool.chat.broadcast(String(subBy));
-		if ("Stunned" in currentConditions) {
-			currentConditions.Stunned.value.value = currentConditions.Stunned.value.value - subBy;
-		}
-		turnToken.setProperty("conditionDetails", JSON.stringify(currentConditions));
-		newActionCount = newActionCount - subBy;
-		currentConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
-		if ("Stunned" in currentConditions) {
-			currentConditions.Stunned.value.value = currentConditions.Stunned.value.value - subBy;
-			if (currentConditions.Stunned.value.value <= 0) {
-				set_condition("Stunned", turnToken, 0);
+	try {
+		if ("Stunned" in currentConditions || "Stunned (Time)" in currentConditions) {
+			let stunnedValue = 0;
+			if ("Stunned" in currentConditions && "Stunned (Time)" in currentConditions) {
+				stunnedValue = max(currentConditions.Slowed.value.value, currentConditions["Stunned (Time)"].value.value);
+			} else if ("Stunned" in currentConditions) {
+				stunnedValue = currentConditions.Slowed.value.value;
+			} else if ("Stunned (Time)" in currentConditions) {
+				stunnedValue = currentConditions["Stunned (Time)"].value.value;
+			}
+			subBy = min(stunnedValue, newActionCount);
+			//MapTool.chat.broadcast(String(subBy));
+			if ("Stunned" in currentConditions) {
+				currentConditions.Stunned.value.value = currentConditions.Stunned.value.value - subBy;
+			}
+			turnToken.setProperty("conditionDetails", JSON.stringify(currentConditions));
+			newActionCount = newActionCount - subBy;
+			currentConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
+			if ("Stunned" in currentConditions) {
+				currentConditions.Stunned.value.value = currentConditions.Stunned.value.value - subBy;
+				if (currentConditions.Stunned.value.value <= 0) {
+					set_condition("Stunned", turnToken, 0);
+				}
 			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in on_turn_begin during stunned-eval");
+		MapTool.chat.broadcast("turnToken: " + String(turnToken));
+		MapTool.chat.broadcast("currentConditions: " + JSON.stringify(currentConditions));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 	currentConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
-	if ("Slowed" in currentConditions || "Slowed (Time)" in currentConditions) {
-		let slowedValue = 0;
-		if ("Slowed" in currentConditions && "Slowed (Time)" in currentConditions) {
-			slowedValue = max(currentConditions.Slowed.value.value, currentConditions["Slowed (Time)"].value.value);
-		} else if ("Slowed" in currentConditions) {
-			slowedValue = currentConditions.Slowed.value.value;
-		} else if ("Slowed (Time)" in currentConditions) {
-			slowedValue = currentConditions["Slowed (Time)"].value.value;
+	try {
+		if ("Slowed" in currentConditions || "Slowed (Time)" in currentConditions) {
+			let slowedValue = 0;
+			if ("Slowed" in currentConditions && "Slowed (Time)" in currentConditions) {
+				slowedValue = max(currentConditions.Slowed.value.value, currentConditions["Slowed (Time)"].value.value);
+			} else if ("Slowed" in currentConditions) {
+				slowedValue = currentConditions.Slowed.value.value;
+			} else if ("Slowed (Time)" in currentConditions) {
+				slowedValue = currentConditions["Slowed (Time)"].value.value;
+			}
+			subBy = min(slowedValue, newActionCount);
+			//MapTool.chat.broadcast(String(subBy));
+			turnToken.setProperty("conditionDetails", JSON.stringify(currentConditions));
+			if ("Slowed" in currentConditions) {
+				currentConditions.Slowed.value.value = currentConditions.Slowed.value.value - subBy;
+				if (currentConditions.Slowed.value.value <= 0) {
+					set_condition("Slowed", turnToken, 0);
+				}
+			}
+			newActionCount = newActionCount - subBy;
 		}
-		subBy = min(slowedValue, newActionCount);
-		//MapTool.chat.broadcast(String(subBy));
-		turnToken.setProperty("conditionDetails", JSON.stringify(currentConditions));
-		if ("Slowed" in currentConditions) {
-			currentConditions.Slowed.value.value = currentConditions.Slowed.value.value - subBy;
-			if (currentConditions.Slowed.value.value <= 0) {
-				set_condition("Slowed", turnToken, 0);
+	} catch (e) {
+		MapTool.chat.broadcast("Error in on_turn_begin during slowed-eval");
+		MapTool.chat.broadcast("turnToken: " + String(turnToken));
+		MapTool.chat.broadcast("currentConditions: " + JSON.stringify(currentConditions));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		for (var i in [0, 1, 2, 3, 4, 5]) {
+			if (i == newActionCount) {
+				set_state("ActionsLeft_" + String(i), 1, turnToken.getId());
+			} else if (i != 0) {
+				set_state("ActionsLeft_" + String(i), 0, turnToken.getId());
 			}
 		}
-		newActionCount = newActionCount - subBy;
+	} catch (e) {
+		MapTool.chat.broadcast("Error in on_turn_begin during action_state_set");
+		MapTool.chat.broadcast("turnToken: " + String(turnToken));
+		MapTool.chat.broadcast("newActionCount: " + String(newActionCount));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
-	for (var i in [0, 1, 2, 3, 4, 5]) {
-		if (i == newActionCount) {
-			set_state("ActionsLeft_" + String(i), 1, turnToken.getId());
-		} else if (i != 0) {
-			set_state("ActionsLeft_" + String(i), 0, turnToken.getId());
+	try {
+		if (newReactionCount == 1) {
+			set_state("Reaction", 1, turnToken.getId());
+		} else {
+			set_state("Reaction", 0, turnToken.getId());
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in on_turn_begin during reaction_state_set");
+		MapTool.chat.broadcast("turnToken: " + String(turnToken));
+		MapTool.chat.broadcast("newReactionCount: " + String(newReactionCount));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
-	if (newReactionCount == 1) {
-		set_state("Reaction", 1, turnToken.getId());
-	} else {
-		set_state("Reaction", 0, turnToken.getId());
+	try {
+		expire_effect_test(turnData, "turn-begin");
+	} catch (e) {
+		MapTool.chat.broadcast("Error in on_turn_begin during expire_effect_test");
+		MapTool.chat.broadcast("turnData: " + JSON.stringify(turnData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
-
-	expire_effect_test(turnData, "turn-begin");
 
 	turnToken.setProperty("actionsLeft", newActionCount);
 	turnToken.setProperty("reactionsLeft", newReactionCount);

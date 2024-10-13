@@ -52,7 +52,7 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 			}
 			rawData.variant = "elite";
 			npcData.variant = "elite";
-			} else if (variant == "weak") {
+		} else if (variant == "weak") {
 			rawData.name = "Weak " + rawData.name;
 			if (initialLevel == 1) {
 				rawData.system.details.level.value -= 2;

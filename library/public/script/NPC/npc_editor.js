@@ -51,12 +51,12 @@ function npc_editor(inputData) {
                             }
                         }
                         let found = false;
-                        for (var c in parentCasting.system.slots.slot0.prepared){
-                            if (parentCasting.system.slots.slot0.prepared[c].id==itemData._id){
-                                found=true;
+                        for (var c in parentCasting.system.slots.slot0.prepared) {
+                            if (parentCasting.system.slots.slot0.prepared[c].id == itemData._id) {
+                                found = true;
                             }
                         }
-                        if (!found){
+                        if (!found) {
                             parentCasting.system.slots.slot0.max++;
                             parentCasting.system.slots.slot0.prepared.push({ "id": itemData._id });
                         }
@@ -173,8 +173,10 @@ function npc_editor(inputData) {
                         }
                     }
                 }
-                if (("itemTraitVal_" + i) in inputData) {
+                if (("itemTraitVal_" + i) in inputData && inputData["itemTraitVal_" + i] != "") {
                     itemData.system.traits.value = inputData["itemTraitVal_" + i].split(", ");
+                } else if (("itemTraitVal_" + i) in inputData) {
+                    itemData.system.traits.value = [];
                 }
                 if (("itemWeaponLink_" + i) in inputData) {
                     if (!("flags" in itemData)) {
@@ -208,19 +210,19 @@ function npc_editor(inputData) {
                                     }
                                 }
                                 let foundIndexes = [];
-                                if (!(String("slot" + rank) in parentCasting.system.slots)){
-                                    parentCasting.system.slots[String("slot" + rank)] = {"max":0,"prepared":[]};
+                                if (!(String("slot" + rank) in parentCasting.system.slots)) {
+                                    parentCasting.system.slots[String("slot" + rank)] = { "max": 0, "prepared": [] };
                                 }
-                                for (var c = 0; c < parentCasting.system.slots["slot" + rank].prepared.length; c++){
-                                    if (parentCasting.system.slots["slot" + rank].prepared[c].id == itemData._id){
+                                for (var c = 0; c < parentCasting.system.slots["slot" + rank].prepared.length; c++) {
+                                    if (parentCasting.system.slots["slot" + rank].prepared[c].id == itemData._id) {
                                         foundIndexes.push(c);
                                     }
                                 }
                                 parentCasting.system.slots["slot" + rank].max -= foundIndexes.length;
-                                for( var delIdx = foundIndexes.length-1; delIdx>=0; delIdx--){
-                                    parentCasting.system.slots["slot" + rank].prepared.splice(foundIndexes[delIdx],1);
+                                for (var delIdx = foundIndexes.length - 1; delIdx >= 0; delIdx--) {
+                                    parentCasting.system.slots["slot" + rank].prepared.splice(foundIndexes[delIdx], 1);
                                 }
-                                
+
                                 for (var c = 0; c < inputData["spellCastCount_" + i + "_rank_" + rank]; c++) {
                                     parentCasting.system.slots["slot" + rank].prepared.push({ "id": itemData._id });
                                     parentCasting.system.slots["slot" + rank].max++;

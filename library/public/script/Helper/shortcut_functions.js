@@ -36,3 +36,7 @@ function lte(a, b) {
 function lt(a, b) {
     return a < b;
 }
+
+function round(a) {
+    return Math.round(a);
+}

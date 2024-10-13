@@ -35,6 +35,6 @@
 [h: myTokens = json.append(myTokens, newToken)]
 [h: setProperty("pcTokens", myTokens, sourceTokenID, "Player Characters")]
 [h: js.ca.pf2e.create_pc_token(newToken, sourceTokenID)]
-[h: setOwner(getOwners("JSON", sourceTokenID, "Player Characters"), newToken)]
+[h: setOwner(getOwners("json", sourceTokenID, "Player Characters"), newToken)]
 [h: setTokenImage(getTokenImage("", sourceTokenID, "Player Characters"), newToken)]
 [h: setName(tokenName, newToken)]

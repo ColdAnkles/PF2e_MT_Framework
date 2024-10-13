@@ -6,7 +6,7 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>Creatures</h1>";
     let creatureList = JSON.parse(read_data("pf2e_npc"));
     let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
-    let customNPCs = JSON.parse(read_data("customContent")).npc
+    let customNPCs = JSON.parse(read_data("customContent")).npc;
 
     let creatureSorted = [];
     for (var s in creatureList) {
@@ -44,7 +44,7 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
             continue;
         }
 
-        if ((minLevel!="" && thisCreature.level < minLevel) || (maxLevel!="" && thisCreature.level > maxLevel)){
+        if ((minLevel !== "" && thisCreature.level < minLevel) || (maxLevel !== "" && thisCreature.level > maxLevel)) {
             continue;
         }
 
@@ -70,7 +70,7 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
         returnHTML += "<td>" + capitalise(thisCreature.traits.join(", ")) + "</td>";
         returnHTML += "<td align=center>" + String(thisCreature.level) + "</td>";
         returnHTML += "<td align=center>" + thisCreature.source + "</td>";
-        returnHTML += "<td width=0%>" + create_macroLink("Weak", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name,"weak"]) +"<br />"+ create_macroLink("Normal", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name,"normal"]) +"<br />"+ create_macroLink("Elite", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name,"elite"]);
+        returnHTML += "<td width=0%>" + create_macroLink("Weak", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name, "weak"]) + "<br />" + create_macroLink("Normal", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name, "normal"]) + "<br />" + create_macroLink("Elite", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.name, "elite"]);
 
     }
     return returnHTML;
