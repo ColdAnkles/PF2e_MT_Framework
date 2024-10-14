@@ -53,18 +53,33 @@ function end_turn(turnToken, forwards = true) {
 	let tokenEffects = Object.assign({}, JSON.parse(turnToken.getProperty("activeEffects")), JSON.parse(turnToken.getProperty("specialEffects")));
 	try {
 		for (var e in tokenEffects) {
-			if (e.includes("Persistent")) {
+			if (tokenEffects[e].baseName == "persistent-damage") {
 				let effectData = tokenEffects[e];
 
-				let displayData = { "name": e, "description": "" };
+				let displayData = { "name": e, "system": { "description": { "value": "" } } };
 				let recoveryRoll = roll_dice("1d20");
 
-				displayData.description += "<p><b>Damage:</b> " + roll_dice(effectData.damage.dice) + " " + effectData.damage.type + "</p>";
-				displayData.description += "<p><b>Recovery Check:</b> " + String(recoveryRoll);
+				let damageValue = roll_dice(effectData.damage.dice);
+
+				displayData.system.description.value += "<p><b>Damage:</b> " + damageValue + " " + effectData.damage.type + "</p>";
+				displayData.system.description.value += "<p><b>Recovery Check:</b> " + String(recoveryRoll);
 				if (recoveryRoll >= 15) {
-					displayData.description += " <b><span style='color:green'>Recovered!</span></b>";
+					displayData.system.description.value += " <b><span style='color:green'>Recovered!</span></b>";
 				}
-				displayData.description += "</p>";
+				displayData.system.description.value += "</p>";
+
+				let hpData = {
+					"hpChangeVal": damageValue,
+					"tokenID": turnToken.getId(),
+					"currentTempHPChange": Number(turnToken.getProperty("TempHP")),
+					"changeHPSubmit": "Submit",
+					"hpChangeType": "lethal",
+					"currentHPChange": Number(turnToken.getProperty("HP")),
+					"currentMaxHPChange": Number(turnToken.getProperty("MaxHP")),
+					"silent": true
+				};
+
+				change_hp(turnToken.getId(), hpData);
 
 				chat_display(displayData, true, { "rollDice": true })
 

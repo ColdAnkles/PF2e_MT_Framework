@@ -112,7 +112,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	try {
 		for (var r in conditionData.system.rules) {
 			let ruleData = conditionData.system.rules[r];
-			if (conditionData.system.value.isValued) {
+			if (conditionData.system.value.isValued && "value" in ruleData) {
 				ruleData.value = foundry_calc_value(ruleData.value, token, conditionData);
 			}
 			//MapTool.chat.broadcast(JSON.stringify(ruleData));

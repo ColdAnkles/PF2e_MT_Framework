@@ -3,45 +3,54 @@
 function foundry_calc_value(value, actor, item) {
 	let newValue = Number(value);
 	if (isNaN(newValue)) {
-		if (typeof (value) == "object") {
-			if ("brackets" in value) {
-				let splitVal = null;
-				if ("field" in value) {
-					let bracketSplit = value.field.split("|");
-					if (bracketSplit[0] == "actor" && actor != null) {
-						splitVal = actor.getProperty(bracketSplit[1]);
-					} else if (bracketSplit[0] == "item" && item != null) {
-						let searchVal = bracketSplit[1].split(".")[0];
-						if (searchVal == "system") {
-							searchVal = bracketSplit[1].split(".")[1];
-						}
-						if (searchVal in item) {
-							splitVal = item[searchVal];
+		try {
+			if (typeof (value) == "object") {
+				if ("brackets" in value) {
+					let splitVal = null;
+					if ("field" in value) {
+						let bracketSplit = value.field.split("|");
+						if (bracketSplit[0] == "actor" && actor != null) {
+							splitVal = actor.getProperty(bracketSplit[1]);
+						} else if (bracketSplit[0] == "item" && item != null) {
+							let searchVal = bracketSplit[1].split(".")[0];
+							if (searchVal == "system") {
+								searchVal = bracketSplit[1].split(".")[1];
+							}
+							if (searchVal in item) {
+								splitVal = item[searchVal];
+							}
 						}
 					}
-				}
 
-				if (splitVal == null) {
-					splitVal = Number(actor.getProperty("level"));
+					if (splitVal == null) {
+						splitVal = Number(actor.getProperty("level"));
+					}
+					for (var s in value.brackets) {
+						let startVal = 0;
+						let endVal = 99;
+						let bracket = value.brackets[s];
+						if ("start" in bracket) {
+							startVal = bracket.start;
+						}
+						if ("end" in bracket) {
+							endVal = bracket.end;
+						}
+						if (splitVal >= startVal && splitVal <= endVal) {
+							value = bracket.value;
+							break;
+						}
+					}
+				} else {
+					return 0;
 				}
-				for (var s in value.brackets) {
-					let startVal = 0;
-					let endVal = 99;
-					let bracket = value.brackets[s];
-					if ("start" in bracket) {
-						startVal = bracket.start;
-					}
-					if ("end" in bracket) {
-						endVal = bracket.end;
-					}
-					if (splitVal >= startVal && splitVal <= endVal) {
-						value = bracket.value;
-						break;
-					}
-				}
-			} else {
-				return 0;
 			}
+		} catch (e) {
+			MapTool.chat.broadcast("Error in foundry_calc_value during nan-value");
+			MapTool.chat.broadcast("value: " + JSON.stringify(value));
+			MapTool.chat.broadcast("actor: " + JSON.stringify(actor));
+			MapTool.chat.broadcast("item: " + JSON.stringify(item));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
 		}
 		if (!(isNaN(value))) {
 			return value;

@@ -15,7 +15,7 @@ function add_persistent_damage() {
 
     MTScript.evalMacro("[h: ans=input(\"damageKey|" + damageSource + "|Persistent Damage Source\",\
     \"damageDice|1d4|Damage\",\
-    \"damageType|bludgeoning,piercing,slashing,acid,cold,electricity,fire,sonic,vitality,void,force,spirit,mental,poison,bleed|Damage Type|LIST|VALUE=STRING\")]");
+    \"damageType|bludgeoning,piercing,slashing,acid,cold,electricity,fire,sonic,vitality,void,force,spirit,mental,poison,bleed,holy,unholy|Damage Type|LIST|VALUE=STRING\")]");
     if (Number(MTScript.getVariable("ans")) == 0) {
         return;
     }

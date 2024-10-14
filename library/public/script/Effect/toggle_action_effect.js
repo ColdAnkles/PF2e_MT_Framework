@@ -16,6 +16,18 @@ function toggle_action_effect(effectData, affectedCreature, state = -1) {
 	} else if ((state == -1 || state == 1)) {
 		specialEffects[effectData.name] = effectData;
 	}
+	let hasPersistentDamage = false;
+	for (var e in specialEffects) {
+		if (specialEffects[e].baseName == "persistent-damage") {
+			hasPersistentDamage = true;
+			break;
+		}
+	}
+	if (hasPersistentDamage) {
+		set_state("Persistent-Damage", 1, affectedCreature);
+	} else {
+		set_state("Persistent-Damage", 0, affectedCreature);
+	}
 	affectedCreature.setProperty("specialEffects", JSON.stringify(specialEffects));
 
 }

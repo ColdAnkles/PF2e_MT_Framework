@@ -202,6 +202,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			if ("extraScopes" in checkData) {
 				extraScopes = checkData.extraScopes;
 			}
+			if (!("overrideBonus" in checkData)) {
+				checkData.overrideBonus = null;
+			}
 
 			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 			let dTwenty = Number(MTScript.getVariable("dTwenty"));
@@ -300,6 +303,11 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 
 			let checkMod = stat_bonus + prof_bonus + misc_bonus + effect_bonus + map_malus + armorPenalty;
+			if (checkData.overrideBonus != null) {
+				checkMod = checkData.overrideBonus + misc_bonus + effect_bonus + map_malus + armorPenalty;
+				stat_bonus = 0;
+				prof_bonus = 0;
+			}
 			let checkResult = dTwenty + checkMod;
 
 			let displayData = { "name": checkToken.getName() + " - " + checkData.skillName + " " + pos_neg_sign(checkMod), "system": { "description": { "value": "" } } };
@@ -309,6 +317,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 			if (prof_bonus != 0) {
 				displayData.system.description.value += " " + pos_neg_sign(prof_bonus, true);
+			}
+			if (checkData.overrideBonus != 0) {
+				displayData.system.description.value += " " + pos_neg_sign(checkData.overrideBonus, true);
 			}
 			if (effect_bonus != 0) {
 				displayData.system.description.value += " " + pos_neg_sign(effect_bonus, true);

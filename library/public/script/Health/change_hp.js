@@ -53,25 +53,39 @@ function change_hp(tokenID, changeHPData = null) {
 
 		//MapTool.chat.broadcast(JSON.stringify(changeHPData));
 
+		let silent = false;
+		if ("silent" in changeHPData && changeHPData.silent) {
+			silent = true;
+		}
+
 		if (changeHPData.currentHPChange != tokenCurrentHP) {
 			token.setProperty("HP", String(changeHPData.currentHPChange));
 			if (changeHPData.currentHPChange <= 0) {
 				kill_creature(tokenID);
 			} else {
-				chat_display({ "name": tokenDisplayName + " HP Set!", "system": { "description": { "value": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" } } }, true);
+				if (!silent) {
+					chat_display({ "name": tokenDisplayName + " HP Set!", "system": { "description": { "value": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" } } }, true);
+				}
 			}
 		} else if (changeHPData.currentMaxHPChange != tokenCurrentMaxHP) {
 			token.setProperty("MaxHP", String(changeHPData.currentMaxHPChange));
 		} else if (changeHPData.currentTempHPChange != tokenCurrentTempHP) {
 			token.setProperty("TempHP", String(changeHPData.currentTempHPChange));
-			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "description": { "value": tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" } } }, true);
+			if (!silent) {
+				chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "description": { "value": tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" } } }, true);
+			}
 		} else if (changeHPData.hpChangeType == "tempHP") {
 			tokenCurrentTempHP = Math.max(tokenCurrentTempHP, changeHPData.hpChangeVal);
 			token.setProperty("TempHP", String(tokenCurrentTempHP));
-			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "description": { "value": tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" } } }, true);
+			if (!silent) {
+				chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "description": { "value": tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" } } }, true);
+			}
 		} else {
 			if (changeHPData.hpChangeType == "lethal") {
-				chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!" } } }, true);
+
+				if (!silent) {
+					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!" } } }, true);
+				}
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
 				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
 				if (tokenCurrentHP <= 0) {
@@ -86,7 +100,10 @@ function change_hp(tokenID, changeHPData = null) {
 					zero_hp(tokenID);
 				}
 			} else if (changeHPData.hpChangeType == "nonlethal") {
-				chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!" } } }, true);
+
+				if (!silent) {
+					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!" } } }, true);
+				}
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
 				tokenCurrentHP = tokenCurrentHP + tokenCurrentTempHP;
 				if (tokenCurrentHP <= 0) {

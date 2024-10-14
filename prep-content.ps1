@@ -130,15 +130,13 @@ function import-source-file {
 
     $storeData = @{}
 
+    $script:wantedSources = $script:wantedSources
     $script:foundSources = $script:foundSources
     $script:tagData = $script:tagData
 
     $storeData.name = $data.name
     $storeData.type = $data.type
     $storeData.id = $data._id
-    $storeData.items = $data.items
-    $storeData.system = $data.system
-    #$storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master" + $subPath + "/" + $fileName
     $baseNameSplit = $fileName -split "\.";
     $storeData.baseName = $baseNameSplit[0]
 
@@ -243,14 +241,28 @@ function import-source-file {
     else {
         #Write-Host "Unknown Type: " $data.type
     }
+
+    if ($wantedSources.Contains($storeData.source)){
+        $storeData.items = $data.items
+        $storeData.system = $data.system
+    }else{
+        $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master" + $subPath + "/" + $fileName
+    }
+
     if ( !$foundSources.Contains($storeData.source)) {
         $foundSources.Add($storeData.source) | Out-Null
     }
     if ( !$packData.ContainsKey("pf2e_" + $storedata.type)) {
         $packData["pf2e_" + $storedata.type] = @{}
     }
-    if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name)){
-        $packData["pf2e_" + $storedata.type][$storeData.name+"|"+$storeData.source] = $storeData
+    if ( $storedata.type -eq "condition"){
+        if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name)){
+            $packData["pf2e_" + $storedata.type][$storeData.name] = $storeData
+        }
+    }else{
+        if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name+"|"+$storeData.source)){
+            $packData["pf2e_" + $storedata.type][$storeData.name+"|"+$storeData.source] = $storeData
+        }
     }
 }
 
