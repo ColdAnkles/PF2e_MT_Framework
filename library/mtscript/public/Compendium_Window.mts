@@ -51,15 +51,33 @@
     [h: windowHeight=600]
     [h: windowName = "Actions"]
 }]
+[h, if(windowType=="tables"), code:{
+    [h: windowName = "Tables"]
+    [h: windowHeight=500]
+}]
 
 [frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=0; noframe=0; input=1"):{
 	[r, if(windowType=="spells"), code:{
         [r: js.ca.pf2e.build_spell_list(sort, dir, searchKey)]
-    }]
+    };{}]
     [r, if(windowType=="creatures"), code:{
         [r: js.ca.pf2e.build_creature_list(sort, dir, searchKey, minLevel, maxLevel)]
-    }]
+    };{}]
     [r, if(windowType=="feat" || windowType=="item" || windowType=="hazard" || windowType=="effect" || windowType=="action"), code:{
         [r: js.ca.pf2e.build_item_list(windowType, sort, dir, searchKey, tokenID)]
-    }]
+    };{}]
+    [r, if(windowType=="tables"), code:{
+        [r:macroLink("Encounters","TableWindow@Lib:ca.pf2e","none","encounters")]<br />
+        [r:macroLink("Simple DCs","TableWindow@Lib:ca.pf2e","none","simpleDCs")]<br />
+        [r:macroLink("DCs by Level","TableWindow@Lib:ca.pf2e","none","levelDCs")]<br />
+        [r:macroLink("Spell DCs","TableWindow@Lib:ca.pf2e","none","spellDCs")]<br />
+        [r:macroLink("Magic Item DCs","TableWindow@Lib:ca.pf2e","none","magicItemDCs")]<br />
+        [r:macroLink("Adjusting Difficulty","TableWindow@Lib:ca.pf2e","none","adjustingDifficulty")]<br />
+        [r:macroLink("Cost of Living","TableWindow@Lib:ca.pf2e","none","costOfLiving")]<br />
+        [r:macroLink("Cover","TableWindow@Lib:ca.pf2e","none","cover")]<br />
+        [r:macroLink("Learning Spells","TableWindow@Lib:ca.pf2e","none","learnASpell")]<br />
+        [r:macroLink("Earning Income","TableWindow@Lib:ca.pf2e","none","earnIncome")]<br />
+        [r:macroLink("Locks","TableWindow@Lib:ca.pf2e","none","locks")]<br />
+        [r:macroLink("Structures","TableWindow@Lib:ca.pf2e","none","structures")]<br />
+    };{}]
 }]

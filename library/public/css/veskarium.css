@@ -57,20 +57,21 @@ hr {
 }
 
 body {
-	background-color: white;
-	color: black;
+	background-color: black;
+	color: white;
 	line-height:24px;
 	margin-right: 1.00em;
+  font-family:arial;
 }
 
 a:link {  
   font-style: italic;
-  color: #5c3d94;
+  color: #00ffff;
 }
 
 .ext-link {
   font-style: italic;
-  color: #5c3d94;
+  color: #00ffff;
 }
 
 .trait {
@@ -93,7 +94,7 @@ a:link {
 
 .traitalignment {
   background-color: #4287f5;
-  border-color: #a0d8e4;
+  border-color: #d8c483;
   border-style: double;
   border-width: 2px;
   color: white;
@@ -111,7 +112,7 @@ a:link {
 
 .traitsize {
   background-color: #478c42;
-  border-color: #a0d8e4;
+  border-color: #d8c483;
   border-style: double;
   border-width: 2px;
   color: white;
@@ -129,7 +130,7 @@ a:link {
 
 .traituncommon {
   background-color: #c45500;
-  border-color: #a0d8e4;
+  border-color: #d8c483;
   border-style: double;
   border-width: 2px;
   color: white;
@@ -147,7 +148,7 @@ a:link {
 
 .traitrare {
   background-color: #0c1466;
-  border-color: #a0d8e4;
+  border-color: #d8c483;
   border-style: double;
   border-width: 2px;
   color: white;
@@ -165,7 +166,7 @@ a:link {
 
 .traitunique {
   background-color: #800080;
-  border-color: #a0d8e4;
+  border-color: #d8c483;
   border-style: double;
   border-width: 2px;
   color: white;
@@ -188,7 +189,7 @@ tbody:first-child tr:first-child td{
 table {
   border-collapse: separate;
   border-spacing: 0;
-  color: #000000;
+  color: #ffffff;
   position: relative;
 }
 
@@ -198,7 +199,7 @@ table {
 }
 
 tr{
-  background-color: #ffffff;
+  background-color: #342C19;
 }
 
 td:first-child, th:first-child {
@@ -206,11 +207,11 @@ td:first-child, th:first-child {
 }
 
 th {
-  background-color: #2b4f6a;
-  border-top: 0px solid #ffffff;
-  border-right: 1px solid #000000;
-  border-bottom: 1px solid #000000;
-  color: #ffffff;
+  background-color: #522e2c;
+  border-top: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  color: #cbc18f;
   font-variant: small-caps;
   font-size: 20px;
   font-weight: 700;
@@ -221,23 +222,23 @@ th {
 }
 
 td {
-  border-right: 1px solid #000000;
-  border-bottom: 1px solid #000000;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
   padding: 4px 12px 4px 4px;
 }
 
 table tr:nth-child(2n+1) td {
-  background-color: #d1d2d2;
+  background-color: #64542F;
 }
 
 th a:link{
   font-style: normal;
-  color: #ffffff;
+  color: #cbc18f;
 }
 
 td a:link {  
   font-style: normal;
-  color: #000000;
+  color: #ffffff;
 }
 
 table tr td:first-child,

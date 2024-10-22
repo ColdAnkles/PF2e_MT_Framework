@@ -6,9 +6,9 @@
     "colours":{
         "titleBackground":"#2b4f6a",
         "titleText":"#c4e8ef",
-        "traitOuter":"#2b4f6a",
-        "traitInner":"#a0d8e4",
-        "traitBorder":"#2b4f6a",
+        "traitOuter":"#a0d8e4",
+        "traitInner":"#2b4f6a",
+        "traitBorder":"#a0d8e4",
         "traitText":"white",
         "standardBackground":"black",
         "standardText":"white"

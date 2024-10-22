@@ -1,0 +1,86 @@
+<body>
+    Players: <input name='pcCount' id='pcCount' value='4' size='4' onkeyup='encounterHelper();'></input>
+    PC Levels: <input name='pcLevel' id='pcLevel' value='1' size='4' onkeyup='encounterHelper();'></input>
+    <table id='budgetTable'>
+        <tbody>
+            <tr>
+                <th><b>Threat</b></th>
+                <th><b>XP Budget</b></th>
+            </tr>
+            <tr>
+                <td>Trivial</td>
+                <td>40 or less</td>
+            </tr>
+            <tr>
+                <td>Low</td>
+                <td>60</td>
+            </tr>
+            <tr>
+                <td>Moderate</td>
+                <td>80</td>
+            </tr>
+            <tr>
+                <td>Severe</td>
+                <td>120</td>
+            </tr>
+            <tr>
+                <td>Extreme</td>
+                <td>160</td>
+            </tr>
+        </tbody>
+    </table>
+    <table id='levelTable'>
+        <tbody>
+            <tr>
+                <th><b>Creature Level</b></th>
+                <th><b>XP</b></th>
+                <th><b>Suggested Role</b></th>
+            </tr>
+            <tr>
+                <td>Party Level -4</td>
+                <td>10</td>
+                <td>Low-threat lackey</td>
+            </tr>
+            <tr>
+                <td>Party Level -3</td>
+                <td>15</td>
+                <td>Low- or moderate-threat lackey</td>
+            </tr>
+            <tr>
+                <td>Party Level -2</td>
+                <td>20</td>
+                <td>Any lackey or standard creature</td>
+            </tr>
+            <tr>
+                <td>Party Level -1</td>
+                <td>30</td>
+                <td>Any standard creature</td>
+            </tr>
+            <tr>
+                <td>Party Level</td>
+                <td>40</td>
+                <td>Any standard creature or low-threat boss</td>
+            </tr>
+            <tr>
+                <td>Party Level +1</td>
+                <td>60</td>
+                <td>Low- or moderate-threat boss</td>
+            </tr>
+            <tr>
+                <td>Party Level +2</td>
+                <td>80</td>
+                <td>Moderate- or severe-threat boss</td>
+            </tr>
+            <tr>
+                <td>Party Level +3</td>
+                <td>120</td>
+                <td>Severe- or extreme-threat boss</td>
+            </tr>
+            <tr>
+                <td>Party Level +4</td>
+                <td>160</td>
+                <td>Extreme-threat solo boss</td>
+            </tr>
+        </tbody>
+    </table>
+</body>

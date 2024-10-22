@@ -11,7 +11,7 @@ function build_compendium_home() {
 	HTMLString += "<img src=" + icon_img("compendium", themeData.icons == "W", true) + " style='width:40;height:40;'/>&nbsp";
 	HTMLString += create_macroLink("<font size=6>Compendium</font>", "Compendium_Home@Lib:ca.pf2e", "") + "</h1>";
 
-	HTMLString += "</p><h3>Characters</h2><p>";
+	HTMLString += "</p><h3>Characters</h3><p>";
 
 	HTMLString += "<body>";
 
@@ -24,23 +24,24 @@ function build_compendium_home() {
 	HTMLString += "<u>" + create_macroLink("Import from Pathbuilder", "Import_Pathbuilder_PC@Lib:ca.pf2e", "") + "</u><br />";
 	HTMLString += "<u>" + create_macroLink("Create Simple Token", "Create_Simple_PC@Lib:ca.pf2e", "") + "</u><br />";
 
-	HTMLString += "<h3>" + create_macroLink("Items", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "item" })) + "</h2>";
-	HTMLString += "<h3>" + create_macroLink("Spells", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells" })) + "</h2>";
-	HTMLString += "<h3>" + create_macroLink("Feats", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "feat" })) + "</h2>";
-	HTMLString += "<h3>" + create_macroLink("Actions", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "action" })) + "</h2>";
+	HTMLString += "<h3>" + create_macroLink("Items", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "item" })) + "</h3>";
+	HTMLString += "<h3>" + create_macroLink("Spells", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells" })) + "</h3>";
+	HTMLString += "<h3>" + create_macroLink("Feats", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "feat" })) + "</h3>";
+	HTMLString += "<h3>" + create_macroLink("Actions", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "action" })) + "</h3>";
 
 	if (isGM == 1 || isGM || isGM == "1") {
-		HTMLString += "<h2>GM Tools</h2>";
-		HTMLString += "<h3>" + create_macroLink("Effects", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "effect" })) + "</h2>";
-		HTMLString += "<h3>" + create_macroLink("Hazards", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "hazard" })) + "</h2>";
-		HTMLString += "<h3>" + create_macroLink("Creature List", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures" })) + "</h2>";
-		HTMLString += "<h3>" + create_macroLink("Source Management", "Enabled_Sources_Window@Lib:ca.pf2e", "") + "</h2>";
-		HTMLString += "<h3>" + create_macroLink("Custom Content", "Custom_Content_Window@Lib:ca.pf2e", "") + "</h2>";
-		//HTMLString += "<h3>" + create_macroLink("Source Importing", "Source_Management_Window@Lib:ca.pf2e", "") + "</h2>";
-		HTMLString += "<h3>" + create_macroLink("Change Theme", "Change_Theme@Lib:ca.pf2e", "") + "</h2>";
+		HTMLString += "<h2>GM Tools</h3>";
+		HTMLString += "<h3>" + create_macroLink("Tables", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "tables" })) + "</h3>";
+		HTMLString += "<h3>" + create_macroLink("Effects", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "effect" })) + "</h3>";
+		HTMLString += "<h3>" + create_macroLink("Hazards", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "hazard" })) + "</h3>";
+		HTMLString += "<h3>" + create_macroLink("Creature List", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures" })) + "</h3>";
+		HTMLString += "<h3>" + create_macroLink("Source Management", "Enabled_Sources_Window@Lib:ca.pf2e", "") + "</h3>";
+		HTMLString += "<h3>" + create_macroLink("Custom Content", "Custom_Content_Window@Lib:ca.pf2e", "") + "</h3>";
+		//HTMLString += "<h3>" + create_macroLink("Source Importing", "Source_Management_Window@Lib:ca.pf2e", "") + "</h3>";
+		HTMLString += "<h3>" + create_macroLink("Change Theme", "Change_Theme@Lib:ca.pf2e", "") + "</h3>";
 	}
 
-	HTMLString += "<h3>" + create_macroLink("Credits", "Credits@Lib:ca.pf2e", "") + "</h2>";
+	HTMLString += "<h3>" + create_macroLink("Credits", "Credits@Lib:ca.pf2e", "") + "</h3>";
 
 	HTMLString += "</body></html>";
 

@@ -19,16 +19,16 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
     }
     creatureSorted.sort(sort_by(sortKey, sortDir == "d", (a) => ((typeof (a) == "string") ? a.toUpperCase() : a)));
 
-    returnHTML += "<form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
-    <div><input name='searchKey' placeholder='Search' value='"+ searchKey + "'></input>\
-    <input name='minLevel' placeholder='Minimum Level' value='"+ minLevel + "'></input>\
-    <input name='maxLevel' placeholder='Maximum Level' value='"+ maxLevel + "'></input>\
-    <input type='submit' name='filterButton' value='Filter'></input>\
+    returnHTML += "<script src='lib://ca.pf2e/html/filterTable.js'></script> <form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
+    <div><input name='searchKey' id='filterText' placeholder='Search' value='"+ searchKey + "'></input>\
+    <input name='minLevel' id='minLevel' placeholder='Minimum Level' value='"+ minLevel + "'></input>\
+    <input name='maxLevel' id='maxLevel' placeholder='Maximum Level' value='"+ maxLevel + "'></input>\
+    <input id='filterButton' type='button' value='Filter' onclick='filterTable();' />\
     <input type='hidden' name='window' value='creatures'></input>\
     <input type='hidden' name='sort' value='"+ sortKey + "'></input>\
     <input type='hidden' name='dir' value='"+ sortDir + "'></input></div></form>";
 
-    returnHTML += "<table><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures", "sort": "name", "dir": ((sortKey == "name") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<table id='filterTable'><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures", "sort": "name", "dir": ((sortKey == "name") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th>" + create_macroLink("Size", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures", "sort": "size", "dir": ((sortKey == "size") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th>" + create_macroLink("Rarity", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "creatures", "sort": "rarity", "dir": ((sortKey == "rarity") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th width=10% align=center>Traits</th>";
@@ -66,12 +66,12 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
         }
 
         let capitalName = capitalise(thisCreature.name);
-        returnHTML += "<td>" + create_macroLink(capitalName, "Creature_View_Frame@Lib:ca.pf2e", { "name": thisCreature.key, "tokenID": "null" }) + "</td>";
-        returnHTML += "<td>" + capitalise(sizeDict[thisCreature.size]) + "</td>";
-        returnHTML += "<td>" + capitalise(thisCreature.rarity) + "</td>";
-        returnHTML += "<td>" + capitalise(thisCreature.traits.join(", ")) + "</td>";
-        returnHTML += "<td align=center>" + String(thisCreature.level) + "</td>";
-        returnHTML += "<td align=center>" + thisCreature.source + "</td>";
+        returnHTML += "<td id='name'>" + create_macroLink(capitalName, "Creature_View_Frame@Lib:ca.pf2e", { "name": thisCreature.key, "tokenID": "null" }) + "</td>";
+        returnHTML += "<td id='size'>" + capitalise(sizeDict[thisCreature.size]) + "</td>";
+        returnHTML += "<td id='rarity'>" + capitalise(thisCreature.rarity) + "</td>";
+        returnHTML += "<td id='traits'>" + capitalise(thisCreature.traits.join(", ")) + "</td>";
+        returnHTML += "<td align=center id='level'>" + String(thisCreature.level) + "</td>";
+        returnHTML += "<td align=center id='source'>" + thisCreature.source + "</td>";
         returnHTML += "<td width=0%>" + create_macroLink("Weak", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.key, "weak"]) + "<br />" + create_macroLink("Normal", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.key, "normal"]) + "<br />" + create_macroLink("Elite", "Spawn_NPC@Lib:ca.pf2e", [thisCreature.key, "elite"]);
 
     }

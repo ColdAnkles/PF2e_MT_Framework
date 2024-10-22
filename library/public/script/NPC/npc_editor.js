@@ -445,6 +445,7 @@ function npc_editor(inputData) {
             let itemTypes = ["weapon", "armor", "shield", "item", "consumable"];
             if (itemTypes.includes(itemData.type)) {
                 outputHTML += "<tr><td>" + itemData.name + "</td><td>" + capitalise(itemData.type) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
+                //IF WEAPON, ADD RUNES SETTINGS
             }
             itemCounter++;
         }
@@ -561,7 +562,7 @@ function npc_editor(inputData) {
         for (var s in npcData.items) {
             let itemData = npcData.items[s]
             if (["action"].includes(itemData.type)) {
-                outputHTML += "<tr><td>" + itemData.name + "</td><td>" + capitalise(itemData.type) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>"
+                outputHTML += "<tr><td>" + itemData.name + "</td><td>" + capitalise(itemData.type) + "</td><td><input type='submit' name='delItem_" + itemCounter + "' value='Remove'></td></tr>";
             }
             itemCounter++;
         }
