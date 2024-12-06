@@ -312,25 +312,25 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 			let displayData = { "name": checkToken.getName() + " - " + checkData.skillName + " " + pos_neg_sign(checkMod), "system": { "description": { "value": "" } } };
 			displayData.system.description.value = checkData.flavourText + "<br/><div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span>"
-			if (stat_bonus != 0) {
+			if (stat_bonus != 0 && stat_bonus != null) {
 				displayData.system.description.value += " " + pos_neg_sign(stat_bonus, true);
 			}
-			if (prof_bonus != 0) {
+			if (prof_bonus != 0 && prof_bonus != null) {
 				displayData.system.description.value += " " + pos_neg_sign(prof_bonus, true);
 			}
-			if (checkData.overrideBonus != 0) {
+			if (checkData.overrideBonus != 0 && checkData.overrideBonus != null) {
 				displayData.system.description.value += " " + pos_neg_sign(checkData.overrideBonus, true);
 			}
-			if (effect_bonus != 0) {
+			if (effect_bonus != 0 && effect_bonus != null) {
 				displayData.system.description.value += " " + pos_neg_sign(effect_bonus, true);
 			}
-			if (misc_bonus != 0) {
+			if (misc_bonus != 0 && misc_bonus != null) {
 				displayData.system.description.value += " " + pos_neg_sign(misc_bonus, true);
 			}
-			if (map_malus != 0) {
+			if (map_malus != 0 && map_malus != null) {
 				displayData.system.description.value += " " + pos_neg_sign(map_malus, true);
 			}
-			if (armorPenalty != 0) {
+			if (armorPenalty != 0 && armorPenalty != null) {
 				displayData.system.description.value += " " + pos_neg_sign(armorPenalty, true);
 			}
 			displayData.system.description.value += " = " + String(checkResult) + "</div></b>";

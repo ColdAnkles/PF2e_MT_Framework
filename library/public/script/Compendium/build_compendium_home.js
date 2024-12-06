@@ -2,8 +2,24 @@
 
 function build_compendium_home() {
 	MTScript.evalMacro("[h: playerData=player.getInfo()]");
-	let isGM = JSON.parse(MTScript.getVariable("playerData")).role == "GM";
-	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+	let isGM = null;
+	let themeData = null;
+	let selectedTheme = null;
+
+	try {
+		selectedTheme = read_data("selectedTheme");
+		isGM = JSON.parse(MTScript.getVariable("playerData")).role == "GM";
+		if (selectedTheme == null || selectedTheme == "null" || selectedTheme == ""){
+			write_data("selectedTheme", "Argrinyxia");
+			themeData = JSON.parse(read_data("pf2e_themes"))["Argrinyxia"];
+		}else{
+			themeData = JSON.parse(read_data("pf2e_themes"))[selectedTheme];
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_compendium_home during data-setup");
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	let HTMLString = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'>";
 

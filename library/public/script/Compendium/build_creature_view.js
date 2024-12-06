@@ -267,15 +267,17 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	}
 
 	HTMLString += "<br />";
-
+	let featData = null
 	try {
 		for (var feat in creatureData.passiveSkills) {
-			let featData = creatureData.passiveSkills[feat];
+			featData = creatureData.passiveSkills[feat];
+			additionalData.action = featData;
 			let featString = "<b>" + featData.name + "</b> " + clean_description(featData.system.description.value, true, true, true, additionalData);
 			HTMLString += featString + "<br />";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_creature_view during passive-skills-step");
+		MapTool.chat.broadcast("FeatData: " + JSON.stringify(featData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}

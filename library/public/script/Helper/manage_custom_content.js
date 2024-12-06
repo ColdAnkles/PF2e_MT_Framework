@@ -20,7 +20,15 @@ function manage_custom_content(key, entry, action) {
     } else if (key == "all" && action == "export") {
         message_window("Custom Content Export", JSON.stringify(customContent).replaceAll("<", "&lt;"));
     } else if (key == "all" && action == "import") {
-        //TODO
+        MTScript.evalMacro("[h: input(\"importJson|Enter JSON|Import JSON\")]")
+	    let importData = JSON.parse(MTScript.getVariable("importJson"));
+        if (!("type" in importData)){
+                //TODO - FOR KEY IN IMPORT DATA, IMPORT EACH ENTRY
+                MapTool.chat.broadcast("Importing All")
+            }else{
+                customContent[importData.type][importData.name]=importData;
+                write_data("customContent", JSON.stringify(customContent));
+            }
     }
     MTScript.evalMacro("[h: ca.pf2e.Custom_Content_Window()]")
 }
