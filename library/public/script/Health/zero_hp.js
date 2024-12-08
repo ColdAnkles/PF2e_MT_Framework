@@ -10,6 +10,10 @@ function zero_hp(tokenID) {
 
 	let tokenDisplayName = token.getName().replace("Lib:", "");
 
+	token.setProperty("actionsLeft", 0);
+	token.setProperty("reactionsLeft", 0);
+	update_action_bank(token);
+
 	if (get_token_type(tokenID) == "PC") {
 
 		MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()][h:initiativeTokens=getInitiativeList()]")
