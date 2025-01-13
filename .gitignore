@@ -7,3 +7,4 @@ library/public/lang_data/*
 *.cmpgn
 TODO.txt
 testData/*
+diffChecks/*

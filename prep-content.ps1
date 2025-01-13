@@ -298,6 +298,25 @@ function write-data-files {
 
 }
 
+function diff-check-prep {
+    $script:diffCheckFiles = $script:diffCheckFiles
+    if (Test-Path pf2e-master){
+        Foreach ($file in $diffCheckFiles){
+            Get-ChildItem -Path "./pf2e-master" -Recurse -File -Filter $file | Copy-Item -Destination "diffChecks"
+        }
+    }
+}
+
+function diff-checks {
+    Foreach ($file in $diffCheckFiles){
+        $test = Compare-Object -DifferenceObject (Get-Content "diffChecks/$file") -ReferenceObject (Get-ChildItem -Path "./pf2e-master" -Recurse -File -Filter $file | Get-Content) | Out-Null
+        if ($test){
+            Write-Host "Differences found in" $file
+        }
+    }
+}
+
+$diffCheckFiles = @("black-dragon-adult.json", "heal.json", "force-barrage.json", "affix-a-talisman.json", "recall-knowledge.json", "off-guard.json")
 $unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics", "criticaldeck", "action-macros")
 $wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder Player Core 2", "Pathfinder Rage of Elements", "Pathfinder GM Core", "Pathfinder Advanced Player's Guide", "Pathfinder Treasure Vault", "Pathfinder Dark Archive", "Pathfinder Gamemastery Guide", "Pathfinder Secrets of Magic", "Pathfinder Bestiary", "Pathfinder Bestiary 2", "Pathfinder Bestiary 3", "Pathfinder Book of the Dead", "Pathfinder Guns & Gears","Pathfinder Monster Core")
 $sources = @{}
@@ -325,11 +344,18 @@ if ($runFuncs -eq "all" -or $runFuncs -eq "source") {
     Write-Host "Source Data Prepared"
 }
 
+if ($runFuncs -eq "diffCheckTest"){
+    diff-check-prep
+    diff-checks
+}
+
 if ($runFuncs -eq "all" -or $runFuncs -eq "import") {
+    diff-check-prep
     Write-Host "Importing Sources"
     import-all-sources
     Write-Host "Sources Imported"
     Write-Host "Writing Files"
     write-data-files
     Write-Host "Files Written"
+    diff-checks
 }

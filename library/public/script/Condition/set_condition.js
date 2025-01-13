@@ -79,14 +79,14 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 			//MapTool.chat.broadcast("Removing condition: " + conditionName);
 			//MTScript.evalMacro("[h: setState(stateName, 0, tokenID)]");
 			if (!((conditionName + " (Time)" in tokenConditions && trueConditionName == conditionName)) && !(trueConditionName in tokenConditions && trueConditionName != conditionName)) {
-				set_state(trueConditionName, 0, token.getId());
+				set_state(trueConditionName, false, token.getId());
 			}
 		} else if ((conditionValue == null && !(conditionName in tokenConditions)) || Number(conditionValue) > 0) {
 			if (!silent) {
 				chat_display(conditionData);
 			}
 			tokenConditions[conditionName] = conditionData;
-			set_state(trueConditionName, 1, token.getId());
+			set_state(trueConditionName, true, token.getId());
 			conditionApplication = 1;
 		}
 	} catch (e) {
@@ -172,7 +172,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 
 	//MapTool.chat.broadcast(JSON.stringify(tokenConditions));
 
-	if (is_pc(token)) {
+	if (token.isPC()) {
 		update_my_tokens(token);
 	}
 

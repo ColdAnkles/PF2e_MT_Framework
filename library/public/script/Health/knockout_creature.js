@@ -1,7 +1,7 @@
 "use strict";
 
 function knockout_creature(tokenID) {
-	set_state("Unconscious", 1, tokenID)
+	set_state("Unconscious", true, tokenID)
 
 	if (get_token_type(tokenID) == PC) {
 		MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()]")

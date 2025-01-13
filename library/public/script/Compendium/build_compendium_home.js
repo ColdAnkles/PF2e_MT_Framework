@@ -9,10 +9,10 @@ function build_compendium_home() {
 	try {
 		selectedTheme = read_data("selectedTheme");
 		isGM = JSON.parse(MTScript.getVariable("playerData")).role == "GM";
-		if (selectedTheme == null || selectedTheme == "null" || selectedTheme == ""){
+		if (selectedTheme == null || selectedTheme == "null" || selectedTheme == "") {
 			write_data("selectedTheme", "Argrinyxia");
 			themeData = JSON.parse(read_data("pf2e_themes"))["Argrinyxia"];
-		}else{
+		} else {
 			themeData = JSON.parse(read_data("pf2e_themes"))[selectedTheme];
 		}
 	} catch (e) {

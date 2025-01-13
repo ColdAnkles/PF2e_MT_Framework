@@ -6,8 +6,8 @@ function end_encounter() {
     for (var t in initiativeData.tokens) {
         let thisToken = MapTool.tokens.getTokenByID(initiativeData.tokens[t].tokenId);
         for (var i in [0, 1, 2, 3, 4]) {
-            set_state("ActionsLeft_" + String(Number(i) + 1), 0, thisToken.getId());
-            set_state("Reaction", 0, thisToken.getId());
+            set_state("ActionsLeft_" + String(Number(i) + 1), false, thisToken.getId());
+            set_state("Reaction", false, thisToken.getId());
         }
         thisToken.setProperty("attacksThisRound", 0);
         thisToken.setProperty("actionsLeft", 0);

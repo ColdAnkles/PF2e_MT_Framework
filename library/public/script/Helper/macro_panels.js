@@ -1,6 +1,6 @@
 "use strict";
 
-function createGMMacros(tokenID) {
+function createGMMacros() {
     let GMMacros = [{ "label": "<b>Compendium</b>", "playerEditable": 0, "command": "[macro(\"Compendium_Home@lib:ca.pf2e\"): \"\"]", "tooltip": "Open the Compendium", "color": "black", "fontColor": "white", "fontSize": "1.25em" },
     { "label": "<b>Creatures</b>", "playerEditable": 0, "command": "[macro(\"Compendium_Window@lib:ca.pf2e\"): json.set(\"{}\",\"window\",\"creatures\")]", "tooltip": "Creature List", "color": "black", "fontColor": "white", "fontSize": "1.25em" },
     { "label": "<b>Hazards</b>", "playerEditable": 0, "command": "[macro(\"Compendium_Window@lib:ca.pf2e\"): json.set(\"{}\",\"window\",\"hazard\")]", "tooltip": "Hazard List", "color": "black", "fontColor": "white", "fontSize": "1.25em" },
@@ -13,22 +13,22 @@ function createGMMacros(tokenID) {
     { "label": "Use Hero Point", "playerEditable": 0, "command": "[h: tokens = getSelected()][h, foreach(t, tokens, \"\"), code:{[h: js.ca.pf2e.use_hero_point(t)]}]", "tooltip": "Selected Tokens use Hero Point.", "group": "3. Misc" },
     { "label": "Daily Preparations", "playerEditable": 0, "command": "[h: pcLibs = js.ca.pf2e.find_pc_libs()][h, foreach(id, pcLibs), code:{[h: js.ca.pf2e.daily_preparations(id)]}]", "tooltip": "Perform PC Daily Preparations.", "group": "3. Misc" }];
     for (var m in GMMacros) {
-        createMacro(GMMacros[m], tokenID);
+        createMacro(GMMacros[m], "gm");
     }
     let conditionMacroList = ["Blinded", "Broken", "Clumsy", "Confused", "Controlled", "Dazzled", "Deafened", "Doomed", "Drained", "Dying", "Encumbered", "Enfeebled", "Fascinated", "Fatigued", "Fleeing", "Frightened", "Frightened (Time)", "Grabbed", "Immobilized", "Invisible", "Off-Guard", "Paralyzed", "Petrified", "Prone", "Quickened", "Restrained", "Sickened", "Slowed", "Slowed (Time)", "Stunned", "Stunned (Time)", "Stupefied", "Unconscious", "Wounded", "Untethered", "Glitching", "Suppressed"];
     for (var m in conditionMacroList) {
         let conditionName = conditionMacroList[m];
         let dat = { "label": conditionName, "playerEditable": 0, "command": "[h: ca.pf2e.Condition_Set_Basic(\"" + conditionName + "\")]", "tooltip": "Add " + conditionName + " to Selected Token.", "group": "2. Conditions" };
-        createMacro(dat, tokenID);
+        createMacro(dat, "gm");
     }
 }
 
 MTScript.registerMacro("ca.pf2e.createGMMacros", createGMMacros);
 
-function createCampaignMacros(tokenID) {
+function createCampaignMacros() {
     let campaignMacros = [{ "label": "<b>Compendium</b>", "playerEditable": 0, "command": "[macro(\"Compendium_Home@lib:ca.pf2e\"): \"\"]", "tooltip": "Open the Compendium", "color": "black", "fontColor": "white", "fontSize": "1.25em" }];
     for (var m in campaignMacros) {
-        createMacro(campaignMacros[m], tokenID);
+        createMacro(campaignMacros[m], "campaign");
     }
 }
 

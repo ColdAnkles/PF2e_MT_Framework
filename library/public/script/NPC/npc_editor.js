@@ -368,7 +368,7 @@ function npc_editor(inputData) {
         npcData.traits = npcData.system.traits.value;
 
         let customContent = JSON.parse(read_data("customContent"));
-        customContent.npc[npcData.name+"|"+npcData.source] = npcData;
+        customContent.npc[npcData.name + "|" + npcData.source] = npcData;
         if (!customContent.source.includes(npcData.system.details.publication.title)) {
             customContent.source.push(npcData.system.details.publication.title);
         }

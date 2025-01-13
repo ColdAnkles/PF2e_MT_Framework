@@ -16,7 +16,7 @@ function end_turn(turnToken, forwards = true) {
 	//MapTool.chat.broadcast(turnToken.getName());
 
 	for (var i in [0, 1, 2, 3, 4]) {
-		set_state("ActionsLeft_" + String(Number(i) + 1), 0, turnToken.getId());
+		set_state("ActionsLeft_" + String(Number(i) + 1), false, turnToken.getId());
 	}
 
 	let tokenConditions = JSON.parse(turnToken.getProperty("conditionDetails"));

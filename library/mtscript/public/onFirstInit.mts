@@ -47,6 +47,6 @@
 
 [h: setMapName("Grasslands", "Player Characters")]
 [h: ca.pf2e.Load_Addon_JSON()]
-[h: ca.pf2e.Create_GM_Macros()]
-[h: ca.pf2e.Create_Campaign_Macros()]
+[h: js.ca.pf2e.createGMMacros()]
+[h: js.ca.pf2e.createCampaignMacros()]
 [h: ca.pf2e.Welcome()]

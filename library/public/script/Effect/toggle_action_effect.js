@@ -24,9 +24,9 @@ function toggle_action_effect(effectData, affectedCreature, state = -1) {
 		}
 	}
 	if (hasPersistentDamage) {
-		set_state("Persistent-Damage", 1, affectedCreature);
+		set_state("Persistent-Damage", true, affectedCreature);
 	} else {
-		set_state("Persistent-Damage", 0, affectedCreature);
+		set_state("Persistent-Damage", false, affectedCreature);
 	}
 	affectedCreature.setProperty("specialEffects", JSON.stringify(specialEffects));
 

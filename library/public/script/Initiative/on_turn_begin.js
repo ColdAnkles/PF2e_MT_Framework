@@ -92,9 +92,9 @@ function on_turn_begin(turnToken, turnData = {}) {
 	try {
 		for (var i in [0, 1, 2, 3, 4, 5]) {
 			if (i == newActionCount) {
-				set_state("ActionsLeft_" + String(i), 1, turnToken.getId());
+				set_state("ActionsLeft_" + String(i), true, turnToken.getId());
 			} else if (i != 0) {
-				set_state("ActionsLeft_" + String(i), 0, turnToken.getId());
+				set_state("ActionsLeft_" + String(i), false, turnToken.getId());
 			}
 		}
 	} catch (e) {
@@ -107,9 +107,9 @@ function on_turn_begin(turnToken, turnData = {}) {
 
 	try {
 		if (newReactionCount == 1) {
-			set_state("Reaction", 1, turnToken.getId());
+			set_state("Reaction", true, turnToken.getId());
 		} else {
-			set_state("Reaction", 0, turnToken.getId());
+			set_state("Reaction", false, turnToken.getId());
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in on_turn_begin during reaction_state_set");

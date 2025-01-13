@@ -36,19 +36,19 @@ function add_hero_point(token) {
 	let pointStates = { 1: get_state("HeroPoint_1", token), 2: get_state("HeroPoint_2", token), 3: get_state("HeroPoint_3", token) };
 	let gained = false;
 	if (pointStates[2]) {
-		set_state("HeroPoint_3", 1, token);
-		set_state("HeroPoint_2", 0, token);
-		set_state("HeroPoint_1", 0, token);
+		set_state("HeroPoint_3", true, token);
+		set_state("HeroPoint_2", false, token);
+		set_state("HeroPoint_1", false, token);
 		gained = true;
 	} else if (pointStates[1]) {
-		set_state("HeroPoint_3", 0, token);
-		set_state("HeroPoint_2", 1, token);
-		set_state("HeroPoint_1", 0, token);
+		set_state("HeroPoint_3", false, token);
+		set_state("HeroPoint_2", true, token);
+		set_state("HeroPoint_1", false, token);
 		gained = true;
 	} else if (!(pointStates[1]) && !(pointStates[2]) && !(pointStates[3])) {
-		set_state("HeroPoint_3", 0, token);
-		set_state("HeroPoint_2", 0, token);
-		set_state("HeroPoint_1", 1, token);
+		set_state("HeroPoint_3", false, token);
+		set_state("HeroPoint_2", false, token);
+		set_state("HeroPoint_1", true, token);
 		gained = true;
 	}
 	if (typeof (token) == "string") {
@@ -66,19 +66,19 @@ function use_hero_point(token) {
 	let pointStates = { 1: get_state("HeroPoint_1", token), 2: get_state("HeroPoint_2", token), 3: get_state("HeroPoint_3", token) };
 	let used = false;
 	if (pointStates[3]) {
-		set_state("HeroPoint_3", 0, token);
-		set_state("HeroPoint_2", 1, token);
-		set_state("HeroPoint_1", 0, token);
+		set_state("HeroPoint_3", false, token);
+		set_state("HeroPoint_2", true, token);
+		set_state("HeroPoint_1", false, token);
 		used = true;
 	} else if (pointStates[2]) {
-		set_state("HeroPoint_3", 0, token);
-		set_state("HeroPoint_2", 0, token);
-		set_state("HeroPoint_1", 1, token);
+		set_state("HeroPoint_3", false, token);
+		set_state("HeroPoint_2", false, token);
+		set_state("HeroPoint_1", true, token);
 		used = true;
 	} else if (pointStates[1]) {
-		set_state("HeroPoint_3", 0, token);
-		set_state("HeroPoint_2", 0, token);
-		set_state("HeroPoint_1", 0, token);
+		set_state("HeroPoint_3", false, token);
+		set_state("HeroPoint_2", false, token);
+		set_state("HeroPoint_1", false, token);
 		used = true;
 	}
 	if (typeof (token) == "string") {

@@ -52,7 +52,7 @@ function zero_hp(tokenID) {
 		chat_display({ "name": tokenDisplayName + " unconscious!", "system": { "description": { "value": tokenDisplayName + " knocked unconscious!" } } }, true);
 
 	} else {
-		set_state("Dead", 1, tokenID);
+		set_state("Dead", true, tokenID);
 		chat_display({ "name": tokenDisplayName + " dies!", "system": { "description": { "value": tokenDisplayName + " dies!" } } }, true);
 		MTScript.evalMacro("[h: removeFromInitiative(\"" + tokenID + "\")]");
 	}

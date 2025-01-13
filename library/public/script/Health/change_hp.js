@@ -125,7 +125,7 @@ function change_hp(tokenID, changeHPData = null) {
 				let healVal = tokenCurrentHP - tokenOldHP;
 				token.setProperty("HP", String(tokenCurrentHP));
 				if (get_state("Dead", token)) {
-					set_state("Dead", 0, token);
+					set_state("Dead", false, token);
 					chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
 				} else {
 					chat_display({ "name": tokenDisplayName + " healed!", "system": { "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
