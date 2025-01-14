@@ -19,6 +19,14 @@ function parse_pathbuilder_export(data) {
 
 	let unfoundData = [];
 
+	function matching_keys(arr, sub) {
+		sub = sub.toLowerCase();
+		return arr.filter(str => (str
+			.toLowerCase()
+			.startsWith(sub.slice(0, Math.max(str.length - 1, 1))) ? str : null) != null
+		);
+	}
+
 	function find_object_data(objectName, searchSet = ["all"]) {
 		if (objectName == "Versatile Heritage") {
 			objectName = "Versatile";
@@ -28,6 +36,24 @@ function parse_pathbuilder_export(data) {
 		if (objectName == "Oil") {
 			objectName = "Oil (1 pint)";
 		}
+
+		let keyList = [];
+
+		let libraryTypes = ["feat", "action", "heritage", "item", "class"]
+
+		libraryTypes.forEach(libType => {
+			if (searchSet.includes("all") || searchSet.includes(libType)) {
+				keyList = eval("keyList.concat(Object.keys(" + libType + "Library))");
+			}
+		});
+
+		keyList = matching_keys(keyList, objectName);
+
+		if (keyList.length == 0) {
+			return null;
+		}
+
+		objectName = keyList[0];
 
 		let testVar = objectName;
 		let testCaps = capitalise(objectName);
@@ -64,24 +90,58 @@ function parse_pathbuilder_export(data) {
 	}
 
 	function setup_spell(spellName) {
+		let testSpellName = null;
 		let fSpellData = null;
-		if (spellName in spellLibrary) {
-			fSpellData = spellLibrary[spellName];
-			return rest_call(fSpellData.fileURL);
-		} else {
-			let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
-			if (!(spellName in remasterChanges) || !(remasterChanges[spellName] in spellLibrary)) {
-				MapTool.chat.broadcast("Couldn't Find " + spellName);
-				return null;
-			} else {
-				spellName = remasterChanges[spellName];
-				fSpellData = spellLibrary[spellName];
+		try {
+			let keyList = matching_keys(Object.keys(spellLibrary), spellName);
+			if (keyList.length != 0) {
+				testSpellName = keyList[0];
+			}
+			if (testSpellName in spellLibrary) {
+				fSpellData = spellLibrary[testSpellName];
 				if ("fileURL" in fSpellData) {
-					return rest_call(fSpellData.fileURL);
+					let loadedData = rest_call(fSpellData.fileURL);
+					loadedData.source = loadedData.system.publication.title;
+					loadedData.rarity = loadedData.system.traits.rarity;
+					loadedData.traits = loadedData.system.traits.value;
+					loadedData.traditions = loadedData.system.traits.traditions;
+					loadedData.level = loadedData.system.level.value;
+					return loadedData
 				} else {
 					return fSpellData;
 				}
+			} else {
+				let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
+
+				if (!(spellName in remasterChanges)) {
+					MapTool.chat.broadcast("Couldn't Find " + spellName);
+					return null;
+				} else {
+					spellName = remasterChanges[spellName];
+					keyList = matching_keys(spellLibrary, spellName);
+					if (keyList.length != 0) {
+						testSpellName = keyList[0];
+					}
+					fSpellData = spellLibrary[testSpellName];
+					if ("fileURL" in fSpellData) {
+						let loadedData = rest_call(fSpellData.fileURL);
+						loadedData.source = loadedData.system.publication.title;
+						loadedData.rarity = loadedData.system.traits.rarity;
+						loadedData.traits = loadedData.system.traits.value;
+						loadedData.traditions = loadedData.system.traits.traditions;
+						loadedData.level = loadedData.system.level.value;
+						return loadedData
+					} else {
+						return fSpellData;
+					}
+				}
 			}
+		} catch (e) {
+			MapTool.chat.broadcast("Error in parse_pathbuilder_export - find setup_spell");
+			MapTool.chat.broadcast("testSpellName: " + testSpellName);
+			MapTool.chat.broadcast("fSpellData: " + JSON.stringify(fSpellData));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
 		}
 	}
 
@@ -91,24 +151,59 @@ function parse_pathbuilder_export(data) {
 
 	message_window("Importing " + data.name, "Importing Basics");
 
-	let classData = find_object_data(data.class, ["class"]);
+	let classData = null;
+
+	try {
+		classData = find_object_data(data.class, ["class"]);
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - find class data");
+		MapTool.chat.broadcast("class: " + JSON.stringify(data.class));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	if (classData == null) {
+		message_window("Importing " + data.name, "Could Not Find Class");
+	}
+
 	if ("fileURL" in classData) {
-		classData = rest_call(classData.fileURL);
+		try {
+			classData = rest_call(classData.fileURL);
+		} catch (e) {
+			MapTool.chat.broadcast("Error in parse_pathbuilder_export - retrieve class data");
+			MapTool.chat.broadcast("classData: " + JSON.stringify(classData));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
+		}
 	}
 
 	characterData.foundryActor = { "name": data.name, "flags": {}, "system": {} };
 
 	//__STATS__	
-	characterData.abilities = {};
-	characterData.abilities.str = Math.floor((data.abilities.str - 10) / 2);
-	characterData.abilities.dex = Math.floor((data.abilities.dex - 10) / 2);
-	characterData.abilities.con = Math.floor((data.abilities.con - 10) / 2);
-	characterData.abilities.int = Math.floor((data.abilities.int - 10) / 2);
-	characterData.abilities.wis = Math.floor((data.abilities.wis - 10) / 2);
-	characterData.abilities.cha = Math.floor((data.abilities.cha - 10) / 2);
+	try {
+		characterData.abilities = {};
+		characterData.abilities.str = Math.floor((data.abilities.str - 10) / 2);
+		characterData.abilities.dex = Math.floor((data.abilities.dex - 10) / 2);
+		characterData.abilities.con = Math.floor((data.abilities.con - 10) / 2);
+		characterData.abilities.int = Math.floor((data.abilities.int - 10) / 2);
+		characterData.abilities.wis = Math.floor((data.abilities.wis - 10) / 2);
+		characterData.abilities.cha = Math.floor((data.abilities.cha - 10) / 2);
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - Stats setup");
+		MapTool.chat.broadcast("abilities: " + JSON.stringify(data.abilities));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	//__HEALTH__
-	characterData.hp = { "max": data.attributes.ancestryhp + ((data.attributes.classhp + characterData.abilities.con) * data.level) + (data.attributes.bonushpPerLevel * data.level) + data.attributes.bonushp };
+	try {
+		characterData.hp = { "max": data.attributes.ancestryhp + ((data.attributes.classhp + characterData.abilities.con) * data.level) + (data.attributes.bonushpPerLevel * data.level) + data.attributes.bonushp };
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - HP setup");
+		MapTool.chat.broadcast("attributes: " + JSON.stringify(data.attributes));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	//__OFFENSE__
 	characterData.offensiveActions = [];
@@ -116,28 +211,43 @@ function parse_pathbuilder_export(data) {
 
 	//__DEFENSES__
 	characterData.ac = { "value": data.acTotal.acTotal };
-	characterData.saves = { "fortitude": 0, "reflex": 0, "will": 0 };
-	if (data.proficiencies.fortitude > 0) {
-		characterData.saves.fortitude = data.proficiencies.fortitude + data.level + characterData.abilities.con;
-	} else {
-		characterData.saves.fortitude = characterData.abilities.con;
+	try {
+		characterData.saves = { "fortitude": 0, "reflex": 0, "will": 0 };
+		if (data.proficiencies.fortitude > 0) {
+			characterData.saves.fortitude = data.proficiencies.fortitude + data.level + characterData.abilities.con;
+		} else {
+			characterData.saves.fortitude = characterData.abilities.con;
+		}
+		if (data.proficiencies.reflex > 0) {
+			characterData.saves.reflex = data.proficiencies.reflex + data.level + characterData.abilities.dex;
+		} else {
+			characterData.saves.reflex = characterData.abilities.dex;
+		}
+		if (data.proficiencies.will > 0) {
+			characterData.saves.will = data.proficiencies.will + data.level + characterData.abilities.wis;
+		} else {
+			characterData.saves.will = characterData.abilities.wis;
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - saves setup");
+		MapTool.chat.broadcast("saves: " + JSON.stringify(data.proficiencies));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
-	if (data.proficiencies.reflex > 0) {
-		characterData.saves.reflex = data.proficiencies.reflex + data.level + characterData.abilities.dex;
-	} else {
-		characterData.saves.reflex = characterData.abilities.dex;
-	}
-	if (data.proficiencies.will > 0) {
-		characterData.saves.will = data.proficiencies.will + data.level + characterData.abilities.wis;
-	} else {
-		characterData.saves.will = characterData.abilities.wis;
-	}
+
 	characterData.immunities = [];
 	characterData.resistances = [];
 
-	for (var r in data.resistances) {
-		let resString = data.resistances[r].split(" ");
-		characterData.resistances.push({ "type": resString[0], "value": Number(resString[1]) })
+	try {
+		for (var r in data.resistances) {
+			let resString = data.resistances[r].split(" ");
+			characterData.resistances.push({ "type": resString[0], "value": Number(resString[1]) })
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - resistances setup");
+		MapTool.chat.broadcast("resistances: " + JSON.stringify(data.resistances));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	characterData.weaknesses = [];
@@ -146,6 +256,8 @@ function parse_pathbuilder_export(data) {
 	characterData.passiveSkills = [];
 	characterData.rections = [];
 	characterData.resources = {};
+
+	message_window("Importing " + data.name, "Importing Skills");
 
 	//__SKILLS__	
 	let unarmedProf = 0;

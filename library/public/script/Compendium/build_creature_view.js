@@ -152,22 +152,6 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 		return;
 	}
 
-	//try {
-	//	for (var pSkill in creatureData.passiveSkills) {
-	//		let skillData = creatureData.passiveSkills[pSkill];
-	//		HTMLString += "<b>" + skillData.name + "</b> ";
-	//		if (skillData.system.traits.length > 0) {
-	//			HTMLString += " (" + skillData.traits.join(", ") + ") ";
-	//		}
-	//		additionalData.action = skillData;
-	//		HTMLString += clean_description(skillData.system.description.value, true, true, true, additionalData) + "<br />";
-	//	}
-	//} catch (e) {
-	////	MapTool.chat.broadcast("Error in build_creature_view during skills-step");
-	//MapTool.chat.broadcast("" + e + "\n" + e.stack);
-	//	return;
-	//}
-
 	HTMLString += "<hr />";
 	HTMLString += "<b>AC</b> " + creatureData.ac.value;
 	if (creatureData.ac.details.length > 0) {
@@ -435,7 +419,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 				} else {
 					spellString = spellString + ", ";
 				}
-				spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)", ""), "Spell_View_Frame@Lib:ca.pf2e", spellData.name.replaceAll(" (Constant)", "").replaceAll(/\(.*\)/g, "").trim());
+				spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)", ""), "Spell_View_Frame@Lib:ca.pf2e", spellData.name.replaceAll(" (Constant)", "").replaceAll(/\(.*\)/g, "").trim() + "|" + spellData.source);
 			}
 
 			HTMLString += spellString;

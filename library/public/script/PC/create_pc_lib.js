@@ -2,10 +2,18 @@
 
 function create_pc_lib(pathbuilderID, tokenID) {
 	let PCData = null;
-	if (String(pathbuilderID) == "-1") {
-		PCData = get_patbuilder_export_via_input();
-	} else {
-		PCData = get_pathbuilder_export_via_id(pathbuilderID);
+	try {
+		if (String(pathbuilderID) == "-1") {
+			PCData = get_pathbuilder_export_via_input();
+		} else {
+			PCData = get_pathbuilder_export_via_id(pathbuilderID);
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in create_pc_lib - getting pb export");
+		MapTool.chat.broadcast("pathbuilderID: " + String(pathbuilderID));
+		MapTool.chat.broadcast("tokenID: " + String(tokenID));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	for (var c in PCData.pets) {

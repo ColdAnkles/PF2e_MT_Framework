@@ -10,7 +10,7 @@ function build_spell_view(spellName) {
 
 	if (!(spellName in property)) {
 		let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
-		if (!spellName in remasterChanges) {
+		if (!(spellName in remasterChanges)) {
 			return "<h2>Could not find spell " + spellName + "</h2>";
 		} else {
 			if (remasterChanges[spellName] in property) {
@@ -23,8 +23,20 @@ function build_spell_view(spellName) {
 
 	let spellData = property[spellName];
 	let spellBaseName = spellData.baseName;
-	if ("fileURL" in spellData) {
-		spellData = rest_call(spellData["fileURL"], "");
+	try {
+		if ("fileURL" in spellData) {
+			spellData = rest_call(spellData["fileURL"], "");
+			spellData.source = spellData.system.publication.title;
+			spellData.rarity = spellData.system.traits.rarity;
+			spellData.traits = spellData.system.traits.value;
+			spellData.traditions = spellData.system.traits.traditions;
+			spellData.level = spellData.system.level.value;
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during get-from-fileurl-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	//spellData = parse_spell(spellBaseName, spellData);
@@ -35,13 +47,27 @@ function build_spell_view(spellName) {
 
 	let spellCategory = "spell";
 
-	if (spellData.system.traits.value.includes("cantrip")) {
-		spellCategory = "cantrip";
-	} else if (spellData.system.traits.value.includes("focus")) {
-		spellCategory = "focus";
+	try {
+		if (spellData.system.traits.value.includes("cantrip")) {
+			spellCategory = "cantrip";
+		} else if (spellData.system.traits.value.includes("focus")) {
+			spellCategory = "focus";
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during category-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
-	HTMLString += "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellCategory) + " " + spellData.system.level.value + "</span></h1>";
+	try {
+		HTMLString += "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellCategory) + " " + spellData.system.level.value + "</span></h1>";
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during title-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	try {
 		if (spellData.system.traits.rarity != "common") {
@@ -159,7 +185,16 @@ function build_spell_view(spellName) {
 		return;
 	}
 
-	let hasDuration = spellData.system.duration != null && spellData.system.duration != "" && spellData.system.duration.value != "" && spellData.system.duration.value != null;
+	let hasDuration = false;
+
+	try {
+		hasDuration = spellData.system.duration != null && spellData.system.duration != "" && spellData.system.duration.value != "" && spellData.system.duration.value != null;
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during duration-step-A");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	try {
 		if (spellData.system.spellType == "save" && spellData.system.save.statistic != "" && hasDuration) {
@@ -172,7 +207,7 @@ function build_spell_view(spellName) {
 			HTMLString += "<br />";
 		}
 	} catch (e) {
-		MapTool.chat.broadcast("Error in build_spell_view during duration-step");
+		MapTool.chat.broadcast("Error in build_spell_view during duration-step-B");
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
@@ -180,7 +215,14 @@ function build_spell_view(spellName) {
 
 	HTMLString += "<hr />";
 
-	HTMLString += clean_description(spellData.system.description.value, false, false, false, { "rollDice": false, "level": spellData.system.level.value });
+	try {
+		HTMLString += clean_description(spellData.system.description.value, false, false, false, { "rollDice": false, "level": spellData.system.level.value, "item": spellData, "action": spellData });
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_spell_view during description-step");
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 
 	return HTMLString;
