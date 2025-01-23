@@ -11,6 +11,10 @@ function calculate_ac(tokenID) {
 		base_ac = Number(token.getProperty("ac"));
 	}
 
+	if (get_token_property_type(token)=="PF2E_Hazard"){
+		return Number(token.getProperty("ac"));
+	}
+
 	let dex_bonus = Number(token.getProperty("dex"));
 	let bonuses = calculate_bonus(tokenID, "ac");
 	let eqArmor = get_equipped_armor(token);

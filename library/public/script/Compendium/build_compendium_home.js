@@ -35,7 +35,9 @@ function build_compendium_home() {
 	for (var pc in pcList) {
 		let pcName = pcList[pc].getName().replace("Lib:", "");
 		let isPet = JSON.stringify(pcList[pc].getProperty("traits")).includes("minion");
-		HTMLString += "<b>" + create_macroLink(pcName, "Creature_View_Frame@Lib:ca.pf2e", JSON.stringify({ "name": pcName, "tokenID": pcList[pc].getId() })) + "</b>" + ((isPet) ? "" : " <span style='font-size:10px'>" + create_macroLink("Reimport", "Import_Pathbuilder_PC@Lib:ca.pf2e", pcList[pc].getId()) + "</span>") + "<br />";
+		let foundryActor = JSON.parse(pcList[pc].getProperty("foundryActor"));
+		let isSimple = ("simple" in foundryActor && foundryActor.simple);
+		HTMLString += "<b>" + create_macroLink(pcName, "Creature_View_Frame@Lib:ca.pf2e", JSON.stringify({ "name": pcName, "tokenID": pcList[pc].getId() })) + "</b>" + ((isPet) ? "" : " <span style='font-size:10px'>" + ((isSimple)?"":create_macroLink("Reimport", "Import_Pathbuilder_PC@Lib:ca.pf2e", pcList[pc].getId())) + "</span>") + "<br />";
 	}
 	HTMLString += "<u>" + create_macroLink("Import from Pathbuilder", "Import_Pathbuilder_PC@Lib:ca.pf2e", "") + "</u><br />";
 	HTMLString += "<u>" + create_macroLink("Create Simple Token", "Create_Simple_PC@Lib:ca.pf2e", "") + "</u><br />";

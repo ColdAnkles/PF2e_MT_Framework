@@ -6,8 +6,17 @@ function create_hazard(newHazardID, hazardName) {
 	//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
 	let property = JSON.parse(read_data("pf2e_hazard"));
 	let hazardData = property[hazardName];
-	hazardData = rest_call(hazardData["fileURL"], "");
-	hazardData = parse_hazard(hazardData);
+	try{
+		if ("fileURL" in hazardData) {
+			hazardData = rest_call(hazardData["fileURL"], "");
+		}
+		hazardData = parse_hazard(hazardData);
+	} catch (e) {
+		MapTool.chat.broadcast("Error in create_hazard during parse");
+		MapTool.chat.broadcast("hazardData: " + JSON.stringify(hazardData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	write_hazard_properties(hazardData, newToken);
 
@@ -15,6 +24,7 @@ function create_hazard(newHazardID, hazardName) {
 	allPossible = allPossible.concat(hazardData.offensiveActions);
 	allPossible = allPossible.concat(hazardData.otherDefenses);
 	allPossible = allPossible.concat(hazardData.passiveDefenses);
+	allPossible = allPossible.concat(hazardData.reactions);
 
 	for (var a in allPossible) {
 		let actionData = allPossible[a];

@@ -23,7 +23,7 @@ function parse_pathbuilder_export(data) {
 		sub = sub.toLowerCase();
 		return arr.filter(str => (str
 			.toLowerCase()
-			.startsWith(sub.slice(0, Math.max(str.length - 1, 1))) ? str : null) != null
+			.startsWith(sub.slice(0, Math.max(str.length - 1, 1))+"|") ? str : null) != null
 		);
 	}
 
@@ -448,7 +448,9 @@ function parse_pathbuilder_export(data) {
 			features_to_parse.push(tempData);
 			featSubChoices.push({ "name": tempName, "value": subChoice });
 		} else {
-			unfoundData.push(data.feats[f][0]);
+			if(data.feats[f][0]!=null){
+				unfoundData.push(data.feats[f][0]);
+			}
 		}
 	}
 
@@ -485,7 +487,7 @@ function parse_pathbuilder_export(data) {
 			features_to_parse.push(tempData);
 			featSubChoices.push({ "name": tempName, "value": null });
 			foundSpecials.push(tempName);
-		} else if (tempData == null) {
+		} else if (tempData == null && tempName!=null) {
 			unfoundData.push(tempName);
 		}
 		data.specials[s] = tempName;
@@ -548,7 +550,7 @@ function parse_pathbuilder_export(data) {
 				}
 			}
 			itemData.system.id = trueID;
-		} else if (tempData == null) {
+		} else if (tempData == null && thisArmor.name!=null) {
 			unfoundData.push(thisArmor.name);
 		}
 	}
@@ -561,11 +563,6 @@ function parse_pathbuilder_export(data) {
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
 				let itemData = rest_call(tempData.fileURL);
-				//let success = parse_feature(tempData.baseName, itemData, characterData) != null;
-				//if (!success) {
-				//	unfoundData.push(thisWeapon.name);
-				//	continue;
-				//}
 				let trueID = tempData.id + String(Object.keys(characterData.inventory).length);
 				characterData.inventory[trueID] = itemData;
 				itemData.system.quantity = thisWeapon.qty;
@@ -612,7 +609,7 @@ function parse_pathbuilder_export(data) {
 				characterData.basicAttacks.push(newAttackData);
 			}
 		} else {
-			if (thisWeapon.name != "Fist") {
+			if (thisWeapon.name != "Fist" && thisWeapon.name!=null) {
 				unfoundData.push(thisWeapon.name);
 			}
 		}
@@ -685,7 +682,9 @@ function parse_pathbuilder_export(data) {
 				}
 			}
 		} else {
-			unfoundData.push(eqName);
+			if(eqName!=null){
+				unfoundData.push(eqName);
+			}
 		}
 	}
 
@@ -704,7 +703,9 @@ function parse_pathbuilder_export(data) {
 			} else if (ability != "Darkvision") {
 				MapTool.chat.broadcast("Couldn't find familiar ability " + ability);
 			} else {
-				unfoundData.push(ability);
+				if(ability!=null){
+					unfoundData.push(ability);
+				}
 			}
 		}
 	}

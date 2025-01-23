@@ -64,12 +64,12 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 
-	if (additionalData.variant == "elite" && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
+	if (additionalData.variant == "elite" && "action" in additionalData && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
 		addDamage = 2;
-	} else if (additionalData.variant == "weak" && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
+	} else if (additionalData.variant == "weak" && "action" in additionalData && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
 		addDamage = -2;
 	}
-	if (additionalData.action.system.description.value.toLowerCase().includes("recharge") || additionalData.action.type == "spell") {
+	if ("action" in additionalData && (additionalData.action.system.description.value.toLowerCase().includes("recharge") || additionalData.action.type == "spell")) {
 		addDamage = addDamage * 2;
 	}
 	//MapTool.chat.broadcast(JSON.stringify(parsed));

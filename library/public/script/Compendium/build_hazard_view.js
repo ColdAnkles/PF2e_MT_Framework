@@ -20,6 +20,14 @@ function build_hazard_view(itemName, tokenID = null) {
 
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
 
+	let additionalData = { "rollDice": false };
+	if (tokenID != null) {
+		additionalData.actor = token;
+	}
+
+	additionalData.level = itemData.level;
+	//additionalData.variant = itemData.foundryActor.variant;
+
 	let HTMLString = "";
 
 	try {
@@ -36,12 +44,12 @@ function build_hazard_view(itemName, tokenID = null) {
 		}
 
 		HTMLString += "<b>Complexity</b> " + ((itemData.isComplex) ? "Complex" : "Simple") + "<br />";
-		HTMLString += "<b>Stealth</b> DC " + String(itemData.stealth.dc) + " " + clean_description(itemData.stealth.details, true, true, true) + "<br />";
+		HTMLString += "<b>Stealth</b> DC " + String(itemData.stealth.dc) + " " + clean_description(itemData.stealth.details, true, true, true, additionalData) + "<br />";
 
-		HTMLString += "<b>Description</b> " + clean_description(itemData.description, true, true, true) + "<br />";
+		HTMLString += "<b>Description</b> " + clean_description(itemData.description, true, true, true, additionalData) + "<br />";
 		HTMLString += "<hr />";
 
-		HTMLString += "<b>Disable</b> " + clean_description(itemData.disable, true, true, true) + "<br />";
+		HTMLString += "<b>Disable</b> " + clean_description(itemData.disable, true, true, true, additionalData) + "<br />";
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_hazard_view during basic-step");
 		MapTool.chat.broadcast("itemName: " + itemName);

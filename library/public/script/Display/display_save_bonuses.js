@@ -3,16 +3,17 @@
 function display_save_bonuses(tokenID) {
 	let token = MapTool.tokens.getTokenByID(tokenID);
 
-	//let foundryActor = JSON.parse(token.getProperty("foundryActor"));
-	//if ("simple" in foundryActor && foundryActor.simple){
-	//	return "Fort: " + pos_neg_sign(token.getProperty("fortitude")) + ", Ref: " + pos_neg_sign(token.getProperty("reflex")) + ", Will: " + pos_neg_sign(token.getProperty("will"));
-	//}
-
 	let fortitude = Number(token.getProperty("fortitude"));
 	let will = Number(token.getProperty("will"));
 	let reflex = Number(token.getProperty("reflex"));
-	let eqArmor = get_equipped_armor(token);
+	let eqArmor = null;
 	//MapTool.chat.broadcast(String(token));
+
+	if (get_token_property_type(token)=="PF2E_Character"){
+		eqArmor = get_equipped_armor(token);
+	}else if (get_token_property_type(token)=="PF2E_Hazard"){
+		return "Fort: " + pos_neg_sign(fortitude) + ", Ref: " + pos_neg_sign(reflex) + ", Will: " + pos_neg_sign(will);
+	}
 
 	let armorResilient = 0;
 	if (eqArmor != null) {

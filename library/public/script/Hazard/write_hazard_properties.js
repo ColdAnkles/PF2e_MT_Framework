@@ -9,6 +9,8 @@ function write_hazard_properties(data, token) {
 		}
 	}
 
+	token.setName(data.name);
+
 	//__HEALTH__
 	token.setProperty("HP", data.maxHP);
 	token.setProperty("MaxHP", data.maxHP);
@@ -40,5 +42,11 @@ function write_hazard_properties(data, token) {
 	token.setProperty("isComplex", data.isComplex);
 	token.setProperty("hardness", data.hardness);
 	token.setProperty("traits", JSON.stringify(data.traits));
+
+	if ("foundryActor" in data && data.foundryActor != null) {
+		token.setProperty("foundryActor", JSON.stringify(data.foundryActor));
+	} else {
+		token.setProperty("foundryActor", JSON.stringify({}));
+	}
 
 }
