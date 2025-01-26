@@ -8,6 +8,7 @@ function filterTable() {
     if (maxLevel === "") { maxLevel = 100; }
     table = document.getElementById("filterTable");
 
+    let even = true;
     // Loop through all table rows, and hide those who don't match the search query
     for (let row of table.rows) {
         if (row.cells[0].id == "") {
@@ -18,6 +19,14 @@ function filterTable() {
         levelvalue = Number(row.cells[4].innerText);
         if (((txtValue.toUpperCase().indexOf(filter) > -1) || (sourcetxt.toUpperCase().indexOf(filter) > -1)) && (levelvalue >= minLevel && levelvalue <= maxLevel)) {
             row.style.display = "";
+            if (even) {
+                row.classList.remove("oddRow");
+                row.classList.add("evenRow");
+            } else {
+                row.classList.add("oddRow");
+                row.classList.remove("evenRow");
+            }
+            even = !even
         } else {
             row.style.display = "none";
         }

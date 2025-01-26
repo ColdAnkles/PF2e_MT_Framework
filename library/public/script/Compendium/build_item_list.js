@@ -63,10 +63,10 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
         }
 
         if (odd == 1) {
-            returnHTML += "<tr class=bg>";
+            returnHTML += "<tr class=oddRow>";
             odd = 0;
         } else {
-            returnHTML += "<tr class=>";
+            returnHTML += "<tr class=evenRow>";
             odd = 1;
         }
 

@@ -198,7 +198,7 @@ table {
   margin-right: auto;
 }
 
-tr{
+.evenRow{
   background-color: #342C19;
 }
 
@@ -227,7 +227,7 @@ td {
   padding: 4px 12px 4px 4px;
 }
 
-table tr:nth-child(2n+1) td {
+.oddRow {
   background-color: #64542F;
 }
 

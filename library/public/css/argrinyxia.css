@@ -197,7 +197,7 @@ table {
   margin-right: auto;
 }
 
-tr{
+.evenRow{
   background-color: #342C19;
 }
 
@@ -226,7 +226,7 @@ td {
   padding: 4px 12px 4px 4px;
 }
 
-table tr:nth-child(2n+1) td {
+.oddRow {
   background-color: #64542F;
 }
 
@@ -239,14 +239,3 @@ td a:link {
   font-style: normal;
   color: #ffffff;
 }
-
-/*
-table tr td:first-child,
-table tr th:first-child {
-  border-left: 0;
-}
-table tr td:last-child,
-table tr th:last-child {
-  border-right: 0;
-}
-*/

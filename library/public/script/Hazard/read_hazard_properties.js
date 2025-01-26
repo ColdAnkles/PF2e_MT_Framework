@@ -39,6 +39,8 @@ function read_hazard_properties(token) {
 	data.isComplex = token.getProperty("isComplex");
 	data.hardness = token.getProperty("hardness");
 	data.traits = JSON.parse(token.getProperty("traits"));
+	data.foundryActor = JSON.parse(token.getProperty("foundryActor"));
+	data.source = data.foundryActor.system.details.publication.title;
 
 	data.type = "hazard";
 

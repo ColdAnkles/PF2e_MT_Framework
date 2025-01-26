@@ -95,7 +95,7 @@ function parse_hazard(rawData, parseRaw = false) {
 			} else if (("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "action") || featureData.system.category == "offensive") {
 				hazardData.offensiveActions.push(featureData);
 			} else if ("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "reaction") {
-				hazardData.reactions.push(featureData);
+				hazardData.passiveDefenses.push(featureData);
 			}
 		}
 	} catch (e) {

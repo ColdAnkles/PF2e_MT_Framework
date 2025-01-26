@@ -58,10 +58,10 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
         }
 
         if (odd == 1) {
-            returnHTML += "<tr class=bg>";
+            returnHTML += "<tr class=oddRow>";
             odd = 0;
         } else {
-            returnHTML += "<tr class=>";
+            returnHTML += "<tr class=evenRow>";
             odd = 1;
         }
 

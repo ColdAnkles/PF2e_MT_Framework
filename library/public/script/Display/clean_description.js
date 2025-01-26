@@ -167,6 +167,10 @@ function parse_check(checkString, additionalData = { "variant": "normal" }) {
 
 	checkString = "";
 
+	if (data.length == 1){
+		return data[0];
+	}
+
 	for (var i in data) {
 		i = data[i];
 		if (i.includes("dc")) {

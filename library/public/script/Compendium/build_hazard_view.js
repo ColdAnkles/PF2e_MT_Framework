@@ -22,7 +22,7 @@ function build_hazard_view(itemName, tokenID = null) {
 
 	let additionalData = { "rollDice": false };
 	if (tokenID != null) {
-		additionalData.actor = token;
+		additionalData.actor = MapTool.tokens.getTokenByID(tokenID);
 	}
 
 	additionalData.level = itemData.level;
