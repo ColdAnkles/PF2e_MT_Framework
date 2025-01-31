@@ -11,6 +11,12 @@ function parse_item(itemData, parentObject) {
             parentObject.foundryActor.system.attributes.shield = itemData;
         }
     } else if (itemData.type == "melee" || itemData.type == "ranged") {
+        if (!("actionType" in itemData.system)) {
+            itemData.system.actionType = { "value": "free" };
+        }
+        if (!("actions" in itemData.system)) {
+            itemData.system.actions = { "value": null };
+        }
         parentObject.basicAttacks.push(itemData);
     } else if (itemData.type == "spellcastingEntry") {
         let newSpellEntry = { "name": itemData.name, "spells": [], "spellDC": itemData.system.spelldc.dc, "spellAttack": itemData.system.spelldc.value, "type": itemData.system.prepared.value, "description": itemData.system.description.value }

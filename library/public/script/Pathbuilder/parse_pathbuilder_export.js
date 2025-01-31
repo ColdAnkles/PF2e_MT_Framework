@@ -23,7 +23,7 @@ function parse_pathbuilder_export(data) {
 		sub = sub.toLowerCase();
 		return arr.filter(str => (str
 			.toLowerCase()
-			.startsWith(sub.slice(0, Math.max(str.length - 1, 1))+"|") ? str : null) != null
+			.startsWith(sub.slice(0, Math.max(str.length - 1, 1)) + "|") ? str : null) != null
 		);
 	}
 
@@ -448,7 +448,7 @@ function parse_pathbuilder_export(data) {
 			features_to_parse.push(tempData);
 			featSubChoices.push({ "name": tempName, "value": subChoice });
 		} else {
-			if(data.feats[f][0]!=null){
+			if (data.feats[f][0] != null) {
 				unfoundData.push(data.feats[f][0]);
 			}
 		}
@@ -487,7 +487,7 @@ function parse_pathbuilder_export(data) {
 			features_to_parse.push(tempData);
 			featSubChoices.push({ "name": tempName, "value": null });
 			foundSpecials.push(tempName);
-		} else if (tempData == null && tempName!=null) {
+		} else if (tempData == null && tempName != null) {
 			unfoundData.push(tempName);
 		}
 		data.specials[s] = tempName;
@@ -550,7 +550,7 @@ function parse_pathbuilder_export(data) {
 				}
 			}
 			itemData.system.id = trueID;
-		} else if (tempData == null && thisArmor.name!=null) {
+		} else if (tempData == null && thisArmor.name != null) {
 			unfoundData.push(thisArmor.name);
 		}
 	}
@@ -609,7 +609,7 @@ function parse_pathbuilder_export(data) {
 				characterData.basicAttacks.push(newAttackData);
 			}
 		} else {
-			if (thisWeapon.name != "Fist" && thisWeapon.name!=null) {
+			if (thisWeapon.name != "Fist" && thisWeapon.name != null) {
 				unfoundData.push(thisWeapon.name);
 			}
 		}
@@ -682,7 +682,7 @@ function parse_pathbuilder_export(data) {
 				}
 			}
 		} else {
-			if(eqName!=null){
+			if (eqName != null) {
 				unfoundData.push(eqName);
 			}
 		}
@@ -703,7 +703,7 @@ function parse_pathbuilder_export(data) {
 			} else if (ability != "Darkvision") {
 				MapTool.chat.broadcast("Couldn't find familiar ability " + ability);
 			} else {
-				if(ability!=null){
+				if (ability != null) {
 					unfoundData.push(ability);
 				}
 			}

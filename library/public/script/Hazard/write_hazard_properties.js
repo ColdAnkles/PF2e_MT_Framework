@@ -48,5 +48,27 @@ function write_hazard_properties(data, token) {
 	} else {
 		token.setProperty("foundryActor", JSON.stringify({}));
 	}
+	if ("activeEffects" in data && data.activeEffects != null) {
+		token.setProperty("activeEffects", JSON.stringify(data.activeEffects));
+	} else {
+		token.setProperty("activeEffects", JSON.stringify({}));
+	}
+	if ("specialEffects" in data && data.specialEffects != null) {
+		token.setProperty("specialEffects", JSON.stringify(data.specialEffects));
+	} else {
+		token.setProperty("specialEffects", JSON.stringify({}));
+	}
+	if ("conditionDetails" in data && data.conditionDetails != null) {
+		token.setProperty("conditionDetails", JSON.stringify(data.conditionDetails));
+	} else {
+		token.setProperty("conditionDetails", JSON.stringify({}));
+	}
+	if ("passiveSkills" in data && data.passiveSkills != null) {
+		token.setProperty("passiveSkills", JSON.stringify(data.passiveSkills));
+	} else {
+		token.setProperty("passiveSkills", JSON.stringify([]));
+	}
+
+
 
 }

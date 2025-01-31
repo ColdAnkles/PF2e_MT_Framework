@@ -11,7 +11,7 @@ function calculate_ac(tokenID) {
 		base_ac = Number(token.getProperty("ac"));
 	}
 
-	if (get_token_property_type(token)=="PF2E_Hazard"){
+	if (get_token_property_type(token) == "PF2E_Hazard") {
 		return Number(token.getProperty("ac"));
 	}
 

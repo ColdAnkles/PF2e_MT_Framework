@@ -1,4 +1,6 @@
-h1.title, .hd-1, h1.feel-title {
+h1.title,
+.hd-1,
+h1.feel-title {
   margin-bottom: 10px;
   margin-left: -2px;
   color: #cbc18f;
@@ -10,7 +12,8 @@ h1.title, .hd-1, h1.feel-title {
   vertical-align: middle;
 }
 
-h1, .hd-1 {
+h1,
+.hd-1 {
   font-size: 1.75em;
   margin-bottom: 0.00em;
   margin-top: 1.00em;
@@ -20,7 +23,8 @@ h1, .hd-1 {
   font-variant: small-caps;
 }
 
-h3, .hd-3 {
+h3,
+.hd-3 {
   font-size: 1.50em;
   margin-bottom: 0.00em;
   margin-top: 1.00em;
@@ -30,7 +34,8 @@ h3, .hd-3 {
   font-variant: small-caps;
 }
 
-h3, .hd-3 {
+h3,
+.hd-3 {
   font-size: 1.25em;
   margin-bottom: 0.00em;
   margin-top: 1.00em;
@@ -40,7 +45,8 @@ h3, .hd-3 {
   font-variant: small-caps;
 }
 
-.title, .feel-title {
+.title,
+.feel-title {
   display: flex;
   justify-content: flex-start;
   white-space: nowrap;
@@ -48,8 +54,8 @@ h3, .hd-3 {
 }
 
 img {
-	/*filter: invert(1);*/
-	vertical-align: middle;
+  /*filter: invert(1);*/
+  vertical-align: middle;
 }
 
 hr {
@@ -57,20 +63,22 @@ hr {
 }
 
 body {
-	background-color: #DBD0BC;
-	color: black;
-	line-height:24px;
-	margin-right: 1.00em;
+  background-color: #DBD0BC;
+  color: black;
+  line-height: 24px;
+  margin-right: 1.00em;
 }
 
-a:link {  
+a:link {
   font-style: italic;
-  color: #0000ff;;
+  color: #0000ff;
+  ;
 }
 
 .ext-link {
   font-style: italic;
-  color: #0000ff;;
+  color: #0000ff;
+  ;
 }
 
 .trait {
@@ -181,7 +189,7 @@ a:link {
   margin: 0.1em 0;
 }
 
-tbody:first-child tr:first-child td{
+tbody:first-child tr:first-child td {
   border-top: 1px solid black;
 }
 
@@ -197,11 +205,12 @@ table {
   margin-right: auto;
 }
 
-.evenRow{
+.evenRow {
   background-color: #ede3c7;
 }
 
-td:first-child, th:first-child {
+td:first-child,
+th:first-child {
   border-left: 1px solid black;
 }
 
@@ -230,12 +239,20 @@ td {
   background-color: #F4EEE0;
 }
 
-th a:link{
+th a:link {
   font-style: normal;
   color: #cbc18f;
 }
 
-td a:link {  
+td a:link {
   font-style: normal;
   color: black;
+}
+
+.staticTable tr {
+  background-color: #ede3c7;
+}
+
+.staticTable tr:nth-child(2n+1) td {
+  background-color: #F4EEE0;
 }

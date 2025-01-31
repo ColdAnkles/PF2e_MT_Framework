@@ -156,6 +156,7 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 }
 
 function parse_check(checkString, additionalData = { "variant": "normal" }) {
+	let skillList = ["acrobatics", "arcana", "athletics", "crafting", "deception", "diplomacy", "intimidation", "medicine", "nature", "occultism", "performance", "religion", "society", "stealth", "survival", "thievery"]
 	let parsed = parse_foundry_strings(checkString);
 	let data = parsed.bracketContents.split("|");
 	let dcMod = 0;
@@ -165,18 +166,28 @@ function parse_check(checkString, additionalData = { "variant": "normal" }) {
 		dcMod = -2;
 	}
 
+	//MapTool.chat.broadcast(JSON.stringify(parsed));
+	//MapTool.chat.broadcast(JSON.stringify(data));
+
 	checkString = "";
 
-	if (data.length == 1){
+	if (data.length == 1) {
 		return data[0];
 	}
+
+	let checkDC = ""
+	let checkSkill = ""
 
 	for (var i in data) {
 		i = data[i];
 		if (i.includes("dc")) {
-			checkString += "DC " + String(Number(i.split(":")[1]) + dcMod) + " ";
+			checkDC = "DC " + String(Number(i.split(":")[1]) + dcMod) + " ";
+		} else if (skillList.includes(i)) {
+			checkSkill = i.charAt(0).toUpperCase() + i.slice(1) + " ";
 		}
 	}
+
+	checkString = checkDC + checkSkill;
 
 	if (data.includes("basic")) {
 		checkString += "basic "
@@ -473,6 +484,8 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		let replaceString = parse_roll(roll_matches[m], additionalData);
 		cleanDescription = cleanDescription.replaceAll(roll_matches[m], replaceString);
 	}
+
+	cleanDescription = cleanDescription.replaceAll(/\[\[\/act.*\]\]{(.*)}/g, "$1");
 
 	cleanDescription = cleanDescription.replaceAll("emanation Aura", "Aura");
 

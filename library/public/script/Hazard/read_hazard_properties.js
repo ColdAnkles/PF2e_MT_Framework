@@ -41,6 +41,10 @@ function read_hazard_properties(token) {
 	data.traits = JSON.parse(token.getProperty("traits"));
 	data.foundryActor = JSON.parse(token.getProperty("foundryActor"));
 	data.source = data.foundryActor.system.details.publication.title;
+	data.specialEffects = JSON.parse(token.getProperty("specialEffects"));
+	data.activeEffects = JSON.parse(token.getProperty("activeEffects"));
+	data.conditionDetails = JSON.parse(token.getProperty("conditionDetails"));
+	data.passiveSkills = JSON.parse(token.getProperty("passiveSkills"));
 
 	data.type = "hazard";
 

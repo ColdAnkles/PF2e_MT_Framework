@@ -2,11 +2,9 @@
 
 function create_hazard(newHazardID, hazardName) {
 	let newToken = MapTool.tokens.getTokenByID(newHazardID);
-	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
 	let property = JSON.parse(read_data("pf2e_hazard"));
 	let hazardData = property[hazardName];
-	try{
+	try {
 		if ("fileURL" in hazardData) {
 			hazardData = rest_call(hazardData["fileURL"], "");
 		}
@@ -41,6 +39,8 @@ function create_hazard(newHazardID, hazardName) {
 	}
 
 	createMacro({ "label": "Character Sheet", "playerEditable": 0, "command": "[r: ca.pf2e.Hazard_View_Frame(json.set(\"{}\",\"name\",getName(),\"tokenID\",myID))]", "tooltip": "View Character Sheet", "sortBy": "", "group": "Common" }, newHazardID);
+	let tooltipDescription = share_hazard(newHazardID, "all", false);
+	createMacro({ "label": "Hazard Details", "playerEditable": 0, "command": "[r: js.ca.pf2e.share_hazard(myID,\"all\")]", "tooltip": tooltipDescription, "sortBy": "", "group": "Common" }, newHazardID);
 }
 
 MTScript.registerMacro("ca.pf2e.create_hazard", create_hazard);

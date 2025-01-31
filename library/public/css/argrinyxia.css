@@ -239,3 +239,11 @@ td a:link {
   font-style: normal;
   color: #ffffff;
 }
+
+.staticTable tr {
+  background-color: #342C19;
+}
+
+.staticTable tr:nth-child(2n+1) td {
+  background-color: #64542F;
+}

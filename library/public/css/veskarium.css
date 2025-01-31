@@ -249,3 +249,11 @@ table tr td:last-child,
 table tr th:last-child {
   border-right: 0;
 }
+
+.staticTable tr {
+  background-color: #342C19;
+}
+
+.staticTable tr:nth-child(2n+1) td {
+  background-color: #64542F;
+}
