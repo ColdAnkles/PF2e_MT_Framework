@@ -17,7 +17,7 @@ function parse_item(itemData, parentObject) {
         if (!("actions" in itemData.system)) {
             itemData.system.actions = { "value": null };
         }
-        if ("weaponType" in itemData.system && "value" in itemData.system.weaponType){
+        if ("weaponType" in itemData.system && "value" in itemData.system.weaponType) {
             itemData.type = itemData.system.weaponType.value;
         }
         parentObject.basicAttacks.push(itemData);

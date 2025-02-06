@@ -487,6 +487,8 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	cleanDescription = cleanDescription.replaceAll(/\[\[\/act.*\]\]{(.*)}/g, "$1");
 
+	cleanDescription = cleanDescription.replaceAll(/\[(.*)\|.*\]/g, " $1 ");
+
 	cleanDescription = cleanDescription.replaceAll("emanation Aura", "Aura");
 
 	cleanDescription = cleanDescription.replaceAll("<span class=\"pf2-icon\">1</span>", icon_img("1action"));

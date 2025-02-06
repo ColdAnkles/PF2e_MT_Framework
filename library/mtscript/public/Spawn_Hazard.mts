@@ -10,3 +10,4 @@
 [h: js.ca.pf2e.create_hazard(newToken, tokenName)]
 [h: setProperty("myID", newToken, newToken)]
 [h: setHasSight(0, newToken)]
+[h: setVisible(0, newToken)]

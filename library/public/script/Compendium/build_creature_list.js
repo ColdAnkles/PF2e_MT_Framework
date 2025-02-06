@@ -21,9 +21,9 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
 
     returnHTML += "<script src='lib://ca.pf2e/html/filterTable.js'></script> <form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
     <div><input name='searchKey' id='filterText' placeholder='Search' value='"+ searchKey + "'></input>\
-    <input name='minLevel' id='minLevel' placeholder='Minimum Level' value='"+ minLevel + "'></input>\
-    <input name='maxLevel' id='maxLevel' placeholder='Maximum Level' value='"+ maxLevel + "'></input>\
-    <input id='filterButton' type='button' value='Filter' onclick='filterTable();' />\
+    <input name='minLevel' id='minLevel' placeholder='Minimum Level' value='"+ minLevel + "' style='font-family:Arial;'></input>\
+    <input name='maxLevel' id='maxLevel' placeholder='Maximum Level' value='"+ maxLevel + "' style='font-family:Arial;'></input>\
+    <input id='filterButton' type='button' value='Filter' onclick='filterTable();' style='font-family:Arial;' />\
     <input type='hidden' name='window' value='creatures'></input>\
     <input type='hidden' name='sort' value='"+ sortKey + "'></input>\
     <input type='hidden' name='dir' value='"+ sortDir + "'></input></div></form>";

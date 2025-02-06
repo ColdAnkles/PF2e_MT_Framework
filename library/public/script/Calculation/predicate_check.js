@@ -32,7 +32,7 @@ function predicate_check(predicate, predicateScopes, actor, item) {
         for (var c in contents) {
             results.push(predicate_check(contents[c], predicateScopes, actor, item))
         }
-        let finalResult = true;
+        let finalResult = false;
         for (var r in results) {
             finalResult = (finalResult || results[r]);
         }
