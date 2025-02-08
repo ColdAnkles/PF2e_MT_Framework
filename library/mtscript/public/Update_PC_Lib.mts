@@ -21,4 +21,4 @@
 		[h: setSightType(js.ca.pf2e.capitalise(sense),tokenID,"Player Characters")]
 	};{}]
 }]
-[h: js.ca.update_my_tokens(tokenID)]
+[h: js.ca.pf2e.update_my_tokens(tokenID)]

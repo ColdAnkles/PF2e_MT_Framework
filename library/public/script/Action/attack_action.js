@@ -6,6 +6,7 @@ function attack_action(actionData, actingToken) {
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
 	let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
 	if (isNaN(currentAttackCount)) {
@@ -96,7 +97,7 @@ function attack_action(actionData, actingToken) {
 	MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 	let dTwenty = Number(MTScript.getVariable("dTwenty"));
 
-	let dTwentyColour = "black";
+	let dTwentyColour = themeData.colours.standardText;
 	if (dTwenty == 1) {
 		dTwentyColour = "red";
 	} else if (dTwenty == 20) {

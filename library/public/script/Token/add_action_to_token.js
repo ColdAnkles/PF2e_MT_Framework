@@ -254,7 +254,7 @@ function add_action_to_token(actionData, tokenID, token) {
 				spellLabel += " (" + String(actionData.system.castLevel.value) + ")";
 			}
 
-			let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.cast_spell(\"" + spellName + "\"," + actionData.system.castLevel.value + ",\"" + actionData.system.group.value + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": String(sortNum), "group": actionData.system.group.value };
+			let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.cast_spell(\"" + spellName + "|" + lookupSpell.source + "\"," + actionData.system.castLevel.value + ",\"" + actionData.system.group.value + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": String(sortNum), "group": actionData.system.group.value };
 
 			//MapTool.chat.broadcast(JSON.stringify(props));
 			createMacro(props, tokenID);

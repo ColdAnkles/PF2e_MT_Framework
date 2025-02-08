@@ -28,17 +28,17 @@ function change_hp(tokenID, changeHPData = null) {
 		queryHTML = queryHTML + "<input type='hidden' name='tokenID' value='" + tokenID + "'>";
 
 		queryHTML = queryHTML + "<tr><td colspan=2><b>Damage, Healing, and Temporary HP</b></td></tr>";
-		queryHTML = queryHTML + "<tr><td>Number of Hit Points to heal, hurt, or add as temporary HP:</td><td><input type='text' name='hpChangeVal' value='0'></td></tr>";
+		queryHTML = queryHTML + "<tr><td>Number of Hit Points to heal, hurt, or add as temporary HP:</td><td><input type='text' style='font-family: Arial;' name='hpChangeVal' value='0'></td></tr>";
 		queryHTML = queryHTML + "<tr><td>Is the character taking lethal or nonlethal damage, being healed or gaining temporary HP?</td><td><input type='radio' name='hpChangeType' value='lethal' checked='checked'>Lethal Damage<br /><input type='radio' name='hpChangeType' value='nonlethal' >Nonlethal Damage<br /><input type='radio' name='hpChangeType' value='healing'>Healing<br /><input type='radio' name='hpChangeType' value='tempHP'>Temp HP</td></tr>";
 
 		queryHTML = queryHTML + "<tr><td colspan=2><b>Current HP is " + String(tokenCurrentHP) + "/" + String(tokenCurrentMaxHP) + "</td></tr>";
-		queryHTML = queryHTML + "<tr><td>Enter new current HP value (if desired)</td><td><input type='text' name='currentHPChange' value='" + tokenCurrentHP + "'></td></tr>";
+		queryHTML = queryHTML + "<tr><td>Enter new current HP value (if desired)</td><td><input type='text' name='currentHPChange' style='font-family: Arial;' value='" + tokenCurrentHP + "'></td></tr>";
 
 		queryHTML = queryHTML + "<tr><td colspan=2><b>Current Temporary HP is " + String(tokenCurrentTempHP) + "</td></tr>";
-		queryHTML = queryHTML + "<tr><td>Enter new current Temporary HP value (if desired)</td><td><input type='text' name='currentTempHPChange' value='" + tokenCurrentTempHP + "'></td></tr>";
+		queryHTML = queryHTML + "<tr><td>Enter new current Temporary HP value (if desired)</td><td><input type='text' name='currentTempHPChange' style='font-family: Arial;' value='" + tokenCurrentTempHP + "'></td></tr>";
 
 		queryHTML = queryHTML + "<tr><td colspan=2><b>Current Maximum HP is " + String(tokenCurrentMaxHP) + "</td></tr>";
-		queryHTML = queryHTML + "<tr><td>Enter new current Maximum HP value (if desired)</td><td><input type='text' name='currentMaxHPChange' value='" + tokenCurrentMaxHP + "'></td></tr>";
+		queryHTML = queryHTML + "<tr><td>Enter new current Maximum HP value (if desired)</td><td><input type='text' name='currentMaxHPChange' style='font-family: Arial;' value='" + tokenCurrentMaxHP + "'></td></tr>";
 
 		queryHTML = queryHTML + "<tr><td colspan='2' style='text-align:right;'><input type='submit' name='changeHPSubmit' value='Submit'><input type='submit' name='changeHPSubmit' value='Cancel'></td></tr>";
 

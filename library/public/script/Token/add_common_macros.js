@@ -27,7 +27,7 @@ function add_common_macros(tokenID, isSimple = false) {
 
         if (get_token_type(tokenID) == "PC") {
             let PCMacros = [
-                { "label": "Recall Knowledge", "playerEditable": 0, "command": "[h: js.ca.pf2e.simple_action(\"Recall Knowledge\",currentToken())]", "tooltip": "Recall Knowledge", "sortBy": "", "group": "1. Common" }]
+                { "label": "Recall Knowledge", "playerEditable": 0, "command": "[h: js.ca.pf2e.simple_action(\"Recall Knowledge|Pathfinder Player Core\",currentToken())]", "tooltip": "Recall Knowledge", "sortBy": "", "group": "1. Common" }]
             for (var m in PCMacros) {
                 createMacro(PCMacros[m], tokenID);
             }

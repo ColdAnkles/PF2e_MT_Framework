@@ -256,3 +256,18 @@ td a:link {
 .staticTable tr:nth-child(2n+1) td {
   background-color: #F4EEE0;
 }
+
+input {
+  font-family: Arial;
+  font-size: 14;
+}
+
+select {
+  font-family: Arial;
+  font-size: 14;
+}
+
+textarea {
+  font-family: Arial;
+  font-size: 14;
+}

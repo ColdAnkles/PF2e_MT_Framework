@@ -17,11 +17,11 @@ MTScript.registerMacro("ca.pf2e.get_pathbuilder_export_via_id", get_pathbuilder_
 
 "use strict";
 
-function get_patbuilder_export_via_input() {
+function get_pathbuilder_export_via_input() {
 	MTScript.evalMacro("[h: input(\"pbData|Enter JSON|Pathbuilder JSON\")]")
 	let pbData = JSON.parse(MTScript.getVariable("pbData")).build;
 	let parsed = parse_pathbuilder_export(pbData);
 	return parsed;
 }
 
-MTScript.registerMacro("ca.pf2e.get_patbuilder_export_via_input", get_patbuilder_export_via_input);
+MTScript.registerMacro("ca.pf2e.get_pathbuilder_export_via_input", get_pathbuilder_export_via_input);

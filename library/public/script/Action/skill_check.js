@@ -83,7 +83,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 
 
-			queryHTML += "<table width=100%><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+			queryHTML += "<table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
 			queryHTML += "<input type='hidden' name='checkTokenID' value='" + checkToken.getId() + "'>";
 			queryHTML += "<input type='hidden' name='tokenType' value='" + tokenType + "'>";
 			queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
@@ -100,7 +100,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			queryHTML += "</select></td>";
 
 			if (altStat) {
-				queryHTML += "<td>Attribute:</td><td><select name='statName'>";
+				queryHTML += "<td>Attribute:</td><td colspan=2><select name='statName'>";
 				for (var s in statStrings) {
 					queryHTML += "<option value='" + statStrings[s].name + "'>" + statStrings[s].string + "</option>";
 				}
@@ -216,7 +216,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
 			}
 
-			let dTwentyColour = "black";
+			let dTwentyColour = themeData.colours.standardText;
 			if (dTwenty == 1) {
 				dTwentyColour = "red";
 			} else if (dTwenty == 20) {

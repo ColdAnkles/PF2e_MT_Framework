@@ -1,22 +1,13 @@
 "use strict";
 
 function spell_action(actionData, actingToken) {
-	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
-	let property = JSON.parse(read_data("pf2e_spell"));
-
-	if (!(actionData.name in property)) {
-		MapTool.chat.broadcast("<h2>Could not find spell " + actionData.name + "</h2>");
-		return;
-	}
+	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
 	let spellData = actionData.system.rawSpellData;
-	//let spellData = property[actionData.name];
 	let spellBaseName = spellData.baseName;
 	if ("fileURL" in spellData) {
 		spellData = rest_call(spellData["fileURL"], "");
 	}
-	//spellData = parse_spell(spellBaseName, spellData);
 
 	if (typeof (actingToken) == "string") {
 		actingToken = MapTool.tokens.getTokenByID(actingToken);
@@ -195,7 +186,7 @@ function spell_action(actionData, actingToken) {
 				effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
 			displayData.system.appliedEffects = effect_bonus_raw.appliedEffects;
 
-			let dTwentyColour = "black";
+			let dTwentyColour = themeData.colours.standardText;
 			if (dTwenty == 1) {
 				dTwentyColour = "red";
 			} else if (dTwenty == 20) {

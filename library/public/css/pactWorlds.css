@@ -256,3 +256,18 @@ table tr th:last-child {
 .staticTable tr:nth-child(2n+1) td {
   background-color: #d1d2d2;
 }
+
+input {
+  font-family: Arial;
+  font-size: 14;
+}
+
+select {
+  font-family: Arial;
+  font-size: 14;
+}
+
+textarea {
+  font-family: Arial;
+  font-size: 14;
+}

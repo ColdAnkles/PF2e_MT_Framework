@@ -6,7 +6,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
 	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
-	additionalData.invertImages = false;
+	additionalData.invertImages = themeData.icons == "W";
 
 	let outputText = "<div style='padding:2px 5px 5px 5px; background-color:" + themeData.colours.standardBackground + ";width:500px'>";
 	outputText = outputText + "<table style='width:100%;padding: 4px 0px;'><tr height=20px style='background-color: " + themeData.colours.titleBackground + ";'><td><h1 style='color: " + themeData.colours.titleText + ";line-height: 1em;vertical-align: middle;font-variant: small-caps;'>";
