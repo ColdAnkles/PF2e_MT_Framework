@@ -8,6 +8,9 @@ function selector_inheritance(selector) {
 
 	for (var e in selector) {
 		//MapTool.chat.broadcast(selector[e]);
+		if (selector[e] == "all") {
+			finalSelector = finalSelector.concat(["saving-throw", "perception-initiative", "perception", "initiative", "fortitude", "reflex", "will", "ac"]);
+		}
 		if (selector[e] == "str-based") {
 			finalSelector = finalSelector.concat(["melee-attack"]);
 		}

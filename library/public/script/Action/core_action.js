@@ -128,7 +128,7 @@ function core_action(actionData, actingToken) {
 
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		try {
-			if (!(isNaN(initiative)) && ("spendAction" in actionData && actionData.spendAction)) {
+			if (!(isNaN(initiative)) && ("spendAction" in actionData.system && actionData.system.spendAction)) {
 				if ("actionType" in actionData.system && actionData.system.actionType.value == "action" && "actions" in actionData.system) {
 					actingToken.setProperty("actionsLeft", String(actionsLeft - actionData.system.actions.value));
 				} else if (actionData.type == "melee" || actionData.type == "ranged") {

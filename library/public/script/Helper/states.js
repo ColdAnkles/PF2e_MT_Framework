@@ -44,7 +44,7 @@ function get_state(stateName, tokenID) {
 	let tokenName = token.getName();
 	if (get_token_type(tokenID) == "PC") {
 		if (!tokenName.includes("Lib:")) {
-			return get_state(token.getProperty("myID"), tokenID);
+			return get_state(stateName, token.getProperty("myID"));
 		} else {
 			return token.getState(stateName);
 		}

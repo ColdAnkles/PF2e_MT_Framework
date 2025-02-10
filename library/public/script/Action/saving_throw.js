@@ -156,7 +156,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 				dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
 			}
 
-			let dTwentyColour = "black";
+			let dTwentyColour = themeData.colours.standardText;
 			if (dTwenty == 1) {
 				dTwentyColour = "red";
 			} else if (dTwenty == 20) {

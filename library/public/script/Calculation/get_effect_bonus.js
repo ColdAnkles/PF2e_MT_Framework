@@ -1,9 +1,9 @@
 "use strict";
 
 function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
-	if (!(bonusScopes.includes("all"))) {
-		bonusScopes.push("all");
-	}
+	//if (!(bonusScopes.includes("all"))) {
+	//	bonusScopes.push("all");
+	//}
 	//MapTool.chat.broadcast(effectData.name)
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));

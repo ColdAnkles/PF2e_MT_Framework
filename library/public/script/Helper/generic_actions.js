@@ -33,30 +33,47 @@ function generic_refund_action(token) {
 MTScript.registerMacro("ca.pf2e.generic_refund_action", generic_refund_action);
 
 function add_hero_point(token) {
-	let pointStates = { 1: get_state("HeroPoint_1", token), 2: get_state("HeroPoint_2", token), 3: get_state("HeroPoint_3", token) };
+	let pointStates = null;
 	let gained = false;
-	if (pointStates[2]) {
-		set_state("HeroPoint_3", true, token);
-		set_state("HeroPoint_2", false, token);
-		set_state("HeroPoint_1", false, token);
-		gained = true;
-	} else if (pointStates[1]) {
-		set_state("HeroPoint_3", false, token);
-		set_state("HeroPoint_2", true, token);
-		set_state("HeroPoint_1", false, token);
-		gained = true;
-	} else if (!(pointStates[1]) && !(pointStates[2]) && !(pointStates[3])) {
-		set_state("HeroPoint_3", false, token);
-		set_state("HeroPoint_2", false, token);
-		set_state("HeroPoint_1", true, token);
-		gained = true;
+	try {
+		pointStates = { 1: get_state("HeroPoint_1", token), 2: get_state("HeroPoint_2", token), 3: get_state("HeroPoint_3", token) };
+	} catch (e) {
+		MapTool.chat.broadcast("Error in add_hero_point during get_current");
+		MapTool.chat.broadcast("token: " + String(token));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
+
+	try {
+		if (pointStates[2]) {
+			set_state("HeroPoint_3", true, token);
+			set_state("HeroPoint_2", false, token);
+			set_state("HeroPoint_1", false, token);
+			gained = true;
+		} else if (pointStates[1]) {
+			set_state("HeroPoint_3", false, token);
+			set_state("HeroPoint_2", true, token);
+			set_state("HeroPoint_1", false, token);
+			gained = true;
+		} else if (!(pointStates[1]) && !(pointStates[2]) && !(pointStates[3])) {
+			set_state("HeroPoint_3", false, token);
+			set_state("HeroPoint_2", false, token);
+			set_state("HeroPoint_1", true, token);
+			gained = true;
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in add_hero_point during update points");
+		MapTool.chat.broadcast("casterToken: " + String(token));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
 	}
 
 	if (gained) {
-		chat_display({ "name": "Hero Point", "description": token.getName() + " gains a hero point!" });
+		chat_display({ "name": "Hero Point", "system": { "description": { "value": token.getName() + " gains a hero point!" } } });
 	}
 }
 
@@ -85,7 +102,7 @@ function use_hero_point(token) {
 		token = MapTool.tokens.getTokenByID(token);
 	}
 	if (used) {
-		chat_display({ "name": "Hero Point", "description": token.getName() + " uses a hero point!<br />New Roll: " + String(roll_dice("1d20")) });
+		chat_display({ "name": "Hero Point", "system": { "description": { "value": token.getName() + " uses a hero point!<br />New Roll: " + String(roll_dice("1d20")) } } });
 	}
 }
 

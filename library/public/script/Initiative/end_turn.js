@@ -24,7 +24,7 @@ function end_turn(turnToken, forwards = true) {
 	let decrementConditions = ["Frightened"];
 	try {
 		for (var cond of decrementConditions) {
-			if (cond in tokenConditions && tokenConditions[cond].autoDecrease) {
+			if (cond in tokenConditions && tokenConditions[cond].system.autoDecrease) {
 				set_condition(cond, turnToken, tokenConditions[cond].value.value - 1, true);
 			}
 		}

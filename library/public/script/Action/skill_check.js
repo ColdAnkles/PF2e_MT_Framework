@@ -262,7 +262,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				//MapTool.chat.broadcast(String(applyAssurance));
 				if (applyAssurance) {
 					dTwenty = 10;
-					dTwentyColour = "black";
+					dTwentyColour = themeData.colours.standardText;
 					effect_bonus = 0;
 					misc_bonus = 0;
 					stat_bonus = 0;
