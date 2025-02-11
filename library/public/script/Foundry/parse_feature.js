@@ -9,8 +9,8 @@ function parse_feature(featureName, feature, assignDict = null) {
 	//MapTool.chat.broadcast(JSON.stringify(itemData));
 	//MapTool.chat.broadcast(String(simpleReturn));
 
-	if (featureName != null && assignDict != null && "allFeatures" in assignDict && itemData.type == "feat") {
-		assignDict.allFeatures.push(featureName);
+	if (featureName != null && assignDict != null && "features" in assignDict && itemData.type == "feat") {
+		assignDict.features.push(featureName);
 	}
 
 	if (itemData.type == "feat" || (itemData.type == "heritage" && "actionType" in itemData.system)) {

@@ -87,6 +87,12 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             } else if (intersect.length > 1) {
                 choices = intersect;
             }
+            for (var c in choices) {
+                if (choices[c].includes(".pf2e.")) {
+                    let choiceSplit = choices[c].split(".");
+                    choices[c] = choiceSplit[choiceSplit.length - 1];
+                }
+            }
             //MapTool.chat.broadcast(String(choiceResult));
             try {
                 if (choiceResult == null && choices.length > 0) {
@@ -111,6 +117,11 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                     assignDict.flags.pf2e.rulesSelections[choiceFlag].push(choiceResult.toLowerCase());
                 } else {
                     assignDict.flags.pf2e.rulesSelections[choiceFlag] = [choiceResult.toLowerCase()];
+                }
+                if ("rollOption" in newRule && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && newRule.rollOption in assignDict.flags.pf2e.rulesSelections) {
+                    assignDict.flags.pf2e.rulesSelections[newRule.rollOption].push(choiceResult.toLowerCase());
+                } else if ("rollOption" in newRule) {
+                    assignDict.flags.pf2e.rulesSelections[newRule.rollOption] = [choiceResult.toLowerCase()];
                 }
                 chosenValues.push(choiceResult);
             } catch (e) {

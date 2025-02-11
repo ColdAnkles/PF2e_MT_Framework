@@ -499,21 +499,22 @@ function parse_pathbuilder_export(data) {
 		//MapTool.chat.broadcast(JSON.stringify(featureData))
 		if ("fileURL" in featureData) {
 			featureData = rest_call(featureData.fileURL);
-			characterData.features[featureData.name] = featureData;
-			//MapTool.chat.broadcast(JSON.stringify(featureData));
-			//MapTool.chat.broadcast(featureData.baseName);
-			if (featureData != null && "rules" in featureData.system && featureData.system.rules != null && featureData.system.rules.length > 0) {
-				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
-				//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
-				feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
-				feature_cause_definition(featureData, characterData);
-				let newAttacks = rules_grant_attack(featureData.system.rules);
-				for (var a in newAttacks) {
-					let newAttack = newAttacks[a];
-					newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
-				}
-				grantedAttacks = grantedAttacks.concat(newAttacks);
+		}
+		characterData.features[featureData.name] = featureData;
+		//MapTool.chat.broadcast(JSON.stringify(featureData));
+		//MapTool.chat.broadcast(featureData.baseName);
+		if (featureData != null && "rules" in featureData.system && featureData.system.rules != null && featureData.system.rules.length > 0) {
+			//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
+			//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
+			let choice = feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
+			data.specials = data.specials.filter(item => !choice.includes(item))
+			feature_cause_definition(featureData, characterData);
+			let newAttacks = rules_grant_attack(featureData.system.rules);
+			for (var a in newAttacks) {
+				let newAttack = newAttacks[a];
+				newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
 			}
+			grantedAttacks = grantedAttacks.concat(newAttacks);
 		}
 	}
 	characterData.basicAttacks = characterData.basicAttacks.concat(grantedAttacks);
