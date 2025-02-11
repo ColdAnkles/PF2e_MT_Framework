@@ -8,7 +8,7 @@ function predicate_check(predicate, predicateScopes, actor, item) {
     let actorFeats = [];
 
     if (actor != null) {
-        actorFeats = JSON.parse(actor.getProperty("allFeatures"));
+        actorFeats = JSON.parse(actor.getProperty("features"));
     }
 
     function predicate_and(contents, predicateScopes, actor) {
@@ -110,7 +110,7 @@ function predicate_check(predicate, predicateScopes, actor, item) {
             //MapTool.chat.broadcast(pText);
             if (pText.match(/^feat:/)) {
                 let featSlug = pText.split(":")[1];
-                predicate_resolution = predicate_resolution && actorFeats.includes(featSlug);
+                predicate_resolution = predicate_resolution && featSlug in actorFeats;
             } else if (pText.match(/^item:/) && item != null) {
                 //MapTool.chat.broadcast(JSON.stringify(item));
                 let slug = pText.split(":")[1];
