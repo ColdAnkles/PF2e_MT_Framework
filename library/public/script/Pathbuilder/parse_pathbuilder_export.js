@@ -28,65 +28,73 @@ function parse_pathbuilder_export(data) {
 	}
 
 	function find_object_data(objectName, searchSet = ["all"]) {
-		if (objectName == "Versatile Heritage") {
-			objectName = "Versatile";
-			searchSet = "heritage";
-		}
-
-		if (objectName == "Oil") {
-			objectName = "Oil (1 pint)";
-		}
-
-		let keyList = [];
-
-		let libraryTypes = ["feat", "action", "heritage", "item", "class"]
-
-		libraryTypes.forEach(libType => {
-			if (searchSet.includes("all") || searchSet.includes(libType)) {
-				keyList = eval("keyList.concat(Object.keys(" + libType + "Library))");
+		try {
+			if (objectName == "Versatile Heritage") {
+				objectName = "Versatile";
+				searchSet = "heritage";
 			}
-		});
 
-		keyList = matching_keys(keyList, objectName);
+			if (objectName == "Oil") {
+				objectName = "Oil (1 pint)";
+			}
 
-		if (keyList.length == 0) {
+			let keyList = [];
+
+			let libraryTypes = ["feat", "action", "heritage", "item", "class"]
+
+			libraryTypes.forEach(libType => {
+				if (searchSet.includes("all") || searchSet.includes(libType)) {
+					keyList = eval("keyList.concat(Object.keys(" + libType + "Library))");
+				}
+			});
+
+			keyList = matching_keys(keyList, objectName);
+
+			if (keyList.length == 0) {
+				return null;
+			}
+
+			objectName = keyList[0];
+
+			let testVar = objectName;
+			let testCaps = capitalise(objectName);
+			let testVar2 = testVar.replaceAll(" ", "-");
+			let testCaps2 = capitalise(testVar2);
+			let testVar3 = testVar.replaceAll(" ", "-") + " " + data.ancestry;
+			let testCaps3 = capitalise(testVar3);
+			let testVar4 = testVar + " Armor";
+			let testCaps4 = capitalise(testVar4);
+
+			if (testVar == "Darkvision") {
+				characterData.senses.push("darkvision");
+				return;
+			} else {
+				if ((testVar in featLibrary || testCaps in featLibrary) && (searchSet.includes("all") || searchSet.includes("feat"))) {
+					return featLibrary[testVar];
+				} else if ((testVar in actionLibrary || testCaps in actionLibrary) && (searchSet.includes("all") || searchSet.includes("action"))) {
+					return actionLibrary[testVar];
+				} else if ((testVar in heritageLibrary || testCaps in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
+					return heritageLibrary[testVar];
+				} else if ((testVar2 in heritageLibrary || testCaps2 in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
+					return heritageLibrary[testVar2];
+				} else if ((testVar3 in heritageLibrary || testCaps3 in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
+					return heritageLibrary[testVar3];
+				} else if ((testVar in itemLibrary || testCaps in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
+					return itemLibrary[testVar];
+				} else if ((testVar4 in itemLibrary || testCaps4 in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
+					return itemLibrary[testVar4];
+				} else if ((testVar in classLibrary || testCaps in classLibrary) && (searchSet.includes("all") || searchSet.includes("class"))) {
+					return classLibrary[testVar];
+				}
+			}
 			return null;
-		}
-
-		objectName = keyList[0];
-
-		let testVar = objectName;
-		let testCaps = capitalise(objectName);
-		let testVar2 = testVar.replaceAll(" ", "-");
-		let testCaps2 = capitalise(testVar2);
-		let testVar3 = testVar.replaceAll(" ", "-") + " " + data.ancestry;
-		let testCaps3 = capitalise(testVar3);
-		let testVar4 = testVar + " Armor";
-		let testCaps4 = capitalise(testVar4);
-
-		if (testVar == "Darkvision") {
-			characterData.senses.push("darkvision");
+		} catch (e) {
+			MapTool.chat.broadcast("Error in parse_pathbuilder_export - find_object_data");
+			MapTool.chat.broadcast("objectName: " + String(objectName));
+			MapTool.chat.broadcast("searchSet: " + JSON.stringify(searchSet));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
 			return;
-		} else {
-			if ((testVar in featLibrary || testCaps in featLibrary) && (searchSet.includes("all") || searchSet.includes("feat"))) {
-				return featLibrary[testVar];
-			} else if ((testVar in actionLibrary || testCaps in actionLibrary) && (searchSet.includes("all") || searchSet.includes("action"))) {
-				return actionLibrary[testVar];
-			} else if ((testVar in heritageLibrary || testCaps in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
-				return heritageLibrary[testVar];
-			} else if ((testVar2 in heritageLibrary || testCaps2 in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
-				return heritageLibrary[testVar2];
-			} else if ((testVar3 in heritageLibrary || testCaps3 in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
-				return heritageLibrary[testVar3];
-			} else if ((testVar in itemLibrary || testCaps in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
-				return itemLibrary[testVar];
-			} else if ((testVar4 in itemLibrary || testCaps4 in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
-				return itemLibrary[testVar4];
-			} else if ((testVar in classLibrary || testCaps in classLibrary) && (searchSet.includes("all") || searchSet.includes("class"))) {
-				return classLibrary[testVar];
-			}
 		}
-		return null;
 	}
 
 	function setup_spell(spellName) {
@@ -482,6 +490,9 @@ function parse_pathbuilder_export(data) {
 		if (tempName == "Spellbook") {
 			continue; //Spellbook not treated as a feature in foundry
 		}
+		if (tempName == "Anathema") {
+			continue; //There are more specific anathema features per class
+		}
 		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 		if (tempData != null && !foundSpecials.includes(tempName)) {
 			features_to_parse.push(tempData);
@@ -507,7 +518,9 @@ function parse_pathbuilder_export(data) {
 			//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
 			//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
 			let choice = feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
-			data.specials = data.specials.filter(item => !choice.includes(item))
+			if (choice != null) {
+				data.specials = data.specials.filter(item => !choice.includes(item));
+			}
 			feature_cause_definition(featureData, characterData);
 			let newAttacks = rules_grant_attack(featureData.system.rules);
 			for (var a in newAttacks) {
@@ -515,6 +528,13 @@ function parse_pathbuilder_export(data) {
 				newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
 			}
 			grantedAttacks = grantedAttacks.concat(newAttacks);
+		}
+		if (featureData != null && featureData.name == "Low-Light Vision") {
+			characterData.senses.push("low-light");
+		} else if (featureData != null && featureData.name == "Darkvision") {
+			characterData.senses.push("darkvision");
+		} else if (featureData != null && featureData.name == "Greater Darkvision") {
+			characterData.senses.push("greater darkvision");
 		}
 	}
 	characterData.basicAttacks = characterData.basicAttacks.concat(grantedAttacks);
@@ -689,8 +709,16 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
-	characterData.pets = data.pets;
-	characterData.familiars = data.familiars;
+	try {
+		characterData.pets = data.pets;
+		characterData.familiars = data.familiars;
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - pet and familiar assignment");
+		MapTool.chat.broadcast("data: " + JSON.stringify(data));
+		MapTool.chat.broadcast("characterData: " + JSON.stringify(characterData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	//Familiars
 	message_window("Importing " + data.name, "Importing Familiars");

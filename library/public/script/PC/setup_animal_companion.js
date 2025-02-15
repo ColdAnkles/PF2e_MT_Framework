@@ -291,7 +291,7 @@ function setup_animal_companion(baseData) {
 
         let queryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><p><form action='macro://Animal_Companion_Setup_To_JS@Lib:ca.pf2e/self/impersonated?'><h1 class='feel-title'>Animal Companion</h1>"
         queryHTML += "<input type='hidden' name='ownerID' value='" + String(companionData.ownerID) + "'>";
-        queryHTML += "<table style='width:100%'><tbody>"
+        queryHTML += "<table style='width:100%' class='staticTable'><tbody>"
         queryHTML += "<tr><td colspan=1 style='text-align:right'><b>Name</b></td><td colspan=2><input type='input' name='nameVal' value='" + companionData.name + "'></input></td>\
         <td colspan=1><b>Level</b></td><td colspan=2><input type='input' name='levelVal' value='"+ String(companionData.level) + "'></input></td>\
         <td rowspan=9 colspan=2><table width=100%>";
