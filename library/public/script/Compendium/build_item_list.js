@@ -15,10 +15,14 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
     itemSorted.sort(sort_by(sortKey, sortDir == "d", (a) => ((typeof (a) == "string") ? a.toUpperCase() : a)));
 
     returnHTML += "<script src='lib://ca.pf2e/html/filterTable.js'></script> <form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
-    <div><input name='searchKey' id='filterText' placeholder='Search' value='"+ searchKey + "' style='font-family:Arial;'></input>\
-    <input name='minLevel' id='minLevel' placeholder='Minimum Level' value='' style='font-family:Arial;'></input>\
-    <input name='maxLevel' id='maxLevel' placeholder='Maximum Level' value='' style='font-family:Arial;'></input>\
-    <input id='filterButton' type='button' value='Filter' onclick='filterTable();'  style='font-family:Arial;'/>\
+    <div><input name='searchKey' id='filterText' placeholder='Search' value='"+ searchKey + "' style='font-family:Arial;'></input>";
+
+    if (itemType != "action"){
+        returnHTML += "<input name='minLevel' id='minLevel' placeholder='Minimum Level' value='' style='font-family:Arial;'></input>\
+        <input name='maxLevel' id='maxLevel' placeholder='Maximum Level' value='' style='font-family:Arial;'></input>";
+    }
+
+    returnHTML += "<input id='filterButton' type='button' value='Filter' onclick='filterTable();'  style='font-family:Arial;'/>\
     <input type='hidden' name='window' value='"+ itemType + "'></input>\
     <input type='hidden' name='sort' value='"+ sortKey + "'></input>\
     <input type='hidden' name='dir' value='"+ sortDir + "'></input>";

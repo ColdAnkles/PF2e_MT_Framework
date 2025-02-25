@@ -2,8 +2,12 @@ function filterTable() {
     // Declare variables
     var minLevel, maxLevel, filter, table, txtValue, levelvalue, sourcetxt;
     filter = document.getElementById("filterText").value.toUpperCase();
-    minLevel = document.getElementById("minLevel").value;
-    maxLevel = document.getElementById("maxLevel").value;
+    minLevel = document.getElementById("minLevel");
+    maxLevel = document.getElementById("maxLevel");
+
+    if (minLevel != null) { minLevel = minLevel.value } else {minLevel = -100};
+    if (maxLevel != null) { maxLevel = maxLevel.value } else {maxLevel = 100};
+
     if (minLevel === "") { minLevel = -100; }
     if (maxLevel === "") { maxLevel = 100; }
     table = document.getElementById("filterTable");
@@ -15,8 +19,16 @@ function filterTable() {
             continue;
         }
         txtValue = row.cells[0].innerText;
-        sourcetxt = row.cells[5].innerText;
-        levelvalue = Number(row.cells[4].innerText);
+        if (row.cells.length > 5) {
+            sourcetxt = row.cells[5].innerText;
+        } else {
+            sourcetxt = "";
+        }
+        if (row.cells.length > 4 && !isNaN(row.cells[4].innerText)) {
+            levelvalue = Number(row.cells[4].innerText);
+        } else {
+            levelvalue = "0";
+        }
         if (((txtValue.toUpperCase().indexOf(filter) > -1) || (sourcetxt.toUpperCase().indexOf(filter) > -1)) && (levelvalue >= minLevel && levelvalue <= maxLevel)) {
             row.style.display = "";
             if (even) {
