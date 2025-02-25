@@ -70,7 +70,7 @@ function attack_action(actionData, actingToken) {
 
 	let tokLevel = Number(actingToken.getProperty("level"));
 	let profBon = null;
-	if (((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) {
+	if ((((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) && get_token_type(actingToken) == "PC") {
 		profBon = (calculate_proficiency(((itemData != null) ? itemData.system.category : actionData.system.category), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
 	} else {
 		profBon = actionData.system.bonus.value - tokLevel;

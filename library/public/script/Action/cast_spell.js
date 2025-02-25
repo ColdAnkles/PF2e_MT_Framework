@@ -47,7 +47,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		//spellData = parse_spell(spellBaseName, spellData);
 		//MapTool.chat.broadcast(JSON.stringify(spellData));
 
-		actionData = { "name": spellData.name, "system": { "remasterFrom": remasterName, "description": { "value": "" }, "actions": { "value": null }, "actionType": { "value": null }, "isSpell": true, "castLevel": { "value": castLevel }, "spendAction": true, "castingAbility": castingData.castingAbility, "overlays": [], "traits": { "value": [] } } };
+		actionData = { "name": spellData.name, "system": { "remasterFrom": remasterName, "description": { "value": "" }, "actions": { "value": null }, "actionType": { "value": null }, "isSpell": true, "castLevel": { "value": castLevel }, "castingAbility": castingData.castingAbility, "overlays": [], "traits": { "value": [] } }, "spendAction": true };
 		actionData.system.rawSpellData = spellData;
 
 	} catch (e) {

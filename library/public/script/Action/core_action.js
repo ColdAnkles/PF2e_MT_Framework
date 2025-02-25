@@ -30,7 +30,16 @@ function core_action(actionData, actingToken) {
 		} else if ((actionData.type == "ranged" || actionData.type == "melee") && actionsLeft >= 1) {
 			canAct = true;
 		} else if ((actionData.type == "ranged" || actionData.type == "melee") && actionsLeft <= 0) {
-			failAct = "Insufficient Actions";
+			MTScript.evalMacro("[h: input(\"forceUse|1|Force Use Action|CHECK\")]");
+			let forceUse = (Number(MTScript.getVariable("forceUse")) == 1);
+			if (!forceUse) {
+				failAct = "Insufficient Actions";
+			} else {
+				canAct = true;
+				actionData.useMAP = false;
+				actionData.increaseMAP = false;
+				actionData.spendAction = false;
+			}
 		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "action") {
 			failAct = "Insufficient Actions";
 		} else if (isNaN(initiative) || ("actionType" in actionData.system && actionData.system.actionType.value == "reaction" && ("actions" in actionData.system && "value" in actionData.system.actions && (reactionsLeft >= actionData.system.actions.value || actionData.system.actions.value == null)))) {
@@ -57,11 +66,11 @@ function core_action(actionData, actingToken) {
 			spell_action(actionData, actingToken);
 		} else if ("isMelee" in actionData.system || actionData.type == "melee" || actionData.type == "ranged") {
 			try {
-				if (!(isNaN(initiative)) && !("useMAP" in actionData)) {
-					MTScript.setVariable("useMAP", 1);
-					MTScript.setVariable("increaseMAP", 1);
-					MTScript.setVariable("spendAction", 1);
-					MTScript.evalMacro("[h: input(\"useMap|1|Use MAP|CHECK\",\"increaseMAP|1|Increase MAP|CHECK\",\"spendAction|1|Spend Action|CHECK\")]");
+				if (!(isNaN(initiative)) && (("noQuery" in actionData && actionData.noQuery) || !("noQuery" in actionData))) {
+					MTScript.setVariable("useMAP", (("useMAP" in actionData) ? ((actionData.useMAP) ? 1 : 0) : 1));
+					MTScript.setVariable("increaseMAP", (("increaseMAP" in actionData) ? ((actionData.increaseMAP) ? 1 : 0) : 1));
+					MTScript.setVariable("spendAction", (("spendAction" in actionData) ? ((actionData.spendAction) ? 1 : 0) : 1));
+					MTScript.evalMacro("[h: input(\"useMap|\"+useMAP+\"|Use MAP|CHECK\",\"increaseMAP|\"+increaseMAP+\"|Increase MAP|CHECK\",\"spendAction|\"+spendAction+\"|Spend Action|CHECK\")]");
 					actionData.useMAP = (Number(MTScript.getVariable("useMAP")) == 1);
 					actionData.increaseMAP = (Number(MTScript.getVariable("increaseMAP")) == 1);
 					actionData.spendAction = (Number(MTScript.getVariable("spendAction")) == 1);
@@ -128,12 +137,15 @@ function core_action(actionData, actingToken) {
 
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		try {
-			if (!(isNaN(initiative)) && ("spendAction" in actionData.system && actionData.system.spendAction)) {
+			if (!(isNaN(initiative)) && ("spendAction" in actionData && actionData.spendAction)) {
 				if ("actionType" in actionData.system && actionData.system.actionType.value == "action" && "actions" in actionData.system) {
 					actingToken.setProperty("actionsLeft", String(actionsLeft - actionData.system.actions.value));
 				} else if (actionData.type == "melee" || actionData.type == "ranged") {
 					actingToken.setProperty("actionsLeft", String(actionsLeft - 1));
-				} else if (actionData.system.actionType == "reaction") {
+				} else if ("actionType" in actionData.system && actionData.system.actionType.value == "reaction") {
+					if (actionData.system.actions.value == null) {
+						actionData.system.actions.value = 1;
+					}
 					actingToken.setProperty("reactionsLeft", String(reactionsLeft - actionData.system.actions.value));
 				}
 				update_action_bank(actingToken);
