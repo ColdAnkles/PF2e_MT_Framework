@@ -128,7 +128,12 @@ function add_action_to_token(actionData, tokenID, token) {
 				}
 			}
 			let actionDesc = chat_display(actionData, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": actionData });
-			let props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.personal_action(\"" + actionData.name + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
+			let props = null;
+			if ("_id" in actionData) {
+				props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.personal_action(\"" + actionData._id + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
+			} else {
+				props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.personal_action(\"" + actionData.name + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
+			}
 			if ("group" in actionData.system) {
 				props.group = actionData.system.group;
 			}

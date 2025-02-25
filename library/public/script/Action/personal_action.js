@@ -22,7 +22,7 @@ function personal_action(actionName, actingToken) {
 
 		for (var o in allPossible) {
 			let actionData = allPossible[o];
-			if (actionData.name == actionName) {
+			if (actionData.name == actionName || ("_id" in actionData && actionData._id == actionName)) {
 				actionData.spendAction = true;
 				core_action(actionData, actingToken);
 				return;
