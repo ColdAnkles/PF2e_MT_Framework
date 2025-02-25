@@ -176,7 +176,7 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                 let actionSlug = pText.split(":")[1];
                 predicate_resolution = predicate_resolution && predicateScopes.includes(actionSlug);
             } else {
-                predicate_resolution = false;
+                predicate_resolution = predicateScopes.includes(pText);
             }
         } else {
             //MapTool.chat.broadcast(JSON.stringify(predicate[pK]));
