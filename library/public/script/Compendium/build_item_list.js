@@ -17,7 +17,7 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
     returnHTML += "<script src='lib://ca.pf2e/html/filterTable.js'></script> <form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
     <div><input name='searchKey' id='filterText' placeholder='Search' value='"+ searchKey + "' style='font-family:Arial;'></input>";
 
-    if (itemType != "action"){
+    if (itemType != "action") {
         returnHTML += "<input name='minLevel' id='minLevel' placeholder='Minimum Level' value='' style='font-family:Arial;'></input>\
         <input name='maxLevel' id='maxLevel' placeholder='Maximum Level' value='' style='font-family:Arial;'></input>";
     }

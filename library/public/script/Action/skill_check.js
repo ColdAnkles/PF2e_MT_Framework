@@ -284,7 +284,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 						prof_bonus = Number(profData.bonus - stat_bonus);
 					} else if (checkData.skillName.toLowerCase() == profData.name.toLowerCase() && checkData.tokenType == "PC") {
 						prof_bonus = Number(profData.bonus);
-					}else if (checkData.skillName == "Perception" && checkData.tokenType == "NPC") {
+					} else if (checkData.skillName == "Perception" && checkData.tokenType == "NPC") {
 						prof_bonus = Number(Number(checkToken.getProperty("Perception")) - stat_bonus);
 					}
 				}

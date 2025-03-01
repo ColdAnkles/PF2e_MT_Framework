@@ -7,7 +7,7 @@ function get_pathbuilder_export_via_id(idNumber) {
 	let data = rest_call(fullURL, "");
 	if (data.success) {
 		let parsed = null;
-		try{
+		try {
 			parsed = parse_pathbuilder_export(data.build);
 		} catch (e) {
 			MapTool.chat.broadcast("Error in get_pathbuilder_export_via_id - parse pb export");
@@ -15,7 +15,7 @@ function get_pathbuilder_export_via_id(idNumber) {
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
 			return;
 		}
-		
+
 		return parsed;
 	} else {
 		MapTool.chat.broadcast("Error retrieving Pathbuilder build");
@@ -30,7 +30,7 @@ function get_pathbuilder_export_via_input() {
 	MTScript.evalMacro("[h: input(\"pbData|Enter JSON|Pathbuilder JSON\")]")
 	let pbData = JSON.parse(MTScript.getVariable("pbData")).build;
 	let parsed = null;
-	try{
+	try {
 		parsed = parse_pathbuilder_export(pbData);
 	} catch (e) {
 		MapTool.chat.broadcast("Error in get_pathbuilder_export_via_input - parse pb export");
