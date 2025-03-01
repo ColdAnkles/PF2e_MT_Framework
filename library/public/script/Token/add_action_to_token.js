@@ -51,8 +51,8 @@ function add_action_to_token(actionData, tokenID, token) {
 			let property = JSON.parse(read_data("pf2e_action"));
 			let lookupAction = property[actionData.name];
 			if ("source" in actionData) {
-				lookupAction = property[actionData.name + "|" + actionData.source];
-				actionKey = actionData.name + "|" + actionData.source;
+				lookupAction = property[actionData.name];
+				actionKey = actionData.name;
 			}
 			if (lookupAction == null) {
 				lookupAction = property[actionData.name + "|Pathfinder Player Core"];
@@ -81,8 +81,8 @@ function add_action_to_token(actionData, tokenID, token) {
 			let property = JSON.parse(read_data("pf2e_action"));
 			let lookupAction = property[actionData.name];
 			if ("source" in actionData) {
-				lookupAction = property[actionData.name + "|" + actionData.source];
-				actionKey = actionData.name + "|" + actionData.source;
+				lookupAction = property[actionData.name];
+				actionKey = actionData.name;
 			}
 			if (lookupAction == null) {
 				lookupAction = property[actionData.name + "|Pathfinder Player Core"];
@@ -259,7 +259,7 @@ function add_action_to_token(actionData, tokenID, token) {
 				spellLabel += " (" + String(actionData.system.castLevel.value) + ")";
 			}
 
-			let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.cast_spell(\"" + spellName + "|" + lookupSpell.source + "\"," + actionData.system.castLevel.value + ",\"" + actionData.system.group.value + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": String(sortNum), "group": actionData.system.group.value };
+			let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.cast_spell(\"" + spellName + "\"," + actionData.system.castLevel.value + ",\"" + actionData.system.group.value + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": String(sortNum), "group": actionData.system.group.value };
 
 			//MapTool.chat.broadcast(JSON.stringify(props));
 			createMacro(props, tokenID);

@@ -419,7 +419,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 				} else {
 					spellString = spellString + ", ";
 				}
-				spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)", ""), "Spell_View_Frame@Lib:ca.pf2e", spellData.name.replaceAll(" (Constant)", "").replaceAll(/\(.*\)/g, "").trim() + "|" + spellData.source);
+				spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)", ""), "Spell_View_Frame@Lib:ca.pf2e", spellData.name.replaceAll(" (Constant)", "").replaceAll(/\(.*\)/g, "").trim());
 			}
 
 			HTMLString += spellString;

@@ -26,7 +26,7 @@ function manage_custom_content(key, entry, action) {
             //TODO - FOR KEY IN IMPORT DATA, IMPORT EACH ENTRY
             MapTool.chat.broadcast("Importing All")
         } else {
-            customContent[importData.type][importData.name + "|" + importData.source] = importData;
+            customContent[importData.type][importData.name] = importData;
             write_data("customContent", JSON.stringify(customContent));
         }
     }

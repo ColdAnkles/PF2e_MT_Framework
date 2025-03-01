@@ -55,10 +55,27 @@ function import-all-sources {
     
     $sourceList = Get-ChildItem .\pf2e-master\*\packs\* | ForEach-Object { $_.FullName }
 
+    #Load More Important Sources First
+    $coreContent = @("actions","ancestries","backgrounds","classes","classfeatures","conditions","equipment","feats","hazards","spells","spell-effects","pathfinder-monster-core")
+    $skipItems = @()
+    ForEach ($source in $sourceList) {
+        ForEach($coreItem in $coreContent){
+            if ($source.Contains("\packs\"+$coreItem)) {
+                $skipItems += $source
+                $splitArray = $source -split "\\"
+                $sourceName = $splitArray[$splitArray.length - 1 ]
+                if (!$script:unwantedPacks.Contains($sourceName)) {
+                    import-source $source $sourceName
+                }
+            }
+        }
+    }
+
+
     ForEach ($source in $sourceList) {
         $splitArray = $source -split "\\"
         $sourceName = $splitArray[$splitArray.length - 1 ]
-        if (!$script:unwantedPacks.Contains($sourceName)) {
+        if (!$script:unwantedPacks.Contains($sourceName) -and !$skipItems.Contains($source)) {
             #Write-Host "Importing " $sourceName
             import-source $source $sourceName
         }
@@ -255,15 +272,9 @@ function import-source-file {
     if ( !$packData.ContainsKey("pf2e_" + $storedata.type)) {
         $packData["pf2e_" + $storedata.type] = @{}
     }
-    if ( $storedata.type -eq "condition"){
-        if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name)){
-            $packData["pf2e_" + $storedata.type][$storeData.name] = $storeData
-        }
-    }else{
-        if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name+"|"+$storeData.source)){
-            $packData["pf2e_" + $storedata.type][$storeData.name+"|"+$storeData.source] = $storeData
-        }
-    }
+    if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name)){
+        $packData["pf2e_" + $storedata.type][$storeData.name] = $storeData
+    }#DUPLICATE NAMED ENTRIES IGNORED
 }
 
 function import-lang-file {

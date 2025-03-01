@@ -23,7 +23,7 @@ function parse_pathbuilder_export(data) {
 		sub = sub.toLowerCase();
 		return arr.filter(str => (str
 			.toLowerCase()
-			.startsWith(sub.slice(0, Math.max(str.length - 1, 1)) + "|") ? str : null) != null
+			.startsWith(sub.slice(0, Math.max(str.length - 1, 1))) ? str : null) != null
 		);
 	}
 
