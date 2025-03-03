@@ -89,6 +89,8 @@ function on_turn_begin(turnToken, turnData = {}) {
 		return;
 	}
 
+    //Regen and Fast Healing Step Here
+
 	try {
 		for (var i in [0, 1, 2, 3, 4, 5]) {
 			if (i == newActionCount) {

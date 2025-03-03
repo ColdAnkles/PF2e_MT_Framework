@@ -45,7 +45,7 @@ function spell_action(actionData, actingToken) {
 	let hh_targetType = null;
 	let alt_hh_test = null;
 	try {
-		if (((spellData.name == "Heal" || spellData.name == "Harm") && actionData.actionCost == "2") || spellData.name == "Lay on Hands") {
+		if (((spellData.name == "Heal" || spellData.name == "Harm") && actionData.system.actions.value <= "2") || spellData.name == "Lay on Hands") {
 			MTScript.evalMacro("[h: targetChoice=\"Living\"][h: input(\"targetChoice|Living,Undead|Target Type|LIST|VALUE=STRING\")]");
 
 			hh_targetType = MTScript.getVariable("targetChoice");
@@ -57,8 +57,13 @@ function spell_action(actionData, actingToken) {
 		}
 		if ((spellData.name == "Heal" || spellData.name == "Lay on Hands") && (hh_targetType == "Living" || hh_targetType == null)) {
 			damageScopes = ["spell", "healing"];
+			alt_hh_test = "Healing";
 		} else if ((spellData.name == "Harm" || spellData.name == "Lay on Hands") && (hh_targetType == "Undead" || hh_targetType == null)) {
 			damageScopes = ["spell", "healing"];
+			alt_hh_test = "Healing";
+		}else{
+			damageScopes = ["spell"];
+			alt_hh_test = "Harming";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in spell_action during heal-harm-tests");
@@ -69,25 +74,7 @@ function spell_action(actionData, actingToken) {
 		return;
 	}
 
-	try {
-		for (var d in spellData.system.damage) {
-			if ("kinds" in spellData.system.damage[d]) {
-				if (spellData.system.damage[d].kinds.includes("healing")) {
-					damageScopes = ["spell", "healing"];
-					break;
-				}
-			}
-		}
-	} catch (e) {
-		MapTool.chat.broadcast("Error in spell_action during healing-check");
-		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
-		MapTool.chat.broadcast("actingToken: " + String(actingToken));
-		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
-		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
-	}
-
-	//MapTool.chat.broadcast(JSON.stringify(actionData));
+	//MapTool.chat.broadcast(JSON.stringify(castData));
 
 	try {
 		if ("overlays" in actionData.system) {
@@ -101,7 +88,7 @@ function spell_action(actionData, actingToken) {
 						if (typeof (overlayData.system[key]) == "object" && overlayData.system[key] != null && "value" in overlayData.system[key] && Object.keys(overlayData.system[key]).length == 1 && key != "traits") {
 							spellData.system[key].value = overlayData.system[key].value;
 						} else if (key == "damage" || key == "heightening") {
-							if (!(key in spellData)) {
+							if (!(key in spellData.system)) {
 								spellData.system[key] = {};
 							}
 							for (var e in overlayData.system[key]) {
@@ -122,6 +109,24 @@ function spell_action(actionData, actingToken) {
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in spell_action during overlay-parsing");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("actingToken: " + String(actingToken));
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		for (var d in spellData.system.damage) {
+			if ("kinds" in spellData.system.damage[d]) {
+				if (spellData.system.damage[d].kinds.includes("healing")) {
+					damageScopes = ["spell", "healing"];
+					break;
+				}
+			}
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in spell_action during healing-check");
 		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 		MapTool.chat.broadcast("actingToken: " + String(actingToken));
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
