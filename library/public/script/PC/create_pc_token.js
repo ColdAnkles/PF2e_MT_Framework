@@ -3,6 +3,7 @@
 function create_pc_token(newPCTokenID, pcLibID) {
 
 	let pcData = read_creature_properties(pcLibID)
+	let pcToken = MapTool.tokens.getTokenByID(pcLibID);
 
 	if ("simple" in pcData.foundryActor && pcData.foundryActor.simple) {
 		add_common_macros(newPCTokenID, true);
@@ -16,9 +17,9 @@ function create_pc_token(newPCTokenID, pcLibID) {
 		for (var s in pcData.speeds.other) {
 			let speedData = pcData.speeds.other[s];
 			if (speedData.type == "fly") {
-				add_action_to_token({ "name": "Fly", "type": "basic", "system": { "actionType": "action", "actionCount": 1, "type": "basic", "group": "Movement", "description": { "value": "" } } }, newPCTokenID, MapTool.tokens.getTokenByID(pcLibID));
+				add_action_to_token({ "name": "Fly", "type": "basic", "system": { "actionType": "action", "actionCount": 1, "type": "basic", "group": "Movement", "description": { "value": "" } } }, newPCTokenID, pcToken);
 			} else if (speedData.type == "burrow") {
-				add_action_to_token({ "name": "Burrow", "type": "basic", "system": { "actionType": "action", "actionCount": 1, "group": "Movement", "description": { "value": "" } } }, newPCTokenID, MapTool.tokens.getTokenByID(pcLibID));
+				add_action_to_token({ "name": "Burrow", "type": "basic", "system": { "actionType": "action", "actionCount": 1, "group": "Movement", "description": { "value": "" } } }, newPCTokenID, pcToken);
 			}
 		}
 
@@ -88,7 +89,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 				let spellSource = pcData.spellRules[s];
 				for (var sp in spellSource.spells) {
 					let spellData = spellSource.spells[sp];
-					add_action_to_token(spellData, newPCTokenID, MapTool.tokens.getTokenByID(pcLibID));
+					add_action_to_token(spellData, newPCTokenID, pcToken);
 				}
 				if (spellSource.name.includes("Focus") && !addedRefocus) {
 					//add_action_to_token({ "name": "Refocus", "type": "basic", "group": "1. Common" }, tokenID);
@@ -105,6 +106,11 @@ function create_pc_token(newPCTokenID, pcLibID) {
 	}
 
 	update_my_tokens(pcLibID);
+
+	let pcStates = pcToken.getActiveStates();
+	for (var s in pcStates){
+		set_state(pcStates[s], true, newPCTokenID);
+	}
 }
 
 MTScript.registerMacro("ca.pf2e.create_pc_token", create_pc_token);

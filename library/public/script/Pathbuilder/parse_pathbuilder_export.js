@@ -22,8 +22,7 @@ function parse_pathbuilder_export(data) {
 	function matching_keys(arr, sub) {
 		sub = sub.toLowerCase();
 		return arr.filter(str => (str
-			.toLowerCase()
-			.startsWith(sub.slice(0, Math.max(str.length - 1, 1))) ? str : null) != null
+			.toLowerCase()==sub)
 		);
 	}
 
