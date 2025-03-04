@@ -2,35 +2,55 @@
 
 function set_state(stateName, stateVal, tokenID) {
 	let token = tokenID;
-	if (typeof (tokenID) != "string") {
-		tokenID = tokenID.getId();
-	} else {
-		token = MapTool.tokens.getTokenByID(tokenID);
-	}
-	let tokenName = token.getName();
-
-	let updateTokens = [tokenID];
-	if (get_token_type(tokenID) == "PC") {
-		if (tokenName.includes("Lib:")) {
-			let subTokens = JSON.parse(token.getProperty("pcTokens"));
-			updateTokens = updateTokens.concat(subTokens);
+	let tokenName = null;
+	let updateTokens = [];
+	try{
+		if (typeof (tokenID) != "string") {
+			tokenID = tokenID.getId();
 		} else {
-			set_state(stateName, stateVal, token.getProperty("myID"));
-			return;
+			token = MapTool.tokens.getTokenByID(tokenID);
 		}
+		tokenName = token.getName();
+
+		updateTokens = [tokenID];
+		if (get_token_type(tokenID) == "PC") {
+			if (tokenName.includes("Lib:")) {
+				let subTokens = JSON.parse(token.getProperty("pcTokens"));
+				updateTokens = updateTokens.concat(subTokens);
+			} else {
+				set_state(stateName, stateVal, token.getProperty("myID"));
+				return;
+			}
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in set_state during token resolution");
+		MapTool.chat.broadcast("stateName: " + String(stateName));
+		MapTool.chat.broadcast("stateVal: " + String(stateVal));
+		MapTool.chat.broadcast("tokenID: " + String(tokenID));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
-	MTScript.setVariable("stateName", stateName);
-	MTScript.setVariable("stateVal", stateVal);
-	for (var t in updateTokens) {
-		MTScript.setVariable("tokenID", updateTokens[t]);
-		let token = MapTool.tokens.getTokenByID(updateTokens[t]);
-		let tokenName = token.getName();
-		if (tokenName.includes("Lib:")) {
-			token.setState(stateName, stateVal);
-		} else {
-			token.setState(stateName, stateVal);
+	try{
+		MTScript.setVariable("stateName", stateName);
+		MTScript.setVariable("stateVal", stateVal);
+		for (var t in updateTokens) {
+			MTScript.setVariable("tokenID", updateTokens[t]);
+			let token = MapTool.tokens.getTokenByID(updateTokens[t]);
+			let tokenName = token.getName();
+			if (tokenName.includes("Lib:")) {
+				token.setState(stateName, stateVal);
+			} else {
+				token.setState(stateName, stateVal);
+			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in set_state during setting state");
+		MapTool.chat.broadcast("stateName: " + String(stateName));
+		MapTool.chat.broadcast("stateVal: " + String(stateVal));
+		MapTool.chat.broadcast("tokenID: " + String(tokenID));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 }
 

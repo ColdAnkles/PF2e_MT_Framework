@@ -1,0 +1,1 @@
+[js.ca.pf2e.rebuildMacroPanels()]

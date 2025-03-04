@@ -1,5 +1,14 @@
 "use strict";
 
+function getFrameworkMacros(){
+    let basicMacros = ["<b>Compendium</b>","<b>Creatures</b>","<b>Hazards</b>","Spawn PC Party","End Current Turn","End Encounter","Previous Turn","Add Persistent Damage","Add Hero Point","Use Hero Point","Daily Preparations",]
+    return basicMacros.concat(getConditionList());    
+}
+
+function getConditionList(){
+    return ["Blinded", "Broken", "Clumsy", "Confused", "Controlled", "Dazzled", "Deafened", "Doomed", "Drained", "Dying", "Encumbered", "Enfeebled", "Fascinated", "Fatigued", "Fleeing", "Frightened", "Frightened (Time)", "Grabbed", "Immobilized", "Invisible", "Off-Guard", "Paralyzed", "Petrified", "Prone", "Quickened", "Restrained", "Sickened", "Slowed", "Slowed (Time)", "Stunned", "Stunned (Time)", "Stupefied", "Unconscious", "Wounded", "Untethered", "Glitching", "Suppressed"];
+}
+
 function createGMMacros() {
     let GMMacros = [{ "label": "<b>Compendium</b>", "playerEditable": 0, "command": "[macro(\"Compendium_Home@lib:ca.pf2e\"): \"\"]", "tooltip": "Open the Compendium", "color": "black", "fontColor": "white", "fontSize": "1.25em" },
     { "label": "<b>Creatures</b>", "playerEditable": 0, "command": "[macro(\"Compendium_Window@lib:ca.pf2e\"): json.set(\"{}\",\"window\",\"creatures\")]", "tooltip": "Creature List", "color": "black", "fontColor": "white", "fontSize": "1.25em" },
@@ -15,7 +24,7 @@ function createGMMacros() {
     for (var m in GMMacros) {
         createMacro(GMMacros[m], "gm");
     }
-    let conditionMacroList = ["Blinded", "Broken", "Clumsy", "Confused", "Controlled", "Dazzled", "Deafened", "Doomed", "Drained", "Dying", "Encumbered", "Enfeebled", "Fascinated", "Fatigued", "Fleeing", "Frightened", "Frightened (Time)", "Grabbed", "Immobilized", "Invisible", "Off-Guard", "Paralyzed", "Petrified", "Prone", "Quickened", "Restrained", "Sickened", "Slowed", "Slowed (Time)", "Stunned", "Stunned (Time)", "Stupefied", "Unconscious", "Wounded", "Untethered", "Glitching", "Suppressed"];
+    let conditionMacroList = getConditionList();
     for (var m in conditionMacroList) {
         let conditionName = conditionMacroList[m];
         let dat = { "label": conditionName, "playerEditable": 0, "command": "[h: ca.pf2e.Condition_Set_Basic(\"" + conditionName + "\")]", "tooltip": "Add " + conditionName + " to Selected Token.", "group": "2. Conditions" };
@@ -34,3 +43,22 @@ function createCampaignMacros() {
 
 MTScript.registerMacro("ca.pf2e.createCampaignMacros", createCampaignMacros);
 
+function rebuildMacroPanels(){
+    //GET GM and Campaign Macros
+    //Delete in loop
+    let frameworkMacros = getFrameworkMacros();
+    for (var s in ["gm","campaign"]){
+        s = ["gm","campaign"][s];
+        let macroList = getMacros(s);
+        for (var m in macroList){
+            m = macroList[m];
+            if (frameworkMacros.includes(m)){
+                removeMacro(m, s);
+            }
+        }
+    }
+    createGMMacros();
+    createCampaignMacros();
+}
+
+MTScript.registerMacro("ca.pf2e.rebuildMacroPanels", rebuildMacroPanels);

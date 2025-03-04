@@ -35,3 +35,10 @@ function removeMacro(macroName, tokenID) {
         MTScript.evalMacro("[h: removeMacro(index, tokenID)]");
     }
 }
+
+function getMacros(tokenID){
+    MTScript.setVariable("tokenID", tokenID);
+    MTScript.evalMacro("[h: allMacros = getMacros(\"json\", tokenID)]")
+    let allMacros = JSON.parse(MTScript.getVariable("allMacros"));
+    return allMacros;
+}

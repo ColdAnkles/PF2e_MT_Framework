@@ -57,6 +57,7 @@ function build_compendium_home() {
 		HTMLString += "<h3>" + create_macroLink("Custom Content", "Custom_Content_Window@Lib:ca.pf2e", "") + "</h3>";
 		//HTMLString += "<h3>" + create_macroLink("Source Importing", "Source_Management_Window@Lib:ca.pf2e", "") + "</h3>";
 		HTMLString += "<h3>" + create_macroLink("Change Theme", "Change_Theme@Lib:ca.pf2e", "") + "</h3>";
+		HTMLString += "<h3>" + create_macroLink("Rebuild Macro Panels", "Rebuild_Macro_Panels@Lib:ca.pf2e", "") + "</h3>";
 	}
 
 	HTMLString += "<h3>" + create_macroLink("Credits", "Credits@Lib:ca.pf2e", "") + "</h3>";
