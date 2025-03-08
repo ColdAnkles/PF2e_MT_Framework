@@ -44,35 +44,52 @@ function action_icon_label(actionType, actionCount) {
 function add_action_to_token(actionData, tokenID, token) {
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
 	let actionKey = actionData.name;
-	if (!("type" in actionData)) {
-		if ("actionType" in actionData.system) {
-			actionData.type = actionData.system.actionType.value;
-		} else {
-			let property = JSON.parse(read_data("pf2e_action"));
-			let lookupAction = property[actionData.name];
-			if ("source" in actionData) {
-				lookupAction = property[actionData.name];
-				actionKey = actionData.name;
-			}
-			if (lookupAction == null) {
-				lookupAction = property[actionData.name + "|Pathfinder Player Core"];
-				actionKey = actionData.name + "|Pathfinder Player Core";
-			}
-
-			if (lookupAction == null) {
-				actionData.type = "basic";
+	try{
+		if (!("type" in actionData)) {
+			if ("actionType" in actionData.system) {
+				actionData.type = actionData.system.actionType.value;
 			} else {
-				actionData.type = "feat";
+				let property = JSON.parse(read_data("pf2e_action"));
+				let lookupAction = property[actionData.name];
+				if ("source" in actionData) {
+					lookupAction = property[actionData.name];
+					actionKey = actionData.name;
+				}
+
+				if (lookupAction == null) {
+					actionData.type = "basic";
+				} else {
+					actionData.type = "feat";
+				}
 			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in add_action_to_token during setup");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("token: " + String(token));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
+
+	if (!("system" in actionData)) {
+		actionData.system = { "description": { "value": "" } };
+	}
+
 	if (!("description" in actionData.system)) {
 		actionData.system.description = { "value": "" };
 	}
+
 	if (token == null) {
 		token = MapTool.tokens.getTokenByID(tokenID);
 	}
-	let variant = JSON.parse(token.getProperty("foundryActor")).variant;
+
+	let variant = JSON.parse(token.getProperty("foundryActor"))
+	if ("variant" in variant){
+		variant = variant.variant;
+	}else{
+		variant = null;
+	}
+
 	if (actionData.type == "basic") {
 
 		try {
@@ -85,8 +102,8 @@ function add_action_to_token(actionData, tokenID, token) {
 				actionKey = actionData.name;
 			}
 			if (lookupAction == null) {
-				lookupAction = property[actionData.name + "|Pathfinder Player Core"];
-				actionKey = actionData.name + "|Pathfinder Player Core";
+				lookupAction = property[actionData.name];
+				actionKey = actionData.name;
 			}
 
 			if (lookupAction == null) {
