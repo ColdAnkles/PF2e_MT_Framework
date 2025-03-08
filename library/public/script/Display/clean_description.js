@@ -4,7 +4,7 @@ function parse_foundry_strings(foundryString, altBracketRegexp = false) {
 	//bracketRegexp Changed Multiple times - Treat Wounds good example to test with
 	let bracketRegexp = /\[+(.*?\]?)\]+/;
 	if (altBracketRegexp) {
-		bracketRegexp = /\[+(.*?)\]+/;
+		bracketRegexp = /\[\[+(.*?)\]\]+/;
 	}
 	const braceRegexp = /\]\{(.*?)\}/;
 
@@ -236,99 +236,125 @@ function parse_localize(localizeString, additionalData) {
 function parse_roll(rollString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
 	//MapTool.chat.broadcast(rollString);
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
-	if (rollString.includes("/br") || (!(rollString.includes("(")) || !(rollString.includes(")")))) {
+	if (rollString.includes("/br") || rollString.includes("/gmr") || (!(rollString.substring(1, 4).includes("(")) || !(rollString.includes(")")))) {
 		//MapTool.chat.broadcast("Case One");
 		let parsed = parse_foundry_strings(rollString, true);
 		//MapTool.chat.broadcast(JSON.stringify(parsed));
 		if (parsed.braceContents != null) {
-			if (additionalData.rollDice) {
-				let diceMatch = parsed.braceContents.match(/([0-9+ d-]*)/g);
-				//MapTool.chat.broadcast(JSON.stringify(diceMatch));
-				if (diceMatch.length > 0) {
-					diceMatch = diceMatch[0].replaceAll("/r ", "").replaceAll("/r", "");
-					let rolledDice = roll_dice(diceMatch);
-					let replaceString = "";
-					if (diceMatch.includes("d") && rollString.includes("/r")) {
-						replaceString = diceMatch + " (" + String(rolledDice) + ") ";
-					} else if (diceMatch.includes("d") && rollString.includes("/br") && !additionalData.gm) {
-						if (additionalData.replaceGMRolls) {
-							replaceString = diceMatch;
+			try{
+				if (additionalData.rollDice) {
+					let diceMatch = parsed.braceContents.match(/([0-9+ d-]*)/g);
+					//MapTool.chat.broadcast(JSON.stringify(diceMatch));
+					if (diceMatch.length > 0) {
+						diceMatch = diceMatch[0].replaceAll("/r ", "").replaceAll("/r", "");
+						let rolledDice = roll_dice(diceMatch);
+						let replaceString = "";
+						if (diceMatch.includes("d") && rollString.includes("/r")) {
+							replaceString = diceMatch + " (" + String(rolledDice) + ") ";
+						} else if (diceMatch.includes("d") && (rollString.includes("/br") || rollString.includes("/gmr")) && !additionalData.gm) {
+							if (additionalData.replaceGMRolls) {
+								replaceString = diceMatch;
+							} else {
+								return rollString;
+							}
+						} else if (diceMatch.includes("d") && (rollString.includes("/br") || rollString.includes("/gmr")) && additionalData.gm) {
+							replaceString = diceMatch + " (" + String(rolledDice) + ") ";
 						} else {
-							return rollString;
+							replaceString = diceMatch;
 						}
-					} else if (diceMatch.includes("d") && rollString.includes("/br") && additionalData.gm) {
-						replaceString = diceMatch + " (" + String(rolledDice) + ") ";
+						return parsed.braceContents.replace(diceMatch, replaceString);
 					} else {
-						replaceString = diceMatch;
+						return parsed.braceContents;
 					}
-					return parsed.braceContents.replace(diceMatch, replaceString);
 				} else {
 					return parsed.braceContents;
 				}
-			} else {
-				return parsed.braceContents;
+			} catch (e) {
+				MapTool.chat.broadcast("Error in parse_roll during case one - brace contents");
+				MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData));
+				MapTool.chat.broadcast("parsed: " + JSON.stringify(parsed));
+				MapTool.chat.broadcast("" + e + "\n" + e.stack);
+				return;
 			}
 		} else {
-			if (additionalData.rollDice) {
-				let diceMatch = parsed.bracketContents.match(/\/r ([0-9+ d-]*).*/g);
-				//MapTool.chat.broadcast(JSON.stringify(diceMatch));
-				if (diceMatch.length > 0) {
-					diceMatch = diceMatch[0];
-					let dice = diceMatch.replaceAll("/r ", "").replaceAll("/r", "");
-					let replaceString = "";
-					if (dice.includes("d") && additionalData.rollDice) {
-						replaceString = String(roll_dice(dice));
+			try{
+				if (additionalData.rollDice) {
+					let diceMatch = parsed.bracketContents.match(/\/r ([0-9+ d-]*)[^[]]*/g);
+					//MapTool.chat.broadcast(JSON.stringify(diceMatch));
+					if (diceMatch.length > 0) {
+						diceMatch = diceMatch[0];
+						let dice = diceMatch.replaceAll("/r ", "").replaceAll("/r", "");
+						let replaceString = "";
+						if (dice.includes("d") && additionalData.rollDice) {
+							replaceString = String(roll_dice(dice));
+						} else {
+							replaceString = dice;
+						}
+						if(rollString.includes("#")){
+							return replaceString;
+						}
+						return parsed.bracketContents.replace(diceMatch, replaceString);
 					} else {
-						replaceString = dice;
+						return parsed.bracketContents;
 					}
-					return parsed.bracketContents.replace(diceMatch, replaceString);
 				} else {
-					return parsed.bracketContents;
+					return parsed.bracketContents.replace(/\/r ([0-9+ d-]*).*/g, "$1");
 				}
-			} else {
-				return parsed.bracketContents.replace(/\/r ([0-9+ d-]*).*/g, "$1");
+			} catch (e) {
+				MapTool.chat.broadcast("Error in parse_roll during case one - null brace contents");
+				MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData));
+				MapTool.chat.broadcast("parsed: " + JSON.stringify(parsed));
+				MapTool.chat.broadcast("" + e + "\n" + e.stack);
+				return;
 			}
 		}
 	} else {
-		const rollRegexp = /\(([^[\]]*)\)/g;
-		const infoRegexp = /\[([^[\]]*)\]/g;
-		let rollMatch = [...rollString.matchAll(rollRegexp)];
-		let infoMatch = [...rollString.matchAll(infoRegexp)];
-		//MapTool.chat.broadcast("Case Two");
-		//MapTool.chat.broadcast(rollString);
-		//MapTool.chat.broadcast(JSON.stringify(rollMatch));
-		//MapTool.chat.broadcast(JSON.stringify(infoMatch));
-		if (rollMatch != null && rollMatch.length > 0) {
-			rollMatch = rollMatch[rollMatch.length - 1];
-		}
-		if (infoMatch != null && infoMatch.length > 0) {
-			infoMatch = infoMatch[infoMatch.length - 1];
-		}
-		if (rollMatch != null && rollMatch.length > 0) {
-			rollMatch = rollMatch[rollMatch.length - 1];
-		}
-		if (infoMatch != null && infoMatch.length > 0) {
-			infoMatch = infoMatch[infoMatch.length - 1];
-		}
+		try{
+			const rollRegexp = /\(([^[\]]*)\)/g;
+			const infoRegexp = /\[([^[\]]*)\]/g;
+			let rollMatch = [...rollString.matchAll(rollRegexp)];
+			let infoMatch = [...rollString.matchAll(infoRegexp)];
+			//MapTool.chat.broadcast("Case Two");
+			//MapTool.chat.broadcast(rollString);
+			//MapTool.chat.broadcast(JSON.stringify(rollMatch));
+			//MapTool.chat.broadcast(JSON.stringify(infoMatch));
+			if (rollMatch != null && rollMatch.length > 0) {
+				rollMatch = rollMatch[rollMatch.length - 1];
+			}
+			if (infoMatch != null && infoMatch.length > 0) {
+				infoMatch = infoMatch[infoMatch.length - 1];
+			}
+			if (rollMatch != null && rollMatch.length > 0) {
+				rollMatch = rollMatch[rollMatch.length - 1];
+			}
+			if (infoMatch != null && infoMatch.length > 0) {
+				infoMatch = infoMatch[infoMatch.length - 1];
+			}
 
-		if (rollMatch.includes("@level") && "level" in additionalData) {
-			rollMatch = rollMatch.replaceAll("@level", String(additionalData.level));
-		} else if (rollMatch.includes("@item.level") && "level" in additionalData) {
-			rollMatch = rollMatch.replaceAll("@item.level", String(additionalData.level));
-		} else if (rollMatch.includes("@actor.level") && "level" in additionalData) {
-			rollMatch = rollMatch.replaceAll("@actor.level", String(additionalData.level));
+			if (rollMatch.includes("@level") && "level" in additionalData) {
+				rollMatch = rollMatch.replaceAll("@level", String(additionalData.level));
+			} else if (rollMatch.includes("@item.level") && "level" in additionalData) {
+				rollMatch = rollMatch.replaceAll("@item.level", String(additionalData.level));
+			} else if (rollMatch.includes("@actor.level") && "level" in additionalData) {
+				rollMatch = rollMatch.replaceAll("@actor.level", String(additionalData.level));
+			}
+
+			if ((additionalData.rollDice && !(rollMatch.includes("d"))) || !(rollMatch.includes("d"))) {
+				rollMatch = String(eval(rollMatch));
+			} else if (additionalData.rollDice) {
+				rollMatch = String(roll_dice(rollMatch));
+			}
+
+			//MapTool.chat.broadcast(rollMatch);
+			//MapTool.chat.broadcast(infoMatch);
+
+			return rollMatch + " " + infoMatch.replaceAll(",", " ");
+		} catch (e) {
+			MapTool.chat.broadcast("Error in parse_roll during case two");
+			MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
 		}
-
-		if ((additionalData.rollDice && !(rollMatch.includes("d"))) || !(rollMatch.includes("d"))) {
-			rollMatch = String(eval(rollMatch));
-		} else if (additionalData.rollDice) {
-			rollMatch = String(roll_dice(rollMatch));
-		}
-
-		//MapTool.chat.broadcast(rollMatch);
-		//MapTool.chat.broadcast(infoMatch);
-
-		return rollMatch + " " + infoMatch.replaceAll(",", " ");
 	}
 
 	return rollString;
@@ -479,10 +505,16 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription = cleanDescription.replaceAll(localize_matches[m], replaceString);
 	}
 
-	let roll_matches = cleanDescription.match(/(\[+\/b?r.*?\]+)(\{.*?\})?/gm);
-	for (var m in roll_matches) {
-		let replaceString = parse_roll(roll_matches[m], additionalData);
-		cleanDescription = cleanDescription.replaceAll(roll_matches[m], replaceString);
+	let roll_matchesA = cleanDescription.match(/(\[\[+\/g?m?b?r.*?\]\]+)(\{.*?\})?/gm);
+	for (var m in roll_matchesA) {
+		let replaceString = parse_roll(roll_matchesA[m], additionalData);
+		cleanDescription = cleanDescription.replaceAll(roll_matchesA[m], replaceString);
+	}
+
+	let roll_matchesB = cleanDescription.match(/(\[+\/g?m?b?r.*?\]+)(\{.*?\})?/gm);
+	for (var m in roll_matchesB) {
+		let replaceString = parse_roll(roll_matchesB[m], additionalData);
+		cleanDescription = cleanDescription.replaceAll(roll_matchesB[m], replaceString);
 	}
 
 	cleanDescription = cleanDescription.replaceAll(/\[\[\/act.*\]\]{(.*)}/g, "$1");
