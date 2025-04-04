@@ -61,7 +61,6 @@ function parse_template(templateString) {
 function parse_damage(damageString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
 	let parsed = parse_foundry_strings(damageString);
 	let addDamage = 0;
-
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 
 	if (additionalData.variant == "elite" && "action" in additionalData && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
@@ -85,14 +84,14 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 			} else {
 				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, finalDice + " (" + String(rolledDice) + ") ");
 			}
-			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 $2").replaceAll(/(.*)\[(.*)\]/gm, "$1 $2");
+			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 ($2)").replaceAll(/(.*)\[(.*)\]/gm, "$1 ($2) " + parsed.braceContents);
 		} else {
 			let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
-			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " $2").replaceAll(/(.*)\[(.*)\]/gm, dice + " $2");
+			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
 		}
 	} else {
 		let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
-		return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " $2").replaceAll(/(.*)\[(.*)\]/gm, dice + " $2");
+		return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
 	}
 }
 
@@ -331,14 +330,6 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 				infoMatch = infoMatch[infoMatch.length - 1];
 			}
 
-			if (rollMatch.includes("@level") && "level" in additionalData) {
-				rollMatch = rollMatch.replaceAll("@level", String(additionalData.level));
-			} else if (rollMatch.includes("@item.level") && "level" in additionalData) {
-				rollMatch = rollMatch.replaceAll("@item.level", String(additionalData.level));
-			} else if (rollMatch.includes("@actor.level") && "level" in additionalData) {
-				rollMatch = rollMatch.replaceAll("@actor.level", String(additionalData.level));
-			}
-
 			if ((additionalData.rollDice && !(rollMatch.includes("d"))) || !(rollMatch.includes("d"))) {
 				rollMatch = String(eval(rollMatch));
 			} else if (additionalData.rollDice) {
@@ -460,6 +451,17 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 	}
 	if (removeHR) {
 		cleanDescription = cleanDescription.replaceAll("<hr />", "");
+	}
+
+	if ("level" in additionalData) {
+		cleanDescription = cleanDescription.replaceAll("(@level)", String(additionalData.level));
+		cleanDescription = cleanDescription.replaceAll("(@actor.level)", String(additionalData.level));
+		cleanDescription = cleanDescription.replaceAll("(@item.level)", String(additionalData.level));
+		cleanDescription = cleanDescription.replaceAll("(@item.rank)", String(additionalData.level));
+		cleanDescription = cleanDescription.replaceAll("@level", String(additionalData.level));
+		cleanDescription = cleanDescription.replaceAll("@actor.level", String(additionalData.level));
+		cleanDescription = cleanDescription.replaceAll("@item.level", String(additionalData.level));
+		cleanDescription = cleanDescription.replaceAll("@item.rank", String(additionalData.level));
 	}
 
 	//Horrible Regex to balance parens
