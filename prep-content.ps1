@@ -9,6 +9,9 @@ function get-master-zip {
 
 function expand-master-zip {
     #Expand-Archive -LiteralPath pf2e-master.zip -DestinationPath pf2e-master
+    if (Test-Path "./pf2e-master/" ){
+        Remove-Item -Recurse -Force pf2e-master
+    }
     7z x pf2e-master.zip -o"pf2e-master" */packs/* */static/lang/* -r
 }
 
@@ -340,6 +343,9 @@ if ($runFuncs -eq "all" -or $runFuncs -eq "download") {
     Write-Host "Downloading Data"
     get-master-zip
     Write-Host "Downloaded Foundry Data"
+}
+
+if ($runFuncs -eq "all" -or $runFuncs -eq "expand") {
     Write-Host "Expanding Data"
     expand-master-zip
     Write-Host "Expanded Data"
