@@ -442,45 +442,54 @@ function setup_animal_companion(baseData) {
         MTScript.evalMacro("[dialog5('" + companionData.name + " Animal Companion', 'width=1300; height=" + String(900 + (15 * companionData.basicAttacks.length)) + "; temporary=1; noframe=0; input=1'):{[r: queryHTML]}]")
         return;
     } else if ("save" in baseData) {
-        //MapTool.chat.broadcast(JSON.stringify(companionData));
-        delete companionData.save;
-        companionData.senses = companionData.senses.split(/,(?![^(]*\)) /);
-        companionData.offensiveActions.push({ "actionCost": 0, "actionType": "passive", "bonus": 0, "damage": [], "name": "Support Benefit", "traits": [], "effects": [], "description": companionData.supportBenefit, "type": "personal" });
-        delete companionData.supportBenefit;
-        for (var s in companionData.proficiencies) {
-            companionData.proficiencies[s].bonus += companionData.level;
-        }
-        delete companionData.skills;
-        companionData.rarity = "common";
-        companionData.offensiveActions.push({
-            "actionCost": companionData.advancedManouver.actionCost,
-            "actionType": companionData.advancedManouver.actionType,
-            "bonus": 0,
-            "damage": [],
-            "name": companionData.advancedManouver.name,
-            "traits": [],
-            "effects": [],
-            "description": companionData.advancedManouver.effect,
-            "type": "personal"
-        });
-        delete companionData.advancedManouver;
+        try{
+            //MapTool.chat.broadcast(JSON.stringify(companionData));
+            delete companionData.save;
+            companionData.senses = companionData.senses.split(/,(?![^(]*\)) /);
+            companionData.offensiveActions.push({ "actionCost": 0, "actionType": "passive", "bonus": 0, "damage": [], "name": "Support Benefit", "traits": [], "effects": [], "description": companionData.supportBenefit, "type": "personal" });
+            delete companionData.supportBenefit;
+            for (var s in companionData.proficiencies) {
+                companionData.proficiencies[s].bonus += companionData.level;
+            }
+            delete companionData.skills;
+            companionData.rarity = "common";
+            if ("advancedManouver" in companionData) {
+                companionData.offensiveActions.push({
+                    "actionCost": companionData.advancedManouver.actionCost,
+                    "actionType": companionData.advancedManouver.actionType,
+                    "bonus": 0,
+                    "damage": [],
+                    "name": companionData.advancedManouver.name,
+                    "traits": [],
+                    "effects": [],
+                    "description": companionData.advancedManouver.effect,
+                    "type": "personal"
+                });
+                delete companionData.advancedManouver;
+            }
 
-        let ownerID = companionData.ownerID;
-        let ownerToken = MapTool.tokens.getTokenByID(ownerID);
-        let ownerPetList = ownerToken.getProperty("pets");
-        if (ownerPetList == "" || ownerPetList == null || ownerPetList == []) {
-            ownerPetList = {};
-        } else {
-            ownerPetList = JSON.parse(ownerPetList);
-        }
-        if (companionData.name in ownerPetList) {
-            write_creature_properties(companionData, ownerPetList[companionData.name])
-        } else {
-            MTScript.setVariable("petData", JSON.stringify(companionData));
-            MTScript.evalMacro("[h: newPetID = ca.pf2e.Spawn_Pet_Lib(petData)]")
-            let newPetID = MTScript.getVariable("newPetID");
-            ownerPetList[companionData.name] = newPetID;
-            ownerToken.setProperty("pets", JSON.stringify(ownerPetList));
+            let ownerID = companionData.ownerID;
+            let ownerToken = MapTool.tokens.getTokenByID(ownerID);
+            let ownerPetList = ownerToken.getProperty("pets");
+            if (ownerPetList == "" || ownerPetList == null || ownerPetList == []) {
+                ownerPetList = {};
+            } else {
+                ownerPetList = JSON.parse(ownerPetList);
+            }
+            if (companionData.name in ownerPetList) {
+                write_creature_properties(companionData, ownerPetList[companionData.name])
+            } else {
+                MTScript.setVariable("petData", JSON.stringify(companionData));
+                MTScript.evalMacro("[h: newPetID = ca.pf2e.Spawn_Pet_Lib(petData)]")
+                let newPetID = MTScript.getVariable("newPetID");
+                ownerPetList[companionData.name] = newPetID;
+                ownerToken.setProperty("pets", JSON.stringify(ownerPetList));
+            }
+        } catch (e) {
+            MapTool.chat.broadcast("Error in setup_animal_companion - save companion");
+            MapTool.chat.broadcast("companionData: " + JSON.stringify(companionData));
+            MapTool.chat.broadcast("" + e + "\n" + e.stack);
+            return;
         }
     }
 
