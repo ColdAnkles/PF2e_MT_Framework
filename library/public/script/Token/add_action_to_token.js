@@ -134,7 +134,9 @@ function add_action_to_token(actionData, tokenID, token) {
 			if ("isMelee" in actionData.system || (actionData.type == "melee" || actionData.type == "ranged")) {
 				actionData.system.actionType = { "value": "action" };
 				actionData.system.actions = { "value": 1 };
-
+			}else if(actionData.actionType == "passive"){
+				actionData.system.actionType = { "value": "free" };
+				actionData.system.actions = { "value": 1 };
 			}
 			let actionLabel = action_icon_label(actionData.system.actionType.value, actionData.system.actions.value) + " " + actionData.name;
 			if ("isMelee" in actionData.system || (actionData.type == "melee" || actionData.type == "ranged")) {

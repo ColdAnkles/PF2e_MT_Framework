@@ -25,7 +25,7 @@ function core_action(actionData, actingToken) {
 
 		if (isNaN(initiative)) {
 			canAct = true;
-		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "action" && "actions" in actionData.system && "value" in actionData.system.actions && actionsLeft >= actionData.system.actions.value) {
+		} else if ("actionType" in actionData.system && "value" in actionData.system.actionType && actionData.system.actionType.value == "action" && "actions" in actionData.system && "value" in actionData.system.actions && actionsLeft >= actionData.system.actions.value) {
 			canAct = true;
 		} else if ((actionData.type == "ranged" || actionData.type == "melee") && actionsLeft >= 1) {
 			canAct = true;
@@ -42,7 +42,7 @@ function core_action(actionData, actingToken) {
 			}
 		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "action") {
 			failAct = "Insufficient Actions";
-		} else if (isNaN(initiative) || ("actionType" in actionData.system && actionData.system.actionType.value == "reaction" && ("actions" in actionData.system && "value" in actionData.system.actions && (reactionsLeft >= actionData.system.actions.value || actionData.system.actions.value == null)))) {
+		} else if (isNaN(initiative) || ("actionType" in actionData.system && "value" in actionData.system.actionType && actionData.system.actionType.value == "reaction" && ("actions" in actionData.system && "value" in actionData.system.actions && (reactionsLeft >= actionData.system.actions.value || actionData.system.actions.value == null)))) {
 			canAct = true;
 		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "reaction") {
 			failAct = "Insufficient Reactions";
