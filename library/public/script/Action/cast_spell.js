@@ -112,7 +112,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 			for (let i = first; i <= second; i++) {
 				inputText = inputText + String(i) + " " + icon_img(String(i) + "action", false, true) + ",";
 			}
-			inputText = inputText.substring(0, inputText.length - 1) + "|Actions to use|LIST|ICON=TRUE ICONSIZE=30";
+			inputText = inputText.substring(0, inputText.length - 1) + "|Actions to use|LIST|ICON=TRUE ICONSIZE=30 SELECT=0";
 
 			let transferData = { "spellName": spellName, "castLevel": String(castLevel), "casterToken": casterToken.getId(), "inputText": inputText, "first": first, "castGroup": castGroup };
 			MTScript.setVariable("transferData", JSON.stringify(transferData));

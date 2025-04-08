@@ -13,7 +13,7 @@ function spell_action(actionData, actingToken) {
 		actingToken = MapTool.tokens.getTokenByID(actingToken);
 	}
 
-	let damageScopes = ["spell", "damage", "spell-damage"];
+	let damageScopes = ["spell"];
 	let attackScopes = ["spell", "attack", "spell-attack"];
 	let spellRules = JSON.parse(actingToken.getProperty("spellRules"));
 	let tokenSpell = null;
@@ -41,49 +41,43 @@ function spell_action(actionData, actingToken) {
 		return;
 	}
 
-
-	let hh_targetType = null;
-	let alt_hh_test = null;
-	try {
-		if (((spellData.name == "Heal" || spellData.name == "Harm") && actionData.system.actions.value <= "2") || spellData.name == "Lay on Hands") {
-			MTScript.evalMacro("[h: targetChoice=\"Living\"][h: input(\"targetChoice|Living,Undead|Target Type|LIST|VALUE=STRING\")]");
-
-			hh_targetType = MTScript.getVariable("targetChoice");
-			if (hh_targetType == "Living") {
-				alt_hh_test = "Healing";
-			} else {
-				alt_hh_test = "Harming";
-			}
-		}
-		if ((spellData.name == "Heal" || spellData.name == "Lay on Hands") && (hh_targetType == "Living" || hh_targetType == null)) {
-			damageScopes = ["spell", "healing"];
-			alt_hh_test = "Healing";
-		} else if ((spellData.name == "Harm" || spellData.name == "Lay on Hands") && (hh_targetType == "Undead" || hh_targetType == null)) {
-			damageScopes = ["spell", "healing"];
-			alt_hh_test = "Healing";
-		}else{
-			damageScopes = ["spell"];
-			alt_hh_test = "Harming";
-		}
-	} catch (e) {
-		MapTool.chat.broadcast("Error in spell_action during heal-harm-tests");
-		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
-		MapTool.chat.broadcast("actingToken: " + String(actingToken));
-		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
-		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
-	}
-
-	//MapTool.chat.broadcast(JSON.stringify(castData));
+	//MapTool.chat.broadcast(JSON.stringify(actionData.system.overlays));
 
 	try {
-		if ("overlays" in actionData.system) {
+		if ("overlays" in spellData.system) {
+			let overlayChoices = [];
 			for (var o in actionData.system.overlays) {
 				let overlayData = spellData.system.overlays[actionData.system.overlays[o]];
-				if (overlayData.overlayType == "override") {
-					if (hh_targetType != null && "name" in overlayData && overlayData.name != null && (!(overlayData.name.toUpperCase().includes(hh_targetType.toUpperCase())) && !(overlayData.name.toUpperCase().includes(alt_hh_test.toUpperCase())))) {
-						continue;
-					};
+				if (overlayData.overlayType == "override" && "name" in overlayData && overlayData.name != null) {
+					overlayChoices.push(overlayData.name);
+				}
+			}
+
+			let inputStrings = [];
+			for (var o in overlayChoices) {
+				inputStrings.push("choice_" + o + "|0|" + overlayChoices[o] + "|CHECK");
+			}
+			MTScript.setVariable("inputText", inputStrings.join("##"));
+			MTScript.evalMacro("[h: input(inputText)]");
+
+			let chosenOverlays = [];
+			for (var o in overlayChoices) {
+				let choiceVal = String(MTScript.getVariable("choice_" + o)) == "1";
+				if (choiceVal) {
+					chosenOverlays.push(overlayChoices[o]);
+				}
+			}
+
+			for (var o in actionData.system.overlays) {
+				let overlayData = spellData.system.overlays[actionData.system.overlays[o]];
+				let applyOverlay = false;
+				if (overlayData.overlayType == "override" && "name" in overlayData && chosenOverlays.includes(overlayData.name)) {
+					applyOverlay = true;
+				}else if (!("name" in overlayData)){
+					applyOverlay = true;
+				}
+				
+				if(applyOverlay){
 					for (var key in overlayData.system) {
 						if (typeof (overlayData.system[key]) == "object" && overlayData.system[key] != null && "value" in overlayData.system[key] && Object.keys(overlayData.system[key]).length == 1 && key != "traits") {
 							spellData.system[key].value = overlayData.system[key].value;
@@ -119,9 +113,10 @@ function spell_action(actionData, actingToken) {
 	try {
 		for (var d in spellData.system.damage) {
 			if ("kinds" in spellData.system.damage[d]) {
-				if (spellData.system.damage[d].kinds.includes("healing")) {
-					damageScopes = ["spell", "healing"];
-					break;
+				for(var k in spellData.system.damage[d].kinds){
+					if (!(damageScopes.includes(spellData.system.damage[d].kinds[k]))){
+						damageScopes.push(spellData.system.damage[d].kinds[k]);
+					}
 				}
 			}
 		}
@@ -387,8 +382,10 @@ function spell_action(actionData, actingToken) {
 				if (damageData.category != null) {
 					displayData.system.description.value += " " + damageData.category;
 				}
-				if (damageScopes.includes("healing")) {
+				if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
 					displayData.system.description.value += " HP" + "</b>";
+				}else if(damageScopes.includes("healing") && damageScopes.includes("damage")){
+					displayData.system.description.value += " HP/" + damageData.type + "</b>";
 				} else {
 					displayData.system.description.value += " " + damageData.type + "</b>";
 				}
@@ -396,14 +393,18 @@ function spell_action(actionData, actingToken) {
 					let critDamage = rolled * 2;
 					if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
 						displayData.system.description.value += "<br /><i>Crit Healing</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
+					}else if(damageScopes.includes("healing") && damageScopes.includes("damage")){
+						displayData.system.description.value += "<br /><i>Crit Healing/Damage</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
 					} else {
 						displayData.system.description.value += "<br /><i>Crit Damage</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
 					}
 					if (damageData.category != null) {
 						displayData.system.description.value += " " + damageData.category;
 					}
-					if (damageScopes.includes("healing")) {
+					if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
 						displayData.system.description.value += " HP" + "</b>";
+					}else if(damageScopes.includes("healing") && damageScopes.includes("damage")){
+						displayData.system.description.value += " HP/" + damageData.type + "</b>";
 					} else {
 						displayData.system.description.value += " " + damageData.type + "</b>";
 					}
