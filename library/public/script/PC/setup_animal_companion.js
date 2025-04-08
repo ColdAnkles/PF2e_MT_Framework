@@ -446,7 +446,7 @@ function setup_animal_companion(baseData) {
             //MapTool.chat.broadcast(JSON.stringify(companionData));
             delete companionData.save;
             companionData.senses = companionData.senses.split(/,(?![^(]*\)) /);
-            companionData.offensiveActions.push({ "actionCost": 0, "actionType": "passive", "bonus": 0, "damage": [], "name": "Support Benefit", "traits": [], "effects": [], "description": companionData.supportBenefit, "type": "personal" });
+            companionData.passiveSkills.push({ "actionCost": null, "actionType": "passive", "baseName":"support-benefit", "name": "Support Benefit","system":{ "traits": {"value":[]}, "effects": [], "description": {"value":companionData.supportBenefit},}, "type": "personal", "traits": [], });
             delete companionData.supportBenefit;
             for (var s in companionData.proficiencies) {
                 companionData.proficiencies[s].bonus += companionData.level;
@@ -467,6 +467,19 @@ function setup_animal_companion(baseData) {
                 });
                 delete companionData.advancedManouver;
             }
+
+            let otherSpeeds = companionData.speeds.other;
+            let otherSpeedData = [];
+
+            for (var s in otherSpeeds){
+                let speedString = otherSpeeds[s];
+                let speedSplit = speedString.split(" ");
+                //format fly 50ft to {"type":"fly","value":120}
+                let newSpeed = {"type":speedSplit[0],"value":Number(speedSplit[1].replaceAll(/[a-z]/gi,""))}
+                otherSpeedData.push(newSpeed);
+            }
+
+            companionData.speeds.other = otherSpeedData;
 
             let ownerID = companionData.ownerID;
             let ownerToken = MapTool.tokens.getTokenByID(ownerID);

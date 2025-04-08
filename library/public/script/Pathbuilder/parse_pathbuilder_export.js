@@ -290,6 +290,7 @@ function parse_pathbuilder_export(data) {
 
 	//__MAGIC__
 	message_window("Importing " + data.name, "Importing Spellcasting");
+	let importedSpells = [];
 	characterData.spellRules = {};
 	for (var i in data.spellCasters) {
 		let castingData = data.spellCasters[i];
@@ -321,6 +322,7 @@ function parse_pathbuilder_export(data) {
 					spellData.system.castLevel = { "value": castLevel };
 					spellData.system.group = { "value": newCastingRules.name }
 					newCastingRules.spells.push(spellData)
+					importedSpells.push(spellData.name);
 				}
 			}
 		}
@@ -363,6 +365,7 @@ function parse_pathbuilder_export(data) {
 					spellData.system.group = { "value": newCastingRules.name }
 				}
 				newCastingRules.spells.push(spellData)
+				importedSpells.push(spellData.name);
 			}
 
 			characterData.spellRules[id] = newCastingRules;
@@ -442,6 +445,7 @@ function parse_pathbuilder_export(data) {
 		/^(The) /,
 		/^(Blessing): /,
 		/^(Empiricism) Selected Skill: /,
+		/^Hunter's Edge: /,
 	];
 
 	for (var f in data.feats) {
@@ -478,6 +482,9 @@ function parse_pathbuilder_export(data) {
 	for (var s in data.specials) {
 		let tempName = data.specials[s];
 		if (tempName == "") {
+			continue;
+		}
+		if (importedSpells.includes(tempName)){
 			continue;
 		}
 		for (var r in removeRegex) {
