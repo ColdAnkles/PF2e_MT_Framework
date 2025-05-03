@@ -73,11 +73,11 @@ function spell_action(actionData, actingToken) {
 				let applyOverlay = false;
 				if (overlayData.overlayType == "override" && "name" in overlayData && chosenOverlays.includes(overlayData.name)) {
 					applyOverlay = true;
-				}else if (!("name" in overlayData)){
+				} else if (!("name" in overlayData)) {
 					applyOverlay = true;
 				}
-				
-				if(applyOverlay){
+
+				if (applyOverlay) {
 					for (var key in overlayData.system) {
 						if (typeof (overlayData.system[key]) == "object" && overlayData.system[key] != null && "value" in overlayData.system[key] && Object.keys(overlayData.system[key]).length == 1 && key != "traits") {
 							spellData.system[key].value = overlayData.system[key].value;
@@ -113,8 +113,8 @@ function spell_action(actionData, actingToken) {
 	try {
 		for (var d in spellData.system.damage) {
 			if ("kinds" in spellData.system.damage[d]) {
-				for(var k in spellData.system.damage[d].kinds){
-					if (!(damageScopes.includes(spellData.system.damage[d].kinds[k]))){
+				for (var k in spellData.system.damage[d].kinds) {
+					if (!(damageScopes.includes(spellData.system.damage[d].kinds[k]))) {
 						damageScopes.push(spellData.system.damage[d].kinds[k]);
 					}
 				}
@@ -129,11 +129,35 @@ function spell_action(actionData, actingToken) {
 		return;
 	}
 
-	let spellMod = Number(actingToken.getProperty(actionData.castingAbility));
+	let spellMod = null;
+
+	try {
+		let castingAbility = "int";
+		if (castingAbility == null && actionData != null && "castingAbility" in actionData) {
+			castingAbility = actionData.castingAbility;
+		}
+		if (castingAbility == null && tokenSpell != null && "castingAbility" in tokenSpell) {
+			castingAbility = tokenSpell.castingAbility;
+		}
+		if (castingAbility == null && castData != null && "spellAttack" in castData) {
+			spellMod = castData.spellAttack;
+		} else {
+			spellMod = Number(actingToken.getProperty(castingAbility));
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in spell_action during get-cast-ability");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("tokenSpell: " + JSON.stringify(tokenSpell));
+		MapTool.chat.broadcast("castData: " + JSON.stringify(castData));
+		MapTool.chat.broadcast("actingToken: " + String(actingToken));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	//MapTool.chat.broadcast(JSON.stringify(spellData));
-	let displayData = { "name": actingToken.getName() + " - " + actionData.name, "type": spellData.system.category, "system": { "actionType": null, "actions": null, "description": { "value": "" }, "level": actionData.system.castLevel } };
+	let displayData = null;
 	try {
+		displayData = { "name": actingToken.getName() + " - " + actionData.name, "type": spellData.system.category, "system": { "actionType": null, "actions": null, "description": { "value": "" }, "level": actionData.system.castLevel } };
 		if (spellData.system.area != null) {
 			if ("details" in spellData.system.area) {
 				displayData.system.description.value += "<b>Area</b> " + spellData.system.area.details;
@@ -167,12 +191,14 @@ function spell_action(actionData, actingToken) {
 		return;
 	}
 
+	let currentAttackCount = 0;
+	let attackIncrease = 0;
 	if (spellData.system.traits.value.includes("attack")) {
 
 		try {
 			displayData.system.description.value += "<i>Attack Roll</i><br /><div style='font-size:10px'><b>";
 
-			let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
+			currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
 			if (isNaN(currentAttackCount)) {
 				currentAttackCount = 0;
 			}
@@ -262,7 +288,16 @@ function spell_action(actionData, actingToken) {
 			return;
 		}
 
-		let initiative = get_initiative(actingToken.getId());
+		let initiative = null;
+		try {
+			get_initiative(actingToken.getId());
+		} catch (e) {
+			MapTool.chat.broadcast("Error in spell_action during get-initiative");
+			MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+			MapTool.chat.broadcast("actingToken: " + String(actingToken));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
+		}
 		if (!(isNaN(initiative))) {
 			actingToken.setProperty("attacksThisRound", String(currentAttackCount + attackIncrease));
 		}
@@ -384,7 +419,7 @@ function spell_action(actionData, actingToken) {
 				}
 				if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
 					displayData.system.description.value += " HP" + "</b>";
-				}else if(damageScopes.includes("healing") && damageScopes.includes("damage")){
+				} else if (damageScopes.includes("healing") && damageScopes.includes("damage")) {
 					displayData.system.description.value += " HP/" + damageData.type + "</b>";
 				} else {
 					displayData.system.description.value += " " + damageData.type + "</b>";
@@ -393,7 +428,7 @@ function spell_action(actionData, actingToken) {
 					let critDamage = rolled * 2;
 					if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
 						displayData.system.description.value += "<br /><i>Crit Healing</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
-					}else if(damageScopes.includes("healing") && damageScopes.includes("damage")){
+					} else if (damageScopes.includes("healing") && damageScopes.includes("damage")) {
 						displayData.system.description.value += "<br /><i>Crit Healing/Damage</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
 					} else {
 						displayData.system.description.value += "<br /><i>Crit Damage</i><br /><b>2x(" + damageRoll + ") = " + String(critDamage);
@@ -403,7 +438,7 @@ function spell_action(actionData, actingToken) {
 					}
 					if (damageScopes.includes("healing") && !damageScopes.includes("damage")) {
 						displayData.system.description.value += " HP" + "</b>";
-					}else if(damageScopes.includes("healing") && damageScopes.includes("damage")){
+					} else if (damageScopes.includes("healing") && damageScopes.includes("damage")) {
 						displayData.system.description.value += " HP/" + damageData.type + "</b>";
 					} else {
 						displayData.system.description.value += " " + damageData.type + "</b>";
@@ -451,5 +486,15 @@ function spell_action(actionData, actingToken) {
 		return;
 	}
 
-	chat_display(displayData, true, { "level": actionData.system.castLevel.value, "rollDice": true, "item": spellData, "action": spellData, "variant": variant });
+	try {
+		chat_display(displayData, true, { "level": actionData.system.castLevel.value, "rollDice": true, "item": spellData, "action": spellData, "variant": variant });
+	} catch (e) {
+		MapTool.chat.broadcast("Error in spell_action during chat-display");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("actingToken: " + String(actingToken));
+		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 }

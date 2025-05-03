@@ -63,7 +63,15 @@ function core_action(actionData, actingToken) {
 		setLibProperty("lib:ca.pf2e", "lastAction", actionData.name);
 
 		if ("isSpell" in actionData.system && actionData.system.isSpell) {
-			spell_action(actionData, actingToken);
+			try{
+				spell_action(actionData, actingToken);
+			} catch (e) {
+				MapTool.chat.broadcast("Error in spell-action during core_action");
+				MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+				MapTool.chat.broadcast("actingToken: " + String(actingToken));
+				MapTool.chat.broadcast("" + e + "\n" + e.stack);
+				return;
+			}
 		} else if ("isMelee" in actionData.system || actionData.type == "melee" || actionData.type == "ranged") {
 			try {
 				if (!(isNaN(initiative)) && (("noQuery" in actionData && actionData.noQuery) || !("noQuery" in actionData))) {
