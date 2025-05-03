@@ -205,9 +205,21 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			if (!("overrideBonus" in checkData)) {
 				checkData.overrideBonus = null;
 			}
+		} catch (e) {
+			MapTool.chat.broadcast("Error in default-checkData during skill_check");
+			MapTool.chat.broadcast("checkToken: " + String(checkToken));
+			MapTool.chat.broadcast("altStat: " + String(altStat));
+			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
+			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
+		}
 
+		let dTwenty = 0;
+		let dTwentyColour = themeData.colours.standardText;
+		try {
 			MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
-			let dTwenty = Number(MTScript.getVariable("dTwenty"));
+			dTwenty = Number(MTScript.getVariable("dTwenty"));
 			if (checkData.fortuneSelect == "fortune") {
 				MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 				dTwenty = Math.max(dTwenty, Number(MTScript.getVariable("dTwenty")));
@@ -215,15 +227,26 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
 				dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
 			}
-
-			let dTwentyColour = themeData.colours.standardText;
 			if (dTwenty == 1) {
 				dTwentyColour = "red";
 			} else if (dTwenty == 20) {
 				dTwentyColour = "green";
 			}
+		} catch (e) {
+			MapTool.chat.broadcast("Error in d20Roll during skill_check");
+			MapTool.chat.broadcast("checkToken: " + String(checkToken));
+			MapTool.chat.broadcast("altStat: " + String(altStat));
+			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
+			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
+		}
 
-			let stat_bonus = Number(checkToken.getProperty(checkData.statName));
+		let stat_bonus = 0;
+		try {
+			if ("statName" in checkData) {
+				stat_bonus = Number(checkToken.getProperty(checkData.statName));
+			}
 			if (checkData.skillName in skills && !("statName" in checkData)) {
 				stat_bonus = Number(checkToken.getProperty(skills[checkData.skillName].stat));
 			} else if (checkData.skillName.includes("Lore")) {
@@ -233,32 +256,57 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			if (!("statName" in checkData) && checkData.skillName in skills) {
 				checkData.statName = skills[checkData.skillName].stat;
 			}
+		} catch (e) {
+			MapTool.chat.broadcast("Error in get-stat-bonus during skill_check");
+			MapTool.chat.broadcast("checkToken: " + String(checkToken));
+			MapTool.chat.broadcast("checkData.statName: " + String(checkData.statName));
+			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
+		}
 
+		let initiative = 0;
+		let currentAttackCount = 0;
 
-			let initiative = get_initiative(checkToken.getId());
-			let currentAttackCount = Number(checkToken.getProperty("attacksThisRound"));
+		try {
+			initiative = get_initiative(checkToken.getId());
+			currentAttackCount = Number(checkToken.getProperty("attacksThisRound"));
 			if (isNaN(currentAttackCount)) {
 				currentAttackCount = 0;
 			}
+		} catch (e) {
+			MapTool.chat.broadcast("Error in get-init during skill_check");
+			MapTool.chat.broadcast("checkToken: " + String(checkToken));
+			MapTool.chat.broadcast("altStat: " + String(altStat));
+			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
+			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
+		}
 
-			let map_malus = Math.min(currentAttackCount, 2) * -5;
+		let map_malus = Math.min(currentAttackCount, 2) * -5;
 
-			if ("useMAP" in checkData && !checkData.useMAP) {
-				map_malus = 0;
-			}
+		if ("useMAP" in checkData && !checkData.useMAP) {
+			map_malus = 0;
+		}
 
+		let prof_bonus = 0;
+		let misc_bonus = Number(checkData.miscBonus);
+		let effect_bonus_raw = 0;
+		let effect_bonus = 0;
+		let applyAssurance = 0;
+		let assuranceIndex = null;
+		try {
 			//MapTool.chat.broadcast("Submitted :" + JSON.stringify(checkData));
-			let prof_bonus = 0;
-			let misc_bonus = Number(checkData.miscBonus);
-			let effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName), checkData.statName + "-based", "skill-check"].concat(extraScopes), true);
-			let effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + Math.max(effect_bonus_raw.bonuses.none, checkData.oBonus)
+			effect_bonus_raw = calculate_bonus(checkToken, [lowercase(checkData.skillName), checkData.statName + "-based", "skill-check"].concat(extraScopes), true);
+			effect_bonus = Math.max(effect_bonus_raw.bonuses.circumstance, checkData.cBonus) + Math.max(effect_bonus_raw.bonuses.status, checkData.sBonus) + Math.max(effect_bonus_raw.bonuses.item, checkData.iBonus) + Math.max(effect_bonus_raw.bonuses.none, checkData.oBonus)
 				+ Math.min(effect_bonus_raw.maluses.circumstance, checkData.cMalus) + Math.min(effect_bonus_raw.maluses.status, checkData.sMalus) + Math.min(effect_bonus_raw.maluses.item, checkData.iMalus) + Math.min(effect_bonus_raw.maluses.none, checkData.oMalus);
 
 			//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
 			if (effect_bonus_raw.appliedEffects.includes("Assurance")) {
 				MTScript.evalMacro("[h: apply=0][h: input(\"apply|0|Apply Assurance|CHECK\")]");
-				let applyAssurance = Number(MTScript.getVariable("apply")) == 1;
+				applyAssurance = Number(MTScript.getVariable("apply")) == 1;
 				//MapTool.chat.broadcast(String(applyAssurance));
 				if (applyAssurance) {
 					dTwenty = 10;
@@ -269,13 +317,23 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 					map_malus = 0;
 					effect_bonus_raw.appliedEffects = ["Assurance"];
 				} else {
-					let assuranceIndex = effect_bonus_raw.appliedEffects.indexOf("Assurance");
+					assuranceIndex = effect_bonus_raw.appliedEffects.indexOf("Assurance");
 					effect_bonus_raw.appliedEffects.splice(assuranceIndex, 1);
 				}
 			}
+		} catch (e) {
+			MapTool.chat.broadcast("Error in get-effect-bonuses during skill_check");
+			MapTool.chat.broadcast("checkToken: " + String(checkToken));
+			MapTool.chat.broadcast("altStat: " + String(altStat));
+			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
+			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
+		}
 
-			//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
+		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
 
+		try {
 			if (checkData.tokenType == "NPC" || checkData.tokenType == "PC") {
 				let profList = JSON.parse(checkToken.getProperty("proficiencies"));
 				for (var p in profList) {
