@@ -201,9 +201,9 @@ function attack_action(actionData, actingToken) {
 			} else if (traitName == "forceful" && itemData != null && currentAttackCount > 0) {
 				let bonus = 0;
 				if (currentAttackCount > 1) {
-					bonus = 2 * itemData.damage.dice;
+					bonus = 2 * itemData.system.damage.dice;
 				} else {
-					bonus = itemData.damage.dice;
+					bonus = itemData.system.damage.dice;
 				}
 				if (bonus > damage_bonus_raw.bonuses.circumstance) {
 					additionalDamageList.push("+" + String(bonus) + " (" + String(Number(2 * bonus)) + ") (Forceful (c))")
@@ -236,7 +236,7 @@ function attack_action(actionData, actingToken) {
 		MapTool.chat.broadcast("Error in attack_action during trait-setup");
 		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
-		MapTool.chat.broadcast("casterToken: " + String(actingToken));
+		MapTool.chat.broadcast("actingToken: " + String(actingToken));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
