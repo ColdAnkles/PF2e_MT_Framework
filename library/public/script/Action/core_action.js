@@ -18,6 +18,7 @@ function core_action(actionData, actingToken) {
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		//MapTool.chat.broadcast(String(initiative));
 		//MapTool.chat.broadcast(String(actionsLeft));
+		//MapTool.chat.broadcast(String(reactionsLeft));
 
 		if ("requirements" in actionData.system && actionData.system.requirements != null && "value" in actionData.system.requirements && actionData.system.requirements.value != "") {
 			MapTool.chat.broadcast("Test Requirements:\n" + JSON.stringify(actionData.system.requirements));
@@ -42,7 +43,11 @@ function core_action(actionData, actingToken) {
 			}
 		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "action") {
 			failAct = "Insufficient Actions";
-		} else if (isNaN(initiative) || ("actionType" in actionData.system && "value" in actionData.system.actionType && actionData.system.actionType.value == "reaction" && ("actions" in actionData.system && "value" in actionData.system.actions && (reactionsLeft >= actionData.system.actions.value || actionData.system.actions.value == null)))) {
+		} else if (isNaN(initiative) ||
+			("actionType" in actionData.system && "value" in actionData.system.actionType && actionData.system.actionType.value == "reaction" &&
+				("actions" in actionData.system &&
+					("value" in actionData.system.actions && (reactionsLeft >= actionData.system.actions.value || actionData.system.actions.value == null)) ||
+					!("value" in actionData.system.actions)))) {
 			canAct = true;
 		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "reaction") {
 			failAct = "Insufficient Reactions";
@@ -63,7 +68,7 @@ function core_action(actionData, actingToken) {
 		setLibProperty("lib:ca.pf2e", "lastAction", actionData.name);
 
 		if ("isSpell" in actionData.system && actionData.system.isSpell) {
-			try{
+			try {
 				spell_action(actionData, actingToken);
 			} catch (e) {
 				MapTool.chat.broadcast("Error in spell-action during core_action");
