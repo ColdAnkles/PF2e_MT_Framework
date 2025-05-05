@@ -21,6 +21,8 @@ function end_turn(turnToken, forwards = true) {
 
 	let tokenConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
 
+	turnToken.setProperty("actionsLeft",0);
+
 	let decrementConditions = ["Frightened"];
 	try {
 		for (var cond of decrementConditions) {
