@@ -140,6 +140,13 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 					npcData.senses.splice(index, 1);
 				}
 			}
+			if (npcData.senses.includes("greater-darkvision")) {
+				npcData.senses.push("greater darkvision");
+				var index = npcData.senses.indexOf("greater-darkvision");
+				if (index > -1) {
+					npcData.senses.splice(index, 1);
+				}
+			}
 			if (npcData.senses.length == 0) {
 				npcData.senses.push("Normal");
 			}
@@ -242,6 +249,9 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 	try {
 		for (var f in npcData.features) {
 			let featureData = npcData.features[f];
+			if (featureData.system.slug == "telepathy"){
+				npcData.languages.push(featureData.name);
+			}
 			//MapTool.chat.broadcast(JSON.stringify(featureData));
 			if ("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "passive" && featureData.system.category != "offensive") {
 				if (featureData.system.description.value.length < 100 && featureData.system.category == "defensive" && !featureData.system.description.value.includes("@")) {
