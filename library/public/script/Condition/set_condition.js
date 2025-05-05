@@ -3,8 +3,10 @@
 function set_condition(conditionName, token, conditionValue = null, silent = false) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
-		token = token.getProperty("myID");
-		token = MapTool.tokens.getTokenByID(token);
+		if (token.isPC()) {
+			token = token.getProperty("myID");
+			token = MapTool.tokens.getTokenByID(token);
+		}
 	}
 
 	let autoDecrease = true;
@@ -55,6 +57,9 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	try {
 		oldValue = conditionData.system.value.value;
 		conditionData.system.value.value = Number(conditionValue);
+		if ("value" in conditionData) {
+			conditionData.value = conditionData.system.value;
+		}
 
 		if (conditionValue != null) {
 			conditionValue = Number(conditionValue);
