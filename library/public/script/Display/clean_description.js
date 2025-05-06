@@ -84,13 +84,22 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 			} else {
 				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, finalDice + " (" + String(rolledDice) + ") ");
 			}
+			if (parsed.braceContents == null) {
+				parsed.braceContents = "";
+			}
 			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 ($2)").replaceAll(/(.*)\[(.*)\]/gm, "$1 ($2) " + parsed.braceContents);
 		} else {
 			let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
+			if (parsed.braceContents == null) {
+				parsed.braceContents = "";
+			}
 			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
 		}
 	} else {
 		let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
+		if (parsed.braceContents == null) {
+			parsed.braceContents = "";
+		}
 		return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
 	}
 }
@@ -240,7 +249,7 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 		let parsed = parse_foundry_strings(rollString, true);
 		//MapTool.chat.broadcast(JSON.stringify(parsed));
 		if (parsed.braceContents != null) {
-			try{
+			try {
 				if (additionalData.rollDice) {
 					let diceMatch = parsed.braceContents.match(/([0-9+ d-]*)/g);
 					//MapTool.chat.broadcast(JSON.stringify(diceMatch));
@@ -276,7 +285,7 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 				return;
 			}
 		} else {
-			try{
+			try {
 				if (additionalData.rollDice) {
 					let diceMatch = parsed.bracketContents.match(/\/r ([0-9+ d-]*)[^[]]*/g);
 					//MapTool.chat.broadcast(JSON.stringify(diceMatch));
@@ -289,7 +298,7 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 						} else {
 							replaceString = dice;
 						}
-						if(rollString.includes("#")){
+						if (rollString.includes("#")) {
 							return replaceString;
 						}
 						return parsed.bracketContents.replace(diceMatch, replaceString);
@@ -308,7 +317,7 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 			}
 		}
 	} else {
-		try{
+		try {
 			const rollRegexp = /\(([^[\]]*)\)/g;
 			const infoRegexp = /\[([^[\]]*)\]/g;
 			let rollMatch = [...rollString.matchAll(rollRegexp)];
