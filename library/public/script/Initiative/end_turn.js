@@ -64,8 +64,8 @@ function end_turn(turnToken, forwards = true) {
 				let damageValue = roll_dice(effectData.damage.dice);
 
 				displayData.system.description.value += "<p><b>Damage:</b> " + damageValue + " " + effectData.damage.type + "</p>";
-				displayData.system.description.value += "<p><b>Recovery Check:</b> " + String(recoveryRoll);
-				if (recoveryRoll >= 15) {
+				displayData.system.description.value += "<p><b>Recovery Check:</b> " + String(recoveryRoll) + " (DC " + String(effectData.dc) + ")";
+				if (recoveryRoll >= effectData.dc) {
 					displayData.system.description.value += " <b><span style='color:green'>Recovered!</span></b>";
 				}
 				displayData.system.description.value += "</p>";
@@ -81,11 +81,12 @@ function end_turn(turnToken, forwards = true) {
 					"silent": true
 				};
 
+				//Account for Resistances, Weaknesses, and Immunities
 				change_hp(turnToken.getId(), hpData);
 
 				chat_display(displayData, true, { "rollDice": true })
 
-				if (recoveryRoll >= 15) {
+				if (recoveryRoll >= effectData.dc) {
 					toggle_action_effect(effectData, turnToken, 0);
 				}
 			}

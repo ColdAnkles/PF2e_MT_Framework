@@ -13,9 +13,10 @@ function add_persistent_damage() {
         return;
     }
 
-    MTScript.evalMacro("[h: ans=input(\"damageKey|" + damageSource + "|Persistent Damage Source\",\
+    MTScript.evalMacro("[h: ans=input(\"damageKey|" + damageSource + "|Damage Source\",\
     \"damageDice|1d4|Damage\",\
-    \"damageType|bludgeoning,piercing,slashing,acid,cold,electricity,fire,sonic,vitality,void,force,spirit,mental,poison,bleed,holy,unholy|Damage Type|LIST|VALUE=STRING\")]");
+    \"damageType|bludgeoning,piercing,slashing,acid,cold,electricity,fire,sonic,vitality,void,force,spirit,mental,poison,bleed,holy,unholy|Damage Type|LIST|VALUE=STRING\",\
+    \"damageDC|15|Recovery DC\")]");
     if (Number(MTScript.getVariable("ans")) == 0) {
         return;
     }
@@ -23,12 +24,15 @@ function add_persistent_damage() {
     let damageKey = MTScript.getVariable("damageKey");
     let damageDice = MTScript.getVariable("damageDice");
     let damageType = MTScript.getVariable("damageType");
+    let damageDC = MTScript.getVariable("damageDC");
 
     persistentDamageData.type = "effect";
 
     persistentDamageData.name = "Persistent " + capitalise(damageType) + " (" + damageKey + ")";
 
     persistentDamageData.damage = { "key": damageKey, "dice": damageDice, "type": damageType };
+
+    persistentDamageData.dc = Number(damageDC);
 
     //MapTool.chat.broadcast(JSON.stringify(persistentDamageData));
 
