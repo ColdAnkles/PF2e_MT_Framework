@@ -1,6 +1,6 @@
 "use strict";
 
-function skill_check(checkToken, altStat = false, checkData = null, extraScopes = []) {
+function skill_check(checkToken, altStat = false, checkData = null, extraScopes = [], silent = false) {
 	//MapTool.chat.broadcast(JSON.stringify(extraScopes));
 	altStat = Boolean(altStat);
 	if (typeof (checkToken) == "string") {
@@ -49,7 +49,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			for (var p in skills) {
 				let skillData = skills[p];
 				let abilityMod = checkToken.getProperty(skillData.stat);
-				skillStrings[skillData.name] = skillData.name + " " + pos_neg_sign(abilityMod);
+				skillStrings[skillData.name] = skillData.name + " " + pos_neg_sign(abilityMod) + ((checkToken.isPC())?" (U)":"");
 			}
 
 			let profList = JSON.parse(checkToken.getProperty("proficiencies"));
@@ -79,6 +79,11 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 					}
 				}
 				skillStrings[profData.name] = profData.name + " " + pos_neg_sign(displayNumber);
+				if (profData.pName != "") {
+					skillStrings[profData.name] += " (" + profData.pName + ")"
+				} else {
+					skillStrings[profData.name] += " (U)"
+				}
 			}
 
 
@@ -398,7 +403,9 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			displayData.system.appliedEffects = effect_bonus_raw.appliedEffects;
 			displayData.system.gmOnly = checkData.secretCheck;
 
-			chat_display(displayData);
+			if (!silent){
+				chat_display(displayData);
+			}
 
 			if (!(isNaN(initiative)) && "increaseMAP" in checkData && checkData.increaseMAP) {
 				checkToken.setProperty("attacksThisRound", String(currentAttackCount + 1));

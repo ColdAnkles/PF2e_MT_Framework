@@ -22,7 +22,7 @@ function parse_pathbuilder_export(data) {
 	function matching_keys(arr, sub) {
 		sub = sub.toLowerCase();
 		return arr.filter(str => (str
-			.toLowerCase()==sub)
+			.toLowerCase() == sub)
 		);
 	}
 
@@ -219,21 +219,25 @@ function parse_pathbuilder_export(data) {
 	//__DEFENSES__
 	characterData.ac = { "value": data.acTotal.acTotal };
 	try {
-		characterData.saves = { "fortitude": 0, "reflex": 0, "will": 0 };
-		if (data.proficiencies.fortitude > 0) {
-			characterData.saves.fortitude = data.proficiencies.fortitude + data.level + characterData.abilities.con;
-		} else {
-			characterData.saves.fortitude = characterData.abilities.con;
-		}
-		if (data.proficiencies.reflex > 0) {
-			characterData.saves.reflex = data.proficiencies.reflex + data.level + characterData.abilities.dex;
-		} else {
-			characterData.saves.reflex = characterData.abilities.dex;
-		}
-		if (data.proficiencies.will > 0) {
-			characterData.saves.will = data.proficiencies.will + data.level + characterData.abilities.wis;
-		} else {
-			characterData.saves.will = characterData.abilities.wis;
+		var saveNames = ["fortitude", "reflex", "will"]
+		var saveAbilities = { "fortitude": "con", "reflex": "dex", "will": "wis" }
+		characterData.saves = { "fortitude": 0, "reflex": 0, "will": 0, "fortitudeProf": "U", "reflexProf": "U", "willProf": "U" };
+		for (var p in saveNames) {
+			var pN = saveNames[p];
+			if (data.proficiencies[pN] > 0) {
+				characterData.saves[pN] = data.proficiencies[pN] + data.level + characterData.abilities[saveAbilities[pN]];
+				if (data.proficiencies[pN] == 2) {
+					characterData.saves[pN + "Prof"] = "T";
+				} else if (data.proficiencies[pN] == 4) {
+					characterData.saves[pN + "Prof"] = "E";
+				} else if (data.proficiencies[pN] == 6) {
+					characterData.saves[pN + "Prof"] = "M";
+				} else if (data.proficiencies[pN] == 8) {
+					characterData.saves[pN + "Prof"] = "L";
+				}
+			} else {
+				characterData.saves[pN] = characterData.abilities[saveAbilities[pN]];
+			}
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - saves setup");
@@ -272,6 +276,17 @@ function parse_pathbuilder_export(data) {
 	for (var p in data.proficiencies) {
 		if (data.proficiencies[p] != 0 && p != "fortitude" && p != "reflex" && p != "will") {
 			let newProf = { "bonus": data.proficiencies[p] + data.level, "name": capitalise(p), "string": capitalise(p) + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
+			if (data.proficiencies[p] == 2) {
+				newProf.pName = "T";
+			} else if (data.proficiencies[p] == 4) {
+				newProf.pName = "E";
+			} else if (data.proficiencies[p] == 6) {
+				newProf.pName = "M";
+			} else if (data.proficiencies[p] == 8) {
+				newProf.pName = "L";
+			} else {
+				newProf.pName = "";
+			}
 			characterData.proficiencies.push(newProf);
 			if (p == "unarmed") {
 				unarmedProf = newProf.bonus;
@@ -280,6 +295,17 @@ function parse_pathbuilder_export(data) {
 	}
 	for (var l in data.lores) {
 		let newProf = { "bonus": data.lores[l][1] + data.level + characterData.abilities.int, "name": "Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
+		if (data.lores[l][1] == 2) {
+			newProf.pName = "T";
+		} else if (data.lores[l][1] == 4) {
+			newProf.pName = "E";
+		} else if (data.lores[l][1] == 6) {
+			newProf.pName = "M";
+		} else if (data.lores[l][1] == 8) {
+			newProf.pName = "L";
+		} else {
+			newProf.pName = "";
+		}
 		characterData.proficiencies.push(newProf);
 	}
 	if (data.proficiencies.perception > 0) {
@@ -484,7 +510,7 @@ function parse_pathbuilder_export(data) {
 		if (tempName == "") {
 			continue;
 		}
-		if (importedSpells.includes(tempName)){
+		if (importedSpells.includes(tempName)) {
 			continue;
 		}
 		for (var r in removeRegex) {

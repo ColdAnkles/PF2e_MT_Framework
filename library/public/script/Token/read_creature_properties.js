@@ -51,9 +51,7 @@ function read_creature_properties(token) {
 	//__DEFENSES__
 	try {
 		creatureData.ac.value = token.getProperty("AC");
-		for (var s in creatureData.saves) {
-			creatureData.saves[s] = token.getProperty(s);
-		}
+		creatureData.saves = JSON.parse(token.getProperty("saves"));
 		creatureData.weaknesses = JSON.parse(token.getProperty("weaknesses"));
 		creatureData.resistances = JSON.parse(token.getProperty("resistances"));
 		creatureData.immunities = JSON.parse(token.getProperty("immunities"));

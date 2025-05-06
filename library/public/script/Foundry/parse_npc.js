@@ -110,7 +110,7 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 		npcData.foundryActor = rawData;
 		//npcData.creatureType = rawData.system.details.creatureType;
 
-		npcData.saves = { "fortitude": rawData.system.saves.fortitude.value, "reflex": rawData.system.saves.reflex.value, "will": rawData.system.saves.will.value };
+		npcData.saves = { "fortitude": rawData.system.saves.fortitude.value, "reflex": rawData.system.saves.reflex.value, "will": rawData.system.saves.will.value, "fortitudeProf": "", "reflexProf": "", "willProf": "" };
 
 		npcData.rarity = rawData.system.traits.rarity;
 		if (rawData.system.traits.value.includes("good")) {
@@ -177,7 +177,7 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 	npcData.proficiencies = [];
 	for (var s in rawData.system.skills) {
 		let prof = rawData.system.skills[s].base;
-		npcData.proficiencies.push({ "string": capitalise(s) + " +" + prof, "name": s, "bonus": prof });
+		npcData.proficiencies.push({ "string": capitalise(s) + " +" + prof, "name": s, "bonus": prof, "pName": "" });
 	}
 
 	npcData.inventory = {};
@@ -249,7 +249,7 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 	try {
 		for (var f in npcData.features) {
 			let featureData = npcData.features[f];
-			if (featureData.system.slug == "telepathy"){
+			if (featureData.system.slug == "telepathy") {
 				npcData.languages.push(featureData.name);
 			}
 			//MapTool.chat.broadcast(JSON.stringify(featureData));

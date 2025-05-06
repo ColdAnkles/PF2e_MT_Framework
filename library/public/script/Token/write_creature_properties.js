@@ -53,10 +53,7 @@ function write_creature_properties(creatureData, token) {
 	//__DEFENSES__
 	try {
 		token.setProperty("AC", parseInt(creatureData.ac.value));
-		for (var s in creatureData.saves) {
-			token.setProperty(s, parseInt(creatureData.saves[s]));
-			token.setProperty(s + "DC", parseInt(Number(creatureData.saves[s]) + 10));
-		}
+		token.setProperty("saves", JSON.stringify(creatureData.saves));
 		token.setProperty("weaknesses", JSON.stringify(creatureData.weaknesses));
 		token.setProperty("resistances", JSON.stringify(creatureData.resistances));
 		token.setProperty("immunities", JSON.stringify(creatureData.immunities));

@@ -116,7 +116,11 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 
 	let proficiencies = [];
 	for (var s in creatureData.proficiencies) {
-		proficiencies.push(creatureData.proficiencies[s].string);
+		let tempString = creatureData.proficiencies[s].string
+		if (creatureData.proficiencies[s].pName != "") {
+			tempString += " (" + creatureData.proficiencies[s].pName + ")"
+		}
+		proficiencies.push(tempString);
 	}
 
 	if (creatureData.proficiencies.length > 0) {

@@ -9,6 +9,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 
 	let saves = ["fortitude", "reflex", "will"]
+	let saveInfo = JSON.parse(saveToken.getProperty("saves"));
 
 	let specialEffects = JSON.parse(saveToken.getProperty("specialEffects"));
 	if (specialEffects === null) {
@@ -42,7 +43,10 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 			let saveStrings = {};
 
 			for (var s in saves) {
-				saveStrings[s] = { "name": saves[s], "string": (capitalise(saves[s]) + " " + pos_neg_sign(saveToken.getProperty(saves[s]))) };
+				saveStrings[s] = { "name": saves[s], "string": (capitalise(saves[s]) + " " + pos_neg_sign(saveInfo[saves[s]])) };
+				if (saveInfo[saves[s] + "Prof"] != "" && saveInfo[saves[s] + "Prof"] != null) {
+					saveStrings[s].string += " (" + saveInfo[saves[s] + "Prof"] + ")";
+				}
 			}
 
 			queryHTML = queryHTML + "<table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
@@ -163,7 +167,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 				dTwentyColour = "green";
 			}
 
-			let basic_bonus = Number(saveToken.getProperty(saveData.saveName));
+			let basic_bonus = Number(saveInfo[saveData.saveName]);
 			let misc_bonus = Number(saveData.miscBonus);
 			let effect_bonus_raw = calculate_bonus(saveToken.getId(), [saveData.saveName, "saving-throw"], true);
 
