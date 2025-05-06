@@ -63,6 +63,9 @@ function change_hp(tokenID, changeHPData = null) {
 			if (changeHPData.currentHPChange <= 0) {
 				kill_creature(tokenID);
 			} else {
+				if (get_state("Dead", token)) {
+					set_state("Dead", false, token);
+				}
 				if (!silent) {
 					chat_display({ "name": tokenDisplayName + " HP Set!", "system": { "description": { "value": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" } } }, true);
 				}
