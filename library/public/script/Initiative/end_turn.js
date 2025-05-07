@@ -55,8 +55,8 @@ function end_turn(turnToken, forwards = true) {
 	let tokenEffects = Object.assign({}, JSON.parse(turnToken.getProperty("activeEffects")), JSON.parse(turnToken.getProperty("specialEffects")));
 	try {
 		for (var e in tokenEffects) {
-			if (tokenEffects[e].baseName == "persistent-damage") {
-				let effectData = tokenEffects[e];
+			let effectData = tokenEffects[e];
+			if (effectData.baseName == "persistent-damage") {
 
 				let displayData = { "name": e, "system": { "description": { "value": "" } } };
 				let recoveryRoll = roll_dice("1d20");
@@ -87,6 +87,9 @@ function end_turn(turnToken, forwards = true) {
 				chat_display(displayData, true, { "rollDice": true })
 
 				if (recoveryRoll >= effectData.dc) {
+					if (turnToken.isPC() && !turnToken.getName().includes("Lib:")){
+						turnToken = MapTool.tokens.getTokenByID(turnToken.getProperty("myID"));
+					}
 					toggle_action_effect(effectData, turnToken, 0);
 				}
 			}

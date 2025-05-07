@@ -38,6 +38,9 @@ function add_persistent_damage() {
 
     for (var t in selectedTokens) {
         let token = selectedTokens[t];
+        if (token.isPC() && !token.getName().includes("Lib:")){
+            token = MapTool.tokens.getTokenByID(token.getProperty("myID"));
+        }
         toggle_action_effect(persistentDamageData, token, true);
 
     }
