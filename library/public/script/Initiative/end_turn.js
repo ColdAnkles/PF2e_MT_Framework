@@ -21,7 +21,7 @@ function end_turn(turnToken, forwards = true) {
 
 	let tokenConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
 
-	turnToken.setProperty("actionsLeft",0);
+	turnToken.setProperty("actionsLeft", 0);
 
 	let decrementConditions = ["Frightened"];
 	try {
@@ -52,6 +52,9 @@ function end_turn(turnToken, forwards = true) {
 		return;
 	}
 
+	let tokenResistances = getTokenResistances(turnToken);
+	let tokenWeaknesses = getTokenWeaknesses(turnToken);
+
 	let tokenEffects = Object.assign({}, JSON.parse(turnToken.getProperty("activeEffects")), JSON.parse(turnToken.getProperty("specialEffects")));
 	try {
 		for (var e in tokenEffects) {
@@ -61,33 +64,47 @@ function end_turn(turnToken, forwards = true) {
 				let displayData = { "name": e, "system": { "description": { "value": "" } } };
 				let recoveryRoll = roll_dice("1d20");
 
-				let damageValue = roll_dice(effectData.damage.dice);
+				let damageValue = Number(roll_dice(effectData.damage.dice));
+				let damageType = effectData.damage.type;
 
-				displayData.system.description.value += "<p><b>Damage:</b> " + damageValue + " " + effectData.damage.type + "</p>";
+				let damageNote = "";
+
+				// No Handling of Resistance/Weakness Exceptions (like resistant to physical except silver)
+				if (!effectData.ignoreResImm){
+					if (damageType in tokenWeaknesses) {
+						damageValue += Number(tokenWeaknesses[damageType]);
+						damageNote = " (weak +" + tokenWeaknesses[damageType] + ")"
+					} else if (damageType in tokenResistances) {
+						damageValue = Math.max(0, damageValue - Number(tokenResistances[damageType]));
+						damageNote = " (resisted -" + tokenResistances[damageType] + ")"
+					}
+				}
+
+				displayData.system.description.value += "<p><b>Damage:</b> " + damageValue + " " + damageType + damageNote + "</p>";
 				displayData.system.description.value += "<p><b>Recovery Check:</b> " + String(recoveryRoll) + " (DC " + String(effectData.dc) + ")";
 				if (recoveryRoll >= effectData.dc) {
 					displayData.system.description.value += " <b><span style='color:green'>Recovered!</span></b>";
 				}
 				displayData.system.description.value += "</p>";
 
-				let hpData = {
-					"hpChangeVal": damageValue,
-					"tokenID": turnToken.getId(),
-					"currentTempHPChange": Number(turnToken.getProperty("TempHP")),
-					"changeHPSubmit": "Submit",
-					"hpChangeType": "lethal",
-					"currentHPChange": Number(turnToken.getProperty("HP")),
-					"currentMaxHPChange": Number(turnToken.getProperty("MaxHP")),
-					"silent": true
-				};
-
-				//Account for Resistances, Weaknesses, and Immunities
-				change_hp(turnToken.getId(), hpData);
+				if (damageValue > 0) {
+					let hpData = {
+						"hpChangeVal": damageValue,
+						"tokenID": turnToken.getId(),
+						"currentTempHPChange": Number(turnToken.getProperty("TempHP")),
+						"changeHPSubmit": "Submit",
+						"hpChangeType": "lethal",
+						"currentHPChange": Number(turnToken.getProperty("HP")),
+						"currentMaxHPChange": Number(turnToken.getProperty("MaxHP")),
+						"silent": true
+					};
+					change_hp(turnToken.getId(), hpData);
+				}
 
 				chat_display(displayData, true, { "rollDice": true })
 
 				if (recoveryRoll >= effectData.dc) {
-					if (turnToken.isPC() && !turnToken.getName().includes("Lib:")){
+					if (turnToken.isPC() && !turnToken.getName().includes("Lib:")) {
 						turnToken = MapTool.tokens.getTokenByID(turnToken.getProperty("myID"));
 					}
 					toggle_action_effect(effectData, turnToken, 0);

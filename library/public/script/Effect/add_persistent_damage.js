@@ -16,7 +16,8 @@ function add_persistent_damage() {
     MTScript.evalMacro("[h: ans=input(\"damageKey|" + damageSource + "|Damage Source\",\
     \"damageDice|1d4|Damage\",\
     \"damageType|bludgeoning,piercing,slashing,acid,cold,electricity,fire,sonic,vitality,void,force,spirit,mental,poison,bleed,holy,unholy|Damage Type|LIST|VALUE=STRING\",\
-    \"damageDC|15|Recovery DC\")]");
+    \"damageDC|15|Recovery DC\",\
+    \"ignoreResImm|0|Ignore Immunity/Resistance etc.|CHECK\")]");
     if (Number(MTScript.getVariable("ans")) == 0) {
         return;
     }
@@ -25,6 +26,7 @@ function add_persistent_damage() {
     let damageDice = MTScript.getVariable("damageDice");
     let damageType = MTScript.getVariable("damageType");
     let damageDC = MTScript.getVariable("damageDC");
+    let ignoreResImm = (Number(MTScript.getVariable("ignoreResImm")) == 1);
 
     persistentDamageData.type = "effect";
 
@@ -32,16 +34,21 @@ function add_persistent_damage() {
 
     persistentDamageData.damage = { "key": damageKey, "dice": damageDice, "type": damageType };
 
+    persistentDamageData.ignoreResImm = ignoreResImm;
+
     persistentDamageData.dc = Number(damageDC);
 
     //MapTool.chat.broadcast(JSON.stringify(persistentDamageData));
 
     for (var t in selectedTokens) {
         let token = selectedTokens[t];
-        if (token.isPC() && !token.getName().includes("Lib:")){
+        if (token.isPC() && !token.getName().includes("Lib:")) {
             token = MapTool.tokens.getTokenByID(token.getProperty("myID"));
         }
-        toggle_action_effect(persistentDamageData, token, true);
+        let tokenImmunities = getTokenImmunities(token);
+        if (!tokenImmunities.includes(persistentDamageData.damage.type) || (tokenImmunities.includes(persistentDamageData.damage.type) && ignoreResImm)) {
+            toggle_action_effect(persistentDamageData, token, true);
+        }
 
     }
 }
