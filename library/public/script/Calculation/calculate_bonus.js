@@ -18,15 +18,17 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 
 	let activeConditions = JSON.parse(token.getProperty("conditionDetails"));
 
+	let upgrades = {};
+
 	let selectedModifiers = { "bonuses": { "circumstance": null, "status": null, "item": null, "none": null, "proficiency": null }, "maluses": { "circumstance": null, "status": null, "item": null, "none": null, "proficiency": null }, "other": [] };
-	let returnData = { "bonuses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "maluses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "otherEffects": {}, "appliedEffects": [] };
+	let returnData = { "bonuses": { "circumstance": { "value": 0 }, "status": { "value": 0 }, "item": { "value": 0 }, "none": { "value": 0 }, "proficiency": { "value": 0 } }, "maluses": { "circumstance": { "value": 0 }, "status": { "value": 0 }, "item": { "value": 0 }, "none": { "value": 0 }, "proficiency": { "value": 0 } }, "otherEffects": {}, "appliedEffects": [] };
 
 	for (var e in activeEffects) {
 		let effectData = JSON.parse(JSON.stringify(activeEffects[e]));
 		//MapTool.chat.broadcast(JSON.stringify(effectData));
+		//MapTool.chat.broadcast(JSON.stringify(effectData.name));
 		let effectBonuses = get_effect_bonus(effectData, bonusScopes, token, causeItem);
 		//MapTool.chat.broadcast(JSON.stringify(effectBonuses));
-		effectData.bonus = effectBonuses;
 		let hasAsked = false;
 		let askResponse = true;
 		for (var type in effectBonuses) {
@@ -42,28 +44,58 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 					returnData.otherEffects = Object.assign({}, returnData.otherEffects, effectBonuses.otherEffects);
 					selectedModifiers.other.push(effectData);
 				}
+			} else if (type == "upgrades" && Object.keys(effectBonuses.upgrades).length > 0) {
+				for (var u in effectBonuses.upgrades) {
+					let upgradeData = effectBonuses.upgrades[u];
+					upgradeData.effectName = effectData.name;
+					upgrades[upgradeData.slug] = upgradeData;
+
+					if (upgradeData.key == "AdjustModifier") {
+						for (var k in returnData.bonuses) {
+							if (returnData.bonuses[k].slug == upgradeData.slug) {
+								returnData.bonuses[k].value = upgradeData.value;
+								selectedModifiers.other.push(effectData);
+							}
+						}
+
+						for (var k in returnData.maluses) {
+							if (returnData.maluses[k].slug == upgradeData.slug) {
+								returnData.maluses[k].value = upgradeData.value;
+								selectedModifiers.other.push(effectData);
+							}
+						}
+					}
+				}
 			}
 			let typeDict = effectBonuses[type];
 			for (var k in typeDict) {
-				if (type == "bonuses" && typeDict[k] > returnData[type][k]) {
+				if (type == "bonuses" && typeDict[k].value > returnData[type][k].value) {
 					if (!hasAsked && effectBonuses.query && consume) {
 						MTScript.evalMacro("[h: ans=input(\"junkVar|Apply " + effectData.name + "?|blah|LABEL|SPAN=TRUE\")]");
 						askResponse = (Number(MTScript.getVariable("ans")) == 1);
 						hasAsked = true;
 					}
 					if (askResponse || !consume) {
+						if ("slug" in typeDict[k] && typeDict[k].slug in upgrades && "value" in upgrades[typeDict[k].slug]) {
+							typeDict[k].value = upgrades[typeDict[k].slug].value;
+							selectedModifiers.other.push({ "name": upgrades[typeDict[k].slug].effectName });
+						}
 						returnData[type][k] = typeDict[k];
 						selectedModifiers[type][k] = effectData;
 					}
-				} else if (type == "maluses" && typeDict[k] < returnData[type][k]) {
+				} else if (type == "maluses" && typeDict[k].value < returnData[type][k].value) {
 					if (!hasAsked && effectBonuses.query && consume) {
 						MTScript.evalMacro("[h: ans=input(\"junkVar|Apply " + effectData.name + "?|blah|LABEL|SPAN=TRUE\")]");
 						askResponse = (MTScript.getVariable("ans") == 1);
 						hasAsked = true;
 					}
 					if (askResponse || !consume) {
-						returnData[type][k] = typeDict[k];
+						if ("slug" in typeDict[k] && typeDict[k].slug in upgrades && "value" in upgrades[typeDict[k].slug]) {
+							typeDict[k].value = upgrades[typeDict[k].slug].value;
+							selectedModifiers.other.push({ "name": upgrades[typeDict[k].slug].effectName });
+						}
 						selectedModifiers[type][k] = effectData;
+						returnData[type][k] = typeDict[k];
 					}
 				}
 			}
@@ -83,10 +115,10 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 			}
 			let typeDict = conditionBonuses[type];
 			for (var k in typeDict) {
-				if (type == "bonuses" && typeDict[k] > returnData[type][k]) {
+				if (type == "bonuses" && typeDict[k].value > returnData[type][k].value) {
 					returnData[type][k] = typeDict[k];
 					selectedModifiers[type][k] = conditionData;
-				} else if (type == "maluses" && typeDict[k] < returnData[type][k]) {
+				} else if (type == "maluses" && typeDict[k].value < returnData[type][k].value) {
 					returnData[type][k] = typeDict[k];
 					selectedModifiers[type][k] = conditionData;
 				}
@@ -102,7 +134,7 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 				//each type of bonus/malus
 				let modData = modDict[m];
 				if (modData != null && modData.type == "effect") {
-					returnData.appliedEffects.push(modData.name);
+					returnData.appliedEffects.push({ "name": modData.name, "slug": modData.slug });
 					//MapTool.chat.broadcast(JSON.stringify(modData));
 					for (var r in modData.rules) {
 						let removeAfter = modData.rules[r].removeAfterRoll;
@@ -111,7 +143,7 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 						}
 					}
 				} else if (modData != null) {
-					returnData.appliedEffects.push(modData.name);
+					returnData.appliedEffects.push({ "name": modData.name, "slug": modData.slug });
 				}
 			}
 		}
@@ -123,14 +155,23 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 				//each type of bonus/malus
 				let modData = modDict[m];
 				if (modData != null) {
-					returnData.appliedEffects.push(modData.name);
+					returnData.appliedEffects.push({ "name": modData.name, "slug": modData.slug });
 				}
 			}
 		}
 	}
 
+	//MapTool.chat.broadcast("ReturnData:" + JSON.stringify(returnData));
 
-	//MapTool.chat.broadcast(JSON.stringify(returnData));
+	for (var k in returnData.bonuses) {
+		returnData.bonuses[k] = Number(returnData.bonuses[k].value);
+	}
+
+	for (var k in returnData.maluses) {
+		returnData.maluses[k] = Number(returnData.maluses[k].value);
+	}
+
+	//MapTool.chat.broadcast("ReturnData:" + JSON.stringify(returnData));
 	//MapTool.chat.broadcast(JSON.stringify(selectedModifiers));
 
 	return returnData;

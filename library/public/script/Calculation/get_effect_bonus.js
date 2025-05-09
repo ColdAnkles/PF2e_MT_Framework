@@ -8,7 +8,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
 	//MapTool.chat.broadcast(JSON.stringify(effectData.rules));
-	let returnData = { "bonuses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "maluses": { "circumstance": 0, "status": 0, "item": 0, "none": 0, "proficiency": 0 }, "query": false, "otherEffects": {} };
+	let returnData = { "bonuses": { "circumstance": {"value":0}, "status": {"value":0}, "item": {"value":0}, "none": {"value":0}, "proficiency": {"value":0} }, "maluses": { "circumstance": {"value":0}, "status": {"value":0}, "item": {"value":0}, "none": {"value":0}, "proficiency": {"value":0} }, "query": false, "otherEffects": {}, "upgrades":{}};
 	for (var r in effectData.system.rules) {
 		let ruleData = effectData.system.rules[r];
 		if ("choices" in ruleData) {
@@ -74,9 +74,9 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 					}
 					//MapTool.chat.broadcast(JSON.stringify(shieldData));
 					if (("acBonus" in shieldData && shieldData.acBonus > returnData.bonuses.circumstance)) {
-						returnData.bonuses.circumstance = shieldData.acBonus;
+						returnData.bonuses.circumstance = {"value":shieldData.acBonus};
 					} else if (("ac" in shieldData && shieldData.acBonus > returnData.bonuses.circumstance)) {
-						returnData.bonuses.circumstance = shieldData.ac;
+						returnData.bonuses.circumstance = {"value":shieldData.ac};
 					}
 				}
 			} catch (e) {
@@ -86,15 +86,18 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				return;
 			}
 			//MapTool.chat.broadcast(JSON.stringify(ruleData));
+		} else if("mode" in ruleData && ruleData.mode == "upgrade" && "slug" in ruleData) {
+			ruleData.value = foundry_calc_value(ruleData.value, actor, effectData);
+			returnData.upgrades[ruleData.slug] = ruleData;
 		} else {
 			if (ruleData.key == "FlatModifier") {
 				try {
 					ruleData.value = foundry_calc_value(ruleData.value, actor, effectData);
 					if (ruleData.value < 0) {
 						if (!("type" in ruleData)) {
-							returnData.maluses.none = returnData.maluses.none + ruleData.value;
+							returnData.maluses.none.value += ruleData.value;
 						} else if (ruleData.value < returnData.maluses[ruleData.type]) {
-							returnData.maluses[ruleData.type] = ruleData.value;
+							returnData.maluses[ruleData.type] = ruleData;
 						}
 					} else {
 						if (!("type" in ruleData)) {
@@ -104,10 +107,10 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 									returnData.otherEffects[ruleData.selector].slug = ruleData.slug;
 								}
 							} else {
-								returnData.bonuses.none = returnData.bonuses.none + ruleData.value;
+								returnData.bonuses.none.value += ruleData.value;
 							}
 						} else if (ruleData.value > returnData.bonuses[ruleData.type]) {
-							returnData.bonuses[ruleData.type] = ruleData.value;
+							returnData.bonuses[ruleData.type] = ruleData;
 						}
 					}
 				} catch (e) {

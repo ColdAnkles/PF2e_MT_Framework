@@ -103,8 +103,9 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	try {
 		if ("appliedEffects" in displayData.system && displayData.system.appliedEffects != null && displayData.system.appliedEffects.length > 0) {
-			outputText += "<div style='margin:0px;padding:3px; background-color:" + themeData.colours.standardBackground + "; color:" + themeData.colours.standardText + "'><i>Applied Effects</i><br />" + displayData.system.appliedEffects.join(", ") + "</div>";
-			gmOutputText += "<div style='margin:0px;padding:3px; background-color:" + themeData.colours.standardBackground + "; color:" + themeData.colours.standardText + "'><i>Applied Effects</i><br />" + displayData.system.appliedEffects.join(", ") + "</div>";
+			let appliedEffectList = displayData.system.appliedEffects.map(a => a.name);
+			outputText += "<div style='margin:0px;padding:3px; background-color:" + themeData.colours.standardBackground + "; color:" + themeData.colours.standardText + "'><i>Applied Effects</i><br />" + appliedEffectList.join(", ") + "</div>";
+			gmOutputText += "<div style='margin:0px;padding:3px; background-color:" + themeData.colours.standardBackground + "; color:" + themeData.colours.standardText + "'><i>Applied Effects</i><br />" + appliedEffectList.join(", ") + "</div>";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in chat_display during applied effect display");
