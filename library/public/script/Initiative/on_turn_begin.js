@@ -23,10 +23,45 @@ function on_turn_begin(turnToken, turnData = {}) {
 		return;
 	}
 
+	//Regeneration and Fast Healing
+	let regenData = calculate_bonus(turnToken, ["regen"]);
+	let actorData = JSON.parse(turnToken.getProperty("foundryActor"));
+
+	if ("FastHealing" in regenData.otherEffects) {
+		regenData = regenData.otherEffects.FastHealing;
+		let activeRegen = true;
+		if ("regen" in actorData) {
+			activeRegen = actorData.regen;
+		} else {
+			actorData.regen = true;
+			turnToken.setProperty("foundryActor", JSON.stringify(actorData));
+		}
+
+		if (activeRegen) {
+			let hpData = {
+				"hpChangeVal": regenData.value,
+				"tokenID": turnToken.getId(),
+				"currentTempHPChange": Number(turnToken.getProperty("TempHP")),
+				"changeHPSubmit": "Submit",
+				"hpChangeType": "healing",
+				"currentHPChange": Number(turnToken.getProperty("HP")),
+				"currentMaxHPChange": Number(turnToken.getProperty("MaxHP")),
+				"silent": true
+			};
+			change_hp(turnToken.getId(), hpData);
+		}
+	}
+
 	//MapTool.chat.broadcast(JSON.stringify(currentConditions));
 
-	let subBy = 0;
+	//Recovery Check Section
+	if ("Dying" in currentConditions){
+		recovery_check(turnToken);
+		currentConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
+	}
 
+	//Lost Actions from Stunned/Slowed
+	let subBy = 0;
 	try {
 		if ("Stunned" in currentConditions || "Stunned (Time)" in currentConditions) {
 			let stunnedValue = 0;
@@ -88,8 +123,6 @@ function on_turn_begin(turnToken, turnData = {}) {
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
-
-    //Regen and Fast Healing Step Here
 
 	try {
 		for (var i in [0, 1, 2, 3, 4, 5]) {

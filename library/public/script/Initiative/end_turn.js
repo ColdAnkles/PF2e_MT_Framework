@@ -20,6 +20,7 @@ function end_turn(turnToken, forwards = true) {
 	}
 
 	let tokenConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
+	let actorData = JSON.parse(turnToken.getProperty("foundryActor"));
 
 	turnToken.setProperty("actionsLeft", 0);
 
@@ -70,7 +71,7 @@ function end_turn(turnToken, forwards = true) {
 				let damageNote = "";
 
 				// No Handling of Resistance/Weakness Exceptions (like resistant to physical except silver)
-				if (!effectData.ignoreResImm){
+				if (!effectData.ignoreResImm) {
 					if (damageType in tokenWeaknesses) {
 						damageValue += Number(tokenWeaknesses[damageType]);
 						damageNote = " (weak +" + tokenWeaknesses[damageType] + ")"
@@ -113,6 +114,18 @@ function end_turn(turnToken, forwards = true) {
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in end_turn during persistent-damage-check");
+		MapTool.chat.broadcast("tokenEffects: " + JSON.stringify(tokenEffects));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+	try {
+		if ("regen" in actorData) {
+			actorData.regen = true;
+			turnToken.setProperty("foundryActor", JSON.stringify(actorData));
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in end_turn during regen-enable-step");
 		MapTool.chat.broadcast("tokenEffects: " + JSON.stringify(tokenEffects));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;

@@ -49,6 +49,9 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 		if ("definition" in ruleData) {
 			continue
 		}
+		if ("key" in ruleData && ["FastHealing"].includes(ruleData.key) && !bonusScopes.includes("regen")) {
+			continue;
+		}
 		try {
 			if ("predicate" in ruleData) {
 				if (!predicate_check(ruleData.predicate, bonusScopes, actor, item)) {
@@ -148,6 +151,8 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 					returnData.otherEffects.additionalWeakness = [];
 				}
 				returnData.otherEffects.additionalWeakness.push({ "type": ruleData.type, "value": foundry_calc_value(ruleData.value, actor, effectData.sourceItem) });
+			} else if (ruleData.key == "FastHealing") {
+				returnData.otherEffects["FastHealing"] = { "key": "FastHealing", "type": ruleData.type, "value":ruleData.value, "deactivations":ruleData.deactivatedBy };
 			}
 		}
 	}

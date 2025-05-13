@@ -16,6 +16,7 @@ function change_hp(tokenID, changeHPData = null) {
 	let tokenCurrentHP = Number(token.getProperty("HP"));
 	let tokenCurrentMaxHP = Number(token.getProperty("MaxHP"));
 	let tokenCurrentTempHP = Number(token.getProperty("TempHP"));
+	let currentConditions = JSON.parse(token.getProperty("conditionDetails"));
 
 	if (isNaN(tokenCurrentTempHP)) {
 		tokenCurrentTempHP = 0;
@@ -126,12 +127,25 @@ function change_hp(tokenID, changeHPData = null) {
 					tokenCurrentHP = tokenCurrentMaxHP;
 				}
 				let healVal = tokenCurrentHP - tokenOldHP;
-				token.setProperty("HP", String(tokenCurrentHP));
-				if (get_state("Dead", token)) {
-					set_state("Dead", false, token);
-					chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
-				} else {
-					chat_display({ "name": tokenDisplayName + " healed!", "system": { "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
+				if (healVal > 0) {
+					token.setProperty("HP", String(tokenCurrentHP));
+					if ("Dying" in currentConditions) {
+						let woundedVal = 0;
+						set_condition("Dying", token, 0, true);
+						set_condition("Prone", token, 1, true);
+						currentConditions = JSON.parse(token.getProperty("conditionDetails"));
+						//Any time you lose the dying condition, you gain the wounded 1 condition, or increase your wounded condition value by 1 if you already have that condition.
+						if ("Wounded" in currentConditions) {
+							woundedVal = currentConditions.Wounded.value.value;
+						}
+						set_condition("Wounded", token, woundedVal + 1, true);
+					}
+					if (get_state("Dead", token)) {
+						set_state("Dead", false, token);
+						chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
+					} else {
+						chat_display({ "name": tokenDisplayName + " healed!", "system": { "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
+					}
 				}
 			}
 		}

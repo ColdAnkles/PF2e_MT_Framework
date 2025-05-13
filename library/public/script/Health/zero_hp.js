@@ -14,7 +14,20 @@ function zero_hp(tokenID) {
 	token.setProperty("reactionsLeft", 0);
 	update_action_bank(token);
 
-	if (get_token_type(tokenID) == "PC") {
+	
+	let regenData = calculate_bonus(token, ["regen"]);
+	let regenerating = false;
+	let actorData = JSON.parse(token.getProperty("foundryActor"));
+	if ("FastHealing" in regenData.otherEffects) {
+		let regenDisabled = false;
+		if ("regen" in actorData) {
+			regenDisabled = !actorData.regen;
+		}
+		regenData = regenData.otherEffects.FastHealing;
+		regenerating = (!regenDisabled && regenData.type == "regeneration");
+	}
+
+	if (get_token_type(tokenID) == "PC" || regenerating) {
 
 		MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()][h:initiativeTokens=getInitiativeList()]")
 		let currentInitiative = Number(MTScript.getVariable("currInit"));
@@ -39,15 +52,7 @@ function zero_hp(tokenID) {
 			woundedVal = tokenConditions.Wounded.value.value;
 		}
 
-		set_condition("Dying", tokenID, ((askResponse) ? 2 : 1) + woundedVal, true);
-
-		//tokenConditions = JSON.parse(token.getProperty("conditionDetails"));
-
-		//if ("Wounded" in tokenConditions) {
-		//	tokenConditions.Wounded.value.value += 1;
-		//}
-
-		//token.setProperty("conditionDetails", JSON.stringify(tokenConditions));
+		set_condition("Dying", tokenID, ((askResponse) ? 2 : 1) + woundedVal, false);
 
 		chat_display({ "name": tokenDisplayName + " unconscious!", "system": { "description": { "value": tokenDisplayName + " knocked unconscious!" } } }, true);
 

@@ -17,6 +17,23 @@ function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 
 	write_creature_properties(creatureData, newToken);
 
+	let regenData = calculate_bonus(newToken, ["regen"]);
+
+	if ("FastHealing" in regenData.otherEffects) {
+		//ADD DISABLE REGEN MACRO
+		regenData = regenData.otherEffects.FastHealing;
+		createMacro({
+			"label": "Disable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pf2e.disable_regeneration(myID)]",
+			"tooltip": chat_display({ "name": "Disable Regeneration", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Disable when taking any of the following damage types: " + regenData.deactivations.join(", ") } } }, false),
+			"sortBy": "", "group": "1. Common"
+		}, newNPCTokenID);
+		createMacro({
+			"label": "Enable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pf2e.enable_regeneration(myID)]",
+			"tooltip": chat_display({ "name": "Enable Regeneration", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Enable regeneration and fast healing when outside initiative." } } }, false),
+			"sortBy": "", "group": "1. Common"
+		}, newNPCTokenID)
+	}
+
 	//__ADDING_STANDARD_MACROS
 	add_common_macros(newNPCTokenID);
 	//__ADDING_ACTION_MACROS__
