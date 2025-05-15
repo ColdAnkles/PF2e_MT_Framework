@@ -18,7 +18,11 @@ function recovery_check(token) {
     let regenData = calculate_bonus(turnToken, ["regen"]);
     let actorData = JSON.parse(turnToken.getProperty("foundryActor"));
 
-    let deathValue = 4;
+    let deathValue = get_actor_data(token, "system.attributes.dying.max");
+
+    if (deathValue == null){
+        deathValue = 4;
+    }
 
     if ("system" in actorData && "attributes" in actorData.system && "dying" in actorData.system.attributes && "max" in actorData.system.attributes.dying) {
         deathValue = actorData.system.attributes.dying.max;

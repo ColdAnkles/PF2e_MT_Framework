@@ -28,6 +28,8 @@ function get_actor_data(actor, varName) {
             if ("path" in ruleData && ruleData.path == varName) {
                 if (("predicate" in ruleData && predicate_check(ruleData.predicate, [], actor, null)) || !("predicate" in ruleData)) {
                     result = ruleData.value;
+                } else if ("key" in ruleData && "mode" in ruleData && ruleData.key == "ActiveEffectLike" && ruleData.mode == "upgrade"){
+                    result = ruleData.value;
                 }
             }
         }
@@ -40,4 +42,4 @@ function get_actor_data_mtscript(actor, varName) {
     return JSON.stringify(get_actor_data(actor, varName));
 }
 
-MTScript.registerMacro("ca.pf2e.get_actor_data", get_actor_data_mtscript);
+MTScript.registerMacro("ca.pf2e.get_actor_data_mtscript", get_actor_data_mtscript);
