@@ -51,6 +51,32 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 		conditionData = rest_call(conditionData["fileURL"]);
 	}
 
+	let deathValue = 4;
+	if (trueConditionName == "Dying") {
+		deathValue = get_actor_data(token, "system.attributes.dying.max");
+
+		if (deathValue == null) {
+			deathValue = 4;
+		}
+
+		let regenerating = false;
+		let regenData = calculate_bonus(token, ["regen"]);
+		let actorData = JSON.parse(token.getProperty("foundryActor"));
+
+		if ("FastHealing" in regenData.otherEffects) {
+			let regenDisabled = false;
+			if ("regen" in actorData) {
+				regenDisabled = !actorData.regen;
+			}
+			regenData = regenData.otherEffects.FastHealing;
+			regenerating = (!regenDisabled && regenData.type == "regeneration");
+		}
+
+		if (regenerating) {
+			conditionValue = Math.min(conditionValue, deathValue - 1);
+		}
+	}
+
 	let oldValue = null;
 
 	let tokenConditions = JSON.parse(token.getProperty("conditionDetails"));
@@ -174,6 +200,15 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 		return;
 	}
 
+	//Death Check
+	if (trueConditionName == "Dying") {
+		tokenConditions = JSON.parse(token.getProperty("conditionDetails"));
+		if ("Dying" in tokenConditions){
+			if (tokenConditions.Dying.system.value.value == deathValue){
+				kill_creature(token);
+			}
+		}
+	}
 
 	//MapTool.chat.broadcast(JSON.stringify(tokenConditions));
 

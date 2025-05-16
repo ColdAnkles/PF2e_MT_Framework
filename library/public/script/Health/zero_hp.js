@@ -1,5 +1,20 @@
 "use strict";
 
+function kill_creature(token) {
+	let tokenID = token;
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+	} else {
+		tokenID = token.getId();
+	}
+	let tokenDisplayName = token.getName().replace("Lib:", "");
+	set_state("Dead", true, tokenID);
+	chat_display({ "name": tokenDisplayName + " dies!", "system": { "description": { "value": tokenDisplayName + " dies!" } } }, true);
+	MTScript.evalMacro("[h: removeFromInitiative(\"" + tokenID + "\")]");
+}
+
+MTScript.registerMacro("ca.pf2e.kill_creature", kill_creature);
+
 function zero_hp(tokenID) {
 
 	let token = tokenID;
@@ -14,7 +29,7 @@ function zero_hp(tokenID) {
 	token.setProperty("reactionsLeft", 0);
 	update_action_bank(token);
 
-	
+
 	let regenData = calculate_bonus(token, ["regen"]);
 	let regenerating = false;
 	let actorData = JSON.parse(token.getProperty("foundryActor"));
@@ -57,9 +72,7 @@ function zero_hp(tokenID) {
 		chat_display({ "name": tokenDisplayName + " unconscious!", "system": { "description": { "value": tokenDisplayName + " knocked unconscious!" } } }, true);
 
 	} else {
-		set_state("Dead", true, tokenID);
-		chat_display({ "name": tokenDisplayName + " dies!", "system": { "description": { "value": tokenDisplayName + " dies!" } } }, true);
-		MTScript.evalMacro("[h: removeFromInitiative(\"" + tokenID + "\")]");
+		kill_creature(token);
 	}
 }
 

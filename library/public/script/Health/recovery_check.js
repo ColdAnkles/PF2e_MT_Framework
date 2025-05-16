@@ -15,28 +15,10 @@ function recovery_check(token) {
     let critSuccessDC = recoveryDC + 10;
     let critFailDC = recoveryDC - 10;
 
-    let regenData = calculate_bonus(turnToken, ["regen"]);
-    let actorData = JSON.parse(turnToken.getProperty("foundryActor"));
-
     let deathValue = get_actor_data(token, "system.attributes.dying.max");
 
     if (deathValue == null){
         deathValue = 4;
-    }
-
-    if ("system" in actorData && "attributes" in actorData.system && "dying" in actorData.system.attributes && "max" in actorData.system.attributes.dying) {
-        deathValue = actorData.system.attributes.dying.max;
-    }
-
-    let regenerating = false;
-
-    if ("FastHealing" in regenData.otherEffects) {
-        let regenDisabled = false;
-        if ("regen" in actorData) {
-            regenDisabled = !actorData.regen;
-        }
-        regenData = regenData.otherEffects.FastHealing;
-        regenerating = (!regenDisabled && regenData.type == "regeneration");
     }
 
     MTScript.evalMacro("[h: dTwenty = roll(1,20)]");
@@ -96,10 +78,6 @@ function recovery_check(token) {
     }
 
     futureDying = Math.max(0, futureDying);
-
-    if (regenerating) {
-        futureDying = Math.min(deathValue - 1, futureDying);
-    }
 
     if (futureDying != dyingValue) {
         checkDescription += "<br />Their Dying condition value changes to " + futureDying;
