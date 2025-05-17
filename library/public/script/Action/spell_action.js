@@ -324,10 +324,10 @@ function spell_action(actionData, actingToken) {
 	try {
 		//Special case for magic missile
 		if (spellData.name == "Magic Missile" || spellData.name == "Force Barrage") {
-			let totalDarts = (Math.floor((actionData.system.castLevel.value - 1) / 2) + 1) * actionData.actionCost;
-			//MapTool.chat.broadcast((Math.floor((actionData.castLevel-1)/2)+1) + " * " + actionData.actionCost + " = " + String(totalDarts));
+			let totalDarts = (Math.floor((actionData.system.castLevel.value - 1) / 2) + 1) * actionData.system.actions.value;
+			//MapTool.chat.broadcast((Math.floor((actionData.system.castLevel.value-1)/2)+1) + " * " + actionData.system.actions.value + " = " + String(totalDarts));
 			for (let i = 1; i < totalDarts; i += 1) {
-				spellData.damage["dart" + String(i)] = spellData.damage[0];
+				spellData.system.damage["dart" + String(i)] = spellData.system.damage[0];
 			}
 			disableCrit = true;
 			//MapTool.chat.broadcast(JSON.stringify(spellData.damage));
