@@ -3,9 +3,10 @@
 function display_save_bonuses(tokenID) {
 	let token = MapTool.tokens.getTokenByID(tokenID);
 
-	let fortitude = Number(token.getProperty("fortitude"));
-	let will = Number(token.getProperty("will"));
-	let reflex = Number(token.getProperty("reflex"));
+	let saves = JSON.parse(token.getProperty("saves"));
+	let fortitude = saves.fortitude;
+	let will = saves.will;
+	let reflex = saves.reflex;
 	let eqArmor = null;
 	//MapTool.chat.broadcast(String(token));
 
