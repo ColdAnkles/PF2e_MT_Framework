@@ -32,7 +32,7 @@ function recovery_check(token) {
     } else if (dTwenty >= recoveryDC) {
         //Success
         result = "Success";
-    } else if (dTwenty >= critFailDC) {
+    } else if (dTwenty > critFailDC) {
         //Failure
         result = "Failure";
     } else {
