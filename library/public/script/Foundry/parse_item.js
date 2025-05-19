@@ -20,6 +20,12 @@ function parse_item(itemData, parentObject) {
         if ("weaponType" in itemData.system && "value" in itemData.system.weaponType) {
             itemData.type = itemData.system.weaponType.value;
         }
+        for (var t in itemData.system.traits.value){
+            let trait = itemData.system.traits.value[t];
+            if (trait.includes("thrown")){
+                itemData.type = "ranged";
+            }
+        }
         parentObject.basicAttacks.push(itemData);
     } else if (itemData.type == "spellcastingEntry") {
         let newSpellEntry = { "name": itemData.name, "spells": [], "spellDC": itemData.system.spelldc.dc, "spellAttack": itemData.system.spelldc.value, "type": itemData.system.prepared.value, "description": itemData.system.description.value }
