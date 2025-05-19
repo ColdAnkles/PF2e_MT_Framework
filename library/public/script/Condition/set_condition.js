@@ -151,7 +151,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 				let uuidSplit = ruleData.uuid.split(".");
 				if (ruleData.uuid.includes("conditionitems")) {
 					let applyCondition = uuidSplit[uuidSplit.length - 1];
-					set_condition(applyCondition, token, conditionApplication, silent);
+					set_condition(applyCondition, token, conditionApplication, false);
 				}
 			} else if (ruleData.key == "LoseHitPoints" && conditionApplication == 1) {
 				let currentHP = Number(token.getProperty("HP"));
@@ -187,7 +187,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 					if (ruleData.uuid.includes("conditionitems")) {
 						let applyCondition = uuidSplit[uuidSplit.length - 1];
 						if (!(applyCondition in tokenConditions)) {
-							set_condition(applyCondition, token, 1, silent);
+							set_condition(applyCondition, token, 1, false);
 						}
 					}
 				}
