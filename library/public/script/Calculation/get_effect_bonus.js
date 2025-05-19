@@ -7,7 +7,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 	//MapTool.chat.broadcast(effectData.name)
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
-	//MapTool.chat.broadcast(JSON.stringify(effectData.rules));
+	//MapTool.chat.broadcast(JSON.stringify(effectData.system.rules));
 	let returnData = { "bonuses": { "circumstance": {"value":0}, "status": {"value":0}, "item": {"value":0}, "none": {"value":0}, "proficiency": {"value":0} }, "maluses": { "circumstance": {"value":0}, "status": {"value":0}, "item": {"value":0}, "none": {"value":0}, "proficiency": {"value":0} }, "query": false, "otherEffects": {}, "upgrades":{}};
 	for (var r in effectData.system.rules) {
 		let ruleData = effectData.system.rules[r];
@@ -99,7 +99,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 					if (ruleData.value < 0) {
 						if (!("type" in ruleData)) {
 							returnData.maluses.none.value += ruleData.value;
-						} else if (ruleData.value < returnData.maluses[ruleData.type]) {
+						} else if (ruleData.value < returnData.maluses[ruleData.type].value) {
 							returnData.maluses[ruleData.type] = ruleData;
 						}
 					} else {
@@ -112,7 +112,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 							} else {
 								returnData.bonuses.none.value += ruleData.value;
 							}
-						} else if (ruleData.value > returnData.bonuses[ruleData.type]) {
+						} else if (ruleData.value > returnData.bonuses[ruleData.type].value) {
 							returnData.bonuses[ruleData.type] = ruleData;
 						}
 					}
