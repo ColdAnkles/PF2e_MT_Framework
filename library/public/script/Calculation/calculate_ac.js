@@ -48,12 +48,23 @@ function calculate_ac(tokenID) {
 		}
 	}
 
-	if (eqShield != null && eqShield != "null" && get_actor_data(token, "system.attributes.shield.raised")) {
-		if ("ac" in eqShield.system) {
-			shieldBonus = eqShield.system.ac;
-		} else if ("acBonus" in eqShield.system) {
-			shieldBonus = eqShield.system.acBonus;
+	let shieldRaised = get_actor_data(token, "system.attributes.shield.raised");
+
+	try{
+		if (eqShield != null && eqShield != "null" && ((shieldRaised != null && shieldRaised) || eqShield.raised)) {
+			if ("system" in eqShield && "ac" in eqShield.system) {
+				shieldBonus = eqShield.system.ac;
+			} else if ("system" in eqShield && "acBonus" in eqShield.system) {
+				shieldBonus = eqShield.system.acBonus;
+			} else if ("ac" in eqShield) {
+				shieldBonus = eqShield.ac;
+			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in calculate_ac during shieldBonus Check");
+		MapTool.chat.broadcast("eqShield: " + JSON.stringify(eqShield));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	for (var p in profs) {
