@@ -4,8 +4,26 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
 
     let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>Creatures</h1>";
-    let creatureList = JSON.parse(read_data("pf2e_npc"));
-    let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
+
+    let creatureList = null;
+    try{
+        creatureList = JSON.parse(read_data("pf2e_npc"));
+    } catch (e) {
+        MapTool.chat.broadcast("Error in build_creature_list during get-creatures");
+        MapTool.chat.broadcast("creatureList: " + JSON.stringify(creatureList));
+        MapTool.chat.broadcast("" + e + "\n" + e.stack);
+        return;
+    }
+
+    let enabledSources = null;
+    try{
+        enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
+    } catch (e) {
+        MapTool.chat.broadcast("Error in build_creature_list during get-enabled_sources");
+        MapTool.chat.broadcast("enabledSources: " + JSON.stringify(enabledSources));
+        MapTool.chat.broadcast("" + e + "\n" + e.stack);
+        return;
+    }
     let customNPCs = JSON.parse(read_data("customContent")).npc;
 
     let creatureSorted = [];
