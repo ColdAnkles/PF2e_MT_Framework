@@ -89,21 +89,34 @@ function write_creature_properties(creatureData, token) {
 	}
 
 	//__MISC__
+	let step = "";
 	try {
 		//token.setProperty("type", creatureData.creatureType);
+		step = "alignment";
 		token.setProperty("alignment", creatureData.alignment);
+		step = "level";
 		token.setProperty("level", parseInt(creatureData.level));
+		step = "baseSpeed";
 		token.setProperty("baseSpeed", parseInt(creatureData.speeds.base));
+		step = "otherSpeed";
 		token.setProperty("otherSpeed", JSON.stringify(creatureData.speeds.other));
+		step = "rarity";
 		token.setProperty("rarity", creatureData.rarity);
+		step = "traits";
 		token.setProperty("traits", JSON.stringify(creatureData.traits));
+		step = "senses";
 		token.setProperty("senses", JSON.stringify(creatureData.senses));
+		step = "size";
 		token.setProperty("size", creatureData.size);
+		step = "languages";
 		token.setProperty("languages", JSON.stringify(creatureData.languages));
+		step = "resources";
 		token.setProperty("resources", JSON.stringify(creatureData.resources));
+		step = "inventory";
 		token.setProperty("inventory", JSON.stringify(creatureData.inventory));
 	} catch (e) {
 		MapTool.chat.broadcast("Error write_creature_properties during misc");
+		MapTool.chat.broadcast("step: " + step);
 		MapTool.chat.broadcast("creatureData: " + JSON.stringify(creatureData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
