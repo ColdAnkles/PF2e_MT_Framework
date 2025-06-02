@@ -20,4 +20,4 @@
 		[h: setSightType(js.ca.pf2e.capitalise(sense),newToken)]
 	};{}]
 }]
-[h: setProperty("myID", newToken, newToken)]
+[h: setProperty("myID", "[r: currentToken()]", newToken)]
