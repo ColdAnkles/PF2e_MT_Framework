@@ -579,33 +579,39 @@ function parse_pathbuilder_export(data) {
 	message_window("Importing " + data.name, "Importing Armor");
 	for (var a in data.armor) {
 		let thisArmor = data.armor[a];
-		let tempData = find_object_data(thisArmor.name, "item");
-		if ("fileURL" in tempData) {
-			let itemData = rest_call(tempData.fileURL);
-			let trueID = itemData._id + String(Object.keys(characterData.inventory).length);
-			characterData.inventory[trueID] = itemData;
-			//parse_feature(tempData.baseName, itemData, characterData);
-			itemData.system.quantity = thisArmor.qty;
-			itemData.system.equipped = thisArmor.worn;
-			itemData.system.runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient": 0 };
-			if (thisArmor.res == "resilient") {
-				itemData.system.runes.resilient = 1;
-			} else if (thisArmor.res == "greaterResilient") {
-				itemData.system.runes.resilient = 2;
-			} else if (thisArmor.res == "majorResilient") {
-				itemData.system.runes.resilient = 3;
-			}
-			for (var rI of thisArmor.runes) {
-				let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
-				if (runeData != null && "fileURL" in runeData) {
-					runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
-					itemData.system.runes.property.push(runeData);
-				}
-			}
-			itemData.system.id = trueID;
-		} else if (tempData == null && thisArmor.name != null) {
+		let itemData = find_object_data(thisArmor.name, "item");
+		if ("fileURL" in itemData) {
+			itemData = rest_call(itemData.fileURL);
+		} else if (itemData == null && thisArmor.name != null) {
 			unfoundData.push(thisArmor.name);
 		}
+		let trueID = "armor";
+		if ("_id" in itemData){
+			trueID = itemData._id + String(Object.keys(characterData.inventory).length);
+		} else if ("id" in itemData){
+			trueID = itemData.id + String(Object.keys(characterData.inventory).length);
+		}
+		//parse_feature(tempData.baseName, itemData, characterData);
+		itemData.system.quantity = thisArmor.qty;
+		itemData.system.equipped = thisArmor.worn;
+		itemData.system.runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient": 0 };
+		if (thisArmor.res == "resilient") {
+			itemData.system.runes.resilient = 1;
+		} else if (thisArmor.res == "greaterResilient") {
+			itemData.system.runes.resilient = 2;
+		} else if (thisArmor.res == "majorResilient") {
+			itemData.system.runes.resilient = 3;
+		}
+		for (var rI of thisArmor.runes) {
+			let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
+			if (runeData != null && "fileURL" in runeData) {
+				runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
+				itemData.system.runes.property.push(runeData);
+			}
+		}
+		itemData.system.id = trueID;
+		itemData.type = "armor";
+		characterData.inventory[trueID] = itemData;
 	}
 
 	//Weapons
