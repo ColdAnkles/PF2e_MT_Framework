@@ -386,7 +386,7 @@ function attack_action(actionData, actingToken) {
 		return;
 	}
 
-	chat_display(displayData, true, { "level": actingToken.level });
+	chat_display(displayData, true, { "level": actingToken.level, "isPC": actingToken.isPC() });
 
 }
 

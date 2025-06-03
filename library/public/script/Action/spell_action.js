@@ -309,7 +309,11 @@ function spell_action(actionData, actingToken) {
 			if (spellData.system.defense.save.basic == "basic") {
 				displayData.system.description.value += "Basic "
 			}
-			displayData.system.description.value += capitalise(spellData.system.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
+			if (actingToken.isPC()) {
+				displayData.system.description.value += capitalise(spellData.system.defense.save.statistic) + " Save, DC " + castData.spellDC + "</div>";
+			} else {
+				displayData.system.description.value += capitalise(spellData.system.defense.save.statistic) + "@GM[ Save, DC " + castData.spellDC + "]</div>";
+			}
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in spell_action during spell-save");
@@ -487,7 +491,7 @@ function spell_action(actionData, actingToken) {
 	}
 
 	try {
-		chat_display(displayData, true, { "level": actionData.system.castLevel.value, "rollDice": true, "item": spellData, "action": spellData, "variant": variant });
+		chat_display(displayData, true, { "level": actionData.system.castLevel.value, "rollDice": true, "item": spellData, "action": spellData, "variant": variant, "isPC": actingToken.isPC() });
 	} catch (e) {
 		MapTool.chat.broadcast("Error in spell_action during chat-display");
 		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));

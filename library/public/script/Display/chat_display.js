@@ -1,6 +1,6 @@
 "use strict";
 
-function chat_display(displayData, broadcast = true, additionalData = { "rollDice": false }) {
+function chat_display(displayData, broadcast = true, additionalData = { "rollDice": false, "gm": false, "isPC": false }) {
 	//MapTool.chat.broadcast(JSON.stringify(displayData));
 
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
@@ -85,7 +85,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 			additionalData.replaceGMRolls = false;
 			let normalDesc = clean_description(displayData.system.description.value, false, false, false, additionalData);
 			additionalData.gm = true;
-			let gmDesc = clean_description(normalDesc, false, false, false, additionalData)
+			let gmDesc = clean_description(displayData.system.description.value, false, false, false, additionalData)
 			additionalData.gm = false;
 			additionalData.replaceGMRolls = true;
 			normalDesc = clean_description(normalDesc, false, false, false, additionalData);

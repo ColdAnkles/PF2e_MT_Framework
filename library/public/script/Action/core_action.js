@@ -131,7 +131,7 @@ function core_action(actionData, actingToken) {
 					doCheck = true;
 				}
 				let foundryActor = JSON.parse(actingToken.getProperty("foundryActor"));
-				chat_display(actionData, true, { "rollDice": true, "actor": actingToken, "action": actionData, "variant": foundryActor.variant });
+				chat_display(actionData, true, { "rollDice": true, "actor": actingToken, "action": actionData, "variant": foundryActor.variant, "isPC": actingToken.isPC() });
 
 				if (doSave) {
 					saving_throw(actingToken, saveData, { "applyEffect": actionData.name });

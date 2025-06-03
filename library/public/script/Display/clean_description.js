@@ -189,7 +189,13 @@ function parse_check(checkString, additionalData = { "variant": "normal" }) {
 	for (var i in data) {
 		i = data[i];
 		if (i.includes("dc")) {
-			checkDC = "DC " + String(Number(i.split(":")[1]) + dcMod) + " ";
+			if (additionalData.gm && !additionalData.isPC) {
+				checkDC = "DC " + String(Number(i.split(":")[1]) + dcMod) + " ";
+			} else if (!additionalData.gm && !additionalData.isPC) {
+				checkDC = "";
+			} else {
+				checkDC = "DC " + String(Number(i.split(":")[1]) + dcMod) + " ";
+			}
 		} else if (skillList.includes(i)) {
 			checkSkill = i.charAt(0).toUpperCase() + i.slice(1) + " ";
 		}
@@ -449,6 +455,13 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 	cleanDescription = cleanDescription.replaceAll(/<span class=\"action-glyph\">2.?<\/span>/g, icon_img("2action", additionalData.invertImages) + " ");
 	cleanDescription = cleanDescription.replaceAll(/<span class=\"action-glyph\">3.?<\/span>/g, icon_img("3action", additionalData.invertImages) + " ");
 	cleanDescription = cleanDescription.replaceAll(/<span class=\"action-glyph\">R.?<\/span>/g, icon_img("reaction", additionalData.invertImages) + " ");
+
+	let gmRegex = /@GM\[([a-zA-Z0-9,. ]*)\]/g
+	if (additionalData.gm) {
+		cleanDescription = cleanDescription.replace(gmRegex, (match, p1) => { return p1; });
+	} else {
+		cleanDescription = cleanDescription.replaceAll(gmRegex, " Save");
+	}
 
 	if (removeP) {
 		cleanDescription = cleanDescription.replaceAll("<p>", "").replaceAll(".</p>", ". ").replaceAll("</p>", " ");
