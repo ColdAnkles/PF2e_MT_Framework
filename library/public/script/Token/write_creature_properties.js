@@ -92,8 +92,8 @@ function write_creature_properties(creatureData, token) {
 	let step = "";
 	try {
 		//token.setProperty("type", creatureData.creatureType);
-		step = "alignment";
-		token.setProperty("alignment", creatureData.alignment);
+		//step = "alignment";
+		//token.setProperty("alignment", creatureData.alignment);
 		step = "level";
 		token.setProperty("level", parseInt(creatureData.level));
 		step = "baseSpeed";
