@@ -5,8 +5,8 @@ function disable_regeneration(token) {
 		token = MapTool.tokens.getTokenByID(token);
 	}
 
-    let actorData = JSON.parse(token.getProperty("foundryActor"));
-    actorData.regen = false;
+	let actorData = JSON.parse(token.getProperty("foundryActor"));
+	actorData.regen = false;
 	token.setProperty("foundryActor", JSON.stringify(actorData));
 
 }
@@ -18,8 +18,8 @@ function enable_regeneration(token) {
 		token = MapTool.tokens.getTokenByID(token);
 	}
 
-    let actorData = JSON.parse(token.getProperty("foundryActor"));
-    actorData.regen = true;
+	let actorData = JSON.parse(token.getProperty("foundryActor"));
+	actorData.regen = true;
 	token.setProperty("foundryActor", JSON.stringify(actorData));
 
 }

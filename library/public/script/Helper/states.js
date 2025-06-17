@@ -4,7 +4,7 @@ function set_state(stateName, stateVal, tokenID) {
 	let token = tokenID;
 	let tokenName = null;
 	let updateTokens = [];
-	try{
+	try {
 		if (typeof (tokenID) != "string") {
 			tokenID = tokenID.getId();
 		} else {
@@ -31,7 +31,7 @@ function set_state(stateName, stateVal, tokenID) {
 		return;
 	}
 
-	try{
+	try {
 		MTScript.setVariable("stateName", stateName);
 		MTScript.setVariable("stateVal", stateVal);
 		for (var t in updateTokens) {

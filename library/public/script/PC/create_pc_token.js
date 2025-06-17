@@ -108,7 +108,7 @@ function create_pc_token(newPCTokenID, pcLibID) {
 	update_my_tokens(pcLibID);
 
 	let pcStates = pcToken.getActiveStates();
-	for (var s in pcStates){
+	for (var s in pcStates) {
 		set_state(pcStates[s], true, newPCTokenID);
 	}
 }

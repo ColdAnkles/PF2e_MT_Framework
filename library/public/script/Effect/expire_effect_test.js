@@ -14,20 +14,6 @@ function expire_effect_test(initiativeData, cause) {
 			continue;
 		}
 
-		//try {
-			//if (!effectToken.getName().includes("Lib:")) {
-				//gets itself if npc as myID=id
-				//effectToken = MapTool.tokens.getTokenByID(effectToken.getProperty("myID"));
-				//why even do this?
-			//}
-		//} catch (e) {
-		//	MapTool.chat.broadcast("Error in expire_effect_test during get-non-lib-token");
-		//	MapTool.chat.broadcast("effectToken: " + String(effectToken));
-		//	MapTool.chat.broadcast("myID: " + effectToken.getProperty("myID"));
-		//	MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		//	return;
-		//}
-
 		let activeEffects = JSON.parse(effectToken.getProperty("activeEffects"));
 
 		let turnOffEffects = []

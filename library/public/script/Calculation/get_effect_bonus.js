@@ -8,7 +8,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
 	//MapTool.chat.broadcast(JSON.stringify(effectData.system.rules));
-	let returnData = { "bonuses": { "circumstance": {"value":0}, "status": {"value":0}, "item": {"value":0}, "none": {"value":0}, "proficiency": {"value":0} }, "maluses": { "circumstance": {"value":0}, "status": {"value":0}, "item": {"value":0}, "none": {"value":0}, "proficiency": {"value":0} }, "query": false, "otherEffects": {}, "upgrades":{}};
+	let returnData = { "bonuses": { "circumstance": { "value": 0 }, "status": { "value": 0 }, "item": { "value": 0 }, "none": { "value": 0 }, "proficiency": { "value": 0 } }, "maluses": { "circumstance": { "value": 0 }, "status": { "value": 0 }, "item": { "value": 0 }, "none": { "value": 0 }, "proficiency": { "value": 0 } }, "query": false, "otherEffects": {}, "upgrades": {} };
 	for (var r in effectData.system.rules) {
 		let ruleData = effectData.system.rules[r];
 		if ("choices" in ruleData) {
@@ -77,9 +77,9 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 					}
 					//MapTool.chat.broadcast(JSON.stringify(shieldData));
 					if (("acBonus" in shieldData && shieldData.acBonus > returnData.bonuses.circumstance)) {
-						returnData.bonuses.circumstance = {"value":shieldData.acBonus};
+						returnData.bonuses.circumstance = { "value": shieldData.acBonus };
 					} else if (("ac" in shieldData && shieldData.acBonus > returnData.bonuses.circumstance)) {
-						returnData.bonuses.circumstance = {"value":shieldData.ac};
+						returnData.bonuses.circumstance = { "value": shieldData.ac };
 					}
 				}
 			} catch (e) {
@@ -89,7 +89,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				return;
 			}
 			//MapTool.chat.broadcast(JSON.stringify(ruleData));
-		} else if("mode" in ruleData && ruleData.mode == "upgrade" && "slug" in ruleData) {
+		} else if ("mode" in ruleData && ruleData.mode == "upgrade" && "slug" in ruleData) {
 			ruleData.value = foundry_calc_value(ruleData.value, actor, effectData);
 			returnData.upgrades[ruleData.slug] = ruleData;
 		} else {
@@ -152,7 +152,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				}
 				returnData.otherEffects.additionalWeakness.push({ "type": ruleData.type, "value": foundry_calc_value(ruleData.value, actor, effectData.sourceItem) });
 			} else if (ruleData.key == "FastHealing") {
-				returnData.otherEffects["FastHealing"] = { "key": "FastHealing", "type": ruleData.type, "value":ruleData.value, "deactivations":ruleData.deactivatedBy };
+				returnData.otherEffects["FastHealing"] = { "key": "FastHealing", "type": ruleData.type, "value": ruleData.value, "deactivations": ruleData.deactivatedBy };
 			}
 		}
 	}

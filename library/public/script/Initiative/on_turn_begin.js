@@ -55,7 +55,7 @@ function on_turn_begin(turnToken, turnData = {}) {
 	//MapTool.chat.broadcast(JSON.stringify(currentConditions));
 
 	//Recovery Check Section
-	if ("Dying" in currentConditions){
+	if ("Dying" in currentConditions) {
 		recovery_check(turnToken);
 		currentConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
 	}
@@ -63,14 +63,22 @@ function on_turn_begin(turnToken, turnData = {}) {
 	//Lost Actions from Stunned/Slowed
 	let subBy = 0;
 	try {
-		if ("Stunned" in currentConditions || "Stunned (Time)" in currentConditions) {
+		if ("Stunned" in currentConditions || "Stunned (Time)" in currentConditions || "Stunned (Unlimited)" in currentConditions) {
 			let stunnedValue = 0;
-			if ("Stunned" in currentConditions && "Stunned (Time)" in currentConditions) {
-				stunnedValue = max(currentConditions.Slowed.value.value, currentConditions["Stunned (Time)"].value.value);
+			if ("Stunned" in currentConditions && "Stunned (Time)" in currentConditions && "Stunned (Unlimited)" in currentConditions) {
+				stunnedValue = max(currentConditions.Stunned.value.value, currentConditions["Stunned (Time)"].value.value, currentConditions["Stunned (Unlimited)"].value.value);
+			} else if ("Stunned" in currentConditions && "Stunned (Time)" in currentConditions) {
+				stunnedValue = max(currentConditions.Stunned.value.value, currentConditions["Stunned (Time)"].value.value);
+			} else if ("Stunned (Unlimited)" in currentConditions && "Stunned (Time)" in currentConditions) {
+				stunnedValue = max(currentConditions["Stunned (Unlimited)"].value.value, currentConditions["Stunned (Time)"].value.value);
+			} else if ("Stunned" in currentConditions && "Stunned (Unlimited)" in currentConditions) {
+				stunnedValue = max(currentConditions.Stunned.value.value, currentConditions["Stunned (Unlimited)"].value.value);
 			} else if ("Stunned" in currentConditions) {
-				stunnedValue = currentConditions.Slowed.value.value;
+				stunnedValue = currentConditions.Stunned.value.value;
 			} else if ("Stunned (Time)" in currentConditions) {
 				stunnedValue = currentConditions["Stunned (Time)"].value.value;
+			} else if ("Stunned (Unlimited)" in currentConditions) {
+				stunnedValue = currentConditions["Stunned (Unlimited)"].value.value;
 			}
 			subBy = min(stunnedValue, newActionCount);
 			//MapTool.chat.broadcast(String(subBy));
@@ -96,14 +104,22 @@ function on_turn_begin(turnToken, turnData = {}) {
 	}
 	currentConditions = JSON.parse(turnToken.getProperty("conditionDetails"));
 	try {
-		if ("Slowed" in currentConditions || "Slowed (Time)" in currentConditions) {
+		if ("Slowed" in currentConditions || "Slowed (Time)" in currentConditions || "Slowed (Unlimited)" in currentConditions) {
 			let slowedValue = 0;
-			if ("Slowed" in currentConditions && "Slowed (Time)" in currentConditions) {
+			if ("Slowed" in currentConditions && "Slowed (Time)" in currentConditions && "Slowed (Unlimited)" in currentConditions) {
+				slowedValue = max(currentConditions.Slowed.value.value, currentConditions["Slowed (Time)"].value.value, currentConditions["Slowed (Unlimited)"].value.value);
+			} else if ("Slowed" in currentConditions && "Slowed (Time)" in currentConditions) {
 				slowedValue = max(currentConditions.Slowed.value.value, currentConditions["Slowed (Time)"].value.value);
+			} else if ("Slowed (Unlimited)" in currentConditions && "Slowed (Time)" in currentConditions) {
+				slowedValue = max(currentConditions["Slowed (Unlimited)"].value.value, currentConditions["Slowed (Time)"].value.value);
+			} else if ("Slowed" in currentConditions && "Slowed (Unlimited)" in currentConditions) {
+				slowedValue = max(currentConditions.Slowed.value.value, currentConditions["Slowed (Unlimited)"].value.value);
 			} else if ("Slowed" in currentConditions) {
 				slowedValue = currentConditions.Slowed.value.value;
 			} else if ("Slowed (Time)" in currentConditions) {
 				slowedValue = currentConditions["Slowed (Time)"].value.value;
+			} else if ("Slowed (Unlimited)" in currentConditions) {
+				slowedValue = currentConditions["Slowed (Unlimited)"].value.value;
 			}
 			subBy = min(slowedValue, newActionCount);
 			//MapTool.chat.broadcast(String(subBy));

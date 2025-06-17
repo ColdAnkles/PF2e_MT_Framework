@@ -28,7 +28,7 @@ function get_actor_data(actor, varName) {
             if ("path" in ruleData && ruleData.path == varName) {
                 if (("predicate" in ruleData && predicate_check(ruleData.predicate, [], actor, null))) {
                     result = ruleData.value;
-                } else if ("key" in ruleData && "mode" in ruleData && ruleData.key == "ActiveEffectLike" && ruleData.mode == "upgrade"){
+                } else if ("key" in ruleData && "mode" in ruleData && ruleData.key == "ActiveEffectLike" && ruleData.mode == "upgrade") {
                     result = ruleData.value;
                 } else {
                     result = ruleData.value;

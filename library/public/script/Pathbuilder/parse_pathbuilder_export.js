@@ -586,9 +586,9 @@ function parse_pathbuilder_export(data) {
 			unfoundData.push(thisArmor.name);
 		}
 		let trueID = "armor";
-		if ("_id" in itemData){
+		if ("_id" in itemData) {
 			trueID = itemData._id + String(Object.keys(characterData.inventory).length);
-		} else if ("id" in itemData){
+		} else if ("id" in itemData) {
 			trueID = itemData.id + String(Object.keys(characterData.inventory).length);
 		}
 		//parse_feature(tempData.baseName, itemData, characterData);

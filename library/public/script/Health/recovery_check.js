@@ -17,7 +17,7 @@ function recovery_check(token) {
 
     let deathValue = get_actor_data(token, "system.attributes.dying.max");
 
-    if (deathValue == null){
+    if (deathValue == null) {
         deathValue = 4;
     }
 

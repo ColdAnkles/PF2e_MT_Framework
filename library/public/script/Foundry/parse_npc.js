@@ -191,6 +191,7 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 	}
 	npcData.offensiveActions = [];
 	npcData.features = {};
+	npcData.applyConditions = [];
 
 	let errorItem = null;
 	try {

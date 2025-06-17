@@ -15,7 +15,7 @@ function getTokenWeaknesses(token) {
             trueWeaknesses["piercing"] = weakData.value;
             trueWeaknesses["slashing"] = weakData.value;
             trueWeaknesses["bleed"] = weakData.value;
-        } else if(weakData.type == "energy"){
+        } else if (weakData.type == "energy") {
             trueWeaknesses["acid"] = weakData.value;
             trueWeaknesses["cold"] = weakData.value;
             trueWeaknesses["electricity"] = weakData.value;
@@ -49,7 +49,7 @@ function getTokenResistances(token) {
             trueResistances["piercing"] = resData.value;
             trueResistances["slashing"] = resData.value;
             trueResistances["bleed"] = resData.value;
-        } else if(resData.type == "energy"){
+        } else if (resData.type == "energy") {
             trueResistances["acid"] = resData.value;
             trueResistances["cold"] = resData.value;
             trueResistances["electricity"] = resData.value;
@@ -83,7 +83,7 @@ function getTokenImmunities(token) {
         trueTokenImmunities.push("slashing");
         trueTokenImmunities.push("piercing");
         trueTokenImmunities.push("bleed");
-    } else if(trueTokenImmunities.includes("energy")){
+    } else if (trueTokenImmunities.includes("energy")) {
         trueTokenImmunities.push("acid");
         trueTokenImmunities.push("cold");
         trueTokenImmunities.push("electricity");

@@ -73,6 +73,12 @@ function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 		}
 	}
 
+	for (var c in creatureData.applyConditions) {
+		let condData = creatureData.applyConditions[c];
+		//Conditions Inherent to a creature are assumed to be indefinite
+		set_condition(condData.name + " (Unlimited)", newNPCTokenID, condData.value, true);
+	}
+
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));
 }
 

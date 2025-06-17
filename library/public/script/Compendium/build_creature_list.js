@@ -6,7 +6,7 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>Creatures</h1>";
 
     let creatureList = null;
-    try{
+    try {
         creatureList = JSON.parse(read_data("pf2e_npc"));
     } catch (e) {
         MapTool.chat.broadcast("Error in build_creature_list during get-creatures");
@@ -16,7 +16,7 @@ function build_creature_list(sortKey, sortDir, searchKey = "", minLevel = "", ma
     }
 
     let enabledSources = null;
-    try{
+    try {
         enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
     } catch (e) {
         MapTool.chat.broadcast("Error in build_creature_list during get-enabled_sources");

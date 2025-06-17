@@ -49,7 +49,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			for (var p in skills) {
 				let skillData = skills[p];
 				let abilityMod = checkToken.getProperty(skillData.stat);
-				skillStrings[skillData.name] = skillData.name + " " + pos_neg_sign(abilityMod) + ((checkToken.isPC())?" (U)":"");
+				skillStrings[skillData.name] = skillData.name + " " + pos_neg_sign(abilityMod) + ((checkToken.isPC()) ? " (U)" : "");
 			}
 
 			let profList = JSON.parse(checkToken.getProperty("proficiencies"));
@@ -403,7 +403,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			displayData.system.appliedEffects = effect_bonus_raw.appliedEffects;
 			displayData.system.gmOnly = checkData.secretCheck;
 
-			if (!silent){
+			if (!silent) {
 				chat_display(displayData);
 			}
 

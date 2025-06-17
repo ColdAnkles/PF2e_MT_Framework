@@ -50,7 +50,7 @@ function calculate_ac(tokenID) {
 
 	let shieldRaised = get_actor_data(token, "system.attributes.shield.raised");
 
-	try{
+	try {
 		if (eqShield != null && eqShield != "null" && ((shieldRaised != null && shieldRaised) || eqShield.raised)) {
 			if ("system" in eqShield && "ac" in eqShield.system) {
 				shieldBonus = eqShield.system.ac;

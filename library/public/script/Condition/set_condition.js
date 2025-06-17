@@ -10,8 +10,11 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	}
 
 	let autoDecrease = true;
-	let trueConditionName = conditionName.replaceAll(" (Time)", "");
+	let trueConditionName = conditionName.replaceAll(" (Time)", "").replaceAll(" (Unlimited)", "");
 	if (conditionName.includes("Time")) {
+		autoDecrease = false;
+	}
+	if (conditionName.includes("Unlimited")) {
 		autoDecrease = false;
 	}
 
@@ -203,8 +206,8 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	//Death Check
 	if (trueConditionName == "Dying") {
 		tokenConditions = JSON.parse(token.getProperty("conditionDetails"));
-		if ("Dying" in tokenConditions){
-			if (tokenConditions.Dying.system.value.value == deathValue){
+		if ("Dying" in tokenConditions) {
+			if (tokenConditions.Dying.system.value.value == deathValue) {
 				kill_creature(token);
 			}
 		}

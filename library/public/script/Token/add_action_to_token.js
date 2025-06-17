@@ -44,7 +44,7 @@ function action_icon_label(actionType, actionCount) {
 function add_action_to_token(actionData, tokenID, token) {
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
 	let actionKey = actionData.name;
-	try{
+	try {
 		if (!("type" in actionData)) {
 			if ("actionType" in actionData.system) {
 				actionData.type = actionData.system.actionType.value;
@@ -84,9 +84,9 @@ function add_action_to_token(actionData, tokenID, token) {
 	}
 
 	let variant = JSON.parse(token.getProperty("foundryActor"))
-	if ("variant" in variant){
+	if ("variant" in variant) {
 		variant = variant.variant;
-	}else{
+	} else {
 		variant = null;
 	}
 
@@ -134,7 +134,7 @@ function add_action_to_token(actionData, tokenID, token) {
 			if ("isMelee" in actionData.system || (actionData.type == "melee" || actionData.type == "ranged")) {
 				actionData.system.actionType = { "value": "action" };
 				actionData.system.actions = { "value": 1 };
-			}else if(actionData.actionType == "passive"){
+			} else if (actionData.actionType == "passive") {
 				actionData.system.actionType = { "value": "free" };
 				actionData.system.actions = { "value": 1 };
 			}
