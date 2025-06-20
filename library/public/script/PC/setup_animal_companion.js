@@ -1,13 +1,16 @@
 "use strict";
 
 function setup_animal_companion(baseData) {
+    //MapTool.chat.broadcast(JSON.stringify(baseData));
     let companionData = {}
     if ("tokenID" in baseData) {
         companionData = read_creature_properties(baseData.tokenID);
     } else if ("nameVal" in baseData) {
+        //Path For When baseData is from the Setup Form
         //MapTool.chat.broadcast(JSON.stringify(baseData));
         companionData.ownerID = baseData.ownerID;
         companionData.name = baseData.nameVal;
+        companionData.baseName = baseData.baseName;
         companionData.level = parseInt(baseData.levelVal);
         companionData.hp = { "max": parseInt(baseData.hpVal) };
         companionData.ac = { "value": parseInt(baseData.acVal) }
@@ -172,12 +175,14 @@ function setup_animal_companion(baseData) {
             companionData.basicAttacks.push(newAttackData);
         }
     } else {
+        //Path For When BaseData not from Form
         companionData = baseData;
         if (!("level" in companionData)) { companionData.level = 1; };
         if (!("abilities" in companionData)) { companionData.abilities = { "str": 2, "dex": 2, "con": 2, "int": -4, "wis": 2, "cha": 0 }; }
         if (!("ac" in companionData)) { companionData.ac = { "value": 10 + companionData.level + 2 + companionData.abilities.dex }; }
         if (!("hp" in companionData)) { companionData.hp = { "max": (6 + companionData.abilities.con) * companionData.level }; }
         if (!("saves" in companionData)) { companionData.saves = { "fortitude": 2 + companionData.level, "reflex": 2 + companionData.level, "will": 2 + companionData.level }; }
+        if (!("baseName" in companionData)) { companionData.baseName = companionData.name };
 
         if (!("proficiencies" in companionData)) {
             companionData.proficiencies = [{ "bonus": 2, "name": "Perception", "string": "" },
@@ -291,7 +296,8 @@ function setup_animal_companion(baseData) {
 
         let queryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><p><form action='macro://Animal_Companion_Setup_To_JS@Lib:ca.pf2e/self/impersonated?'><h1 class='feel-title'>Animal Companion</h1>"
         queryHTML += "<input type='hidden' name='ownerID' value='" + String(companionData.ownerID) + "'>";
-        queryHTML += "<table style='width:100%' class='staticTable'><tbody>"
+        queryHTML += "<table style='width:100%' class='staticTable'><tbody>";
+        queryHTML += "<input type='hidden' name='baseName' value='" + String(companionData.baseName) + "'></input>";
         queryHTML += "<tr><td colspan=1 style='text-align:right'><b>Name</b></td><td colspan=2><input type='input' name='nameVal' value='" + companionData.name + "'></input></td>\
         <td colspan=1><b>Level</b></td><td colspan=2><input type='input' name='levelVal' value='"+ String(companionData.level) + "'></input></td>\
         <td rowspan=9 colspan=2><table width=100%>";
@@ -442,11 +448,11 @@ function setup_animal_companion(baseData) {
         MTScript.evalMacro("[dialog5('" + companionData.name + " Animal Companion', 'width=1300; height=" + String(900 + (15 * companionData.basicAttacks.length)) + "; temporary=1; noframe=0; input=1'):{[r: queryHTML]}]")
         return;
     } else if ("save" in baseData) {
-        try{
+        try {
             //MapTool.chat.broadcast(JSON.stringify(companionData));
             delete companionData.save;
             companionData.senses = companionData.senses.split(/,(?![^(]*\)) /);
-            companionData.passiveSkills.push({ "actionCost": null, "actionType": "passive", "baseName":"support-benefit", "name": "Support Benefit","system":{ "traits": {"value":[]}, "effects": [], "description": {"value":companionData.supportBenefit},}, "type": "personal", "traits": [], });
+            companionData.passiveSkills.push({ "actionCost": null, "actionType": "passive", "baseName": "support-benefit", "name": "Support Benefit", "system": { "traits": { "value": [] }, "effects": [], "description": { "value": companionData.supportBenefit }, }, "type": "personal", "traits": [], });
             delete companionData.supportBenefit;
             for (var s in companionData.proficiencies) {
                 companionData.proficiencies[s].bonus += companionData.level;
@@ -471,11 +477,11 @@ function setup_animal_companion(baseData) {
             let otherSpeeds = companionData.speeds.other;
             let otherSpeedData = [];
 
-            for (var s in otherSpeeds){
+            for (var s in otherSpeeds) {
                 let speedString = otherSpeeds[s];
                 let speedSplit = speedString.split(" ");
                 //format fly 50ft to {"type":"fly","value":120}
-                let newSpeed = {"type":speedSplit[0],"value":Number(speedSplit[1].replaceAll(/[a-z]/gi,""))}
+                let newSpeed = { "type": speedSplit[0], "value": Number(speedSplit[1].replaceAll(/[a-z]/gi, "")) }
                 otherSpeedData.push(newSpeed);
             }
 
@@ -489,13 +495,14 @@ function setup_animal_companion(baseData) {
             } else {
                 ownerPetList = JSON.parse(ownerPetList);
             }
-            if (companionData.name in ownerPetList) {
-                write_creature_properties(companionData, ownerPetList[companionData.name])
+            if (companionData.baseName in ownerPetList) {
+                companionData.name = "Lib:" + companionData.name;
+                write_creature_properties(companionData, ownerPetList[companionData.baseName])
             } else {
                 MTScript.setVariable("petData", JSON.stringify(companionData));
                 MTScript.evalMacro("[h: newPetID = ca.pf2e.Spawn_Pet_Lib(petData)]")
                 let newPetID = MTScript.getVariable("newPetID");
-                ownerPetList[companionData.name] = newPetID;
+                ownerPetList[companionData.baseName] = newPetID;
                 ownerToken.setProperty("pets", JSON.stringify(ownerPetList));
             }
         } catch (e) {

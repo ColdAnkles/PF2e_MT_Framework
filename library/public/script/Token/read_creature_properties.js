@@ -8,7 +8,7 @@ function read_creature_properties(token) {
 		}
 	}
 
-	let creatureData = { "name": token.getName(), "hp": { "max": 0, "details": "" }, "abilities": { "str": 0, "dex": 0, "con": 0, "int": 0, "wis": 0, "cha": 0 }, "ac": { "value": 0, "details": "" }, "saves": { "fortitude": 0, "reflex": 0, "will": 0 }, "speeds": { "base": null, "other": null } };
+	let creatureData = { "name": token.getName().replace("Lib:", ""), "hp": { "max": 0, "details": "" }, "abilities": { "str": 0, "dex": 0, "con": 0, "int": 0, "wis": 0, "cha": 0 }, "ac": { "value": 0, "details": "" }, "saves": { "fortitude": 0, "reflex": 0, "will": 0 }, "speeds": { "base": null, "other": null } };
 
 	//__STATS__
 	try {
@@ -92,12 +92,18 @@ function read_creature_properties(token) {
 	//__MISC__
 	let step = "none"
 	try {
-		step = "type"
-		creatureData.creatureType = token.getProperty("type");
+		step = "baseName"
+		let temp = token.getProperty("baseName");
+		if (temp != null && temp != "") {
+			creatureData.baseName = temp;
+		}
+		step = "ownerID"
+		temp = token.getProperty("ownerID");
+		if (temp != null && temp != "") {
+			creatureData.ownerID = temp;
+		}
 		step = "level"
 		creatureData.level = token.getProperty("level");
-		step = "alignment"
-		creatureData.alignment = token.getProperty("alignment");
 		step = "baseSpeed"
 		creatureData.speeds.base = token.getProperty("baseSpeed");
 		step = "otherSpeed"

@@ -16,15 +16,28 @@ function create_pc_lib(pathbuilderID, tokenID) {
 		return;
 	}
 
+	let pcToken = MapTool.tokens.getTokenByID(tokenID);
+	let existingPets = pcToken.getProperty("pets");
+	if (existingPets == "" || existingPets == null || existingPets == []) {
+		existingPets = {};
+	} else {
+		existingPets = JSON.parse(existingPets);
+	}
 	for (var c in PCData.pets) {
 		let petData = PCData.pets[c];
 		petData.ownerID = tokenID;
 		petData.level = PCData.level;
+		let nameSplit = petData.name.lastIndexOf(" - ");
+		petData.name = petData.name.slice(0, nameSplit);
+		petData.baseName = petData.name;
+		if (petData.baseName in existingPets) {
+			petData.tokenID = existingPets[petData.baseName];
+		}
 		if (petData.type == "Animal Companion") {
 			setup_animal_companion(petData);
 		}
 	}
-	PCData.pets = {};
+	delete PCData.pets;
 
 	write_creature_properties(PCData, tokenID);
 
