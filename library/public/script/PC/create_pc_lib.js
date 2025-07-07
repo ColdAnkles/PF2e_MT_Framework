@@ -45,6 +45,22 @@ function create_pc_lib(pathbuilderID, tokenID) {
 		setup_familiar({ "PCData": PCData, "familiarData": PCData.familiars[f], "ownerID": tokenID });
 	}
 
+	wipe_pc_macros(tokenID);
+
+	if ("simple" in PCData.foundryActor && PCData.foundryActor.simple) {
+		add_common_macros(tokenID, true);
+	} else {
+
+		//__ADDING_STANDARD_MACROS
+		add_common_macros(tokenID);
+
+		//__ADDING_ACTION_MACROS__
+		add_common_action_macros(tokenID);
+
+		//__ADD MACROS SPECIFIC TO THIS PC__
+		add_pc_macros(tokenID, tokenID);
+	}
+
 }
 
 MTScript.registerMacro("ca.pf2e.create_pc_lib", create_pc_lib);

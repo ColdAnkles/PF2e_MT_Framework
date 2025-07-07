@@ -20,8 +20,9 @@ function removeMacro(macroName, tokenID) {
         MTScript.setVariable("label", allMacros[a]);
         MTScript.evalMacro("[h: indicies = getMacroIndexes(label, \"json\", tokenID)]");
         let indexList = JSON.parse(MTScript.getVariable("indicies"));
-        let macroLabel = allMacros[a].replaceAll("&#9670;", "").replaceAll(/<img.*<\/img>/g, "").replace(/^ /, "").replace(/ $/, "");
-        if (macroLabel == macroName) {
+        let macroLabel = allMacros[a];
+        let macroLabelClean = macroLabel.replaceAll("&#9670;", "").replaceAll(/<img.*<\/img>/g, "").replace(/^ /, "").replace(/ $/, "");
+        if (macroLabel == macroName || macroLabelClean == macroName) {
             for (var i in indexList) {
                 if (!(removeIndicies.includes(indexList[i]))) {
                     removeIndicies.push(indexList[i]);
