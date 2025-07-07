@@ -5,6 +5,13 @@ function setup_animal_companion(baseData) {
     let companionData = {}
     if ("tokenID" in baseData) {
         companionData = read_creature_properties(baseData.tokenID);
+        for (var s in companionData.passiveSkills) {
+            let skillData = companionData.passiveSkills[s];
+            if (skillData.baseName == "support-benefit") {
+                companionData.supportBenefit = skillData.system.description.value;
+                break;
+            }
+        }
     } else if ("nameVal" in baseData) {
         //Path For When baseData is from the Setup Form
         //MapTool.chat.broadcast(JSON.stringify(baseData));
