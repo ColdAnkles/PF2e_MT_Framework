@@ -33,6 +33,11 @@ function generic_refund_action(token) {
 MTScript.registerMacro("ca.pf2e.generic_refund_action", generic_refund_action);
 
 function add_hero_point(token) {
+
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+	}
+
 	let pointStates = null;
 	let gained = false;
 	try {
@@ -68,10 +73,6 @@ function add_hero_point(token) {
 		return;
 	}
 
-	if (typeof (token) == "string") {
-		token = MapTool.tokens.getTokenByID(token);
-	}
-
 	if (gained) {
 		chat_display({ "name": "Hero Point", "system": { "description": { "value": token.getName().replace("Lib:", "") + " gains a hero point!" } } });
 	}
@@ -80,6 +81,11 @@ function add_hero_point(token) {
 MTScript.registerMacro("ca.pf2e.add_hero_point", add_hero_point);
 
 function use_hero_point(token) {
+
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+	}
+
 	let pointStates = { 1: get_state("HeroPoint_1", token), 2: get_state("HeroPoint_2", token), 3: get_state("HeroPoint_3", token) };
 	let used = false;
 	if (pointStates[3]) {
@@ -97,9 +103,6 @@ function use_hero_point(token) {
 		set_state("HeroPoint_2", false, token);
 		set_state("HeroPoint_1", false, token);
 		used = true;
-	}
-	if (typeof (token) == "string") {
-		token = MapTool.tokens.getTokenByID(token);
 	}
 	if (used) {
 		chat_display({ "name": "Hero Point", "system": { "description": { "value": token.getName().replace("Lib:", "") + " uses a hero point!<br />New Roll: " + String(roll_dice("1d20")) } } });
@@ -109,26 +112,24 @@ function use_hero_point(token) {
 MTScript.registerMacro("ca.pf2e.use_hero_point", use_hero_point);
 
 function remove_hero_point(token) {
+
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+	}
+
 	let pointStates = { 1: get_state("HeroPoint_1", token), 2: get_state("HeroPoint_2", token), 3: get_state("HeroPoint_3", token) };
-	let used = false;
 	if (pointStates[3]) {
 		set_state("HeroPoint_3", false, token);
 		set_state("HeroPoint_2", true, token);
 		set_state("HeroPoint_1", false, token);
-		used = true;
 	} else if (pointStates[2]) {
 		set_state("HeroPoint_3", false, token);
 		set_state("HeroPoint_2", false, token);
 		set_state("HeroPoint_1", true, token);
-		used = true;
 	} else if (pointStates[1]) {
 		set_state("HeroPoint_3", false, token);
 		set_state("HeroPoint_2", false, token);
 		set_state("HeroPoint_1", false, token);
-		used = true;
-	}
-	if (typeof (token) == "string") {
-		token = MapTool.tokens.getTokenByID(token);
 	}
 }
 
