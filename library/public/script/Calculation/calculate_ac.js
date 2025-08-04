@@ -6,9 +6,12 @@ function calculate_ac(tokenID) {
 	//let base_ac = Number(token.getProperty("AC"));
 	let base_ac = 10;
 
+	let tokenTraits = JSON.parse(token.getProperty("traits"))
 	let foundryActor = JSON.parse(token.getProperty("foundryActor"));
 	if ("simple" in foundryActor && foundryActor.simple) {
 		base_ac = Number(token.getProperty("ac"));
+	} else if (tokenTraits.includes("minion")) {
+		base_ac = Number(token.getProperty("ac")) - Number(token.getProperty("dex"));
 	}
 
 	if (get_token_property_type(token) == "PF2E_Hazard") {

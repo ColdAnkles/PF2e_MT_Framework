@@ -81,7 +81,7 @@ function attack_action(actionData, actingToken) {
 	//MapTool.chat.broadcast("attack_bonus: " + String(attack_bonus))
 	let initiative = get_initiative(actingToken.getId());
 
-	let attackScopes = ["attack", "attack-roll", "weapon-attack"];
+	let attackScopes = ["all", "attack", "attack-roll", "weapon-attack"];
 	let damageScopes = ["strike-damage", "damage"];
 	if (actionData.system.isMelee || actionData.type == "melee") {
 		attackScopes.push("melee-attack");

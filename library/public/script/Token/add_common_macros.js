@@ -2,6 +2,11 @@
 
 function add_common_macros(tokenID, isSimple = false) {
 
+    let token = tokenID;
+    if (typeof (token) == "string") {
+        token = MapTool.tokens.getTokenByID(token);
+    }
+    
     if (!isSimple) {
         let commonMacros = [{ "label": "Change HP", "playerEditable": 0, "command": "[h: js.ca.pf2e.change_hp(currentToken())]", "tooltip": "Change Token HP", "sortBy": "", "group": "1. Common" },
         { "label": "Character Sheet", "playerEditable": 0, "command": "[r: ca.pf2e.Creature_View_Frame(json.set(\"{}\",\"name\",getName(),\"tokenID\",myID))]", "tooltip": "View Character Sheet", "sortBy": "", "group": "1. Common" },

@@ -118,7 +118,7 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                 if (slug == "proficiency" && actor != null) {
                     let profSlug = pText.split(":")[2];
                     if (profSlug == "rank") {
-                        let profRank = calculate_proficiency(item.category, actor, item);
+                        let profRank = calculate_proficiency(item.system.category, actor, item);
                         if (pText.split(":").length == 4) {
                             predicate_resolution = predicate_resolution && (profRank == Number(pText.split(":")[3]));
                         } else {
@@ -133,10 +133,10 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                     predicate_resolution = predicate_resolution && (typeSlug == item.baseName);
                 } else if (slug == "group") {
                     let groupSlug = pText.split(":")[2];
-                    predicate_resolution = predicate_resolution && (foundry_calc_value(groupSlug, actor, item).toUpperCase() == item.group.toUpperCase());
+                    predicate_resolution = predicate_resolution && (foundry_calc_value(groupSlug, actor, item).toUpperCase() == item.system.group.toUpperCase());
                 } else if (slug == "category") {
                     let categorySlug = pText.split(":")[2];
-                    predicate_resolution = predicate_resolution && (foundry_calc_value(categorySlug, actor, item).toUpperCase() == item.category.toUpperCase());
+                    predicate_resolution = predicate_resolution && (foundry_calc_value(categorySlug, actor, item).toUpperCase() == item.system.category.toUpperCase());
                 } else {
                     predicate_resolution = false;
                 }

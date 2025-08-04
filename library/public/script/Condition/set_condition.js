@@ -154,7 +154,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 				let uuidSplit = ruleData.uuid.split(".");
 				if (ruleData.uuid.includes("conditionitems")) {
 					let applyCondition = uuidSplit[uuidSplit.length - 1];
-					set_condition(applyCondition, token, conditionApplication, false);
+					set_condition(applyCondition, token, conditionApplication, silent);
 				}
 			} else if (ruleData.key == "LoseHitPoints" && conditionApplication == 1) {
 				let currentHP = Number(token.getProperty("HP"));
