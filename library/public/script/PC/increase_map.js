@@ -5,7 +5,7 @@ function increase_map(token) {
         token = MapTool.tokens.getTokenByID(token);
     }
 
-    if (!(token.getName().includes("Lib")) && get_token_type(token) == "PC") {
+    if (!(token.getName().includes("Lib")) && token.isPC()) {
         increase_map(token.getProperty("myID"));
         return;
     }

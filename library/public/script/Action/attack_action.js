@@ -32,7 +32,7 @@ function attack_action(actionData, actingToken) {
 		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
 			itemData = inventory[actionData.flags.pf2e.linkedWeapon];
 		}
-		if (get_token_type(actingToken) == "PC") {
+		if (actingToken.isPC()) {
 			if (itemData == null && !actionData.flags.pf2e.linkedWeapon == "unarmed") {
 				MapTool.chat.broadcast("Linked Weapon Missing!");
 				return
@@ -70,7 +70,7 @@ function attack_action(actionData, actingToken) {
 
 	let tokLevel = Number(actingToken.getProperty("level"));
 	let profBon = null;
-	if ((((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) && get_token_type(actingToken) == "PC") {
+	if ((((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) && actingToken.isPC()) {
 		profBon = (calculate_proficiency(((itemData != null) ? itemData.system.category : actionData.system.category), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
 	} else {
 		profBon = actionData.system.bonus.value - tokLevel;
@@ -220,7 +220,7 @@ function attack_action(actionData, actingToken) {
 				let twoHandDie = traitName.split("-")[2];
 				actionData.system.damageRolls["twoHanded"] = { "damage": String(itemData.system.damage.dice) + twoHandDie + ((Number(actingToken.getProperty("str")) != 0) ? "+" + Number(actingToken.getProperty("str")) : ""), "damageType": itemData.system.damage.damageType + " (two-handed)" };
 
-			} else if (traitName == "propulsive" && get_token_type(actingToken) == "PC") {
+			} else if (traitName == "propulsive" && actingToken.isPC()) {
 				MapTool.chat.broadcast("Propulsive Trait not Implemented");
 
 			} else if (traitName == "sweep" && effect_bonus_raw.bonuses.circumstance == 0 && currentAttackCount > 0) {
@@ -251,7 +251,7 @@ function attack_action(actionData, actingToken) {
 	let strBon = Number(actingToken.getProperty("str"));
 	let dexBon = Number(actingToken.getProperty("dex"));
 	try {
-		if (get_token_type(actingToken) == "PC") {
+		if (actingToken.isPC()) {
 			if (actionData.isMelee || actionData.type == "melee" || (actionData.system.traits.value.includes("thrown") && !actionData.isMelee)) {
 				damage_bonus += strBon;
 			} else if (actionData.system.traits.value.includes("propulsive") && !actionData.isMelee) {
@@ -308,7 +308,7 @@ function attack_action(actionData, actingToken) {
 		return;
 	}
 
-	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + ((itemData != null && get_token_type(actingToken) == "PC") ? Math.max(effect_bonus_raw.bonuses.item, itemData.system.runes.potency) : effect_bonus_raw.bonuses.item) + effect_bonus_raw.bonuses.none +
+	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + ((itemData != null && actingToken.isPC()) ? Math.max(effect_bonus_raw.bonuses.item, itemData.system.runes.potency) : effect_bonus_raw.bonuses.item) + effect_bonus_raw.bonuses.none +
 		effect_bonus_raw.maluses.circumstance + effect_bonus_raw.maluses.status + effect_bonus_raw.maluses.item + effect_bonus_raw.maluses.none;
 
 	let map_malus = currentAttackCount * MAP_Penalty;

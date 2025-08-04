@@ -75,7 +75,7 @@ function calculate_ac(tokenID) {
 	}
 
 	let totalAC = base_ac;
-	if (get_token_type(token) == "PC") {
+	if (token.isPC()) {
 		if (!("simple" in foundryActor && foundryActor.simple)) {
 			dex_bonus = Math.max(0, Math.min(dex_bonus, dexCap));
 		} else {

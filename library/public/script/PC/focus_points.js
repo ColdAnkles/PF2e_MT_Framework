@@ -5,7 +5,7 @@ function add_focus_point(token) {
         token = MapTool.tokens.getTokenByID(token);
     }
 
-    if (!(token.getName().includes("Lib")) && get_token_type(token) == "PC") {
+    if (!(token.getName().includes("Lib")) && token.isPC()) {
         add_focus_point(token.getProperty("myID"));
         return;
     }
@@ -28,7 +28,7 @@ function use_focus_point(token) {
         token = MapTool.tokens.getTokenByID(token);
     }
 
-    if (!(token.getName().includes("Lib")) && get_token_type(token) == "PC") {
+    if (!(token.getName().includes("Lib")) && token.isPC()) {
         use_focus_point(token.getProperty("myID"));
         return;
     }

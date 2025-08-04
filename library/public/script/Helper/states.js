@@ -13,7 +13,7 @@ function set_state(stateName, stateVal, tokenID) {
 		tokenName = token.getName();
 
 		updateTokens = [tokenID];
-		if (get_token_type(tokenID) == "PC") {
+		if (token.isPC()) {
 			if (tokenName.includes("Lib:")) {
 				let subTokens = JSON.parse(token.getProperty("pcTokens"));
 				updateTokens = updateTokens.concat(subTokens);
@@ -62,7 +62,7 @@ function get_state(stateName, tokenID) {
 		token = MapTool.tokens.getTokenByID(tokenID);
 	}
 	let tokenName = token.getName();
-	if (get_token_type(tokenID) == "PC") {
+	if (token.isPC()) {
 		if (!tokenName.includes("Lib:")) {
 			return get_state(stateName, token.getProperty("myID"));
 		} else {

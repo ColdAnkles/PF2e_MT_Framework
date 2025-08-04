@@ -5,11 +5,11 @@ function display_spell_slots(token) {
         token = MapTool.tokens.getTokenByID(token);
     }
 
-    if (get_token_type(token) == "NPC") {
+    if (!token.isPC()) {
         return "";
     }
 
-    if (!(token.getName().includes("Lib")) && get_token_type(token) == "PC") {
+    if (!(token.getName().includes("Lib")) && token.isPC()) {
         return display_spell_slots(token.getProperty("myID"));
     }
 

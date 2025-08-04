@@ -5,7 +5,7 @@ function daily_preparations(token) {
         token = MapTool.tokens.getTokenByID(token);
     }
 
-    if (!(token.getName().includes("Lib")) && get_token_type(token) == "PC") {
+    if (!(token.getName().includes("Lib")) && token.isPC()) {
         daily_preparations(token.getProperty("myID"));
         return;
     }
@@ -34,7 +34,7 @@ function daily_preparations(token) {
     currHP = Math.min(currHP + conMod, maxHP);
     token.setProperty("HP", String(currHP));
 
-    if (token.getName().includes("Lib") && get_token_type(token) == "PC") {
+    if (token.getName().includes("Lib") && token.isPC()) {
         update_my_tokens(token);
     }
 }

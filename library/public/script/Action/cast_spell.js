@@ -161,7 +161,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 	}
 
 	try {
-		if (get_token_type(casterToken) == "PC") {
+		if (casterToken.isPC()) {
 			let resources = JSON.parse(casterToken.getProperty("resources"));
 			if (!(spellData.system.traits.value.includes("focus")) && !(castingData.currentSlots[castLevel] > 0) && !(spellData.system.traits.value.includes("cantrip"))) {
 				message_window("No Spell Slot!", "You've expended all the spell slots for this rank of spell!");

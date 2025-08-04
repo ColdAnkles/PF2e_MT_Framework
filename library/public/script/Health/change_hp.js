@@ -4,10 +4,10 @@ function change_hp(tokenID, changeHPData = null) {
 	let token = MapTool.tokens.getTokenByID(tokenID);
 	let tokenDisplayName = "";
 
-	if (!(token.getName().includes("Lib")) && get_token_type(token) == "PC") {
+	if (!(token.getName().includes("Lib")) && token.isPC()) {
 		change_hp(token.getProperty("myID"), changeHPData);
 		return;
-	} else if ((token.getName().includes("Lib")) && get_token_type(token) == "PC") {
+	} else if ((token.getName().includes("Lib")) && token.isPC()) {
 		tokenDisplayName = token.getName().replace("Lib:", "");
 	} else {
 		tokenDisplayName = token.getName();

@@ -42,7 +42,7 @@ function zero_hp(tokenID) {
 		regenerating = (!regenDisabled && regenData.type == "regeneration");
 	}
 
-	if (get_token_type(tokenID) == "PC" || regenerating) {
+	if (token.isPC() || regenerating) {
 
 		MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()][h:initiativeTokens=getInitiativeList()]")
 		let currentInitiative = Number(MTScript.getVariable("currInit"));

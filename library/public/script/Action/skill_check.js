@@ -44,7 +44,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				}
 			}
 
-			let tokenType = get_token_type(checkToken);
+			let tokenType = ((checkToken.isPC()) ? "PC" : "NPC");
 
 			for (var p in skills) {
 				let skillData = skills[p];
