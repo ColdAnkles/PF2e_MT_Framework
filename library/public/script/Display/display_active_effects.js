@@ -25,6 +25,15 @@ function display_active_effects(token) {
 		counter += 1;
 	}
 
+	let actorData = JSON.parse(token.getProperty("foundryActor"));
+	let activeRegen = false;
+	if ("regen" in actorData) {
+		activeRegen = actorData.regen;
+	}
+	if (activeRegen) {
+		outputString += "Regenerating, ";
+	}
+
 	outputString = outputString.substring(0, outputString.length - 2);
 
 	return outputString;

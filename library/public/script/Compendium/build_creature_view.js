@@ -220,7 +220,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 		let resistancesString = ""
 		for (var imm in creatureData.resistances) {
 			resistancesString = resistancesString + creatureData.resistances[imm].type + " " + creatureData.resistances[imm].value;
-			if ("exceptions" in creatureData.resistances[imm]) {
+			if ("exceptions" in creatureData.resistances[imm] && creatureData.resistances[imm].length > 0) {
 				resistancesString = resistancesString + " (except " + creatureData.resistances[imm].exceptions.join(", ") + ")";
 			}
 			resistancesString = resistancesString + "; ";
@@ -246,7 +246,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 			if (creatureData.weaknesses[imm].value > 0) {
 				weaknessesString = weaknessesString + creatureData.weaknesses[imm].value;
 			}
-			if ("exceptions" in creatureData.weaknesses[imm]) {
+			if ("exceptions" in creatureData.weaknesses[imm] && creatureData.weaknesses[imm].exceptions.length > 0) {
 				weaknessesString = weaknessesString + " (except " + creatureData.weaknesses[imm].exceptions.join(", ") + ")";
 			}
 			weaknessesString = weaknessesString + "; ";

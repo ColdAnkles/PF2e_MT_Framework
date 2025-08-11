@@ -31,11 +31,13 @@ function set_state(stateName, stateVal, tokenID) {
 		return;
 	}
 
+	var uT = null
 	try {
 		MTScript.setVariable("stateName", stateName);
 		MTScript.setVariable("stateVal", stateVal);
 		for (var t in updateTokens) {
 			MTScript.setVariable("tokenID", updateTokens[t]);
+			uT = updateTokens[t];
 			let token = MapTool.tokens.getTokenByID(updateTokens[t]);
 			let tokenName = token.getName();
 			if (tokenName.includes("Lib:")) {
@@ -48,7 +50,7 @@ function set_state(stateName, stateVal, tokenID) {
 		MapTool.chat.broadcast("Error in set_state during setting state");
 		MapTool.chat.broadcast("stateName: " + String(stateName));
 		MapTool.chat.broadcast("stateVal: " + String(stateVal));
-		MapTool.chat.broadcast("tokenID: " + String(tokenID));
+		MapTool.chat.broadcast("updateTokens[t]: " + String(uT));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
