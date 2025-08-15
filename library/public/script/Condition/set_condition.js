@@ -190,7 +190,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 					if (ruleData.uuid.includes("conditionitems")) {
 						let applyCondition = uuidSplit[uuidSplit.length - 1];
 						if (!(applyCondition in tokenConditions)) {
-							set_condition(applyCondition, token, 1, false);
+							set_condition(applyCondition, token, 1, true);
 						}
 					}
 				}
