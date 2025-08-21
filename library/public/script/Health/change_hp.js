@@ -17,6 +17,7 @@ function change_hp(tokenID, changeHPData = null) {
 	let tokenCurrentMaxHP = Number(token.getProperty("MaxHP"));
 	let tokenCurrentTempHP = Number(token.getProperty("TempHP"));
 	let currentConditions = JSON.parse(token.getProperty("conditionDetails"));
+	let tokenTraits = JSON.parse(token.getProperty("traits"));
 
 	if (isNaN(tokenCurrentTempHP)) {
 		tokenCurrentTempHP = 0;
@@ -59,6 +60,8 @@ function change_hp(tokenID, changeHPData = null) {
 			silent = true;
 		}
 
+		let tokenOldHP = tokenCurrentHP;
+
 		if (changeHPData.currentHPChange != tokenCurrentHP) {
 			token.setProperty("HP", String(changeHPData.currentHPChange));
 			if (changeHPData.currentHPChange <= 0) {
@@ -87,32 +90,51 @@ function change_hp(tokenID, changeHPData = null) {
 		} else {
 			if (changeHPData.hpChangeType == "lethal") {
 
-				if (!silent) {
-					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!" } } }, true);
-				}
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
 				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
+
 				if (tokenCurrentHP <= 0) {
 					tokenCurrentHP = 0;
 				}
-				token.setProperty("TempHP", tokenCurrentTempHP);
+
+				if (!silent) {
+					let description = tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!";
+					if (tokenTraits.includes("troop")){
+						let troopChange = troop_segment_change(tokenCurrentMaxHP, tokenOldHP, tokenCurrentHP)
+						if (troopChange.old > troopChange.new){
+							description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
+						}
+					}
+					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": description } } }, true);
+				}
+
+				token.setProperty("TempHP", String(tokenCurrentTempHP));
 				if (tokenCurrentTempHP <= 0) {
-					token.setProperty("TempHP", 0);
+					token.setProperty("TempHP", "0");
 				}
 				token.setProperty("HP", String(tokenCurrentHP));
 				if (tokenCurrentHP <= 0) {
 					zero_hp(tokenID);
 				}
 			} else if (changeHPData.hpChangeType == "nonlethal") {
-
-				if (!silent) {
-					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!" } } }, true);
-				}
 				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
-				tokenCurrentHP = tokenCurrentHP + tokenCurrentTempHP;
+				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
 				if (tokenCurrentHP <= 0) {
 					tokenCurrentHP = 0;
 				}
+
+				if (!silent) {
+					let description = tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!";
+					if (tokenTraits.includes("troop")){
+						let troopChange = troop_segment_change(tokenCurrentMaxHP, tokenOldHP, tokenCurrentHP)
+						if (troopChange.old > troopChange.new){
+							description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
+						}
+					}
+					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": description } } }, true);
+				}
+
+				token.setProperty("TempHP", String(tokenCurrentTempHP));
 				if (tokenCurrentTempHP <= 0) {
 					token.setProperty("TempHP", "0");
 				}
@@ -158,3 +180,28 @@ function change_hp(tokenID, changeHPData = null) {
 }
 
 MTScript.registerMacro("ca.pf2e.change_hp", change_hp);
+
+function troop_segment_change(maxHP, oldHP, newHP){
+	//MapTool.chat.broadcast(String(oldHP)+"/"+String(maxHP)+" -> " +String(newHP)+"/"+String(maxHP));
+
+	let troopHPInterval = maxHP/3;
+
+	let oldSegmentCount = 4;
+    if ((oldHP <= troopHPInterval * 2) && (oldHP > troopHPInterval)) {
+        oldSegmentCount = 3;
+    } else if (oldHP <= troopHPInterval) {
+        oldSegmentCount = 2;
+    }
+
+    let newSegmentCount = 4;
+    if ((newHP <= troopHPInterval * 2) && (newHP > troopHPInterval)) {
+        newSegmentCount = 3;
+    } else if (newHP <= troopHPInterval) {
+        newSegmentCount = 2;
+    }
+	//MapTool.chat.broadcast("oldSegmentCount: " + String(oldSegmentCount));
+	//MapTool.chat.broadcast("newSegmentCount: " + String(newSegmentCount));
+
+	return {"old":oldSegmentCount, "new":newSegmentCount}
+
+}

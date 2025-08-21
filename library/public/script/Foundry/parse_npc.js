@@ -124,6 +124,10 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 		npcData.size = { "sm": "small", "med": "medium", "huge": "huge", "lg": "large", "grg": "gargantuan", "tiny": "tiny" }[npcData.size];
 		npcData.traits = rawData.system.traits.value;
 
+		//Troop Segments are always 2x2
+		if (npcData.traits.includes("troop")){
+			npcData.size = "large";
+		}
 
 		npcData.source = rawData.system.details.publication.title;
 
