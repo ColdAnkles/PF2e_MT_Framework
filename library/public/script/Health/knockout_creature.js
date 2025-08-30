@@ -14,6 +14,8 @@ function knockout_creature(tokenID) {
 		let currentInitiative = Number(MTScript.getVariable("currInit"));
 		let newInit = round(currentInitiative + 1);
 		MTScript.evalMacro("[h: setInitiative(" + String(newInit) + ", " + tokenID + ")]")
+	} else {
+		MTScript.evalMacro("[h: removeFromInitiative(\"" + tokenID + "\")]");
 	}
 
 	chat_display({ "name": token.getName() + " unconscious!", "system": { "description": { "value": token.getName() + " knocked unconscious!" } } }, true);
