@@ -12,11 +12,11 @@ function display_weaknesses(token) {
     let weaknessString = "";
 
     for (var w in weaknessList) {
-        weaknessString += ", " + capitalise(weaknessList[w].type) + " " + String(weaknessList[w].value)
+        weaknessString += ", " + capitalise(weaknessList[w].type.replaceAll("-", " ")) + " " + String(weaknessList[w].value)
     }
 
     for (var w in extraWeaknesses) {
-        weaknessString += ", " + capitalise(extraWeaknesses[w].type) + " " + String(extraWeaknesses[w].value)
+        weaknessString += ", " + capitalise(extraWeaknesses[w].type.replaceAll("-", " ")) + " " + String(extraWeaknesses[w].value)
     }
 
     if (weaknessString.length > 0) {
