@@ -1,9 +1,13 @@
 "use strict";
 
 function toggle_owner_only_visible(token) {
-	if (typeof (token) != "string") {
-		token = token.getId();
+	let tokenID = token;
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+	} else {
+		tokenID = token.getID();
 	}
+
 	if (token.isPC()) {
 		return; //getOwnerOnlyVisible errors since no map argument, therefore ignore for PCs
 	}
