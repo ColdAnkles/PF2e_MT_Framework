@@ -63,6 +63,7 @@ function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 	allPossible = allPossible.concat(creatureData.offensiveActions);
 	allPossible = allPossible.concat(creatureData.otherDefenses);
 	allPossible = allPossible.concat(creatureData.passiveDefenses);
+	allPossible = allPossible.concat(creatureData.passiveSkills);
 
 	for (var a in allPossible) {
 		let actionData = allPossible[a];
