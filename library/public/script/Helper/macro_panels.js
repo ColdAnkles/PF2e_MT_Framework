@@ -1,7 +1,7 @@
 "use strict";
 
 function getFrameworkMacros() {
-    let basicMacros = ["<b>Compendium</b>", "<b>Creatures</b>", "<b>Hazards</b>", "Spawn PC Party", "End Current Turn", "End Encounter", "Previous Turn", "Add Persistent Damage", "Add Hero Point", "Use Hero Point", "Daily Preparations",]
+    let basicMacros = ["<b>Compendium</b>", "<b>Creatures</b>", "<b>Hazards</b>", "Spawn PC Party", "End Current Turn", "End Encounter", "Previous Turn", "Add Persistent Damage", "Add Hero Point", "Use Hero Point", "Remove Hero Point", "Daily Preparations","Delay/Undelay"]
     return basicMacros.concat(getConditionList());
 }
 
@@ -21,7 +21,8 @@ function createGMMacros() {
     { "label": "Add Hero Point", "playerEditable": 0, "command": "[h: tokens = getSelected()][h, foreach(t, tokens, \"\"), code:{[h: js.ca.pf2e.add_hero_point(t)]}]", "tooltip": "Add Hero Point to selected tokens.", "group": "3. Misc" },
     { "label": "Use Hero Point", "playerEditable": 0, "command": "[h: tokens = getSelected()][h, foreach(t, tokens, \"\"), code:{[h: js.ca.pf2e.use_hero_point(t)]}]", "tooltip": "Selected Tokens use Hero Point.", "group": "3. Misc" },
     { "label": "Remove Hero Point", "playerEditable": 0, "command": "[h: tokens = getSelected()][h, foreach(t, tokens, \"\"), code:{[h: js.ca.pf2e.remove_hero_point(t)]}]", "tooltip": "Selected Tokens Lose one Hero Point.", "group": "3. Misc" },
-    { "label": "Daily Preparations", "playerEditable": 0, "command": "[h: pcLibs = js.ca.pf2e.find_pc_libs()][h, foreach(id, pcLibs), code:{[h: js.ca.pf2e.daily_preparations(id)]}]", "tooltip": "Perform PC Daily Preparations.", "group": "3. Misc" }];
+    { "label": "Daily Preparations", "playerEditable": 0, "command": "[h: pcLibs = js.ca.pf2e.find_pc_libs()][h, foreach(id, pcLibs), code:{[h: js.ca.pf2e.daily_preparations(id)]}]", "tooltip": "Perform PC Daily Preparations.", "group": "3. Misc" },
+    { "label": "Delay/Undelay", "playerEditable": 0, "command": "[h: tokens = getSelected()][h, foreach(t, tokens, \"\"), code:{[h: js.ca.pf2e.delay_undelay(t)]}]", "tooltip": "Delay/Undelay Selected Token.", "group": "1. Encounters" }];
     for (var m in GMMacros) {
         createMacro(GMMacros[m], "gm");
     }
