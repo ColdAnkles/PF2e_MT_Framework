@@ -20,6 +20,9 @@ function spawn_item(itemData, position) {
         let newItemID = MTScript.getVariable("newItem");
         let newItem = MapTool.tokens.getTokenByID(newItemID);
         newItem.setProperty("ItemData", JSON.stringify(itemData));
+
+        createMacro({ "label": "View Item", "playerEditable": 0, "command": "[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\""+itemData.name+"\",\"itemType\",\""+itemData.type+"\"))]", "tooltip": chat_display(itemData, false), "sortBy": ""}, newItemID);
+
         return newItem
     } catch (e) {
         MapTool.chat.broadcast("Error in spawn_item");

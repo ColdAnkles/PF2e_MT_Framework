@@ -1,3 +1,6 @@
+[h, if(json.type(macro.args)=="ARRAY"), code:{
+	[h: macro.args = json.get(macro.args,0)]
+};{}]
 [h: itemName=json.get(macro.args,"itemName")]
 [h: itemType=json.get(macro.args,"itemType")]
 
