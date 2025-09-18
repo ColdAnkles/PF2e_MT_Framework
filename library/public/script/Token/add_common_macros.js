@@ -15,8 +15,9 @@ function add_common_macros(tokenID, isSimple = false) {
         { "label": "Skill Check (Diff Ability)", "playerEditable": 0, "command": "[h: js.ca.pf2e.skill_check(currentToken(),true)]", "tooltip": "Attempt Skill Check with a different Ability", "sortBy": "", "group": "1. Common" },
         //{"label":"Increase MAP","playerEditable":0,"command":"[h: js.ca.pf2e.increase_map(myID)]","tooltip":"Increase Token MAP","sortBy":"","group":"Common"},
         { "label": "End Turn", "playerEditable": 0, "command": "[h: js.ca.pf2e.end_turn(currentToken())]", "tooltip": "End Turn", "sortBy": "", "group": "2. Encounter" },
-        { "label": "Initiative", "playerEditable": 0, "command": "[h: ca.pf2e.Roll_Initiative(currentToken())]", "tooltip": "Roll Initiative", "sortBy": "", "group": "2. Encounter" },
-        { "label": "Initiative (Perception)", "playerEditable": 0, "command": "[h: ca.pf2e.Roll_Initiative(currentToken(),\"Perception\")]", "tooltip": "Roll Initiative with Perception", "sortBy": "", "group": "2. Encounter" },
+        { "label": "Set Initiative", "playerEditable": 0, "command": "[h: ca.pf2e.Roll_Initiative(currentToken(), true)]", "tooltip": "Set Initiative if manually rolled", "sortBy": "", "group": "2. Encounter" },
+        { "label": "Initiative", "playerEditable": 0, "command": "[h: ca.pf2e.Roll_Initiative(currentToken(), false)]", "tooltip": "Roll Initiative", "sortBy": "", "group": "2. Encounter" },
+        { "label": "Initiative (Perception)", "playerEditable": 0, "command": "[h: ca.pf2e.Roll_Initiative(currentToken(), false,\"Perception\")]", "tooltip": "Roll Initiative with Perception", "sortBy": "", "group": "2. Encounter" },
         { "label": "Use Action", "playerEditable": 0, "command": "[h: js.ca.pf2e.generic_use_action(currentToken())]", "tooltip": "Use An Action", "sortBy": "", "group": "1. Common" },
         { "label": "Refund Action", "playerEditable": 0, "command": "[h: js.ca.pf2e.generic_refund_action(currentToken())]", "tooltip": "Regain An Action", "sortBy": "", "group": "1. Common" },
         { "label": "View Active Effects", "playerEditable": 0, "command": "[h: ca.pf2e.View_Active_Effects(json.set(\"{}\",\"tokenID\",currentToken()))]", "tooltip": "View current active effects.", "sortBy": "", "group": "1. Common" },
@@ -25,7 +26,7 @@ function add_common_macros(tokenID, isSimple = false) {
         { "label": "Increase MAP", "playerEditable": 0, "command": "[h: js.ca.pf2e.increase_map(myID))]", "tooltip": "Increase your MAP by 1.", "sortBy": "", "group": "3. Additional" },
         { "label": "Daily Preparations", "playerEditable": 0, "command": "[h: js.ca.pf2e.daily_preparations(myID)]", "tooltip": "Perform Daily Preparations.", "group": "3. Additional" },
         { "label": "Inventory", "playerEditable": 0, "command": "[h: js.ca.pf2e.view_inventory(myID)]", "tooltip": "View Inventory", "sortBy": "", "group": "1. Common" },
-        { "label": "Delay/Undelay", "playerEditable": 0, "command": "[h: js.ca.pf2e.delay_undelay(myID)]", "tooltip": "Delay/Undelay Token", "sortBy": "", "group": "1. Common" }
+        { "label": "Delay/Undelay", "playerEditable": 0, "command": "[h: js.ca.pf2e.delay_undelay(currentToken())]", "tooltip": "Delay/Undelay Token", "sortBy": "", "group": "1. Common" }
         ]
         for (var m in commonMacros) {
             createMacro(commonMacros[m], tokenID);

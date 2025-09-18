@@ -10,7 +10,7 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 	}
 
 	let updateTokens = [token];
-	if (token.isPC()) {
+	if (affectedCreature.isPC()) {
 		if (affectedCreature.getName().includes("Lib:")) {
 			//let subTokens = JSON.parse(affectedCreature.getProperty("pcTokens"));
 			//updateTokens = updateTokens.concat(subTokens);

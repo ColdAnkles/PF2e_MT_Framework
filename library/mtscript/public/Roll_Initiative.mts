@@ -1,26 +1,27 @@
 [h: token = json.get(macro.args,0)]
+[h: forceEntry = json.get(macro.args,1)]
 [h: skillName = "Perception"]
 [h: tokenType = "NPC"]
 [h, if(isPC(token)),code:{
 	[h: tokenType = "PC"]
 };{}]
 [h: foundryActor = getProperty("foundryActor",token)]
-[h: isSimple = (json.contains(foundryActor,"simple") && json.get(foundryActor,"simple"))]
+[h: isSimple = (json.contains(foundryActor,"simple") && json.get(foundryActor,"simple")) || forceEntry]
 [h, if(isSimple), code:{
 	[h: ans = input("initResult|0|Initiative|TEXT")]
 	[h: abort(ans)]
-	[h: addToInitiative(false, initResult, token)]
+	[h: addToInitiative(false, initResult + 0.0, token)]
 	[h: sortInitiative()]
 	[h: return(0)]
 };{}]
 
 [h: overrideBonus=json.null]
 
-[h, if(json.length(macro.args)==1), code:{
+[h, if(json.length(macro.args)==2), code:{
 	[h: ans = input("skillName|Acrobatics,Arcana,Athletics,Crafting,Deception,Diplomacy,Intimidation,Medicine,Nature,Occultism,Perception,Performance,Religion,Society,Stealth,Survival,Thievery|Initiative Skill|LIST|SELECT=10 VALUE=STRING")]
 	[h: abort(ans)]
 };{
-	[h: skillName = json.get(macro.args,1)]
+	[h: skillName = json.get(macro.args,2)]
 }]
 [h, if(tokenType=="NPC"), code:{
 	[h: overrideBonus = getProperty("perception", token)]

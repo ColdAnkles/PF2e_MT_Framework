@@ -174,8 +174,17 @@ function parse_check(checkString, additionalData = { "variant": "normal" }) {
 		dcMod = -2;
 	}
 
+	if (!("gm" in additionalData)){
+		additionalData.gm = false;
+	}
+
+	if (!("isPC" in additionalData)){
+		additionalData.isPC = true;
+	}
+
 	//MapTool.chat.broadcast(JSON.stringify(parsed));
 	//MapTool.chat.broadcast(JSON.stringify(data));
+	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 
 	checkString = "";
 
