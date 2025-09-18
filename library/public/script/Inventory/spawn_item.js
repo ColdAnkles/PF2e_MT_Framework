@@ -21,7 +21,9 @@ function spawn_item(itemData, position) {
         let newItem = MapTool.tokens.getTokenByID(newItemID);
         newItem.setProperty("ItemData", JSON.stringify(itemData));
 
-        createMacro({ "label": "View Item", "playerEditable": 0, "command": "[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\""+itemData.name+"\",\"itemType\",\""+itemData.type+"\"))]", "tooltip": chat_display(itemData, false), "sortBy": ""}, newItemID);
+        let tooltipDescription = chat_display(itemData, false,{"isPC":true});
+        createMacro({ "label": "View Item", "playerEditable": 0, "command": "[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\""+itemData.name+"\",\"itemType\",\""+itemData.type+"\"))]", "tooltip": tooltipDescription, "sortBy": ""}, newItemID);
+	    createMacro({ "label": "Share Details", "playerEditable": 0, "command": "[r: js.ca.pf2e.share_item(currentToken())]", "tooltip": tooltipDescription, "sortBy": "" }, newItemID);
 
         return newItem
     } catch (e) {
