@@ -9,7 +9,7 @@
 [h: windowHeight=200]
 [h: windowName = "Compendium Window"]
 [h, if(table=="Encounters"), code:{
-    [h: windowName = "encounters"]
+    [h: windowName = "Encounters"]
     [h: windowWidth=1000]
     [h: windowHeight=1500]
 }]

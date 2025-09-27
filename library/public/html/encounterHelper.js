@@ -20,10 +20,15 @@ function encounterHelper() {
 
     let charAdj = playerCount - 4;
 
+    budgetTable.rows[1].cells[0].innerHTML = "<a href=\"macro://Encounter_Table@Lib:ca.pf2e/none/impersonated?pcLevel="+String(partyLevel)+"&xpBudget="+String(40 + (10 * charAdj))+"\">Trivial</a>";
     budgetTable.rows[1].cells[1].innerText = String(40 + (10 * charAdj)) + " or less";
+    budgetTable.rows[2].cells[0].innerHTML = "<a href=\"macro://Encounter_Table@Lib:ca.pf2e/none/impersonated?pcLevel="+String(partyLevel)+"&xpBudget="+String(60 + (20 * charAdj))+"\">Low</a>";
     budgetTable.rows[2].cells[1].innerText = String(60 + (20 * charAdj));
+    budgetTable.rows[3].cells[0].innerHTML = "<a href=\"macro://Encounter_Table@Lib:ca.pf2e/none/impersonated?pcLevel="+String(partyLevel)+"&xpBudget="+String(80 + (20 * charAdj))+"\">Moderate</a>";
     budgetTable.rows[3].cells[1].innerText = String(80 + (20 * charAdj));
+    budgetTable.rows[4].cells[0].innerHTML = "<a href=\"macro://Encounter_Table@Lib:ca.pf2e/none/impersonated?pcLevel="+String(partyLevel)+"&xpBudget="+String(120 + (30 * charAdj))+"\">Severe</a>";
     budgetTable.rows[4].cells[1].innerText = String(120 + (30 * charAdj));
+    budgetTable.rows[5].cells[0].innerHTML = "<a href=\"macro://Encounter_Table@Lib:ca.pf2e/none/impersonated?pcLevel="+String(partyLevel)+"&xpBudget="+String(160 + (40 * charAdj))+"\">Extreme</a>";
     budgetTable.rows[5].cells[1].innerText = String(160 + (40 * charAdj));
 
     levelTable.rows[1].cells[0].innerText = String(partyLevel - 4);
