@@ -1,19 +1,26 @@
 "use strict";
 
-function build_item_view(itemType, itemName) {
+function build_item_view(itemType, itemName, itemData = null) {
 	let itemList = JSON.parse(read_data("pf2e_" + itemType));
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
-	if (!(itemName in itemList)) {
-		return "<b>Could not find " + itemType + " " + itemName + ".</b>";
-	}
-	let itemData = itemList[itemName];
-	let itemBaseName = itemList.baseName;
-	if ("fileURL" in itemData) {
-		itemData = rest_call(itemData["fileURL"], "");
-	}
-	//itemData = parse_feature(itemBaseName, itemData);
 
-	//MapTool.chat.broadcast(JSON.stringify(itemData));
+	try {
+		if (itemData == null) {
+			if (!(itemName in itemList)) {
+				return "<b>Could not find " + itemType + " " + itemName + ".</b>";
+			}
+			itemData = itemList[itemName];
+			if ("fileURL" in itemData) {
+				itemData = rest_call(itemData["fileURL"], "");
+			}
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_item_view during basic-step");
+		MapTool.chat.broadcast("itemName: " + creatureName);
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
 	let HTMLString = "<h5>" + create_macroLink("Share", "Share_To_Chat@Lib:ca.pf2e", JSON.stringify({ "data": itemData })) + "</h5>";
 

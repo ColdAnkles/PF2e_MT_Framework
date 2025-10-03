@@ -2,8 +2,10 @@
 
 function drop_item(token, itemID) {
     let tokenID = token;
+    let trueToken = token;
     if (typeof (token) == "string") {
         token = MapTool.tokens.getTokenByID(token);
+        trueToken = token;
     } else {
         tokenID = token.getId()
     }
@@ -14,9 +16,21 @@ function drop_item(token, itemID) {
         itemData = inventory[itemID];
         itemData.system.equipped = false;
 
-        chat_display({ "name": token.getName(), "system": { "description": { "value": (token.getName() + " drops their " + itemData.name) } } });
+        let tokenName = token.getName();
+        if (tokenName.includes("Lib:")){
+            tokenName = tokenName.replace("Lib:","");
+            let thisMapTokensTemp = MapTool.tokens.getMapTokens();
+            let thisMapTokens = [];
+            for (var t in thisMapTokensTemp){
+                thisMapTokens.push(thisMapTokensTemp[t].getId());
+            }
+            let PCTokenList = JSON.parse(token.getProperty("pcTokens"));
+            trueToken = MapTool.tokens.getTokenByID(thisMapTokens.filter(value => PCTokenList.includes(value))[0]);
+        }
 
-        let tokenPosition = get_token_position(token);
+        chat_display({ "name": tokenName, "system": { "description": { "value": (tokenName + " drops their " + itemData.name) } } });
+
+        let tokenPosition = get_token_position(trueToken);
 
         spawn_item(itemData, tokenPosition);
         delete inventory[itemID];
@@ -47,7 +61,7 @@ function pickup_item(token, itemID) {
         inventory[itemData._id] = itemData;
         token.setProperty("inventory", JSON.stringify(inventory));
 
-        chat_display({ "name": token.getName(), "system": { "description": { "value": (token.getName() + " picks up a " + itemData.name) } } });
+        chat_display({ "name": token.getName(), "system": { "description": { "value": (token.getName().replace("Lib:","") + " picks up a " + itemData.name) } } });
 
         MTScript.setVariable("itemTokenID", itemID);
         MTScript.evalMacro("[h: removeToken(itemTokenID)]");
@@ -65,9 +79,18 @@ function pickup_item(token, itemID) {
 function find_items_on_ground(token = null) {
     try {
 
-        let itemList = [];
-
         let mapTokens = MapTool.tokens.getMapTokens();
+
+        if (token.getName().includes("Lib:")){
+            let thisMapTokens = [];
+            for (var t in mapTokens){
+                thisMapTokens.push(mapTokens[t].getId());
+            }
+            let PCTokenList = JSON.parse(token.getProperty("pcTokens"));
+            token = MapTool.tokens.getTokenByID(thisMapTokens.filter(value => PCTokenList.includes(value))[0]);
+        }
+
+        let itemList = [];
 
         for (var t in mapTokens) {
             if (get_token_property_type(mapTokens[t]) == "PF2E_Item") {

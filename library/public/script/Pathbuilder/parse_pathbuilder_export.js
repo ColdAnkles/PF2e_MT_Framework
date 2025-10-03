@@ -588,8 +588,12 @@ function parse_pathbuilder_export(data) {
 		let trueID = "armor";
 		if ("_id" in itemData) {
 			trueID = itemData._id + String(Object.keys(characterData.inventory).length);
+			itemData.id = trueID;
+			itemData._id = trueID;
 		} else if ("id" in itemData) {
 			trueID = itemData.id + String(Object.keys(characterData.inventory).length);
+			itemData._id = trueID;
+			itemData.id = trueID;
 		}
 		//parse_feature(tempData.baseName, itemData, characterData);
 		itemData.system.quantity = thisArmor.qty;
@@ -610,6 +614,7 @@ function parse_pathbuilder_export(data) {
 			}
 		}
 		itemData.system.id = trueID;
+		itemData.system._id = trueID;
 		itemData.type = "armor";
 		characterData.inventory[trueID] = itemData;
 	}
@@ -665,6 +670,7 @@ function parse_pathbuilder_export(data) {
 					}
 				}
 				itemData.id = trueID;
+				itemData._id = trueID;
 				characterData.basicAttacks.push(newAttackData);
 			}
 		} else {
@@ -712,6 +718,7 @@ function parse_pathbuilder_export(data) {
 				characterData.inventory[trueID] = itemData;
 				itemData.system.quantity = data.equipment[e][1];
 				itemData.id = trueID;
+				itemData._id = trueID;
 				itemData.system.equipped = true;
 				if (eqName == "Handwraps of Mighty Blows") {
 					let handwrapsLevels = { 0: { 0: 0 }, 1: { 0: 2, 1: 4 }, 2: { 1: 10, 2: 12 }, 3: { 2: 16, 3: 19 } };

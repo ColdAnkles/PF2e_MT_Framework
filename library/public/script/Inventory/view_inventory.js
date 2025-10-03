@@ -21,6 +21,9 @@ function view_inventory(tokenID, inventoryAction = null) {
             } else if (key.includes("pickup_")) {
                 actionItem = key.replace("pickup_", "");
                 action = "pickup";
+            } else if (key.includes("view_")) {
+                actionItem = inventory[key.replace("view_", "")];
+                action = "view";
             }
         }
         if (actionItem != "") {
@@ -35,6 +38,10 @@ function view_inventory(tokenID, inventoryAction = null) {
             } else if (action == "pickup") {
                 pickup_item(token, actionItem);
                 inventory = JSON.parse(token.getProperty("inventory"));
+            } else if (action == "view") {
+                MapTool.chat.broadcast(JSON.stringify(actionItem));
+                MTScript.setVariable("itemData", actionItem);
+                MTScript.evalMacro("[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\""+actionItem.name+"\",\"itemType\",\""+actionItem.type+"\",\"itemData\",itemData))]")
             }
         }
     }
@@ -50,7 +57,10 @@ function view_inventory(tokenID, inventoryAction = null) {
 
     for (var itemID in inventory) {
         let thisItem = inventory[itemID];
-        inventoryHTML += "<tr><td>" + thisItem.name + "</td><td>" + String(thisItem.system.quantity) + "</td><td><input type='submit' name='equip_" + thisItem._id + "' value='" + ((thisItem.system.equipped) ? "Unequip" : "Equip") + "'></td>"
+        let viewButtonJSON = {"tokenID":tokenID};
+        viewButtonJSON["view_"+thisItem._id] = "Submit";
+        inventoryHTML += "<tr><td>" + create_macroLink(thisItem.name, "Inventory_Form_To_JS@Lib:ca.pf2e", viewButtonJSON) + "</td>";
+        inventoryHTML += "<td>" + String(thisItem.system.quantity) + "</td><td><input type='submit' name='equip_" + thisItem._id + "' value='" + ((thisItem.system.equipped) ? "Unequip" : "Equip") + "'></td>";
         inventoryHTML += "<td><input type='submit' name='share_" + thisItem._id + "' value='Submit'></td>";
         inventoryHTML += "<td><input type='submit' name='drop_" + thisItem._id + "' value='Drop'></tr>";
     }
@@ -77,7 +87,7 @@ function view_inventory(tokenID, inventoryAction = null) {
 
 
     MTScript.setVariable("frameHTML", inventoryHTML);
-    MTScript.setVariable("frameName", token.getName() + "\'s Inventory")
+    MTScript.setVariable("frameName", token.getName().replace("Lib:","") + "\'s Inventory")
     MTScript.evalMacro("[frame5(frameName, 'width=500; height=600; temporary=1; noframe=0; input=1'):{[r: frameHTML]}]")
 
 
