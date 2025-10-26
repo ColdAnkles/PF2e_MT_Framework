@@ -68,6 +68,11 @@
     [h: windowWidth=200]
     [h: windowHeight=400]
 }]
+[h, if(table=="services"), code:{
+    [h: windowName = "Services"]
+    [h: windowWidth=200]
+    [h: windowHeight=400]
+}]
 
 [frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=0; noframe=0; input=1"):{
     <html>
@@ -108,6 +113,9 @@
     }]
 	[r, if(table=="structures"), code:{
         [r: data.getStaticData('ca.pf2e', "public/html/structures.html")]
+    }]
+	[r, if(table=="services"), code:{
+        [r: data.getStaticData('ca.pf2e', "public/html/services.html")]
     }]
     </html>
 }]

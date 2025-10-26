@@ -75,6 +75,7 @@
         [r:macroLink("Adjusting Difficulty","TableWindow@Lib:ca.pf2e","none","adjustingDifficulty")]<br />
         [r:macroLink("Cost of Living","TableWindow@Lib:ca.pf2e","none","costOfLiving")]<br />
         [r:macroLink("Cover","TableWindow@Lib:ca.pf2e","none","cover")]<br />
+        [r:macroLink("Services","TableWindow@Lib:ca.pf2e","none","cover")]<br />
         [r:macroLink("Learning Spells","TableWindow@Lib:ca.pf2e","none","learnASpell")]<br />
         [r:macroLink("Earning Income","TableWindow@Lib:ca.pf2e","none","earnIncome")]<br />
         [r:macroLink("Locks","TableWindow@Lib:ca.pf2e","none","locks")]<br />
