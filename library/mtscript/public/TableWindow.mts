@@ -70,8 +70,8 @@
 }]
 [h, if(table=="services"), code:{
     [h: windowName = "Services"]
-    [h: windowWidth=200]
-    [h: windowHeight=400]
+    [h: windowWidth=500]
+    [h: windowHeight=1000]
 }]
 
 [frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=0; noframe=0; input=1"):{
