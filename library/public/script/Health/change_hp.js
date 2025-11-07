@@ -25,9 +25,8 @@ function change_hp(tokenID, changeHPData = null) {
 
 	if (changeHPData == null) {
 
-		let queryHTML = "<html>";
-		queryHTML = queryHTML + "<table><form action='macro://Change_HP_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
-		queryHTML = queryHTML + "<input type='hidden' name='tokenID' value='" + tokenID + "'>";
+		let queryHTML = "<html><form action='macro://Change_HP_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+		queryHTML = queryHTML + "<input type='hidden' name='tokenID' value='" + tokenID + "'><table>";
 
 		queryHTML = queryHTML + "<tr><td colspan=2><b>Damage, Healing, and Temporary HP</b></td></tr>";
 		queryHTML = queryHTML + "<tr><td>Number of Hit Points to heal, hurt, or add as temporary HP:</td><td><input type='text' style='font-family: Arial;' name='hpChangeVal' value='0'></td></tr>";
@@ -43,6 +42,7 @@ function change_hp(tokenID, changeHPData = null) {
 		queryHTML = queryHTML + "<tr><td>Enter new current Maximum HP value (if desired)</td><td><input type='text' name='currentMaxHPChange' style='font-family: Arial;' value='" + tokenCurrentMaxHP + "'></td></tr>";
 
 		queryHTML = queryHTML + "<tr><td colspan='2' style='text-align:right;'><input type='submit' name='changeHPSubmit' value='Submit'><input type='submit' name='changeHPSubmit' value='Cancel'></td></tr>";
+		queryHTML = queryHTML + "</table></form></html>";
 
 		MTScript.setVariable("queryHTML", queryHTML);
 		MTScript.evalMacro("[dialog5('Change HP','width=600;height=420;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");

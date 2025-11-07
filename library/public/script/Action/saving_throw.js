@@ -49,7 +49,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 				}
 			}
 
-			queryHTML = queryHTML + "<table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+			queryHTML = queryHTML + "<form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'><table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\">";
 			queryHTML = queryHTML + "<input type='hidden' name='saveTokenID' value='" + saveToken.getId() + "'>";
 			queryHTML = queryHTML + "<input type='hidden' name='secretCheck' value='0'>";
 
@@ -90,7 +90,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 
 			queryHTML = queryHTML + "<tr><td colspan='5' style='text-align:center'><input type='submit' name='savingThrowSubmit' value='Submit'></td></tr>";
 
-			queryHTML = queryHTML + "</form></table></html>"
+			queryHTML = queryHTML + "</table></form></html>"
 
 			MTScript.setVariable("queryHTML", queryHTML);
 			MTScript.evalMacro("[dialog5('Saving Throw','width=600;height=350;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");

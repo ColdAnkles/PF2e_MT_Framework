@@ -88,7 +88,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 
 
-			queryHTML += "<table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+			queryHTML += "<form action='macro://Skill_Check_Form_To_JS@Lib:ca.pf2e/self/impersonated?'><table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\">";
 			queryHTML += "<input type='hidden' name='checkTokenID' value='" + checkToken.getId() + "'>";
 			queryHTML += "<input type='hidden' name='tokenType' value='" + tokenType + "'>";
 			queryHTML += "<input type='hidden' name='secretCheck' value='0'>";

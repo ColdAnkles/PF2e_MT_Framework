@@ -51,8 +51,8 @@ function view_inventory(tokenID, inventoryAction = null) {
     let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
     let inventoryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>" + tokenName + "'s Inventory</h1>";
-    inventoryHTML += "<table width=100%><form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
-    inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'>";
+    inventoryHTML += "<form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+    inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'><table width=100%>";
     inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Equip</th><th>Use</th><th>Drop</th></tr>";
 
     for (var itemID in inventory) {
@@ -71,8 +71,8 @@ function view_inventory(tokenID, inventoryAction = null) {
 
     if (groundItems.length > 0) {
         inventoryHTML += "<br /><br /><h1 class='feel-title'>The Ground</h1>"
-        inventoryHTML += "<table width=100%><form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
-        inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'>";
+        inventoryHTML += "<form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+        inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'><table width=100%>";
         inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Pick Up</th></tr>";
 
         for (var item in groundItems) {

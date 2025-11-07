@@ -9,6 +9,16 @@ function update_pc_token(sourceTokenID, tokenID) {
 
 	write_creature_properties(PCData, tokenID);
 
+	MTScript.setVariable("token", sourceTokenID);
+	MTScript.evalMacro("[h: tokenLights = getLights(\"Auras\",\"json\",token,\"Player Characters\")]")
+	let sourceTokenLights = JSON.parse(MTScript.getVariable("tokenLights"));
+
+	MTScript.setVariable("token", tokenID);
+	for (var l in sourceTokenLights){
+		MTScript.setVariable("lightName", sourceTokenLights[l]);
+		MTScript.evalMacro("[h: setLight(\"Auras\", lightName, 1, token)]")
+	}
+
 	token.setName(tokenName);
 
 }

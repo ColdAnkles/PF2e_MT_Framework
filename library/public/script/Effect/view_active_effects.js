@@ -12,7 +12,7 @@ function active_effect_view(token) {
 
     let tokenEffects = Object.assign({}, JSON.parse(affectedCreature.getProperty("activeEffects")), JSON.parse(affectedCreature.getProperty("specialEffects")));
 
-    let outputHTML = "<table width=100%><form action='macro://View_Active_Effects@Lib:ca.pf2e/self/impersonated?'><input type='hidden' name='tokenID' value='" + token + "'>";
+    let outputHTML = "<form action='macro://View_Active_Effects@Lib:ca.pf2e/self/impersonated?'><input type='hidden' name='tokenID' value='" + token + "'><table width=100%>";
     outputHTML += "<tr><th>Effect Name</th><th>Remove</th></tr>";
 
     for (var e in tokenEffects) {
