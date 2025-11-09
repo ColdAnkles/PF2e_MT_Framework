@@ -24,28 +24,29 @@ function change_hp(tokenID, changeHPData = null) {
 	}
 
 	if (changeHPData == null) {
+		let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
-		let queryHTML = "<html><form action='macro://Change_HP_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
-		queryHTML = queryHTML + "<input type='hidden' name='tokenID' value='" + tokenID + "'><table>";
+		let queryHTML = "<html><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Change_HP_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+		queryHTML = queryHTML + "<input type='hidden' name='tokenID' value='" + tokenID + "'><table class='staticTable'>";
 
-		queryHTML = queryHTML + "<tr><td colspan=2><b>Damage, Healing, and Temporary HP</b></td></tr>";
+		queryHTML = queryHTML + "<tr><th colspan=2><b>Damage, Healing, and Temporary HP</b></th></tr>";
 		queryHTML = queryHTML + "<tr><td>Number of Hit Points to heal, hurt, or add as temporary HP:</td><td><input type='text' style='font-family: Arial;' name='hpChangeVal' value='0'></td></tr>";
 		queryHTML = queryHTML + "<tr><td>Is the character taking lethal or nonlethal damage, being healed or gaining temporary HP?</td><td><input type='radio' name='hpChangeType' value='lethal' checked='checked'>Lethal Damage<br /><input type='radio' name='hpChangeType' value='nonlethal' >Nonlethal Damage<br /><input type='radio' name='hpChangeType' value='healing'>Healing<br /><input type='radio' name='hpChangeType' value='tempHP'>Temp HP</td></tr>";
 
-		queryHTML = queryHTML + "<tr><td colspan=2><b>Current HP is " + String(tokenCurrentHP) + "/" + String(tokenCurrentMaxHP) + "</td></tr>";
+		queryHTML = queryHTML + "<tr><th colspan=2><b>Current HP is " + String(tokenCurrentHP) + "/" + String(tokenCurrentMaxHP) + "</th></tr>";
 		queryHTML = queryHTML + "<tr><td>Enter new current HP value (if desired)</td><td><input type='text' name='currentHPChange' style='font-family: Arial;' value='" + tokenCurrentHP + "'></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td colspan=2><b>Current Temporary HP is " + String(tokenCurrentTempHP) + "</td></tr>";
+		queryHTML = queryHTML + "<tr><th colspan=2><b>Current Temporary HP is " + String(tokenCurrentTempHP) + "</th></tr>";
 		queryHTML = queryHTML + "<tr><td>Enter new current Temporary HP value (if desired)</td><td><input type='text' name='currentTempHPChange' style='font-family: Arial;' value='" + tokenCurrentTempHP + "'></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td colspan=2><b>Current Maximum HP is " + String(tokenCurrentMaxHP) + "</td></tr>";
+		queryHTML = queryHTML + "<tr><th colspan=2><b>Current Maximum HP is " + String(tokenCurrentMaxHP) + "</th></tr>";
 		queryHTML = queryHTML + "<tr><td>Enter new current Maximum HP value (if desired)</td><td><input type='text' name='currentMaxHPChange' style='font-family: Arial;' value='" + tokenCurrentMaxHP + "'></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td colspan='2' style='text-align:right;'><input type='submit' name='changeHPSubmit' value='Submit'><input type='submit' name='changeHPSubmit' value='Cancel'></td></tr>";
+		queryHTML = queryHTML + "<tr><td colspan='2' style='text-align:center;'><input type='submit' name='changeHPSubmit' value='Submit'><input type='submit' name='changeHPSubmit' value='Cancel'></td></tr>";
 		queryHTML = queryHTML + "</table></form></html>";
 
 		MTScript.setVariable("queryHTML", queryHTML);
-		MTScript.evalMacro("[dialog5('Change HP','width=600;height=420;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
+		MTScript.evalMacro("[dialog5('Change HP','width=600;height=500;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 
 
 	} else {
