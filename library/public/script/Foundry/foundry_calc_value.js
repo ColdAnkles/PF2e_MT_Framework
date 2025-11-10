@@ -113,9 +113,14 @@ function foundry_calc_value(value, actor, item) {
 				return;
 			}
 		}
-		//MapTool.chat.broadcast(value);
-		newValue = eval(value);
-		//MapTool.chat.broadcast(String(newValue));
+		try {
+			newValue = eval(value);
+		} catch (e) {
+			MapTool.chat.broadcast("Error in foundry_calc_value during eval-value");
+			MapTool.chat.broadcast("value: " + value);
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		}
+		//MapTool.chat.broadcast("newValue: " + String(newValue));
 	}
 
 

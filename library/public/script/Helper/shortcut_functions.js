@@ -40,3 +40,7 @@ function lt(a, b) {
 function round(a) {
     return Math.round(a);
 }
+
+function clamp(a, b, c) {
+    return Math.min(Math.max(a, b), c)
+}
