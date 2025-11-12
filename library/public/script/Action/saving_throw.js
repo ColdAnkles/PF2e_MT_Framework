@@ -1,14 +1,12 @@
 "use strict";
 
-function saving_throw(saveToken, saveData = null, additionalData = { "applyEffect": "" }) {
+function saving_throw(saveToken, saveData = null, additionalData = { "applyEffect": "" }, silent = false) {
 	if (typeof (saveToken) == "string") {
 		saveToken = MapTool.tokens.getTokenByID(saveToken);
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(saveData));
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
-
-	let saves = ["fortitude", "reflex", "will"]
 	let saveInfo = JSON.parse(saveToken.getProperty("saves"));
 
 	let specialEffects = JSON.parse(saveToken.getProperty("specialEffects"));
@@ -16,32 +14,30 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 		specialEffects = {};
 	}
 
-	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
-
 	if (saveData === null || (saveData != null && saveData.partial)) {
 
 		try {
 
-			let cBonus = 0;
-			let sBonus = 0;
-			let iBonus = 0;
-			let cMalus = 0;
-			let sMalus = 0;
-			let iMalus = 0;
-
 			if (saveData != null) {
-				cBonus = ("cBonus" in saveData) ? saveData.cBonus : 0;
-				sBonus = ("sBonus" in saveData) ? saveData.sBonus : 0;
-				iBonus = ("iBonus" in saveData) ? saveData.iBonus : 0;
-				cMalus = ("cMalus" in saveData) ? saveData.cMalus : 0;
-				sMalus = ("sMalus" in saveData) ? saveData.sMalus : 0;
-				iMalus = ("iMalus" in saveData) ? saveData.iMalus : 0;
+				saveData.cBonus = ("cBonus" in saveData) ? saveData.cBonus : 0;
+				saveData.sBonus = ("sBonus" in saveData) ? saveData.sBonus : 0;
+				saveData.iBonus = ("iBonus" in saveData) ? saveData.iBonus : 0;
+				saveData.cMalus = ("cMalus" in saveData) ? saveData.cMalus : 0;
+				saveData.sMalus = ("sMalus" in saveData) ? saveData.sMalus : 0;
+				saveData.iMalus = ("iMalus" in saveData) ? saveData.iMalus : 0;
+			} else {
+				saveData = {};
+				saveData.cBonus = 0;
+				saveData.sBonus = 0;
+				saveData.iBonus = 0;
+				saveData.cMalus = 0;
+				saveData.sMalus = 0;
+				saveData.iMalus = 0;
 			}
-
-			let queryHTML = "<html>";
 
 			let saveStrings = {};
 
+			let saves = ["fortitude", "reflex", "will"];
 			for (var s in saves) {
 				saveStrings[s] = { "name": saves[s], "string": (capitalise(saves[s]) + " " + pos_neg_sign(saveInfo[saves[s]])) };
 				if (saveInfo[saves[s] + "Prof"] != "" && saveInfo[saves[s] + "Prof"] != null) {
@@ -49,51 +45,8 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 				}
 			}
 
-			queryHTML = queryHTML + "<form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'><table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\">";
-			queryHTML = queryHTML + "<input type='hidden' name='saveTokenID' value='" + saveToken.getId() + "'>";
-			queryHTML = queryHTML + "<input type='hidden' name='secretCheck' value='0'>";
+			saving_throw_dialog(saveToken.getId(), saveToken.getName(), saveData, specialEffects, saveStrings)
 
-			queryHTML += "<tr><th colspan='5' style='text-align:center'><b>Saving Throw</b></th></tr>";
-			queryHTML = queryHTML + "<tr><td colspan='1' style='text-align:right'>Save:</td><td colspan='4'><select name='saveName'>";
-			for (var s in saveStrings) {
-				queryHTML = queryHTML + "<option value='" + saveStrings[s].name + "'>" + saveStrings[s].string + "</option>";
-			}
-			queryHTML = queryHTML + "</select></td></tr>";
-
-			for (var e in specialEffects) {
-				let effectData = specialEffects[e];
-				let effectIndex = 0
-				//MapTool.chat.broadcast(JSON.stringify(effectData));
-				let effectName = effectData.name.replaceAll("Effect: ", "");
-				if (specialEffects[e].type == "saving-throw") {
-					queryHTML += "<tr><td>Apply " + effectName + "?</td><td><input type='checkbox' name='specialEffect" + String(effectIndex) + "' value='";
-					queryHTML += effectData.name + "'" + ((additionalData.applyEffect == effectName) ? "checked" : "") + "></td></tr>";
-					effectIndex += 1;
-				}
-			}
-
-			queryHTML = queryHTML + "<tr><td>Misc Bonus:</td><td><input type='text' name='miscBonus' size='' maxlength='' value='0'></td>\
-			<td>Circumstance:</b></td><td>+<input type='text' name='cBonus' value='"+ String(cBonus) + "' size='2'></input></td>\
-			<td>-<input type='text' name='cMalus' value='"+ String(cMalus) + "' size='2'></input></td></tr>";
-
-			queryHTML = queryHTML + "<tr><td>Secret Check?</td><td><input type='checkbox' name='secretCheck' value='1'></td>\
-			<td>Status:</b></td><td>+<input type='text' name='sBonus' value='"+ String(sBonus) + "' size='2'></input></td>\
-			<td>-<input type='text' name='sMalus' value='"+ String(sMalus) + "' size='2'></input></td></tr>";
-
-			queryHTML = queryHTML + "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >" + saveToken.getName() + " attempts to save.</textarea></td>\
-			<td>Item:</b></td><td>+<input type='text' name='iBonus' value='"+ String(iBonus) + "' size='2'></input></td>\
-			<td>-<input type='text' name='iMalus' value='"+ String(iMalus) + "' size='2'></input></td></tr>";
-
-			queryHTML += "<tr><td colspan='2' style='text-align:center'><select name='fortuneSelect'><option value='fortune'>Fortune</option><option value='normal' selected>Normal</option><option value='misfortune'>Misfortune</option></select></td>\
-			<td>Other:</b></td><td>+<input type='text' name='oBonus' value='0' size='2'></input></td>\
-			<td>-<input type='text' name='oMalus' value='0' size='2'></input></td></tr>";
-
-			queryHTML = queryHTML + "<tr><td colspan='5' style='text-align:center'><input type='submit' name='savingThrowSubmit' value='Submit'></td></tr>";
-
-			queryHTML = queryHTML + "</table></form></html>"
-
-			MTScript.setVariable("queryHTML", queryHTML);
-			MTScript.evalMacro("[dialog5('Saving Throw','width=600;height=350;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 		} catch (e) {
 			MapTool.chat.broadcast("Error in saveData-NULL during saving_throw");
 			MapTool.chat.broadcast("saveToken: " + String(saveToken));
@@ -160,6 +113,8 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 				dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
 			}
 
+			let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+
 			let dTwentyColour = themeData.colours.standardText;
 			if (dTwenty == 1) {
 				dTwentyColour = "red";
@@ -199,21 +154,24 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 			let saveMod = basic_bonus + misc_bonus + effect_bonus;
 			let saveResult = dTwenty + saveMod;
 
-			let displayData = { "name": saveToken.getName() + " - " + capitalise(saveData.saveName) + " " + pos_neg_sign(saveMod), "system": { "description": { "value": "" } } };
-			displayData.system.appliedEffects = effect_bonus_raw.appliedEffects;
-			displayData.system.description.value = saveData.flavourText + "<br/><div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span>"
-			if (basic_bonus != 0) {
-				displayData.system.description.value += " " + pos_neg_sign(basic_bonus, true);
-			}
-			if (effect_bonus != 0) {
-				displayData.system.description.value += " " + pos_neg_sign(effect_bonus, true);
-			}
-			if (misc_bonus != 0) {
-				displayData.system.description.value += " " + pos_neg_sign(misc_bonus, true);
-			}
-			displayData.system.description.value += " = " + String(saveResult) + "</div></b>";
+			if (!silent) {
+				let displayData = { "name": saveToken.getName() + " - " + capitalise(saveData.saveName) + " " + pos_neg_sign(saveMod), "system": { "description": { "value": "" } } };
+				displayData.system.appliedEffects = effect_bonus_raw.appliedEffects;
+				displayData.system.description.value = saveData.flavourText + "<br/><div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span>"
+				if (basic_bonus != 0) {
+					displayData.system.description.value += " " + pos_neg_sign(basic_bonus, true);
+				}
+				if (effect_bonus != 0) {
+					displayData.system.description.value += " " + pos_neg_sign(effect_bonus, true);
+				}
+				if (misc_bonus != 0) {
+					displayData.system.description.value += " " + pos_neg_sign(misc_bonus, true);
+				}
+				displayData.system.description.value += " = " + String(saveResult) + "</div></b>";
 
-			chat_display(displayData);
+				chat_display(displayData);
+			}
+			return {"saveResult":saveResult,"dTwenty":dTwenty,"basic_bonus":basic_bonus,"effect_bonus":effect_bonus,"misc_bonus":misc_bonus};
 		} catch (e) {
 			MapTool.chat.broadcast("Error in saveData-else during saving_throw");
 			MapTool.chat.broadcast("saveToken: " + String(saveToken));

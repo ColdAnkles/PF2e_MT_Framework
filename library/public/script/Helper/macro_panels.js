@@ -1,7 +1,7 @@
 "use strict";
 
 function getFrameworkMacros() {
-    let basicMacros = ["<b>Compendium</b>", "<b>Creatures</b>", "<b>Hazards</b>", "Spawn PC Party", "End Current Turn", "End Encounter", "Previous Turn", "Add Persistent Damage", "Add Hero Point", "Use Hero Point", "Remove Hero Point", "Daily Preparations", "Delay/Undelay", "Selected Tokens Skill Check"]
+    let basicMacros = ["<b>Compendium</b>", "<b>Creatures</b>", "<b>Hazards</b>", "Spawn PC Party", "End Current Turn", "End Encounter", "Previous Turn", "Add Persistent Damage", "Add Hero Point", "Use Hero Point", "Remove Hero Point", "Daily Preparations", "Delay/Undelay", "Selected Tokens Skill Check", "Selected Tokens Saving Throw"]
     return basicMacros.concat(getConditionList());
 }
 
@@ -23,7 +23,8 @@ function createGMMacros() {
     { "label": "Remove Hero Point", "playerEditable": 0, "command": "[h: tokens = getSelected()][h, foreach(t, tokens, \"\"), code:{[h: js.ca.pf2e.remove_hero_point(t)]}]", "tooltip": "Selected Tokens Lose one Hero Point.", "group": "3. Misc" },
     { "label": "Daily Preparations", "playerEditable": 0, "command": "[h: pcLibs = js.ca.pf2e.find_pc_libs()][h, foreach(id, pcLibs), code:{[h: js.ca.pf2e.daily_preparations(id)]}]", "tooltip": "Perform PC Daily Preparations.", "group": "3. Misc" },
     { "label": "Delay/Undelay", "playerEditable": 0, "command": "[h: tokens = getSelected()][h, foreach(t, tokens, \"\"), code:{[h: js.ca.pf2e.delay_undelay(t)]}]", "tooltip": "Delay/Undelay Selected Token.", "group": "1. Encounters" },
-    { "label": "Selected Tokens Skill Check", "playerEditable": 0, "command": "[h: js.ca.pf2e.group_skill_check(getSelected())]", "tooltip": "Have all Selected Tokens roll a Skill Check.", "group": "3. Misc" }];
+    { "label": "Selected Tokens Skill Check", "playerEditable": 0, "command": "[h: js.ca.pf2e.group_skill_check(getSelected())]", "tooltip": "Have all Selected Tokens roll a Skill Check.", "group": "3. Misc" },
+    { "label": "Selected Tokens Save", "playerEditable": 0, "command": "[h: js.ca.pf2e.group_saving_throw(getSelected())]", "tooltip": "Have all Selected Tokens roll a Save.", "group": "3. Misc" }];
     for (var m in GMMacros) {
         createMacro(GMMacros[m], "gm");
     }
