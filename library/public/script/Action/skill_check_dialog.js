@@ -1,6 +1,6 @@
 "use strict";
 
-function skill_check_dialog(tokenID, tokenName, tokenType, altStat, extraScopes, skillStrings, statStrings, initiative, tokenList = []) {
+function skill_check_dialog(tokenID, tokenName, tokenType, altStat, extraScopes, skillStrings, statStrings, initiative, tokenList = "") {
     try {
         let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
         let queryHTML = "<html>";

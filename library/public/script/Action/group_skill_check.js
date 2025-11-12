@@ -44,20 +44,25 @@ MTScript.registerMacro("ca.pf2e.group_skill_check", group_skill_check);
 function display_group_skill_check(checkData) {
     //MapTool.chat.broadcast(JSON.stringify(checkData));
 
-    let displayData = { "name": "The group attempts a " + checkData.skillName + " skill Check.", "system": { "description": { "value": "" } } };
+    let an = "a ";
+    if (['A','E','I','O','U','a','e','i','o','u'].includes(checkData.skillName[0])){
+        an = "an ";
+    }
+
+    let displayData = { "name": "The group attempts " + an + capitalise(checkData.skillName) + " skill Check.", "system": { "description": { "value": "" } } };
 
     let tokenList = checkData.tokenList.split(",");
+    let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
     for (var t in tokenList) {
         let checkToken = tokenList[t]
         let tokenCheck = skill_check(checkToken, false, checkData, [], true);
-        let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
         let dTwentyColour = themeData.colours.standardText;
         if (tokenCheck.dTwenty == 1) {
             dTwentyColour = "red";
         } else if (tokenCheck.dTwenty == 20) {
             dTwentyColour = "green";
         }
-        displayData.system.description.value += "<br/><i>" + MapTool.tokens.getTokenByID(checkToken).getName() + "</i> <div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(tokenCheck.dTwenty) + "</span>"
+        displayData.system.description.value += "<i>" + MapTool.tokens.getTokenByID(checkToken).getName() + "</i> <div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(tokenCheck.dTwenty) + "</span>"
         if (tokenCheck.stat_bonus != 0 && tokenCheck.stat_bonus != null) {
             displayData.system.description.value += " " + pos_neg_sign(tokenCheck.stat_bonus, true);
         }
