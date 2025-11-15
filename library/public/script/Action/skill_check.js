@@ -352,7 +352,14 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				checkToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
 			}
 
-			return {"checkResult":checkResult,"dTwenty":dTwenty,"stat_bonus":stat_bonus,"prof_bonus":prof_bonus,"overrideBonus": checkData.overrideBonus,"effect_bonus":effect_bonus,"misc_bonus":misc_bonus,"map_malus":map_malus,"armorPenalty":armorPenalty};
+			if (checkData.overrideBonus==null){
+				checkData.overrideBonus = 0;
+			}
+			
+			let returnData = {"checkResult":checkResult,"dTwenty":dTwenty,"stat_bonus":stat_bonus,"prof_bonus":prof_bonus,"overrideBonus": checkData.overrideBonus,"effect_bonus":effect_bonus,"misc_bonus":misc_bonus,"map_malus":map_malus,"armorPenalty":armorPenalty};
+
+			return returnData;
+
 		} catch (e) {
 			MapTool.chat.broadcast("Error in checkData-else during skill_check");
 			MapTool.chat.broadcast("checkToken: " + String(checkToken));

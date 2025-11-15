@@ -29,7 +29,7 @@
 
 [h: checkData = json.set("{}","skillName",skillName,"tokenType",tokenType,"flavourText",(getName(token) + " rolls Initiative!"),"altStat",0,"miscBonus",0,"overrideBonus",overrideBonus,"useMAP",0)]
 [h: bonusScopes = json.append("[]","initiative",skillName)]
-[h: initResult = js.ca.pf2e.skill_check(token,false,checkData,bonusScopes)]
+[h: initResult = json.get(js.ca.pf2e.skill_check(token,false,checkData,bonusScopes),"checkResult")]
 [h, if(tokenType=="NPC"), code:{
 	[h: initResult = initResult+0.1]
 };{}]
