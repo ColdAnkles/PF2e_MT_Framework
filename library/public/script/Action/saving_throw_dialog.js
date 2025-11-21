@@ -36,7 +36,7 @@ function saving_throw_dialog(tokenID, tokenName, bonuses, specialEffects, saveSt
 			<td>Status:</b></td><td>+<input type='text' name='sBonus' value='"+ String(bonuses.sBonus) + "' size='2'></input></td>\
 			<td>-<input type='text' name='sMalus' value='"+ String(bonuses.sMalus) + "' size='2'></input></td></tr>";
 
-        queryHTML = queryHTML + "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >" + tokenName + " attempts to save.</textarea></td>\
+        queryHTML = queryHTML + "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >" + tokenName.replace("Lib:","") + " attempts to save.</textarea></td>\
 			<td>Item:</b></td><td>+<input type='text' name='iBonus' value='"+ String(bonuses.iBonus) + "' size='2'></input></td>\
 			<td>-<input type='text' name='iMalus' value='"+ String(bonuses.iMalus) + "' size='2'></input></td></tr>";
 

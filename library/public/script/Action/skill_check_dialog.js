@@ -39,7 +39,7 @@ function skill_check_dialog(tokenID, tokenName, tokenType, altStat, extraScopes,
 			<td>Status:</b></td><td>+<input type='text' name='sBonus' value='0' size='2'></input></td>\
 			<td>-<input type='text' name='sMalus' value='0' size='2'></input></td></tr>";
 
-        queryHTML += "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >" + tokenName + " tries to be skillful.</textarea></td>\
+        queryHTML += "<tr><td>Flavour Text:</td><td><textarea name='flavourText' cols='20' rows='3' >" + tokenName.replace("Lib:","") + " tries to be skillful.</textarea></td>\
 			<td>Item:</b></td><td>+<input type='text' name='iBonus' value='0' size='2'></input></td>\
 			<td>-<input type='text' name='iMalus' value='0' size='2'></input></td></tr>";
 
