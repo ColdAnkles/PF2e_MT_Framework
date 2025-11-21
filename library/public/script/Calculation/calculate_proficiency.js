@@ -3,7 +3,6 @@
 // Returns level of proficiency: U,T,E,M,L -> 0,1,2,3,4
 function calculate_proficiency(proficiencyName, actor, item) {
     //MapTool.chat.broadcast(proficiencyName);
-    let findProf = proficiencyName;
     let foundProf = null;
     let tokenProfs = JSON.parse(actor.getProperty("proficiencies"));
     let profData = null;
@@ -15,7 +14,7 @@ function calculate_proficiency(proficiencyName, actor, item) {
                     continue;
                 }
             }
-            if ("name" in profData && profData.name != null && findProf.toUpperCase() == profData.name.toUpperCase()) {
+            if ("name" in profData && profData.name != null && proficiencyName.toUpperCase() == profData.name.toUpperCase()) {
                 foundProf = (profData.bonus - actor.getProperty("level")) / 2;
             }
         }
@@ -25,7 +24,6 @@ function calculate_proficiency(proficiencyName, actor, item) {
     } catch (e) {
         MapTool.chat.broadcast("Error in calculate_proficiency");
         MapTool.chat.broadcast("proficiencyName: " + JSON.stringify(proficiencyName));
-        MapTool.chat.broadcast("findProf: " + String(findProf));
         MapTool.chat.broadcast("actor: " + String(actor));
         MapTool.chat.broadcast("item: " + JSON.stringify(item));
         MapTool.chat.broadcast("profData: " + JSON.stringify(profData));

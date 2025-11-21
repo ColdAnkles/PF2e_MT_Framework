@@ -128,7 +128,11 @@ function attack_action(actionData, actingToken) {
 				}
 			}
 		} else if (typeof (thisEffect) == "boolean" && thisEffect) {
-			effect_bonus_raw.appliedEffects.push(oE);
+			if (typeof (oE) == "string") {
+				effect_bonus_raw.appliedEffects.push({ "name": oE });
+			} else {
+				effect_bonus_raw.appliedEffects.push(oE);
+			}
 		}
 	}
 

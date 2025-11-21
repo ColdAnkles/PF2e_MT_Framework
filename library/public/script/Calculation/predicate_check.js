@@ -133,6 +133,12 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                     predicate_resolution = predicate_resolution && (typeSlug == item.baseName);
                 } else if (slug == "group") {
                     let groupSlug = pText.split(":")[2];
+                    if (groupSlug[0]=='{'){
+                        groupSlug = foundry_calc_value(groupSlug.substring(1, groupSlug.length -1), actor, item);
+                    }
+                    if (Array.isArray(groupSlug)){
+                        groupSlug = groupSlug[0];
+                    }
                     predicate_resolution = predicate_resolution && (foundry_calc_value(groupSlug, actor, item).toUpperCase() == item.system.group.toUpperCase());
                 } else if (slug == "category") {
                     let categorySlug = pText.split(":")[2];
