@@ -18,6 +18,7 @@ function add_pc_macros(tokenID, pcLibID) {
         for (var a in pcData.basicAttacks) {
             let actionData = pcData.basicAttacks[a];
             actionData.group = "";
+            actionData.system.group = "";
             add_action_to_token(actionData, tokenID);
         }
     } catch (e) {

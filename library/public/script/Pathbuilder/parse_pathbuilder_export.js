@@ -505,6 +505,7 @@ function parse_pathbuilder_export(data) {
 	}
 
 	let foundSpecials = [];
+	let unfoundSpecials = [];
 	for (var s in data.specials) {
 		let tempName = data.specials[s];
 		if (tempName == "") {
@@ -531,7 +532,7 @@ function parse_pathbuilder_export(data) {
 			featSubChoices.push({ "name": tempName, "value": null });
 			foundSpecials.push(tempName);
 		} else if (tempData == null && tempName != null) {
-			unfoundData.push(tempName);
+			unfoundSpecials.push(tempName);
 		}
 		data.specials[s] = tempName;
 	}
@@ -552,6 +553,7 @@ function parse_pathbuilder_export(data) {
 			let choice = feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
 			if (choice != null) {
 				data.specials = data.specials.filter(item => !choice.includes(item));
+				unfoundSpecials = unfoundSpecials.filter(item => !choice.includes(item));
 			}
 			feature_cause_definition(featureData, characterData);
 			let newAttacks = rules_grant_attack(featureData.system.rules);
@@ -574,6 +576,8 @@ function parse_pathbuilder_export(data) {
 	if (characterData.senses.length == 0) {
 		characterData.senses.push("normal");
 	}
+
+	unfoundData.concat(unfoundSpecials);
 
 	//Armor
 	message_window("Importing " + data.name, "Importing Armor");
@@ -621,12 +625,17 @@ function parse_pathbuilder_export(data) {
 
 	//Weapons
 	message_window("Importing " + data.name, "Importing Weapons");
-	for (var w in data.weapons) {
-		let thisWeapon = data.weapons[w];
-		let tempData = find_object_data(thisWeapon.name, "item");
-		if (tempData != null) {
-			if ("fileURL" in tempData) {
-				let itemData = rest_call(tempData.fileURL);
+	try {
+		for (var w in data.weapons) {
+			let thisWeapon = data.weapons[w];
+			let tempData = find_object_data(thisWeapon.name, "item");
+			//MapTool.chat.broadcast(JSON.stringify(tempData))
+			if (tempData != null) {
+				let itemData = tempData;
+				if ("fileURL" in tempData) {
+					itemData = rest_call(tempData.fileURL);
+				}
+				//MapTool.chat.broadcast(JSON.stringify(itemData))
 				let trueID = tempData.id + String(Object.keys(characterData.inventory).length);
 				characterData.inventory[trueID] = itemData;
 				itemData.system.quantity = thisWeapon.qty;
@@ -642,13 +651,13 @@ function parse_pathbuilder_export(data) {
 				}
 				if (thisWeapon.str == "striking") {
 					itemData.system.runes.striking = 1;
-					newAttackData.damage[0].dice += 1;
+					newAttackData.system.damageRolls["0"].dice += 1;
 				} else if (thisWeapon.str == "greaterStriking") {
 					itemData.system.runes.striking = 2;
-					newAttackData.damage[0].dice += 2;
+					newAttackData.system.damageRolls["0"].dice += 2;
 				} else if (thisWeapon.str == "majorStriking") {
 					itemData.system.runes.striking = 3;
-					newAttackData.damage[0].dice += 3;
+					newAttackData.system.damageRolls["0"].dice += 3;
 				}
 				newAttackData.flags.pf2e.linkedWeapon = trueID;
 				newAttackData.system.damageRolls["0"].damage = String(newAttackData.system.damageRolls["0"].dice) + newAttackData.system.damageRolls["0"].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
@@ -672,12 +681,19 @@ function parse_pathbuilder_export(data) {
 				itemData.id = trueID;
 				itemData._id = trueID;
 				characterData.basicAttacks.push(newAttackData);
-			}
-		} else {
-			if (thisWeapon.name != "Fist" && thisWeapon.name != null) {
-				unfoundData.push(thisWeapon.name);
+			} else {
+				if (thisWeapon.name != "Fist" && thisWeapon.name != null) {
+					unfoundData.push(thisWeapon.name);
+				}
 			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - weapons");
+		MapTool.chat.broadcast("weapons: " + JSON.stringify(data.weapons));
+		MapTool.chat.broadcast("inventory: " + JSON.stringify(characterData.inventory));
+		MapTool.chat.broadcast("attacks: " + JSON.stringify(characterData.basicAttacks));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	let unarmedAttack = {
