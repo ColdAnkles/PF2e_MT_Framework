@@ -1,6 +1,11 @@
 "use strict";
 
 function end_encounter() {
+    MTScript.evalMacro("[h: input(\"sureEnd|1|Are you Sure?|CHECK\")]");
+    let sureEnd = (Number(MTScript.getVariable("sureEnd")) == 1);
+    if (!sureEnd){
+        return;
+    }
     MTScript.evalMacro("[h: initiativeData = getInitiativeList() ]");
     let initiativeData = JSON.parse(MTScript.getVariable("initiativeData"));
     for (var t in initiativeData.tokens) {

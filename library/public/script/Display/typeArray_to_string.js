@@ -5,7 +5,7 @@ function typeArray_to_string(arrayList) {
 	let arrayString = "";
 	for (var t in arrayList) {
 		let separator = ", ";
-		if ((t + 1) % 5 == 0) {
+		if ((t + 1) % 4 == 0) {
 			separator = " \n";
 		}
 		arrayString = arrayString + capitalise(arrayList[t].type) + separator;

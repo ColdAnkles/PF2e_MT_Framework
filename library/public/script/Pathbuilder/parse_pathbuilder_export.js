@@ -294,7 +294,7 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 	for (var l in data.lores) {
-		let newProf = { "bonus": data.lores[l][1] + data.level + characterData.abilities.int, "name": "Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
+		let newProf = { "bonus": data.lores[l][1] + data.level, "name": "Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
 		if (data.lores[l][1] == 2) {
 			newProf.pName = "T";
 		} else if (data.lores[l][1] == 4) {
