@@ -35,9 +35,13 @@ function change_hp(tokenID, changeHPData = null) {
 
 		queryHTML += "<tr><th colspan=2><b>Damage, Healing, and Temporary HP</b></th></tr>";
 		queryHTML += "<tr><td>Number of Hit Points to heal, hurt, or add as temporary HP:</td><td><input type='text' style='font-family: Arial;' name='hpChangeVal' value='0'>";
-		queryHTML += "<select name='damageType' id='damageType'><option value='bludgeoning'>Bludgeoning</option><option value='piercing'>Piercing</option><option value='slashing'>Slashing</option><option value='acid'>Acid</option><option value='cold'>Cold</option><option value='electricity'>Electricity</option><option value='fire'>Fire</option><option value='sonic'>Sonic</option><option value='vitality'>Vitality</option><option value='void'>Void</option><option value='force'>Force</option><option value='spirit'>Spirit</option><option value='mental'>Mental</option><option value='poison'>Poison</option><option value='bleed'>Bleed</option><option value='holy'>Holy</option><option value='unholy'>Unholy</option></select>";
+		queryHTML += "<select name='damageType' id='damageType' style='width: 170px; height: 25px;'><option value='bludgeoning'>Bludgeoning</option><option value='piercing'>Piercing</option><option value='slashing'>Slashing</option><option value='acid'>Acid</option><option value='cold'>Cold</option><option value='electricity'>Electricity</option><option value='fire'>Fire</option><option value='sonic'>Sonic</option><option value='vitality'>Vitality</option><option value='void'>Void</option><option value='force'>Force</option><option value='spirit'>Spirit</option><option value='mental'>Mental</option><option value='poison'>Poison</option><option value='bleed'>Bleed</option><option value='holy'>Holy</option><option value='unholy'>Unholy</option></select>";
 		queryHTML += "</td></tr>";
-		queryHTML += "<tr><td>Is the character taking lethal or nonlethal damage, being healed or gaining temporary HP?</td><td><input type='radio' name='hpChangeType' value='lethal' checked='checked'>Lethal Damage<br /><input type='radio' name='hpChangeType' value='nonlethal' >Nonlethal Damage<br /><input type='radio' name='hpChangeType' value='healing'>Healing<br /><input type='radio' name='hpChangeType' value='tempHP'>Temp HP</td></tr>";
+		queryHTML += "<tr><td>Is the character taking lethal or nonlethal damage, being healed or gaining temporary HP?<br/>";
+		
+		queryHTML += "Ignore Resist., Weak., Immunities?: <input type='checkbox' id='ignoreResImm' name='ignoreResImm'></td>";
+		
+		queryHTML += "<td><input type='radio' name='hpChangeType' value='lethal' checked='checked'>Lethal Damage<br /><input type='radio' name='hpChangeType' value='nonlethal' >Nonlethal Damage<br /><input type='radio' name='hpChangeType' value='healing'>Healing<br /><input type='radio' name='hpChangeType' value='tempHP'>Temp HP</td></tr>";
 
 		queryHTML += "<tr><th colspan=2><b>Current HP is " + String(tokenCurrentHP) + "/" + String(tokenCurrentMaxHP) + "</th></tr>";
 		queryHTML += "<tr><td>Enter new current HP value (if desired)</td><td><input type='text' name='currentHPChange' style='font-family: Arial;' value='" + tokenCurrentHP + "'></td></tr>";
@@ -52,7 +56,7 @@ function change_hp(tokenID, changeHPData = null) {
 		queryHTML += "</table></form></html>";
 
 		MTScript.setVariable("queryHTML", queryHTML);
-		MTScript.evalMacro("[dialog5('Change HP','width=600;height=500;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
+		MTScript.evalMacro("[dialog5('Change HP','width=600;height=525;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
 
 
 	} else {
@@ -69,7 +73,11 @@ function change_hp(tokenID, changeHPData = null) {
 
 		if (!("ignoreResImm" in changeHPData)){
 			changeHPData.ignoreResImm = false;
-		} 
+		}else if(changeHPData.ignoreResImm == "on"){
+			changeHPData.ignoreResImm = true;
+		}else{
+			changeHPData.ignoreResImm = false;
+		}
 
 		let tokenOldHP = tokenCurrentHP;
 
