@@ -17,6 +17,7 @@ function create_pc_lib(pathbuilderID, tokenID) {
 	}
 
 	let pcToken = MapTool.tokens.getTokenByID(tokenID);
+	pcToken.setProperty("pcTokens","[]");
 	let existingPets = pcToken.getProperty("pets");
 	if (existingPets == "" || existingPets == null || existingPets == []) {
 		existingPets = {};
