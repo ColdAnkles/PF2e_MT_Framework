@@ -16,6 +16,22 @@ function generic_use_action(token) {
 
 MTScript.registerMacro("ca.pf2e.generic_use_action", generic_use_action);
 
+function generic_use_reaction(token) {
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+	}
+
+	let initiative = get_initiative(token.getId());
+	let reactionsLeft = Number(token.getProperty("reactionsLeft"));
+	if (!(isNaN(initiative))) {
+		token.setProperty("reactionsLeft", String(reactionsLeft - 1));
+		update_action_bank(token);
+	}
+
+}
+
+MTScript.registerMacro("ca.pf2e.generic_use_reaction", generic_use_reaction);
+
 function generic_refund_action(token) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
@@ -31,6 +47,22 @@ function generic_refund_action(token) {
 }
 
 MTScript.registerMacro("ca.pf2e.generic_refund_action", generic_refund_action);
+
+function generic_refund_reaction(token) {
+	if (typeof (token) == "string") {
+		token = MapTool.tokens.getTokenByID(token);
+	}
+
+	let initiative = get_initiative(token.getId());
+	let reactionsLeft = Number(token.getProperty("reactionsLeft"));
+	if (!(isNaN(initiative))) {
+		token.setProperty("reactionsLeft", String(reactionsLeft + 1));
+		update_action_bank(token);
+	}
+
+}
+
+MTScript.registerMacro("ca.pf2e.generic_refund_reaction", generic_refund_reaction);
 
 function add_hero_point(token) {
 
