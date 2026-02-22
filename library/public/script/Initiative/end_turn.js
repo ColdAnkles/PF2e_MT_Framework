@@ -97,7 +97,8 @@ function end_turn(turnToken, forwards = true) {
 						"hpChangeType": "lethal",
 						"currentHPChange": Number(turnToken.getProperty("HP")),
 						"currentMaxHPChange": Number(turnToken.getProperty("MaxHP")),
-						"silent": true
+						"silent": true,
+						"ignoreResImm": effectData.ignoreResImm
 					};
 					change_hp(turnToken.getId(), hpData);
 				}

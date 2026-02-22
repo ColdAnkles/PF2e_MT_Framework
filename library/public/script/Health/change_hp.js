@@ -19,6 +19,10 @@ function change_hp(tokenID, changeHPData = null) {
 	let currentConditions = JSON.parse(token.getProperty("conditionDetails"));
 	let tokenTraits = JSON.parse(token.getProperty("traits"));
 
+	let tokenResistances = getTokenResistances(token);
+	let tokenWeaknesses = getTokenWeaknesses(token);
+	let tokenImmunities = getTokenImmunities(token);
+
 	if (isNaN(tokenCurrentTempHP)) {
 		tokenCurrentTempHP = 0;
 	}
@@ -27,23 +31,25 @@ function change_hp(tokenID, changeHPData = null) {
 		let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
 		let queryHTML = "<html><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Change_HP_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
-		queryHTML = queryHTML + "<input type='hidden' name='tokenID' value='" + tokenID + "'><table class='staticTable'>";
+		queryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'><table class='staticTable'>";
 
-		queryHTML = queryHTML + "<tr><th colspan=2><b>Damage, Healing, and Temporary HP</b></th></tr>";
-		queryHTML = queryHTML + "<tr><td>Number of Hit Points to heal, hurt, or add as temporary HP:</td><td><input type='text' style='font-family: Arial;' name='hpChangeVal' value='0'></td></tr>";
-		queryHTML = queryHTML + "<tr><td>Is the character taking lethal or nonlethal damage, being healed or gaining temporary HP?</td><td><input type='radio' name='hpChangeType' value='lethal' checked='checked'>Lethal Damage<br /><input type='radio' name='hpChangeType' value='nonlethal' >Nonlethal Damage<br /><input type='radio' name='hpChangeType' value='healing'>Healing<br /><input type='radio' name='hpChangeType' value='tempHP'>Temp HP</td></tr>";
+		queryHTML += "<tr><th colspan=2><b>Damage, Healing, and Temporary HP</b></th></tr>";
+		queryHTML += "<tr><td>Number of Hit Points to heal, hurt, or add as temporary HP:</td><td><input type='text' style='font-family: Arial;' name='hpChangeVal' value='0'>";
+		queryHTML += "<select name='damageType' id='damageType'><option value='bludgeoning'>Bludgeoning</option><option value='piercing'>Piercing</option><option value='slashing'>Slashing</option><option value='acid'>Acid</option><option value='cold'>Cold</option><option value='electricity'>Electricity</option><option value='fire'>Fire</option><option value='sonic'>Sonic</option><option value='vitality'>Vitality</option><option value='void'>Void</option><option value='force'>Force</option><option value='spirit'>Spirit</option><option value='mental'>Mental</option><option value='poison'>Poison</option><option value='bleed'>Bleed</option><option value='holy'>Holy</option><option value='unholy'>Unholy</option></select>";
+		queryHTML += "</td></tr>";
+		queryHTML += "<tr><td>Is the character taking lethal or nonlethal damage, being healed or gaining temporary HP?</td><td><input type='radio' name='hpChangeType' value='lethal' checked='checked'>Lethal Damage<br /><input type='radio' name='hpChangeType' value='nonlethal' >Nonlethal Damage<br /><input type='radio' name='hpChangeType' value='healing'>Healing<br /><input type='radio' name='hpChangeType' value='tempHP'>Temp HP</td></tr>";
 
-		queryHTML = queryHTML + "<tr><th colspan=2><b>Current HP is " + String(tokenCurrentHP) + "/" + String(tokenCurrentMaxHP) + "</th></tr>";
-		queryHTML = queryHTML + "<tr><td>Enter new current HP value (if desired)</td><td><input type='text' name='currentHPChange' style='font-family: Arial;' value='" + tokenCurrentHP + "'></td></tr>";
+		queryHTML += "<tr><th colspan=2><b>Current HP is " + String(tokenCurrentHP) + "/" + String(tokenCurrentMaxHP) + "</th></tr>";
+		queryHTML += "<tr><td>Enter new current HP value (if desired)</td><td><input type='text' name='currentHPChange' style='font-family: Arial;' value='" + tokenCurrentHP + "'></td></tr>";
 
-		queryHTML = queryHTML + "<tr><th colspan=2><b>Current Temporary HP is " + String(tokenCurrentTempHP) + "</th></tr>";
-		queryHTML = queryHTML + "<tr><td>Enter new current Temporary HP value (if desired)</td><td><input type='text' name='currentTempHPChange' style='font-family: Arial;' value='" + tokenCurrentTempHP + "'></td></tr>";
+		queryHTML += "<tr><th colspan=2><b>Current Temporary HP is " + String(tokenCurrentTempHP) + "</th></tr>";
+		queryHTML += "<tr><td>Enter new current Temporary HP value (if desired)</td><td><input type='text' name='currentTempHPChange' style='font-family: Arial;' value='" + tokenCurrentTempHP + "'></td></tr>";
 
-		queryHTML = queryHTML + "<tr><th colspan=2><b>Current Maximum HP is " + String(tokenCurrentMaxHP) + "</th></tr>";
-		queryHTML = queryHTML + "<tr><td>Enter new current Maximum HP value (if desired)</td><td><input type='text' name='currentMaxHPChange' style='font-family: Arial;' value='" + tokenCurrentMaxHP + "'></td></tr>";
+		queryHTML += "<tr><th colspan=2><b>Current Maximum HP is " + String(tokenCurrentMaxHP) + "</th></tr>";
+		queryHTML += "<tr><td>Enter new current Maximum HP value (if desired)</td><td><input type='text' name='currentMaxHPChange' style='font-family: Arial;' value='" + tokenCurrentMaxHP + "'></td></tr>";
 
-		queryHTML = queryHTML + "<tr><td colspan='2' style='text-align:center;'><input type='submit' name='changeHPSubmit' value='Submit'><input type='submit' name='changeHPSubmit' value='Cancel'></td></tr>";
-		queryHTML = queryHTML + "</table></form></html>";
+		queryHTML += "<tr><td colspan='2' style='text-align:center;'><input type='submit' name='changeHPSubmit' value='Submit'><input type='submit' name='changeHPSubmit' value='Cancel'></td></tr>";
+		queryHTML += "</table></form></html>";
 
 		MTScript.setVariable("queryHTML", queryHTML);
 		MTScript.evalMacro("[dialog5('Change HP','width=600;height=500;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
@@ -60,6 +66,10 @@ function change_hp(tokenID, changeHPData = null) {
 		if ("silent" in changeHPData && changeHPData.silent) {
 			silent = true;
 		}
+
+		if (!("ignoreResImm" in changeHPData)){
+			changeHPData.ignoreResImm = false;
+		} 
 
 		let tokenOldHP = tokenCurrentHP;
 
@@ -91,7 +101,20 @@ function change_hp(tokenID, changeHPData = null) {
 		} else {
 			if (changeHPData.hpChangeType == "lethal") {
 
-				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
+				let actualChangeVal = changeHPData.hpChangeVal;
+
+				// No Handling of Resistance/Weakness Exceptions (like resistant to physical except silver)
+				if (changeHPData.damageType in tokenWeaknesses && !changeHPData.ignoreResImm) {
+					actualChangeVal += Number(tokenWeaknesses[changeHPData.damageType]);
+				}
+				if (changeHPData.damageType in tokenResistances && !changeHPData.ignoreResImm) {
+					actualChangeVal = Math.max(0, actualChangeVal - Number(tokenResistances[changeHPData.damageType]));
+				}
+				if (tokenImmunities.includes(changeHPData.damageType) && !changeHPData.ignoreResImm) {
+					actualChangeVal = 0;
+				}
+
+				tokenCurrentTempHP = tokenCurrentTempHP - actualChangeVal;
 				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
 
 				if (tokenCurrentHP <= 0) {
@@ -99,10 +122,10 @@ function change_hp(tokenID, changeHPData = null) {
 				}
 
 				if (!silent) {
-					let description = tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " lethal damage!";
-					if (tokenTraits.includes("troop")){
+					let description = tokenDisplayName + " takes " + String(actualChangeVal) + " lethal " + changeHPData.damageType + " damage!";
+					if (tokenTraits.includes("troop")) {
 						let troopChange = troop_segment_change(tokenCurrentMaxHP, tokenOldHP, tokenCurrentHP)
-						if (troopChange.old > troopChange.new){
+						if (troopChange.old > troopChange.new) {
 							description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
 						}
 					}
@@ -118,17 +141,30 @@ function change_hp(tokenID, changeHPData = null) {
 					zero_hp(tokenID);
 				}
 			} else if (changeHPData.hpChangeType == "nonlethal") {
-				tokenCurrentTempHP = tokenCurrentTempHP - changeHPData.hpChangeVal;
+
+				let actualChangeVal = changeHPData.hpChangeVal;
+				
+				if (changeHPData.damageType in tokenWeaknesses && !changeHPData.ignoreResImm) {
+					actualChangeVal += Number(tokenWeaknesses[changeHPData.damageType]);
+				}
+				if (changeHPData.damageType in tokenResistances && !changeHPData.ignoreResImm) {
+					actualChangeVal = Math.max(0, actualChangeVal - Number(tokenResistances[changeHPData.damageType]));
+				}
+				if (tokenImmunities.includes(changeHPData.damageType) && !changeHPData.ignoreResImm) {
+					actualChangeVal = 0;
+				}
+
+				tokenCurrentTempHP = tokenCurrentTempHP - actualChangeVal;
 				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
 				if (tokenCurrentHP <= 0) {
 					tokenCurrentHP = 0;
 				}
 
 				if (!silent) {
-					let description = tokenDisplayName + " takes " + String(changeHPData.hpChangeVal) + " nonlethal damage!";
-					if (tokenTraits.includes("troop")){
+					let description = tokenDisplayName + " takes " + String(actualChangeVal) + " nonlethal " + changeHPData.damageType + " damage!";
+					if (tokenTraits.includes("troop")) {
 						let troopChange = troop_segment_change(tokenCurrentMaxHP, tokenOldHP, tokenCurrentHP)
-						if (troopChange.old > troopChange.new){
+						if (troopChange.old > troopChange.new) {
 							description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
 						}
 					}
@@ -182,27 +218,27 @@ function change_hp(tokenID, changeHPData = null) {
 
 MTScript.registerMacro("ca.pf2e.change_hp", change_hp);
 
-function troop_segment_change(maxHP, oldHP, newHP){
+function troop_segment_change(maxHP, oldHP, newHP) {
 	//MapTool.chat.broadcast(String(oldHP)+"/"+String(maxHP)+" -> " +String(newHP)+"/"+String(maxHP));
 
-	let troopHPInterval = maxHP/3;
+	let troopHPInterval = maxHP / 3;
 
 	let oldSegmentCount = 4;
-    if ((oldHP <= troopHPInterval * 2) && (oldHP > troopHPInterval)) {
-        oldSegmentCount = 3;
-    } else if (oldHP <= troopHPInterval) {
-        oldSegmentCount = 2;
-    }
+	if ((oldHP <= troopHPInterval * 2) && (oldHP > troopHPInterval)) {
+		oldSegmentCount = 3;
+	} else if (oldHP <= troopHPInterval) {
+		oldSegmentCount = 2;
+	}
 
-    let newSegmentCount = 4;
-    if ((newHP <= troopHPInterval * 2) && (newHP > troopHPInterval)) {
-        newSegmentCount = 3;
-    } else if (newHP <= troopHPInterval) {
-        newSegmentCount = 2;
-    }
+	let newSegmentCount = 4;
+	if ((newHP <= troopHPInterval * 2) && (newHP > troopHPInterval)) {
+		newSegmentCount = 3;
+	} else if (newHP <= troopHPInterval) {
+		newSegmentCount = 2;
+	}
 	//MapTool.chat.broadcast("oldSegmentCount: " + String(oldSegmentCount));
 	//MapTool.chat.broadcast("newSegmentCount: " + String(newSegmentCount));
 
-	return {"old":oldSegmentCount, "new":newSegmentCount}
+	return { "old": oldSegmentCount, "new": newSegmentCount }
 
 }
