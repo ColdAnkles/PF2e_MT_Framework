@@ -5,45 +5,52 @@ function view_inventory(tokenID, inventoryAction = null) {
     let token = MapTool.tokens.getTokenByID(tokenID);
     let inventory = JSON.parse(token.getProperty("inventory"));
 
-    if (inventoryAction != null) {
-        let actionItem = "";
-        let action = null;
-        for (var key in inventoryAction) {
-            if (key.includes("share_")) {
-                actionItem = inventory[key.replace("share_", "")];
-                action = "share";
-            } else if (key.includes("equip_")) {
-                actionItem = inventory[key.replace("equip_", "")];
-                action = "equip";
-            } else if (key.includes("drop_")) {
-                actionItem = inventory[key.replace("drop_", "")];
-                action = "drop";
-            } else if (key.includes("pickup_")) {
-                actionItem = key.replace("pickup_", "");
-                action = "pickup";
-            } else if (key.includes("view_")) {
-                actionItem = inventory[key.replace("view_", "")];
-                action = "view";
+    let actionItem = "";
+    let action = null;
+    try{
+        if (inventoryAction != null) {
+            for (var key in inventoryAction) {
+                if (key.includes("share_")) {
+                    actionItem = inventory[key.replace("share_", "")];
+                    action = "share";
+                } else if (key.includes("equip_")) {
+                    actionItem = inventory[key.replace("equip_", "")];
+                    action = "equip";
+                } else if (key.includes("drop_")) {
+                    actionItem = inventory[key.replace("drop_", "")];
+                    action = "drop";
+                } else if (key.includes("pickup_")) {
+                    actionItem = key.replace("pickup_", "");
+                    action = "pickup";
+                } else if (key.includes("view_")) {
+                    actionItem = inventory[key.replace("view_", "")];
+                    action = "view";
+                }
+            }
+            if (actionItem != "") {
+                if (action == "share") {
+                    chat_display(actionItem);
+                } else if (action == "equip") {
+                    actionItem.system.equipped = !actionItem.system.equipped;
+                    token.setProperty("inventory", JSON.stringify(inventory));
+                } else if (action == "drop") {
+                    drop_item(token, actionItem._id);
+                    inventory = JSON.parse(token.getProperty("inventory"));
+                } else if (action == "pickup") {
+                    pickup_item(token, actionItem);
+                    inventory = JSON.parse(token.getProperty("inventory"));
+                } else if (action == "view") {
+                    MTScript.setVariable("itemData", actionItem);
+                    MTScript.evalMacro("[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\""+actionItem.name+"\",\"itemType\",\""+actionItem.type+"\",\"itemData\",itemData))]")
+                }
             }
         }
-        if (actionItem != "") {
-            if (action == "share") {
-                chat_display(actionItem);
-            } else if (action == "equip") {
-                actionItem.system.equipped = !actionItem.system.equipped;
-                token.setProperty("inventory", JSON.stringify(inventory));
-            } else if (action == "drop") {
-                drop_item(token, actionItem._id);
-                inventory = JSON.parse(token.getProperty("inventory"));
-            } else if (action == "pickup") {
-                pickup_item(token, actionItem);
-                inventory = JSON.parse(token.getProperty("inventory"));
-            } else if (action == "view") {
-                MapTool.chat.broadcast(JSON.stringify(actionItem));
-                MTScript.setVariable("itemData", actionItem);
-                MTScript.evalMacro("[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\""+actionItem.name+"\",\"itemType\",\""+actionItem.type+"\",\"itemData\",itemData))]")
-            }
-        }
+    } catch (e) {
+        MapTool.chat.broadcast("Error in inventoryAction Step");
+        MapTool.chat.broadcast("action: " + action);
+        MapTool.chat.broadcast("actionItem: " + JSON.stringify(actionItem));
+        MapTool.chat.broadcast("" + e + "\n" + e.stack);
+        return;
     }
 
     let tokenName = token.getName().replaceAll("Lib:", "");
