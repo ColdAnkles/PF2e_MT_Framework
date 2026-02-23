@@ -22,8 +22,8 @@ function get_actor_data(actor, varName) {
     }
 
     for (var e in activeEffects) {
-        for (var r in activeEffects[e].rules) {
-            let ruleData = activeEffects[e].rules[r]
+        for (var r in activeEffects[e].system.rules) {
+            let ruleData = activeEffects[e].system.rules[r]
             //MapTool.chat.broadcast(JSON.stringify(ruleData))
             if ("path" in ruleData && ruleData.path == varName) {
                 if (("predicate" in ruleData && predicate_check(ruleData.predicate, [], actor, null))) {

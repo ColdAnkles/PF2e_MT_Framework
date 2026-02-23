@@ -30,8 +30,12 @@
 [h: checkData = json.set("{}","skillName",skillName,"tokenType",tokenType,"flavourText",(getName(token) + " rolls Initiative!"),"altStat",0,"miscBonus",0,"overrideBonus",overrideBonus,"useMAP",0)]
 [h: bonusScopes = json.append("[]","initiative",skillName)]
 [h: initResult = json.get(js.ca.pf2e.skill_check(token,false,checkData,bonusScopes),"checkResult")]
+[h: tieBreak = js.ca.pf2e.get_actor_data_mtscript(token, "system.initiative.tiebreakPriority")]
+[h, if(tieBreak != json.null && tieBreak == 0), code:{
+	[h: initResult = initResult + 0.2]
+};{}]
 [h, if(tokenType=="NPC"), code:{
-	[h: initResult = initResult+0.1]
+	[h: initResult = initResult + 0.1]
 };{}]
 [h: addToInitiative(false, initResult, token)]
 [h: sortInitiative()]
