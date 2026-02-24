@@ -42,10 +42,16 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 
 			let tokenType = ((checkToken.isPC()) ? "PC" : "NPC");
+			let featList = JSON.parse(checkToken.getProperty("features"));
+			let isUntrainedImproviser = ("Untrained Improvisation" in featList);
+			let tokenLevel = Number(checkToken.getProperty("level"));
 
 			for (var p in skills) {
 				let skillData = skills[p];
-				let abilityMod = checkToken.getProperty(skillData.stat);
+				let abilityMod = Number(checkToken.getProperty(skillData.stat));
+				if (isUntrainedImproviser){
+					abilityMod += tokenLevel + clamp(-2,floor((tokenLevel - 7) / 2),0);
+				}
 				skillStrings[skillData.name] = skillData.name + " " + pos_neg_sign(abilityMod) + ((checkToken.isPC()) ? " (U)" : "");
 			}
 
@@ -291,6 +297,20 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 					} else if (checkData.skillName == "Perception" && checkData.tokenType == "NPC") {
 						prof_bonus = Number(Number(checkToken.getProperty("Perception")) - stat_bonus);
 					}
+				}
+			}
+
+			if (prof_bonus != 0){
+				var removeEntry = -1;
+				for (var e in effect_bonus_raw.appliedEffects){
+					let effectData = effect_bonus_raw.appliedEffects[e];
+					if (effectData.name == "Untrained Improvisation"){
+						removeEntry = e;
+						break;
+					}
+				}
+				if (removeEntry!= -1){
+					effect_bonus_raw.appliedEffects.splice(removeEntry,1);
 				}
 			}
 
