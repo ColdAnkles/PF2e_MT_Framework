@@ -49,8 +49,10 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			for (var p in skills) {
 				let skillData = skills[p];
 				let abilityMod = Number(checkToken.getProperty(skillData.stat));
-				if (isUntrainedImproviser){
-					abilityMod += tokenLevel + clamp(-2,floor((tokenLevel - 7) / 2),0);
+				if (isUntrainedImproviser && !altStat) {
+					abilityMod += tokenLevel + clamp(-2, floor((tokenLevel - 7) / 2), 0);
+				} else if (isUntrainedImproviser && altStat) {
+					abilityMod = tokenLevel + clamp(-2, floor((tokenLevel - 7) / 2), 0);
 				}
 				skillStrings[skillData.name] = skillData.name + " " + pos_neg_sign(abilityMod) + ((checkToken.isPC()) ? " (U)" : "");
 			}
@@ -164,7 +166,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
 			return;
 		}
-		
+
 		let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
 
 		let dTwenty = 0;
@@ -300,17 +302,17 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				}
 			}
 
-			if (prof_bonus != 0){
+			if (prof_bonus != 0) {
 				var removeEntry = -1;
-				for (var e in effect_bonus_raw.appliedEffects){
+				for (var e in effect_bonus_raw.appliedEffects) {
 					let effectData = effect_bonus_raw.appliedEffects[e];
-					if (effectData.name == "Untrained Improvisation"){
+					if (effectData.name == "Untrained Improvisation") {
 						removeEntry = e;
 						break;
 					}
 				}
-				if (removeEntry!= -1){
-					effect_bonus_raw.appliedEffects.splice(removeEntry,1);
+				if (removeEntry != -1) {
+					effect_bonus_raw.appliedEffects.splice(removeEntry, 1);
 				}
 			}
 
@@ -372,11 +374,11 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				checkToken.setProperty("attacksThisRound", String(currentAttackCount + 1));
 			}
 
-			if (checkData.overrideBonus==null){
+			if (checkData.overrideBonus == null) {
 				checkData.overrideBonus = 0;
 			}
-			
-			let returnData = {"checkResult":checkResult,"dTwenty":dTwenty,"stat_bonus":stat_bonus,"prof_bonus":prof_bonus,"overrideBonus": checkData.overrideBonus,"effect_bonus":effect_bonus,"misc_bonus":misc_bonus,"map_malus":map_malus,"armorPenalty":armorPenalty};
+
+			let returnData = { "checkResult": checkResult, "dTwenty": dTwenty, "stat_bonus": stat_bonus, "prof_bonus": prof_bonus, "overrideBonus": checkData.overrideBonus, "effect_bonus": effect_bonus, "misc_bonus": misc_bonus, "map_malus": map_malus, "armorPenalty": armorPenalty };
 
 			return returnData;
 
