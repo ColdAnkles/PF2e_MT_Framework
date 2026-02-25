@@ -8,7 +8,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
 
 	try {
-		if (itemData == null) {
+		if (itemData == null || itemData == "") {
 			if (!(itemName in itemList)) {
 				return "<b>Could not find " + itemType + " " + itemName + ".</b>";
 			}
@@ -19,7 +19,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_item_view during basic-step");
-		MapTool.chat.broadcast("itemName: " + creatureName);
+		MapTool.chat.broadcast("itemName: " + itemName);
 		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
