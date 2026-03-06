@@ -342,31 +342,35 @@ function attack_action(actionData, actingToken) {
 		}
 		displayData.system.description.value += " = " + String(attackResult) + " " + additionalAttackBonuses.join(", ");
 
-		displayData.system.description.value = displayData.system.description.value + "</div></b><i>Damage</i><br />";
-		for (var s in damageDetails) {
-			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + damageDetails[s] + "</div>";
-		}
+		if (damageDetails.length > 0) {
+			displayData.system.description.value += "</div></b><i>Damage</i><br />";
+			for (var s in damageDetails) {
+				displayData.system.description.value += "<div style='font-size:10px'><b>" + damageDetails[s] + "</div>";
+			}
 
-		displayData.system.description.value = displayData.system.description.value + "</b><i>Critical Damage</i><br />"
+			displayData.system.description.value += "</b><i>Critical Damage</i><br />"
 
-		for (var s in critDamageDetails) {
-			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + critDamageDetails[s] + "</div>";
+			for (var s in critDamageDetails) {
+				displayData.system.description.value += "<div style='font-size:10px'><b>" + critDamageDetails[s] + "</div>";
+			}
+		}else{
+			displayData.system.description.value += "<br />";
 		}
 
 		if (additionalDamageList.length > 0) {
-			displayData.system.description.value = displayData.system.description.value + "</b><i>Additional Damage (Crit)</i><br />"
-			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + additionalDamageList.join(", ") + "</div>";
+			displayData.system.description.value += "</b><i>Additional Damage (Crit)</i><br />"
+			displayData.system.description.value += "<div style='font-size:10px'><b>" + additionalDamageList.join(", ") + "</div>";
 		}
 
 		if (actionData.system.attackEffects.value.length > 1 && typeof (actionData.system.attackEffects.value == "object")) {
-			displayData.system.description.value = displayData.system.description.value + "</b><i>Additional Effects</i><br />"
-			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.join(", ").replaceAll("-", " ")) + "</div>";
+			displayData.system.description.value += "</b><i>Additional Effects</i><br />"
+			displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.join(", ").replaceAll("-", " ")) + "</div>";
 		} else if (actionData.system.attackEffects.value.length == 1 && typeof (actionData.system.attackEffects.value) == "object") {
-			displayData.system.description.value = displayData.system.description.value + "</b><i>Additional Effects</i><br />"
-			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value[0].replaceAll("-", " ")) + "</div>";
+			displayData.system.description.value += "</b><i>Additional Effects</i><br />"
+			displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value[0].replaceAll("-", " ")) + "</div>";
 		} else if (actionData.system.attackEffects.value.length > 0 && (typeof (attackData.system.attackEffects.value) == "string")) {
-			displayData.system.description.value = displayData.system.description.value + "</b><i>Additional Effects</i><br />"
-			displayData.system.description.value = displayData.system.description.value + "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.replaceAll("-", " ")) + "</div>";
+			displayData.system.description.value += "</b><i>Additional Effects</i><br />"
+			displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.replaceAll("-", " ")) + "</div>";
 		}
 
 		displayData.system.runes = [];
