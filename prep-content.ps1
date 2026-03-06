@@ -2,12 +2,12 @@
     $runFuncs
 )
 
-function get-master-zip {
+function Get-Master-Zip {
     $zipURL = "https://api.github.com/repos/foundryvtt/pf2e/zipball/master"
     Invoke-RestMethod -Uri $zipURL -OutFile pf2e-master.zip
 }
 
-function expand-master-zip {
+function Expand-Master-Zip {
     #Expand-Archive -LiteralPath pf2e-master.zip -DestinationPath pf2e-master
     if (Test-Path "./pf2e-master/" ){
         Remove-Item -Recurse -Force pf2e-master
@@ -15,7 +15,7 @@ function expand-master-zip {
     7z x pf2e-master.zip -o"pf2e-master" */packs/* */static/lang/* -r
 }
 
-function get-foundry-sources {
+function Get-Foundry-Sources {
     $base_content_url = "http://api.github.com/repos/foundryvtt/pf2e/contents"
     $base_pack_url = ""
     $script:sources = $script:sources
@@ -54,7 +54,7 @@ function get-foundry-sources {
     $sources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii ".\library\public\data\pf2e_source.json"
 }
 
-function import-all-sources {
+function Import-All-Sources {
     
     $sourceList = Get-ChildItem .\pf2e-master\*\packs\* | ForEach-Object { $_.FullName }
 
@@ -312,7 +312,7 @@ function write-data-files {
 
 }
 
-function diff-check-prep {
+function Invoke-Diff-Check-Prep {
     $script:diffCheckFiles = $script:diffCheckFiles
     if (Test-Path pf2e-master){
         Foreach ($file in $diffCheckFiles){
@@ -321,7 +321,7 @@ function diff-check-prep {
     }
 }
 
-function diff-checks {
+function Invoke-Diff-Checks {
     Foreach ($file in $diffCheckFiles){
         $test = Compare-Object -DifferenceObject (Get-Content "diffChecks/$file") -ReferenceObject (Get-ChildItem -Path "./pf2e-master" -Recurse -File -Filter $file | Get-Content) | Out-Null
         if ($test){
@@ -341,13 +341,13 @@ $foundSources = [System.Collections.ArrayList]@()
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "download") {
     Write-Host "Downloading Data"
-    get-master-zip
+    Get-Master-Zip
     Write-Host "Downloaded Foundry Data"
 }
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "expand") {
     Write-Host "Expanding Data"
-    expand-master-zip
+    Expand-Master-Zip
     Write-Host "Expanded Data"
 }
 
@@ -357,22 +357,22 @@ if ($runFuncs -eq "all" -or $runFuncs -eq "lang") {
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "source") {
     Write-Host "Preparing Sources"
-    get-foundry-sources
+    Get-Foundry-Sources
     Write-Host "Source Data Prepared"
 }
 
 if ($runFuncs -eq "diffCheckTest"){
-    diff-check-prep
-    diff-checks
+    Invoke-Diff-Check-Prep
+    Invoke-Diff-Checks
 }
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "import") {
-    diff-check-prep
+    Invoke-Diff-Check-Prep
     Write-Host "Importing Sources"
-    import-all-sources
+    Import-All-Sources
     Write-Host "Sources Imported"
     Write-Host "Writing Files"
     write-data-files
     Write-Host "Files Written"
-    diff-checks
+    Invoke-Diff-Checks
 }
