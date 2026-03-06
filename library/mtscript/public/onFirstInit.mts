@@ -45,7 +45,14 @@
 [h: customContentVar = json.set("{}","action","{}","ancestry","{}","background","{}","class","{}","condition","{}","effect","{}","feat","{}","hazard","{}","heritage","{}","item","{}","npc","{}","spell","{}","vehicle","{}","source","[]")]
 [h: setLibProperty("customContent",customContentVar, "Lib:ca.pf2e")]
 
-[h: setMapName("Grasslands", "Player Characters")]
+[h: maps = getAllMapNames("json")]
+[h, if(json.contains(maps, "Grasslands")), code:{
+    [h: setMapName("Grasslands", "Player Characters")]
+};{
+    [h: config = json.set("{}","player visible",json.true,"lighting style","OVERTOP","has fog",json.false,"background paint","#979fad")]
+    [h: createMap("Player Characters",config)]
+}]
+
 [h: ca.pf2e.Load_Addon_JSON()]
 [h: js.ca.pf2e.createGMMacros()]
 [h: js.ca.pf2e.createCampaignMacros()]
