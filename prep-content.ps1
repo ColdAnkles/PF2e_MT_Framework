@@ -332,7 +332,7 @@ function Invoke-Diff-Checks {
 
 $diffCheckFiles = @("black-dragon-adult.json", "heal.json", "force-barrage.json", "affix-a-talisman.json", "recall-knowledge.json", "off-guard.json")
 $unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics", "criticaldeck", "action-macros")
-$wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder Player Core 2", "Pathfinder Rage of Elements", "Pathfinder GM Core", "Pathfinder Advanced Player's Guide", "Pathfinder Treasure Vault", "Pathfinder Dark Archive", "Pathfinder Gamemastery Guide", "Pathfinder Secrets of Magic", "Pathfinder Bestiary", "Pathfinder Bestiary 2", "Pathfinder Bestiary 3", "Pathfinder Book of the Dead", "Pathfinder Guns & Gears","Pathfinder Monster Core")
+$wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder Player Core 2", "Pathfinder Rage of Elements", "Pathfinder GM Core", "Pathfinder Advanced Player's Guide", "Pathfinder Treasure Vault", "Pathfinder Dark Archive", "Pathfinder Gamemastery Guide", "Pathfinder Secrets of Magic", "Pathfinder Bestiary", "Pathfinder Bestiary 2", "Pathfinder Bestiary 3", "Pathfinder Book of the Dead", "Pathfinder Guns & Gears","Pathfinder Monster Core", "Pathfinder NPC Core")
 $sources = @{}
 $packData = @{}
 $langData = @{}

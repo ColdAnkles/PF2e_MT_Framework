@@ -16,7 +16,7 @@
 [h, if(table=="simpleDCs"), code:{
     [h: windowName = "Simple DCs"]
     [h: windowWidth=100]
-    [h: windowHeight=100]
+    [h: windowHeight=110]
 }]
 [h, if(table=="spellDCs"), code:{
     [h: windowName = "Spell DCs"]
@@ -26,7 +26,7 @@
 [h, if(table=="levelDCs"), code:{
     [h: windowName = "DCs By Level"]
     [h: windowWidth=50]
-    [h: windowHeight=1500]
+    [h: windowHeight=1600]
 }]
 [h, if(table=="magicItemDCs"), code:{
     [h: windowName = "Magic Item DCs"]
