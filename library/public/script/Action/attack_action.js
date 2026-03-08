@@ -17,14 +17,7 @@ function attack_action(actionData, actingToken) {
 	if (activeConditions == null) {
 		activeConditions = {};
 	}
-
-	if ("Dazzled" in activeConditions) {
-		let succeedCheck = flat_check(actingToken, { "dc": 5, "altTitle": actingToken.getName() + " is dazzled.", "failMsg": actingToken.getName() + " is too dazzled to attack." });
-		if (!succeedCheck) {
-			return;
-		}
-	}
-
+	
 	let dieUpgrades = { "d4": "d6", "d6": "d8", "d8": "d10", "d10": "d12" };
 
 	let inventory = null;

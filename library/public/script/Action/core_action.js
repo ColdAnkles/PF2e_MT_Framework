@@ -9,6 +9,7 @@ function core_action(actionData, actingToken) {
 
 	let actionsLeft = Number(actingToken.getProperty("actionsLeft"));
 	let reactionsLeft = Number(actingToken.getProperty("reactionsLeft"));
+	let activeConditions = JSON.parse(actingToken.getProperty("conditionDetails"));
 
 	try {
 		if (typeof (actingToken) == "string") {
@@ -66,6 +67,22 @@ function core_action(actionData, actingToken) {
 		//MapTool.chat.broadcast("Performing Action: "+ actionData.name);
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
 		setLibProperty("lib:ca.pf2e", "lastAction", actionData.name);
+
+		try {
+			if ("Dazzled" in activeConditions && ((("isSpell" in actionData.system && actionData.system.isSpell) && (actionData.system.rawSpellData.system.area == null) && !("value" in actionData.system.rawSpellData.system.target && actionData.system.rawSpellData.system.target.value == "")) ||
+				(actionData.system.traits.value.includes("attack")) || ("isMelee" in actionData.system || actionData.type == "melee" || actionData.type == "ranged"))) {
+				let succeedCheck = flat_check(actingToken, { "dc": 5, "altTitle": actingToken.getName() + " is dazzled.", "failMsg": actingToken.getName() + " is too dazzled and fails to act." });
+				if (!succeedCheck) {
+					return;
+				}
+			}
+		} catch (e) {
+			MapTool.chat.broadcast("Error in core-action during dazzle-check");
+			MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+			MapTool.chat.broadcast("actingToken: " + String(actingToken));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			return;
+		}
 
 		if ("isSpell" in actionData.system && actionData.system.isSpell) {
 			try {

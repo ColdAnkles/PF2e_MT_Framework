@@ -47,13 +47,6 @@ function spell_action(actionData, actingToken) {
 
 	//MapTool.chat.broadcast(JSON.stringify(actionData.system.overlays));
 
-	if ("Dazzled" in activeConditions && (spellData.system.area == null) && !("value" in spellData.system.target && spellData.system.target.value == "")) {
-		let succeedCheck = flat_check(actingToken, { "dc": 5, "altTitle": actingToken.getName() + " is dazzled.", "failMsg": actingToken.getName() + " is too dazzled to cast this spell." });
-		if (!succeedCheck) {
-			return;
-		}
-	}
-
 	try {
 		if ("overlays" in spellData.system) {
 			let overlayChoices = [];
