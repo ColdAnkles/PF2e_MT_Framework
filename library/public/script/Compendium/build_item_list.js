@@ -4,8 +4,27 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
 
     let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
-    let itemList = JSON.parse(read_data("pf2e_" + itemType));
-    let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
+    let itemList = null;
+    
+    try{
+        itemList = JSON.parse(read_data("pf2e_" + itemType));
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_item_list during read_item_list");
+		MapTool.chat.broadcast("itemType: " + itemType);
+		MapTool.chat.broadcast("itemList_raw: " + read_data("pf2e_" + itemType));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+    let enabledSources = null;
+    
+    try{
+        enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
+	} catch (e) {
+		MapTool.chat.broadcast("Error in build_item_list during read_enabled_sources");
+		MapTool.chat.broadcast("enabledSources_raw: " + read_data("pf2e_enabledSources"));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 
     let itemSorted = [];
     for (var s in itemList) {
