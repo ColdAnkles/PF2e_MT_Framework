@@ -45,7 +45,7 @@ function display_group_saving_throw(saveData) {
         } else if (tokenSave.dTwenty == 20) {
             dTwentyColour = "green";
         }
-        displayData.system.description.value += "<i>" + MapTool.tokens.getTokenByID(saveToken).getName() + "</i> <div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(tokenSave.dTwenty) + "</span>"
+        displayData.system.description.value += "<i>" + MapTool.tokens.getTokenByID(saveToken).getName().replace("Lib:","") + "</i> <div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(tokenSave.dTwenty) + "</span>"
         if (tokenSave.basic_bonus != 0 && tokenSave.basic_bonus != null) {
             displayData.system.description.value += " " + pos_neg_sign(tokenSave.basic_bonus, true);
         }
