@@ -18,6 +18,10 @@ function attack_action(actionData, actingToken) {
 		activeConditions = {};
 	}
 	
+	if (!dazzle_check(actingToken)){
+		return;
+	}
+
 	let dieUpgrades = { "d4": "d6", "d6": "d8", "d8": "d10", "d10": "d12" };
 
 	let inventory = null;

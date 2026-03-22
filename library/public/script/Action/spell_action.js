@@ -47,6 +47,10 @@ function spell_action(actionData, actingToken) {
 
 	//MapTool.chat.broadcast(JSON.stringify(actionData.system.overlays));
 
+	if (!dazzle_check(actingToken)){
+		return;
+	}
+
 	try {
 		if ("overlays" in spellData.system) {
 			let overlayChoices = [];
