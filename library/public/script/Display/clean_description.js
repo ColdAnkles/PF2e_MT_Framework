@@ -174,11 +174,11 @@ function parse_check(checkString, additionalData = { "variant": "normal" }) {
 		dcMod = -2;
 	}
 
-	if (!("gm" in additionalData)){
+	if (!("gm" in additionalData)) {
 		additionalData.gm = false;
 	}
 
-	if (!("isPC" in additionalData)){
+	if (!("isPC" in additionalData)) {
 		additionalData.isPC = true;
 	}
 
@@ -300,10 +300,15 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 				return;
 			}
 		} else {
+			let diceMatch = null
 			try {
 				if (additionalData.rollDice) {
-					let diceMatch = parsed.bracketContents.match(/\/r ([0-9+ d-]*)[^[]]*/g);
+					diceMatch = parsed.bracketContents.matchAll(/\/r ([0-9+ d-]*)[^[]]*/g);
+					diceMatch = diceMatch.next().value
 					//MapTool.chat.broadcast(JSON.stringify(diceMatch));
+					if (diceMatch.length == 2) {
+						diceMatch = [diceMatch[1]]
+					}
 					if (diceMatch.length > 0) {
 						diceMatch = diceMatch[0];
 						let dice = diceMatch.replaceAll("/r ", "").replaceAll("/r", "");
@@ -326,6 +331,7 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 			} catch (e) {
 				MapTool.chat.broadcast("Error in parse_roll during case one - null brace contents");
 				MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData));
+				MapTool.chat.broadcast("diceMatch: " + diceMatch);
 				MapTool.chat.broadcast("parsed: " + JSON.stringify(parsed));
 				MapTool.chat.broadcast("" + e + "\n" + e.stack);
 				return;
