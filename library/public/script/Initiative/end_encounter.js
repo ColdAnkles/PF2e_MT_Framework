@@ -1,7 +1,7 @@
 "use strict";
 
 function end_encounter() {
-    MTScript.evalMacro("[h: input(\"sureEnd|1|Are you Sure?|CHECK\")]");
+    MTScript.evalMacro("[h: sureEnd = 0][h: ans = input(\"sureEnd|1|Are you Sure?|CHECK\")][h: abort(ans)]");
     let sureEnd = (Number(MTScript.getVariable("sureEnd")) == 1);
     if (!sureEnd){
         return;
