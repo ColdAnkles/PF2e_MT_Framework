@@ -373,7 +373,7 @@ function attack_action(actionData, actingToken) {
 		displayData.system.runes = [];
 		if (itemData != null) {
 			for (var r in itemData.system.runes.property) {
-				displayData.system.runes.push(itemData.system.runes.property[r].name);
+				displayData.system.runes.push(capitalise(itemData.system.runes.property[r]));
 			}
 		}
 		displayData.system.materials = actionData.system.materials;
