@@ -16,7 +16,7 @@
 [h, if(table=="simpleDCs"), code:{
     [h: windowName = "Simple DCs"]
     [h: windowWidth=100]
-    [h: windowHeight=110]
+    [h: windowHeight=115]
 }]
 [h, if(table=="spellDCs"), code:{
     [h: windowName = "Spell DCs"]
