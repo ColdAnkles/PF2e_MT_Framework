@@ -303,7 +303,7 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 			let diceMatch = null
 			try {
 				if (additionalData.rollDice) {
-					diceMatch = parsed.bracketContents.matchAll(/\/r ([0-9+ d-]*)[^[]]*/g);
+					diceMatch = parsed.bracketContents.matchAll(/\/r ([0-9+ d-]*)[^\[\]]*/g);
 					diceMatch = diceMatch.next().value
 					//MapTool.chat.broadcast(JSON.stringify(diceMatch));
 					if (diceMatch.length == 2) {
