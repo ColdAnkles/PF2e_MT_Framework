@@ -88,6 +88,8 @@ function end_turn(turnToken, forwards = true) {
 				}
 				displayData.system.description.value += "</p>";
 
+				chat_display(displayData, true, { "rollDice": true });
+				
 				if (damageValue > 0) {
 					let hpData = {
 						"hpChangeVal": damageValue,
@@ -102,8 +104,6 @@ function end_turn(turnToken, forwards = true) {
 					};
 					change_hp(turnToken.getId(), hpData);
 				}
-
-				chat_display(displayData, true, { "rollDice": true })
 
 				if (recoveryRoll >= effectData.dc) {
 					if (turnToken.isPC() && !turnToken.getName().includes("Lib:")) {
