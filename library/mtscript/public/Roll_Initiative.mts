@@ -27,7 +27,8 @@
 	[h: overrideBonus = getProperty("perception", token)]
 };{}]
 
-[h: checkData = json.set("{}", "skillName", skillName, "tokenType", tokenType, "flavourText", (getName(token) + " rolls Initiative!"), "altStat", 0, "miscBonus", 0, "overrideBonus", overrideBonus, "useMAP", 0, "secretCheck", getVisible(token))]
+[h: tokenVisible = getVisible(token)]
+[h: checkData = json.set("{}", "skillName", skillName, "tokenType", tokenType, "flavourText", (getName(token) + " rolls Initiative!"), "altStat", 0, "miscBonus", 0, "overrideBonus", overrideBonus, "useMAP", 0, "secretCheck", !tokenVisible)]
 [h: bonusScopes = json.append("[]","initiative",skillName)]
 [h: initResult = json.get(js.ca.pf2e.skill_check(token,false,checkData,bonusScopes),"checkResult")]
 [h: tieBreak = js.ca.pf2e.get_actor_data_mtscript(token, "system.initiative.tiebreakPriority")]
