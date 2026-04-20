@@ -158,11 +158,32 @@ function build_spell_view(spellName) {
 	}
 
 	try {
-		if (spellData.system.area != null) {
-			HTMLString += "<b>Area</b> " + spellData.system.area.details + "; <b>Targets</b> " + spellData.system.target.value + "<br />";
-		} else if (spellData.system.range.value != null && spellData.system.range.value != "") {
-			HTMLString += "<b>Range</b> " + spellData.system.range.value + "; <b>Targets</b> " + spellData.system.target.value + "<br />";
+		var hasArea = false;
+		var hasRange = false;
+		if (spellData.system.range.value != null && spellData.system.range.value != "") {
+			HTMLString += "<b>Range</b> " + spellData.system.range.value;
+			hasRange = true;
 		}
+		if (spellData.system.area != null && "details" in spellData.system.area) {
+			if (hasRange) {
+				HTMLString += "; "
+			}
+			hasArea = true;
+			HTMLString += "<b>Area</b> " + spellData.system.area.details;
+		} else if (spellData.system.area != null && "value" in spellData.system.area && "type" in spellData.system.area) {
+			if (hasRange) {
+				HTMLString += "; "
+			}
+			hasArea = true;
+			HTMLString += "<b>Area</b> " + spellData.system.area.value + " ft. " + spellData.system.area.type;
+		}
+		if (spellData.system.target.value != "") {
+			if (hasRange || hasArea) {
+				HTMLString += "; "
+			}
+			HTMLString += "<b>Targets</b> " + spellData.system.target.value + "<br />";
+		}
+		HTMLString += "<br />";
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_spell_view during area-step");
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));

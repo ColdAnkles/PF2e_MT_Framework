@@ -215,22 +215,35 @@ function add_action_to_token(actionData, tokenID, token) {
 				actionData.system.actions = { "value": lookupSpell.system.time.value };
 			}
 
+			var hasRange = false;
+			var hasArea = false;
+			if (lookupSpell.system.range.value != null && lookupSpell.system.range.value != "") {
+				actionData.system.description.value += "<b>Range</b> " + lookupSpell.system.range.value;
+				hasRange = true;
+			}
+
 			if (lookupSpell.system.area != null) {
 				if ("details" in lookupSpell.system.area && lookupSpell.system.area.details != "") {
+					if (hasRange) {
+						actionData.system.description.value += "; ";
+					}
+					hasArea = true;
 					actionData.system.description.value += "<b>Area</b> " + lookupSpell.system.area.details;
 				} else {
-					actionData.system.description.value += "<b>Area</b> " + lookupSpell.system.area.value + "-foot " + lookupSpell.system.area.type;
+					if (hasRange) {
+						actionData.system.description.value += "; ";
+					}
+					hasArea = true;
+					actionData.system.description.value += "<b>Area</b> " + lookupSpell.system.area.value + " ft. " + lookupSpell.system.area.type;
 				}
-			} else if (lookupSpell.system.range.value != null && lookupSpell.system.range.value != "") {
-				actionData.system.description.value += "<b>Range</b> " + lookupSpell.system.range.value;
 			}
 
 			if (lookupSpell.system.target.value != null && lookupSpell.system.target.value != "") {
-				if (lookupSpell.system.area != null || lookupSpell.system.range.value != null && lookupSpell.system.range.value != "") {
+				if (hasRange || hasArea) {
 					actionData.system.description.value += "; ";
 				}
 				actionData.system.description.value += "<b>Targets</b> " + lookupSpell.system.target.value + "<br />"
-			} else if (lookupSpell.system.area != null || lookupSpell.system.range.value != null && lookupSpell.system.range.value != "") {
+			} else if (hasRange || hasArea) {
 				actionData.system.description.value += "<br />"
 			}
 

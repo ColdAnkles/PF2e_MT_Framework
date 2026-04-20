@@ -47,7 +47,7 @@ function spell_action(actionData, actingToken) {
 
 	//MapTool.chat.broadcast(JSON.stringify(actionData.system.overlays));
 
-	if (!dazzle_check(actingToken)){
+	if (!dazzle_check(actingToken)) {
 		return;
 	}
 
@@ -166,23 +166,33 @@ function spell_action(actionData, actingToken) {
 	let displayData = null;
 	try {
 		displayData = { "name": actingToken.getName() + " - " + actionData.name, "type": spellData.system.category, "system": { "actionType": null, "actions": null, "description": { "value": "" }, "level": actionData.system.castLevel } };
-		if (spellData.system.area != null) {
-			if ("details" in spellData.system.area) {
-				displayData.system.description.value += "<b>Area</b> " + spellData.system.area.details;
-			} else {
-				displayData.system.description.value += "<b>Area</b> " + String(spellData.system.area.value) + " ft. " + spellData.system.area.type;
-			}
-			if (spellData.system.target.value != null && spellData.system.target.value != "") {
-				displayData.system.description.value += "; <b>Targets</b> " + spellData.system.target.value;
-			}
-			displayData.system.description.value += "<br />";
-		} else if (spellData.system.range.value != null && spellData.system.range.value != "") {
+
+		var hasRange = false;
+		var hasArea = false;
+		if (spellData.system.range.value != null && spellData.system.range.value != "") {
 			displayData.system.description.value += "<b>Range</b> " + spellData.system.range.value;
-			if (spellData.system.target.value != null && spellData.system.target.value != "") {
-				displayData.system.description.value += "; <b>Targets</b> " + spellData.system.target.value;
-			}
-			displayData.system.description.value += "<br />";
+			hasRange = true;
 		}
+		if ("details" in spellData.system.area) {
+			if (hasRange) {
+				displayData.system.description.value += "; ";
+			}
+			hasArea = true;
+			displayData.system.description.value += "<b>Area</b> " + spellData.system.area.details;
+		} else {
+			if (hasRange) {
+				displayData.system.description.value += "; ";
+			}
+			hasArea = true;
+			displayData.system.description.value += "<b>Area</b> " + String(spellData.system.area.value) + " ft. " + spellData.system.area.type;
+		}
+		if (spellData.system.target.value != null && spellData.system.target.value != "") {
+			if (hasRange || hasArea) {
+				displayData.system.description.value += "; ";
+			}
+			displayData.system.description.value += "<b>Targets</b> " + spellData.system.target.value;
+		}
+		displayData.system.description.value += "<br />";
 
 		let hasDuration = spellData.system.duration != null && spellData.system.duration != "" && spellData.system.duration.value != "" && spellData.system.duration.value != null;
 		if (hasDuration) {
