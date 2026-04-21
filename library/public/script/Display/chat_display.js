@@ -1,6 +1,6 @@
 "use strict";
 
-function chat_display(displayData, broadcast = true, additionalData = { "rollDice": false, "gm": false, "isPC": false }) {
+function chat_display(displayData, broadcast = true, additionalData = { "rollDice": false, "gm": false, "isPC": false, "overrideName": null }) {
 	//MapTool.chat.broadcast(JSON.stringify(displayData));
 
 	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
@@ -9,9 +9,9 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	additionalData.invertImages = themeData.icons == "W";
 
 	let outputText = "<div style='padding:2px 5px 5px 5px; background-color:" + themeData.colours.standardBackground;
-	if (broadcast){
+	if (broadcast) {
 		outputText += ";width:100%;max-width:500px;'>";
-	}else{
+	} else {
 		outputText += ";width:500px;'>";
 	}
 	outputText = outputText + "<table style='width:100%;padding: 4px 0px;'><tr height=20px style='background-color: " + themeData.colours.titleBackground + ";'><td><h1 style='color: " + themeData.colours.titleText + ";line-height: 1em;vertical-align: middle;font-variant: small-caps;'>";
@@ -39,7 +39,12 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		return;
 	}
 
-	outputText = outputText + displayData.name.replaceAll("Lib:", "") + "</h1></td>";
+	if ("overrideName" in additionalData && additionalData.overrideName != null && additionalData.overrideName != "") {
+		outputText += additionalData.overrideName;
+	} else {
+		outputText += displayData.name.replaceAll("Lib:", "");
+	}
+	outputText += "</h1></td>";
 
 	try {
 		if ("level" in displayData.system) {

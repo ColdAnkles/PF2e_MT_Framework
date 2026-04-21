@@ -130,6 +130,15 @@ function add_action_to_token(actionData, tokenID, token) {
 		}
 
 	} else if (actionData.type == "personal" || actionData.type == "feat" || actionData.type == "action" || actionData.type == "melee" || actionData.type == "ranged") {
+		var inventory = JSON.parse(token.getProperty("inventory"));
+		var itemData = null;
+		var overrideName = null;
+		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
+			itemData = inventory[actionData.flags.pf2e.linkedWeapon];
+			overrideName = itemData.name;
+			actionData.system.description = itemData.system.description;
+			actionData.system.runes = itemData.system.runes.property.map((a) => { return capitalise(a) });
+		}
 		try {
 			if ("isMelee" in actionData.system || (actionData.type == "melee" || actionData.type == "ranged")) {
 				actionData.system.actionType = { "value": "action" };
@@ -146,7 +155,7 @@ function add_action_to_token(actionData, tokenID, token) {
 					actionLabel = actionLabel + " " + icon_img("ranged");
 				}
 			}
-			let actionDesc = chat_display(actionData, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": actionData });
+			let actionDesc = chat_display(actionData, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": actionData, "overrideName": overrideName });
 			let props = null;
 			if ("_id" in actionData) {
 				props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.personal_action(\"" + actionData._id + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };

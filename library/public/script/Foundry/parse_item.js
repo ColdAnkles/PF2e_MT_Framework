@@ -6,12 +6,27 @@ function parse_item(itemData, parentObject) {
         parentObject.proficiencies.push(newSkill);
 
     } else if (itemData.type == "item" || itemData.type == "shield" || itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable") {
-        parentObject.inventory[itemData._id] = itemData;
         if (itemData.type == "shield" && (!("shield" in parentObject.foundryActor.system.attributes) || parentObject.foundryActor.system.attributes.shield == null)) {
             itemData.system.equipped = true;
             parentObject.foundryActor.system.attributes.shield = itemData;
+        } else if (itemData.type == "weapon") {
+            var newName = "";
+            if ("runes" in itemData.system && "potency" in itemData.system.runes && itemData.system.runes.potency > 0) {
+                newName += "+" + String(itemData.system.runes.potency) + " ";
+            }
+            if ("runes" in itemData.system && "striking" in itemData.system.runes && itemData.system.runes.striking > 0) {
+                if (itemData.system.runes.striking == 1) {
+                    newName += "Striking ";
+                } else if (itemData.system.runes.striking == 2) {
+                    newName += "Greater Striking ";
+                } else if (itemData.system.runes.striking == 3) {
+                    newName += "Major Striking ";
+                }
+            }
+            newName += itemData.name;
+            itemData.name = newName;
         }
-
+        parentObject.inventory[itemData._id] = itemData;
     } else if (itemData.type == "melee" || itemData.type == "ranged") {
         if (!("actionType" in itemData.system)) {
             itemData.system.actionType = { "value": "free" };
@@ -29,7 +44,6 @@ function parse_item(itemData, parentObject) {
             }
         }
         parentObject.basicAttacks.push(itemData);
-
     } else if (itemData.type == "spellcastingEntry") {
         let newSpellEntry = { "name": itemData.name, "spells": [], "spellDC": itemData.system.spelldc.dc, "spellAttack": itemData.system.spelldc.value, "type": itemData.system.prepared.value, "description": itemData.system.description.value }
         if ("autoHeightenLevel" in itemData.system && "value" in itemData.system.autoHeightenLevel && itemData.system.autoHeightenLevel.value != null) {
