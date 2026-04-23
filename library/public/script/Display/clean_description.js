@@ -558,7 +558,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 
 	cleanDescription = cleanDescription.replaceAll(/\[\[\/act.*\]\]{(.*)}/g, "$1");
 
-	cleanDescription = cleanDescription.replaceAll(/\[\[\/act(.*)\]\]/g, "$1");
+	cleanDescription = cleanDescription.replaceAll(/\[\[\/act ([^=]*)[\s\]]+.*\]/g, "$1");
 
 	cleanDescription = cleanDescription.replaceAll(/\[(.*)\|.*\]/g, " $1 ");
 
