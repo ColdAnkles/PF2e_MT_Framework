@@ -1,11 +1,17 @@
 "use strict";
 
-const search_dict = (dict, key, value) => {
+const search_dict = (dict, key, value, asString = false) => {
     var foundItems = []
     Object.keys(dict).forEach(x => {
         if (dict[x][key] == value) {
             foundItems.push(dict[x])
         }
     });
-    return foundItems;
+    if (!asString){
+        return foundItems;
+    }else{
+        return JSON.stringify(foundItems);
+    }
 }
+
+MTScript.registerMacro("ca.pf2e.search_dict", search_dict);

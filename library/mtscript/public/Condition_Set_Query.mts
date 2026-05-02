@@ -5,15 +5,18 @@
 
 [h: tempConditionName = replace(conditionName," \\(Time\\)","")]
 
-[h, if(!json.contains(conditionDict,tempConditionName)), code:{
+[h: conditionData = js.ca.pf2e.search_dict(conditionDict, "name", tempConditionName, true)]
+
+[h, if(json.length(conditionData) == 0), code:{
 	[h: allStates = getTokenStates("json")]
 	[h, if(json.contains(allStates,tempConditionName)),code:{
 		[h: js.ca.pf2e.set_condition(conditionName, tokenID)]
 	};{}]
 	[h: return(0)]
-};{}]
+};{
+	[h: conditionData = json.get(conditionData, 0)]
+}]
 
-[h: conditionData = json.get(conditionDict, tempConditionName)]
 [h: currentConditions = getProperty("conditionDetails", tokenID)]
 [h, if(json.contains(currentConditions, conditionName)), code:{
 	[h: currentConditionValue = json.get(json.get(json.get(json.get(currentConditions,conditionName),"system"),"value"),"value")]

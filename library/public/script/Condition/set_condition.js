@@ -21,9 +21,9 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("pf2e_condition"));
 	let property = JSON.parse(read_data("pf2e_condition"));
-	let conditionData = null
+	let conditionData = search_dict(property, "name", trueConditionName);
 
-	if (!(trueConditionName in property)) {
+	if (conditionData.length == 0) {
 		conditionData = {
 			"_id": "specialUnknownCondition",
 			"name": trueConditionName,
@@ -47,7 +47,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 			"type": "condition"
 		}
 	} else {
-		conditionData = property[trueConditionName];
+		conditionData = conditionData[0];
 	}
 
 	if ("fileURL" in conditionData) {
