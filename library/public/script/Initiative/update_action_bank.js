@@ -16,7 +16,7 @@ function update_action_bank(token) {
 		}
 	}
 
-	if (reactionCount == 1) {
+	if (reactionCount >= 1) {
 		set_state("Reaction", true, token.getId());
 	} else {
 		set_state("Reaction", false, token.getId());
