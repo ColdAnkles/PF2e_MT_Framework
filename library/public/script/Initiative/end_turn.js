@@ -89,7 +89,7 @@ function end_turn(turnToken, forwards = true) {
 				displayData.system.description.value += "</p>";
 
 				chat_display(displayData, true, { "rollDice": true });
-				
+
 				if (damageValue > 0) {
 					let hpData = {
 						"hpChangeVal": damageValue,

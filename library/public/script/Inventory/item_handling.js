@@ -17,11 +17,11 @@ function drop_item(token, itemID) {
         itemData.system.equipped = false;
 
         let tokenName = token.getName();
-        if (tokenName.includes("Lib:")){
-            tokenName = tokenName.replace("Lib:","");
+        if (tokenName.includes("Lib:")) {
+            tokenName = tokenName.replace("Lib:", "");
             let thisMapTokensTemp = MapTool.tokens.getMapTokens();
             let thisMapTokens = [];
-            for (var t in thisMapTokensTemp){
+            for (var t in thisMapTokensTemp) {
                 thisMapTokens.push(thisMapTokensTemp[t].getId());
             }
             let PCTokenList = JSON.parse(token.getProperty("pcTokens"));
@@ -61,7 +61,7 @@ function pickup_item(token, itemID) {
         inventory[itemData._id] = itemData;
         token.setProperty("inventory", JSON.stringify(inventory));
 
-        chat_display({ "name": token.getName(), "system": { "description": { "value": (token.getName().replace("Lib:","") + " picks up a " + itemData.name) } } });
+        chat_display({ "name": token.getName(), "system": { "description": { "value": (token.getName().replace("Lib:", "") + " picks up a " + itemData.name) } } });
 
         MTScript.setVariable("itemTokenID", itemID);
         MTScript.evalMacro("[h: removeToken(itemTokenID)]");
@@ -84,7 +84,7 @@ function find_items_on_ground(token = null) {
 
         if (token.getName().includes("Lib:") && PCTokenList.length > 0) {
             let thisMapTokens = [];
-            for (var t in mapTokens){
+            for (var t in mapTokens) {
                 thisMapTokens.push(mapTokens[t].getId());
             }
             token = MapTool.tokens.getTokenByID(thisMapTokens.filter(value => PCTokenList.includes(value))[0]);

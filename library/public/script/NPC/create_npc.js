@@ -51,7 +51,7 @@ function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 		add_action_to_token({ "name": "Raise a Shield", "type": "basic", "system": { "group": "", "description": { "value": "" } } }, newNPCTokenID);
 	}
 
-	if (creatureData.traits.includes("troop")){
+	if (creatureData.traits.includes("troop")) {
 		createMacro({
 			"label": "Spawn Troop Segments", "playerEditable": 0, "command": "[h: ca.pf2e.Spawn_Troop_Segments(myID)]",
 			"tooltip": chat_display({ "name": "Spawn Troop Segments", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Spawn the three additional troop segments." } } }, false),

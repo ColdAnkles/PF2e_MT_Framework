@@ -14,7 +14,7 @@ function update_pc_token(sourceTokenID, tokenID) {
 	let sourceTokenLights = JSON.parse(MTScript.getVariable("tokenLights"));
 
 	MTScript.setVariable("token", tokenID);
-	for (var l in sourceTokenLights){
+	for (var l in sourceTokenLights) {
 		MTScript.setVariable("lightName", sourceTokenLights[l]);
 		MTScript.setVariable("tokenMap", token.getMapName());
 		MTScript.evalMacro("[h: setLight(\"Auras\", lightName, 1, token, tokenMap)]")

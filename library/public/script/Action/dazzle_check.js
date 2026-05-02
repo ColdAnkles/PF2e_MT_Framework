@@ -6,8 +6,8 @@ function dazzle_check(token) {
 
     try {
         if ("Dazzled" in activeConditions) {
-            return flat_check(token, { "dc": 5, "altTitle": token.getName().replace("Lib:","") + " is dazzled.", "failMsg": token.getName().replace("Lib:","") + " is too dazzled and fails to act." });
-        }else{
+            return flat_check(token, { "dc": 5, "altTitle": token.getName().replace("Lib:", "") + " is dazzled.", "failMsg": token.getName().replace("Lib:", "") + " is too dazzled and fails to act." });
+        } else {
             return true;
         }
     } catch (e) {

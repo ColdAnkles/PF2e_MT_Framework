@@ -16,10 +16,10 @@ function set_state(stateName, stateVal, tokenID) {
 		if (token.isPC()) {
 			if (tokenName.includes("Lib:")) {
 				let subTokens = token.getProperty("pcTokens");
-				if ( subTokens == null || subTokens == ""){
+				if (subTokens == null || subTokens == "") {
 					subTokens = [];
-					token.setProperty("pcTokens","[]")
-				}else{
+					token.setProperty("pcTokens", "[]")
+				} else {
 					subTokens = JSON.parse(subTokens);
 				}
 				updateTokens = updateTokens.concat(subTokens);

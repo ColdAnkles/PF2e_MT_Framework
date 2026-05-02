@@ -171,7 +171,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 
 				chat_display(displayData);
 			}
-			return {"saveResult":saveResult,"dTwenty":dTwenty,"basic_bonus":basic_bonus,"effect_bonus":effect_bonus,"misc_bonus":misc_bonus};
+			return { "saveResult": saveResult, "dTwenty": dTwenty, "basic_bonus": basic_bonus, "effect_bonus": effect_bonus, "misc_bonus": misc_bonus };
 		} catch (e) {
 			MapTool.chat.broadcast("Error in saveData-else during saving_throw");
 			MapTool.chat.broadcast("saveToken: " + String(saveToken));

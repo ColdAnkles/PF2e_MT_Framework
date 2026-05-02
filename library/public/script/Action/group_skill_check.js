@@ -45,7 +45,7 @@ function display_group_skill_check(checkData) {
     //MapTool.chat.broadcast(JSON.stringify(checkData));
 
     let an = "a ";
-    if (['A','E','I','O','U','a','e','i','o','u'].includes(checkData.skillName[0])){
+    if (['A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'].includes(checkData.skillName[0])) {
         an = "an ";
     }
 
@@ -62,7 +62,7 @@ function display_group_skill_check(checkData) {
         } else if (tokenCheck.dTwenty == 20) {
             dTwentyColour = "green";
         }
-        displayData.system.description.value += "<i>" + MapTool.tokens.getTokenByID(checkToken).getName().replace("Lib:","") + "</i> <div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(tokenCheck.dTwenty) + "</span>"
+        displayData.system.description.value += "<i>" + MapTool.tokens.getTokenByID(checkToken).getName().replace("Lib:", "") + "</i> <div style='font-size:20px'><b><span style='color:" + dTwentyColour + "'>" + String(tokenCheck.dTwenty) + "</span>"
         if (tokenCheck.stat_bonus != 0 && tokenCheck.stat_bonus != null) {
             displayData.system.description.value += " " + pos_neg_sign(tokenCheck.stat_bonus, true);
         }

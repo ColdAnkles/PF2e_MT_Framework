@@ -14,73 +14,85 @@ function add_pc_macros(tokenID, pcLibID) {
         }
     }
 
+    let actionData = null;
     try {
         for (var a in pcData.basicAttacks) {
-            let actionData = pcData.basicAttacks[a];
+            actionData = pcData.basicAttacks[a];
             actionData.group = "";
             actionData.system.group = "";
             add_action_to_token(actionData, tokenID);
         }
     } catch (e) {
-        MapTool.chat.broadcast("Error in create_pc_token during attacks-step");
+        MapTool.chat.broadcast("Error in add_pc_macros during attacks-step");
+        MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
 
+    actionData = null;
     try {
         for (var a in pcData.offensiveActions) {
-            let actionData = pcData.offensiveActions[a];
+            actionData = pcData.offensiveActions[a];
             actionData.group = "4. Abilities";
             add_action_to_token(actionData, tokenID);
         }
     } catch (e) {
-        MapTool.chat.broadcast("Error in create_pc_token during actions-step");
+        MapTool.chat.broadcast("Error in add_pc_macros during actions-step");
+        MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
 
+    actionData = null;
     try {
         for (var a in pcData.otherDefenses) {
-            let actionData = pcData.otherDefenses[a];
+            actionData = pcData.otherDefenses[a];
             actionData.group = "4. Abilities";
             add_action_to_token(actionData, tokenID);
         }
     } catch (e) {
-        MapTool.chat.broadcast("Error in create_pc_token during otherDef-step");
+        MapTool.chat.broadcast("Error in add_pc_macros during otherDef-step");
+        MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
 
+    actionData = null;
     try {
         for (var a in pcData.passiveDefenses) {
-            let actionData = pcData.passiveDefenses[a];
+            actionData = pcData.passiveDefenses[a];
             actionData.group = "4. Abilities";
             add_action_to_token(actionData, tokenID);
         }
     } catch (e) {
-        MapTool.chat.broadcast("Error in create_pc_token during passiveDef-step");
+        MapTool.chat.broadcast("Error in add_pc_macros during passiveDef-step");
+        MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
 
+    actionData = null;
     try {
         for (var a in pcData.passiveSkills) {
-            let actionData = pcData.passiveSkills[a];
+            actionData = pcData.passiveSkills[a];
             actionData.group = "4. Abilities";
             add_action_to_token(actionData, tokenID);
         }
     } catch (e) {
-        MapTool.chat.broadcast("Error in create_pc_token during passiveSkills-step");
+        MapTool.chat.broadcast("Error in add_pc_macros during passiveSkills-step");
+        MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
 
+    let spellSource = null;
+    let spellData = null;
     try {
         let addedRefocus = false;
         for (var s in pcData.spellRules) {
-            let spellSource = pcData.spellRules[s];
+            spellSource = pcData.spellRules[s];
             for (var sp in spellSource.spells) {
-                let spellData = spellSource.spells[sp];
+                spellData = spellSource.spells[sp];
                 add_action_to_token(spellData, tokenID, pcToken);
             }
             if (spellSource.name.includes("Focus") && !addedRefocus) {
@@ -91,7 +103,9 @@ function add_pc_macros(tokenID, pcLibID) {
             }
         }
     } catch (e) {
-        MapTool.chat.broadcast("Error in create_pc_token during spells-step");
+        MapTool.chat.broadcast("Error in add_pc_macros during spells-step");
+        MapTool.chat.broadcast("spellSource: " + JSON.stringify(spellSource));
+        MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }

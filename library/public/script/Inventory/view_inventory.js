@@ -7,7 +7,7 @@ function view_inventory(tokenID, inventoryAction = null) {
 
     let actionItem = "";
     let action = null;
-    try{
+    try {
         if (inventoryAction != null) {
             for (var key in inventoryAction) {
                 if (key.includes("share_")) {
@@ -41,7 +41,7 @@ function view_inventory(tokenID, inventoryAction = null) {
                     inventory = JSON.parse(token.getProperty("inventory"));
                 } else if (action == "view") {
                     MTScript.setVariable("itemData", actionItem);
-                    MTScript.evalMacro("[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\""+actionItem.name+"\",\"itemType\",\""+actionItem.type+"\",\"itemData\",itemData))]")
+                    MTScript.evalMacro("[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\"" + actionItem.name + "\",\"itemType\",\"" + actionItem.type + "\",\"itemData\",itemData))]")
                 }
             }
         }
@@ -64,8 +64,8 @@ function view_inventory(tokenID, inventoryAction = null) {
 
     for (var itemID in inventory) {
         let thisItem = inventory[itemID];
-        let viewButtonJSON = {"tokenID":tokenID};
-        viewButtonJSON["view_"+thisItem._id] = "Submit";
+        let viewButtonJSON = { "tokenID": tokenID };
+        viewButtonJSON["view_" + thisItem._id] = "Submit";
         inventoryHTML += "<tr><td>" + create_macroLink(thisItem.name, "Inventory_Form_To_JS@Lib:ca.pf2e", viewButtonJSON) + "</td>";
         inventoryHTML += "<td>" + String(thisItem.system.quantity) + "</td><td><input type='submit' name='equip_" + thisItem._id + "' value='" + ((thisItem.system.equipped) ? "Unequip" : "Equip") + "'></td>";
         inventoryHTML += "<td><input type='submit' name='share_" + thisItem._id + "' value='Submit'></td>";
@@ -94,7 +94,7 @@ function view_inventory(tokenID, inventoryAction = null) {
 
 
     MTScript.setVariable("frameHTML", inventoryHTML);
-    MTScript.setVariable("frameName", token.getName().replace("Lib:","") + "\'s Inventory")
+    MTScript.setVariable("frameName", token.getName().replace("Lib:", "") + "\'s Inventory")
     MTScript.evalMacro("[frame5(frameName, 'width=500; height=600; temporary=1; noframe=0; input=1'):{[r: frameHTML]}]")
 
 

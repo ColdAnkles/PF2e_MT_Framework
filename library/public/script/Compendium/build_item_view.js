@@ -1,7 +1,7 @@
 "use strict";
 
 function build_item_view(itemType, itemName, itemData = null) {
-	if (["consumable","armor","weapon"].includes(itemType)){
+	if (["consumable", "armor", "weapon"].includes(itemType)) {
 		itemType = "item";
 	}
 	let itemList = JSON.parse(read_data("pf2e_" + itemType));

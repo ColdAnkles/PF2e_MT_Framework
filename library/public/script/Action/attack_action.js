@@ -17,8 +17,8 @@ function attack_action(actionData, actingToken) {
 	if (activeConditions == null) {
 		activeConditions = {};
 	}
-	
-	if (!dazzle_check(actingToken)){
+
+	if (!dazzle_check(actingToken)) {
 		return;
 	}
 
@@ -350,7 +350,7 @@ function attack_action(actionData, actingToken) {
 			for (var s in critDamageDetails) {
 				displayData.system.description.value += "<div style='font-size:10px'><b>" + critDamageDetails[s] + "</div>";
 			}
-		}else{
+		} else {
 			displayData.system.description.value += "<br />";
 		}
 

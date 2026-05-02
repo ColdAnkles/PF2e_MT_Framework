@@ -38,9 +38,9 @@ function change_hp(tokenID, changeHPData = null) {
 		queryHTML += "<select name='damageType' id='damageType' style='width: 170px; height: 25px;'><option value='bludgeoning'>Bludgeoning</option><option value='piercing'>Piercing</option><option value='slashing'>Slashing</option><option value='acid'>Acid</option><option value='cold'>Cold</option><option value='electricity'>Electricity</option><option value='fire'>Fire</option><option value='sonic'>Sonic</option><option value='vitality'>Vitality</option><option value='void'>Void</option><option value='force'>Force</option><option value='spirit'>Spirit</option><option value='mental'>Mental</option><option value='poison'>Poison</option><option value='bleed'>Bleed</option><option value='holy'>Holy</option><option value='unholy'>Unholy</option></select>";
 		queryHTML += "</td></tr>";
 		queryHTML += "<tr><td>Is the character taking lethal or nonlethal damage, being healed or gaining temporary HP?<br/>";
-		
+
 		queryHTML += "Ignore Resist., Weak., Immunities?: <input type='checkbox' id='ignoreResImm' name='ignoreResImm'></td>";
-		
+
 		queryHTML += "<td><input type='radio' name='hpChangeType' value='lethal' checked='checked'>Lethal Damage<br /><input type='radio' name='hpChangeType' value='nonlethal' >Nonlethal Damage<br /><input type='radio' name='hpChangeType' value='healing'>Healing<br /><input type='radio' name='hpChangeType' value='tempHP'>Temp HP</td></tr>";
 
 		queryHTML += "<tr><th colspan=2><b>Current HP is " + String(tokenCurrentHP) + "/" + String(tokenCurrentMaxHP) + "</th></tr>";
@@ -71,11 +71,11 @@ function change_hp(tokenID, changeHPData = null) {
 			silent = true;
 		}
 
-		if (!("ignoreResImm" in changeHPData)){
+		if (!("ignoreResImm" in changeHPData)) {
 			changeHPData.ignoreResImm = false;
-		}else if(changeHPData.ignoreResImm == "on"){
+		} else if (changeHPData.ignoreResImm == "on") {
 			changeHPData.ignoreResImm = true;
-		}else{
+		} else {
 			changeHPData.ignoreResImm = false;
 		}
 
@@ -151,7 +151,7 @@ function change_hp(tokenID, changeHPData = null) {
 			} else if (changeHPData.hpChangeType == "nonlethal") {
 
 				let actualChangeVal = changeHPData.hpChangeVal;
-				
+
 				if (changeHPData.damageType in tokenWeaknesses && !changeHPData.ignoreResImm) {
 					actualChangeVal += Number(tokenWeaknesses[changeHPData.damageType]);
 				}
