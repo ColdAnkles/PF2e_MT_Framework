@@ -117,7 +117,7 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
             }
             returnHTML += "<td align=center id='source'>" + thisItem.source + "</td>";
         } else if (itemType == "action" && relatedToken != null) {
-            returnHTML += "<td align=center>" + create_macroLink("Add Macro", "Add_Action_To_Token@Lib:ca.pf2e", "[" + JSON.stringify({ "name": thisItem.key, "type": "basic", "group": "Extra" }) + ", " + relatedToken + "]") + "</td>";
+            returnHTML += "<td align=center>" + create_macroLink("Add Macro", "Add_Action_To_Token@Lib:ca.pf2e", "[" + JSON.stringify({ "name": thisItem.name, "type": "basic", "group": "Extra" }) + ", " + relatedToken + "]") + "</td>";
         }
         if (itemType == "hazard") {
             returnHTML += "<td width=0%>" + create_macroLink("Make Token", "Spawn_Hazard@Lib:ca.pf2e", thisItem.key);
