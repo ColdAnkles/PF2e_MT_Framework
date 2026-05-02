@@ -11,7 +11,25 @@ function get_actor_data(actor, varName) {
     try {
         result = eval("actorData." + varName);
     } catch {
-        result = null;
+        result = null
+    }
+
+    if (result == null && varName.includes("flags.system")) {
+        try {
+            varName = varName.replace("flags.system", "flags.pf2e")
+            result = eval("actorData." + varName);
+        } catch {
+            result = null
+        }
+    }
+
+    if (result == null && varName.includes("flags.system")) {
+        try {
+            varName = varName.replace("flags.system", "flags.sf2e")
+            result = eval("actorData." + varName);
+        } catch {
+            result = null
+        }
     }
 
     let activeEffects = Object.assign({}, JSON.parse(actor.getProperty("activeEffects")), JSON.parse(actor.getProperty("specialEffects")), get_equipped_items(actor));

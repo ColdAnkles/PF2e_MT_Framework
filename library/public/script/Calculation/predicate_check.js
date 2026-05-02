@@ -135,6 +135,7 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                     let groupSlug = pText.split(":")[2];
                     if (groupSlug[0]=='{'){
                         groupSlug = foundry_calc_value(groupSlug.substring(1, groupSlug.length -1), actor, item);
+                    //MapTool.chat.broadcast(groupSlug)
                     }
                     if (Array.isArray(groupSlug)){
                         groupSlug = groupSlug[0];

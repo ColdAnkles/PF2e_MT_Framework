@@ -275,9 +275,9 @@ function import-source-file {
     if ( !$packData.ContainsKey("pf2e_" + $storedata.type)) {
         $packData["pf2e_" + $storedata.type] = @{}
     }
-    if (!$packData["pf2e_" + $storedata.type].Contains($storeData.name)){
-        $packData["pf2e_" + $storedata.type][$storeData.name] = $storeData
-    }#DUPLICATE NAMED ENTRIES IGNORED
+    if (!$packData["pf2e_" + $storedata.type].Contains($storeData.id)){
+        $packData["pf2e_" + $storedata.type][$storeData.id] = $storeData
+    }
 }
 
 function import-lang-file {

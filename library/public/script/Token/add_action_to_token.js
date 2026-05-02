@@ -50,10 +50,10 @@ function add_action_to_token(actionData, tokenID, token) {
 				actionData.type = actionData.system.actionType.value;
 			} else {
 				let property = JSON.parse(read_data("pf2e_action"));
-				let lookupAction = property[actionData.name];
-				if ("source" in actionData) {
-					lookupAction = property[actionData.name];
-					actionKey = actionData.name;
+				let lookupAction = null;
+				let lookupActions = search_dict(property, "name", actionData.name);
+				if (lookupActions.length > 0) {
+					lookupAction = lookupActions[0];
 				}
 
 				if (lookupAction == null) {
@@ -96,15 +96,8 @@ function add_action_to_token(actionData, tokenID, token) {
 			//let libToken = get_runtime("libToken");
 			//let property = JSON.parse(libToken.getProperty("pf2e_action"));
 			let property = JSON.parse(read_data("pf2e_action"));
-			let lookupAction = property[actionData.name];
-			if ("source" in actionData) {
-				lookupAction = property[actionData.name];
-				actionKey = actionData.name;
-			}
-			if (lookupAction == null) {
-				lookupAction = property[actionData.name];
-				actionKey = actionData.name;
-			}
+			let lookupAction = null;
+			Object.keys(property).forEach(x => { lookupAction = property[x].name === actionData.name ? property[x] : lookupAction; actionKey = property[x].name === actionData.name ? x : actionKey });
 
 			if (lookupAction == null) {
 				MapTool.chat.broadcast("Cannot find action: " + actionData.name);
@@ -133,7 +126,7 @@ function add_action_to_token(actionData, tokenID, token) {
 		var inventory = JSON.parse(token.getProperty("inventory"));
 		var itemData = null;
 		var overrideName = null;
-		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
+		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e && actionData.flags.pf2e.linkedWeapon != "unarmed") {
 			itemData = inventory[actionData.flags.pf2e.linkedWeapon];
 			overrideName = itemData.name;
 			actionData.system.description = itemData.system.description;

@@ -80,13 +80,13 @@ function find_items_on_ground(token = null) {
     try {
 
         let mapTokens = MapTool.tokens.getMapTokens();
+        let PCTokenList = JSON.parse(token.getProperty("pcTokens"));
 
-        if (token.getName().includes("Lib:")){
+        if (token.getName().includes("Lib:") && PCTokenList.length > 0) {
             let thisMapTokens = [];
             for (var t in mapTokens){
                 thisMapTokens.push(mapTokens[t].getId());
             }
-            let PCTokenList = JSON.parse(token.getProperty("pcTokens"));
             token = MapTool.tokens.getTokenByID(thisMapTokens.filter(value => PCTokenList.includes(value))[0]);
         }
 

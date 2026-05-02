@@ -26,7 +26,7 @@ function parse_pathbuilder_export(data) {
 		);
 	}
 
-	function find_object_data(objectName, searchSet = ["all"]) {
+	function find_object_data(objectName, searchSet = ["all"], searchKey = "name") {
 		try {
 			if (objectName == "Versatile Heritage") {
 				objectName = "Versatile";
@@ -36,24 +36,6 @@ function parse_pathbuilder_export(data) {
 			if (objectName == "Oil") {
 				objectName = "Oil (1 pint)";
 			}
-
-			let keyList = [];
-
-			let libraryTypes = ["feat", "action", "heritage", "item", "class"]
-
-			libraryTypes.forEach(libType => {
-				if (searchSet.includes("all") || searchSet.includes(libType)) {
-					keyList = eval("keyList.concat(Object.keys(" + libType + "Library))");
-				}
-			});
-
-			keyList = matching_keys(keyList, objectName);
-
-			if (keyList.length == 0) {
-				return null;
-			}
-
-			objectName = keyList[0];
 
 			let testVar = objectName;
 			let testCaps = capitalise(objectName);
@@ -68,22 +50,34 @@ function parse_pathbuilder_export(data) {
 				characterData.senses.push("darkvision");
 				return;
 			} else {
-				if ((testVar in featLibrary || testCaps in featLibrary) && (searchSet.includes("all") || searchSet.includes("feat"))) {
-					return featLibrary[testVar];
-				} else if ((testVar in actionLibrary || testCaps in actionLibrary) && (searchSet.includes("all") || searchSet.includes("action"))) {
-					return actionLibrary[testVar];
-				} else if ((testVar in heritageLibrary || testCaps in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
-					return heritageLibrary[testVar];
-				} else if ((testVar2 in heritageLibrary || testCaps2 in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
-					return heritageLibrary[testVar2];
-				} else if ((testVar3 in heritageLibrary || testCaps3 in heritageLibrary) && (searchSet.includes("all") || searchSet.includes("heritage"))) {
-					return heritageLibrary[testVar3];
-				} else if ((testVar in itemLibrary || testCaps in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
-					return itemLibrary[testVar];
-				} else if ((testVar4 in itemLibrary || testCaps4 in itemLibrary) && (searchSet.includes("all") || searchSet.includes("item"))) {
-					return itemLibrary[testVar4];
-				} else if ((testVar in classLibrary || testCaps in classLibrary) && (searchSet.includes("all") || searchSet.includes("class"))) {
-					return classLibrary[testVar];
+				var lookupItems = []
+				if ((searchSet.includes("all") || searchSet.includes("feat"))) {
+					lookupItems = lookupItems.concat(search_dict(featLibrary, searchKey, testVar));
+					lookupItems = lookupItems.concat(search_dict(featLibrary, searchKey, testCaps));
+				} else if ((searchSet.includes("all") || searchSet.includes("action"))) {
+					lookupItems = lookupItems.concat(search_dict(actionLibrary, searchKey, testVar));
+					lookupItems = lookupItems.concat(search_dict(actionLibrary, searchKey, testCaps));
+				} else if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
+					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testVar));
+					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testCaps));
+				} else if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
+					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testVar2));
+					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testCaps2));
+				} else if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
+					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testVar3));
+					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testCaps3));
+				} else if ((searchSet.includes("all") || searchSet.includes("item"))) {
+					lookupItems = lookupItems.concat(search_dict(itemLibrary, searchKey, testVar));
+					lookupItems = lookupItems.concat(search_dict(itemLibrary, searchKey, testCaps));
+				} else if ((searchSet.includes("all") || searchSet.includes("item"))) {
+					lookupItems = lookupItems.concat(search_dict(itemLibrary, searchKey, testVar4));
+					lookupItems = lookupItems.concat(search_dict(itemLibrary, searchKey, testCaps4));
+				} else if ((searchSet.includes("all") || searchSet.includes("class"))) {
+					lookupItems = lookupItems.concat(search_dict(classLibrary, searchKey, testVar));
+					lookupItems = lookupItems.concat(search_dict(classLibrary, searchKey, testCaps));
+				}
+				if (lookupItems.length > 0) {
+					return lookupItems[0];
 				}
 			}
 			return null;
@@ -481,95 +475,125 @@ function parse_pathbuilder_export(data) {
 			tempName = tempName.replace(removeRegex[r], "");
 		}
 		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
-		if (tempData != null) {
+		if (tempData != null && "error" in tempData) {
+			MapTool.chat.broadcast("error finding " + tempName)
+			unfoundData.push(data.feats[f][0] + " (Feats)");
+		} else if (tempData != null) {
 			features_to_parse.push(tempData);
 			featSubChoices.push({ "name": tempName, "value": subChoice });
 		} else {
 			if (data.feats[f][0] != null) {
-				unfoundData.push(data.feats[f][0]);
+				unfoundData.push(data.feats[f][0] + " (Feat)");
 			}
 		}
 	}
 
 	message_window("Importing " + data.name, "Importing Specials");
-
-	for (var i in classData.system.items) {
-		let classItem = classData.system.items[i];
-		//MapTool.chat.broadcast(JSON.stringify(classItem));
-		if (data.level >= classItem.level) {
-			if (!(data.specials.includes(classItem.name))) {
-				//MapTool.chat.broadcast(JSON.stringify(data.specials));
-				data.specials = [classItem.name].concat(data.specials);
+	try {
+		for (var i in classData.system.items) {
+			let classItem = classData.system.items[i];
+			//MapTool.chat.broadcast(JSON.stringify(classItem));
+			if (data.level >= classItem.level) {
+				if (!(data.specials.includes(classItem.name))) {
+					//MapTool.chat.broadcast(JSON.stringify(data.specials));
+					data.specials = [classItem.name].concat(data.specials);
+				}
 			}
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - specials setup");
+		MapTool.chat.broadcast("classData.system.items: " + JSON.stringify(classData.system.items));
+		MapTool.chat.broadcast("data.specials: " + JSON.stringify(data.specials));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	let foundSpecials = [];
 	let unfoundSpecials = [];
-	for (var s in data.specials) {
-		let tempName = data.specials[s];
-		if (tempName == "") {
-			continue;
+	try {
+		for (var s in data.specials) {
+			let tempName = data.specials[s];
+			if (tempName == "") {
+				continue;
+			}
+			if (importedSpells.includes(tempName)) {
+				continue;
+			}
+			for (var r in removeRegex) {
+				tempName = tempName.replace(removeRegex[r], "");
+			}
+			if (tempName == "Aquatic Adaptation" && data.ancestry == "Lizardfolk") {
+				tempName = "Aquatic Adaptation (Lizardfolk)";
+			}
+			if (tempName == "Spellbook") {
+				continue; //Spellbook not treated as a feature in foundry
+			}
+			if (tempName == "Anathema") {
+				continue; //There are more specific anathema features per class
+			}
+			let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
+			if (tempData != null && "error" in tempData) {
+				unfoundSpecials.push(tempName + " (Special)");
+			} else if (tempData != null && !foundSpecials.includes(tempName)) {
+				features_to_parse.push(tempData);
+				featSubChoices.push({ "name": tempName, "value": null });
+				foundSpecials.push(tempName);
+			} else if (tempData == null && tempName != null) {
+				unfoundSpecials.push(tempName + " (Special)");
+			}
+			data.specials[s] = tempName;
 		}
-		if (importedSpells.includes(tempName)) {
-			continue;
-		}
-		for (var r in removeRegex) {
-			tempName = tempName.replace(removeRegex[r], "");
-		}
-		if (tempName == "Aquatic Adaptation" && data.ancestry == "Lizardfolk") {
-			tempName = "Aquatic Adaptation (Lizardfolk)";
-		}
-		if (tempName == "Spellbook") {
-			continue; //Spellbook not treated as a feature in foundry
-		}
-		if (tempName == "Anathema") {
-			continue; //There are more specific anathema features per class
-		}
-		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
-		if (tempData != null && !foundSpecials.includes(tempName)) {
-			features_to_parse.push(tempData);
-			featSubChoices.push({ "name": tempName, "value": null });
-			foundSpecials.push(tempName);
-		} else if (tempData == null && tempName != null) {
-			unfoundSpecials.push(tempName);
-		}
-		data.specials[s] = tempName;
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - specials finding");
+		MapTool.chat.broadcast("foundSpecials: " + JSON.stringify(foundSpecials));
+		MapTool.chat.broadcast("unfoundSpecials: " + JSON.stringify(unfoundSpecials));
+		MapTool.chat.broadcast("featSubChoices: " + JSON.stringify(featSubChoices));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	let grantedAttacks = [];
-	for (var f in features_to_parse) {
-		let featureData = features_to_parse[f];
-		//MapTool.chat.broadcast(JSON.stringify(featureData))
-		if ("fileURL" in featureData) {
-			featureData = rest_call(featureData.fileURL);
-		}
-		characterData.features[featureData.name] = featureData;
-		//MapTool.chat.broadcast(JSON.stringify(featureData));
-		//MapTool.chat.broadcast(featureData.baseName);
-		if (featureData != null && "rules" in featureData.system && featureData.system.rules != null && featureData.system.rules.length > 0) {
-			//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
-			//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
-			let choice = feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
-			if (choice != null) {
-				data.specials = data.specials.filter(item => !choice.includes(item));
-				unfoundSpecials = unfoundSpecials.filter(item => !choice.includes(item));
+	let featureData = null;
+	try {
+		for (var f in features_to_parse) {
+			featureData = features_to_parse[f];
+			//MapTool.chat.broadcast(JSON.stringify(featureData))
+			if ("fileURL" in featureData) {
+				featureData = rest_call(featureData.fileURL);
 			}
-			feature_cause_definition(featureData, characterData);
-			let newAttacks = rules_grant_attack(featureData.system.rules);
-			for (var a in newAttacks) {
-				let newAttack = newAttacks[a];
-				newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
+			characterData.features[featureData.name] = featureData;
+			//MapTool.chat.broadcast(JSON.stringify(featureData));
+			//MapTool.chat.broadcast(featureData.baseName);
+			if (featureData != null && "rules" in featureData.system && featureData.system.rules != null && featureData.system.rules.length > 0) {
+				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
+				//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
+				let choice = feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
+				if (choice != null) {
+					data.specials = data.specials.filter(item => !choice.includes(item));
+					unfoundSpecials = unfoundSpecials.filter(item => !choice.includes(item));
+				}
+				feature_cause_definition(featureData, characterData);
+				let newAttacks = rules_grant_attack(featureData.system.rules);
+				for (var a in newAttacks) {
+					let newAttack = newAttacks[a];
+					newAttack.damage[0].damage = String(newAttack.damage[0].dice) + String(newAttack.damage[0].die) + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
+				}
+				grantedAttacks = grantedAttacks.concat(newAttacks);
 			}
-			grantedAttacks = grantedAttacks.concat(newAttacks);
+			if (featureData != null && featureData.name == "Low-Light Vision") {
+				characterData.senses.push("low-light");
+			} else if (featureData != null && featureData.name == "Darkvision") {
+				characterData.senses.push("darkvision");
+			} else if (featureData != null && featureData.name == "Greater Darkvision") {
+				characterData.senses.push("greater darkvision");
+			}
 		}
-		if (featureData != null && featureData.name == "Low-Light Vision") {
-			characterData.senses.push("low-light");
-		} else if (featureData != null && featureData.name == "Darkvision") {
-			characterData.senses.push("darkvision");
-		} else if (featureData != null && featureData.name == "Greater Darkvision") {
-			characterData.senses.push("greater darkvision");
-		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - specials grant attacks");
+		MapTool.chat.broadcast("featureData: " + JSON.stringify(featureData));
+		MapTool.chat.broadcast("grantedAttacks: " + JSON.stringify(grantedAttacks));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 	characterData.basicAttacks = characterData.basicAttacks.concat(grantedAttacks);
 
@@ -577,7 +601,7 @@ function parse_pathbuilder_export(data) {
 		characterData.senses.push("normal");
 	}
 
-	unfoundData.concat(unfoundSpecials);
+	unfoundData = unfoundData.concat(unfoundSpecials);
 
 	//Armor
 	message_window("Importing " + data.name, "Importing Armor");
@@ -587,7 +611,7 @@ function parse_pathbuilder_export(data) {
 		if ("fileURL" in itemData) {
 			itemData = rest_call(itemData.fileURL);
 		} else if (itemData == null && thisArmor.name != null) {
-			unfoundData.push(thisArmor.name);
+			unfoundData.push(thisArmor.name + " (Armor)");
 		}
 		let trueID = "armor";
 		if ("_id" in itemData) {
@@ -599,7 +623,6 @@ function parse_pathbuilder_export(data) {
 			itemData._id = trueID;
 			itemData.id = trueID;
 		}
-		//parse_feature(tempData.baseName, itemData, characterData);
 		itemData.system.quantity = thisArmor.qty;
 		itemData.system.equipped = thisArmor.worn;
 		itemData.system.runes = { "property": [], "potency": ((thisArmor.pot == "") ? 0 : thisArmor.pot), "resilient": 0 };
@@ -619,7 +642,9 @@ function parse_pathbuilder_export(data) {
 		}
 		itemData.system.id = trueID;
 		itemData.system._id = trueID;
-		itemData.type = "armor";
+		if ("type" in itemData && itemData.type != "shield") {
+			itemData.type = "armor";
+		}
 		characterData.inventory[trueID] = itemData;
 	}
 
@@ -683,7 +708,7 @@ function parse_pathbuilder_export(data) {
 				characterData.basicAttacks.push(newAttackData);
 			} else {
 				if (thisWeapon.name != "Fist" && thisWeapon.name != null) {
-					unfoundData.push(thisWeapon.name);
+					unfoundData.push(thisWeapon.name + " (Weapon)");
 				}
 			}
 		}
@@ -765,7 +790,7 @@ function parse_pathbuilder_export(data) {
 			}
 		} else {
 			if (eqName != null) {
-				unfoundData.push(eqName);
+				unfoundData.push(eqName + " (Gear)");
 			}
 		}
 	}
@@ -794,7 +819,7 @@ function parse_pathbuilder_export(data) {
 				MapTool.chat.broadcast("Couldn't find familiar ability " + ability);
 			} else {
 				if (ability != null) {
-					unfoundData.push(ability);
+					unfoundData.push(ability + " (Familiar)");
 				}
 			}
 		}

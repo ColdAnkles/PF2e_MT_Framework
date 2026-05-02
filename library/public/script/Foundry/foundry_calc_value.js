@@ -2,6 +2,7 @@
 
 function foundry_calc_value(value, actor, item) {
 	let newValue = Number(value);
+	//MapTool.chat.broadcast("calc value: " + value)
 	if (isNaN(newValue)) {
 		try {
 			if (typeof (value) == "object") {
