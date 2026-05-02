@@ -1,5 +1,6 @@
 ﻿param (
-    $runFuncs
+    [Parameter(Mandatory)][ValidateSet("pf2e", "sf2e")][string] $system,
+    [Parameter(Mandatory)][ValidateSet("all", "download", "source", "expand", "lang", "diffCheckTest", "import")][string] $runFuncs
 )
 
 function Get-Master-Zip {
@@ -24,7 +25,16 @@ function Get-Foundry-Sources {
 
     ForEach ($item in $response) {
         if ($item.name -eq "packs") {
-            $base_pack_url = $item.git_url + "?recursive=true"
+            $base_pack_url = $item.git_url
+            continue
+        }
+    }
+
+    $response = Invoke-RestMethod -Uri $base_pack_url
+
+    ForEach ($item in $response.tree) {
+        if ($item.path -eq $system) {
+            $base_pack_url = $item.url + "?recursive=true"
             continue
         }
     }
@@ -39,6 +49,9 @@ function Get-Foundry-Sources {
             }
         }
         elseif ($p.type -eq "blob") {
+            if ($p.path.EndsWith("_folders.json")) {
+                continue
+            }
             $split_array = $p.path -split "/"
             $parent = $split_array[0]
             if (!$script:unwantedPacks.Contains($parent)) {
@@ -51,12 +64,23 @@ function Get-Foundry-Sources {
         }
     }
 
+    $removeSources = [System.Collections.ArrayList]@()
+    ForEach ($source in $sources.GetEnumerator()) {
+        if ($source.value.content.count -eq 0) {
+            $removeSources.add($source.key) | Out-Null
+        }
+    }
+
+    ForEach ($r in $removeSources){
+        $sources.Remove($r)
+    }
+
     $sources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii ".\library\public\data\pf2e_source.json"
 }
 
 function Import-All-Sources {
     
-    $sourceList = Get-ChildItem .\pf2e-master\*\packs\pf2e\* | ForEach-Object { $_.FullName }
+    $sourceList = Get-ChildItem .\pf2e-master\*\packs\$system\* | ForEach-Object { $_.FullName }
 
     #Load More Important Sources First
     $coreContent = @("actions","ancestries","backgrounds","classes","classfeatures","conditions","equipment","feats","hazards","spells","spell-effects","pathfinder-monster-core","pathfinder-monster-core-2","pathfinder-npc-core")
