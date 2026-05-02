@@ -1,8 +1,8 @@
 "use strict";
 
 function add_persistent_damage() {
-    let persistentDamageData = JSON.parse(read_data("pf2e_condition"))["Persistent Damage"];
-
+    let conditionDict = JSON.parse(read_data("pf2e_condition"));
+    let persistentDamageData = search_dict(conditionDict, "name", "Persistent Damage")[0];
     let damageSource = getLibProperty("lib:ca.pf2e", "lastAction");
     if (String(damageSource) == "") {
         damageSource = "Source";
