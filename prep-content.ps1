@@ -3,7 +3,7 @@
 )
 
 function Get-Master-Zip {
-    $zipURL = "https://api.github.com/repos/foundryvtt/pf2e/zipball/master"
+    $zipURL = "https://api.github.com/repos/foundryvtt/pf2e/zipball"
     Invoke-RestMethod -Uri $zipURL -OutFile pf2e-master.zip
 }
 
@@ -56,10 +56,10 @@ function Get-Foundry-Sources {
 
 function Import-All-Sources {
     
-    $sourceList = Get-ChildItem .\pf2e-master\*\packs\* | ForEach-Object { $_.FullName }
+    $sourceList = Get-ChildItem .\pf2e-master\*\packs\pf2e\* | ForEach-Object { $_.FullName }
 
     #Load More Important Sources First
-    $coreContent = @("actions","ancestries","backgrounds","classes","classfeatures","conditions","equipment","feats","hazards","spells","spell-effects","pathfinder-monster-core")
+    $coreContent = @("actions","ancestries","backgrounds","classes","classfeatures","conditions","equipment","feats","hazards","spells","spell-effects","pathfinder-monster-core","pathfinder-monster-core-2","pathfinder-npc-core")
     $skipItems = @()
     ForEach ($source in $sourceList) {
         ForEach($coreItem in $coreContent){
@@ -266,7 +266,7 @@ function import-source-file {
         $storeData.items = $data.items
         $storeData.system = $data.system
     }else{
-        $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/master" + $subPath + "/" + $fileName
+        $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/HEAD" + $subPath + "/" + $fileName
     }
 
     if ( !$foundSources.Contains($storeData.source)) {
@@ -332,7 +332,7 @@ function Invoke-Diff-Checks {
 
 $diffCheckFiles = @("black-dragon-adult.json", "heal.json", "force-barrage.json", "affix-a-talisman.json", "recall-knowledge.json", "off-guard.json")
 $unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics", "criticaldeck", "action-macros")
-$wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder Player Core 2", "Pathfinder Rage of Elements", "Pathfinder GM Core", "Pathfinder Advanced Player's Guide", "Pathfinder Treasure Vault", "Pathfinder Dark Archive", "Pathfinder Gamemastery Guide", "Pathfinder Secrets of Magic", "Pathfinder Bestiary", "Pathfinder Bestiary 2", "Pathfinder Bestiary 3", "Pathfinder Book of the Dead", "Pathfinder Guns & Gears","Pathfinder Monster Core", "Pathfinder NPC Core")
+$wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder Player Core 2", "Pathfinder Rage of Elements", "Pathfinder GM Core", "Pathfinder Advanced Player's Guide", "Pathfinder Treasure Vault", "Pathfinder Dark Archive", "Pathfinder Gamemastery Guide", "Pathfinder Secrets of Magic", "Pathfinder Bestiary", "Pathfinder Bestiary 2", "Pathfinder Bestiary 3", "Pathfinder Book of the Dead", "Pathfinder Guns & Gears","Pathfinder Monster Core", "Pathfinder Monster Core 2", "Pathfinder NPC Core")
 $sources = @{}
 $packData = @{}
 $langData = @{}
