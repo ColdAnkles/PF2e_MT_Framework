@@ -9,4 +9,4 @@ function add_common_action_macros(tokenID) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.add_common_action_macros", add_common_action_macros);
+MTScript.registerMacro("ca.pz2e.add_common_action_macros", add_common_action_macros);

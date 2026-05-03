@@ -5,8 +5,8 @@ function generate_encounter_sizes(level, xpBudget) {
     xpBudget = Number(xpBudget);
     let encounterData = calculate_encounters(level, xpBudget);
     let levelVals = [level - 4, level - 3, level - 2, level - 1, level + 0, level + 1, level + 2, level + 3, level + 4];
-    let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
-    let ouptutHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'><body>";
+    let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
+    let ouptutHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'><body>";
 
     for (var d in encounterData) {
         let en = encounterData[d];
@@ -22,7 +22,7 @@ function generate_encounter_sizes(level, xpBudget) {
     return ouptutHTML;
 }
 
-MTScript.registerMacro("ca.pf2e.generate_encounter_sizes", generate_encounter_sizes);
+MTScript.registerMacro("ca.pz2e.generate_encounter_sizes", generate_encounter_sizes);
 
 function calculate_encounters(level, targetVal) {
     let xpVals = [10, 15, 20, 30, 40, 60, 80, 120, 160];
@@ -52,7 +52,7 @@ function calculate_encounters(level, targetVal) {
     return xpCombos;
 }
 
-MTScript.registerMacro("ca.pf2e.calculate_encounters", calculate_encounters);
+MTScript.registerMacro("ca.pz2e.calculate_encounters", calculate_encounters);
 
 function makeCombination(options, remainder, current, results, index) {
 

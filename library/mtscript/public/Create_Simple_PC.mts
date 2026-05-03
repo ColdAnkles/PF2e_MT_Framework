@@ -36,7 +36,7 @@
                                 "traits",pcTraits)]
 
 [h: data = json.set("{}","pathbuilderID",-1,"isPB",false,"simpleData",tokenData)]
-[r: ca.pf2e.Spawn_PC_Lib(data)]
+[r: ca.pz2e.Spawn_PC_Lib(data)]
 [h, if(isFrameVisible("Compendium")), code:{
-	[h: ca.pf2e.Compendium_Home()]
+	[h: ca.pz2e.Compendium_Home()]
 };{}]

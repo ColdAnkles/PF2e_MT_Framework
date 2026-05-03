@@ -27,4 +27,4 @@ function create_pc_token(newPCTokenID, pcLibID) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.create_pc_token", create_pc_token);
+MTScript.registerMacro("ca.pz2e.create_pc_token", create_pc_token);

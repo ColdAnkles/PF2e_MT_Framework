@@ -3,10 +3,10 @@
 function build_spell_view(spellName) {
 	//MapTool.chat.broadcast(spellName);
 	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
-	let property = JSON.parse(read_data("pf2e_spell"));
-	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
-	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+	//let property = JSON.parse(libToken.getProperty("pz2e_spell"));
+	let property = JSON.parse(read_data("pz2e_spell"));
+	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).pz2e;
+	let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
 	if (!(spellName in property)) {
 		let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
@@ -250,4 +250,4 @@ function build_spell_view(spellName) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.build_spell_view", build_spell_view);
+MTScript.registerMacro("ca.pz2e.build_spell_view", build_spell_view);

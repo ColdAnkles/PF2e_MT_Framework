@@ -41,7 +41,7 @@ function view_inventory(tokenID, inventoryAction = null) {
                     inventory = JSON.parse(token.getProperty("inventory"));
                 } else if (action == "view") {
                     MTScript.setVariable("itemData", actionItem);
-                    MTScript.evalMacro("[h: ca.pf2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\"" + actionItem.name + "\",\"itemType\",\"" + actionItem.type + "\",\"itemData\",itemData))]")
+                    MTScript.evalMacro("[h: ca.pz2e.Item_View_Frame(json.set(\"{}\",\"itemName\",\"" + actionItem.name + "\",\"itemType\",\"" + actionItem.type + "\",\"itemData\",itemData))]")
                 }
             }
         }
@@ -55,10 +55,10 @@ function view_inventory(tokenID, inventoryAction = null) {
 
     let tokenName = token.getName().replaceAll("Lib:", "");
 
-    let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+    let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
-    let inventoryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>" + tokenName + "'s Inventory</h1>";
-    inventoryHTML += "<form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+    let inventoryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><h1 class='feel-title'>" + tokenName + "'s Inventory</h1>";
+    inventoryHTML += "<form action='macro://Inventory_Form_To_JS@Lib:ca.pz2e/self/impersonated?'>";
     inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'><table width=100%>";
     inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Equip</th><th>Use</th><th>Drop</th></tr>";
 
@@ -66,7 +66,7 @@ function view_inventory(tokenID, inventoryAction = null) {
         let thisItem = inventory[itemID];
         let viewButtonJSON = { "tokenID": tokenID };
         viewButtonJSON["view_" + thisItem._id] = "Submit";
-        inventoryHTML += "<tr><td>" + create_macroLink(thisItem.name, "Inventory_Form_To_JS@Lib:ca.pf2e", viewButtonJSON) + "</td>";
+        inventoryHTML += "<tr><td>" + create_macroLink(thisItem.name, "Inventory_Form_To_JS@Lib:ca.pz2e", viewButtonJSON) + "</td>";
         inventoryHTML += "<td>" + String(thisItem.system.quantity) + "</td><td><input type='submit' name='equip_" + thisItem._id + "' value='" + ((thisItem.system.equipped) ? "Unequip" : "Equip") + "'></td>";
         inventoryHTML += "<td><input type='submit' name='share_" + thisItem._id + "' value='Submit'></td>";
         inventoryHTML += "<td><input type='submit' name='drop_" + thisItem._id + "' value='Drop'></tr>";
@@ -78,7 +78,7 @@ function view_inventory(tokenID, inventoryAction = null) {
 
     if (groundItems.length > 0) {
         inventoryHTML += "<br /><br /><h1 class='feel-title'>The Ground</h1>"
-        inventoryHTML += "<form action='macro://Inventory_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+        inventoryHTML += "<form action='macro://Inventory_Form_To_JS@Lib:ca.pz2e/self/impersonated?'>";
         inventoryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'><table width=100%>";
         inventoryHTML += "<tr><th>Item Name</th><th>Quantity</th><th>Pick Up</th></tr>";
 
@@ -101,4 +101,4 @@ function view_inventory(tokenID, inventoryAction = null) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.view_inventory", view_inventory);
+MTScript.registerMacro("ca.pz2e.view_inventory", view_inventory);

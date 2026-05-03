@@ -14,7 +14,7 @@ function calculate_ac(tokenID) {
 		base_ac = Number(token.getProperty("ac")) - Number(token.getProperty("dex"));
 	}
 
-	if (get_token_property_type(token) == "PF2E_Hazard") {
+	if (get_token_property_type(token) == "PZ2E_Hazard") {
 		return Number(token.getProperty("ac"));
 	}
 
@@ -98,4 +98,4 @@ function calculate_ac(tokenID) {
 	return totalAC;
 }
 
-MTScript.registerMacro("ca.pf2e.calculate_ac", calculate_ac);
+MTScript.registerMacro("ca.pz2e.calculate_ac", calculate_ac);

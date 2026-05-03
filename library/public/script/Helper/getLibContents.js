@@ -1,7 +1,7 @@
 "use strict";
 
 function getLibContents(search = "") {
-    MTScript.evalMacro("[h: content = library.getContents('ca.pf2e')]")
+    MTScript.evalMacro("[h: content = library.getContents('ca.pz2e')]")
     let content = JSON.parse(MTScript.getVariable("content"));
 
     if (search == "") {
@@ -21,4 +21,4 @@ function getLibContents(search = "") {
 
 }
 
-MTScript.registerMacro("ca.pf2e.getLibContents", getLibContents);
+MTScript.registerMacro("ca.pz2e.getLibContents", getLibContents);

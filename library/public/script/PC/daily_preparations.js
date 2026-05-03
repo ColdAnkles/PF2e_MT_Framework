@@ -39,4 +39,4 @@ function daily_preparations(token) {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.daily_preparations", daily_preparations);
+MTScript.registerMacro("ca.pz2e.daily_preparations", daily_preparations);

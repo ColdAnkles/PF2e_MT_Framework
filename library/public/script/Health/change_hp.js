@@ -28,9 +28,9 @@ function change_hp(tokenID, changeHPData = null) {
 	}
 
 	if (changeHPData == null) {
-		let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+		let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
-		let queryHTML = "<html><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\"><form action='macro://Change_HP_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+		let queryHTML = "<html><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pz2e/css/" + themeData.css + "\"><form action='macro://Change_HP_Form_To_JS@Lib:ca.pz2e/self/impersonated?'>";
 		queryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'><table class='staticTable'>";
 
 		queryHTML += "<tr><th colspan=2><b>Damage, Healing, and Temporary HP</b></th></tr>";
@@ -224,7 +224,7 @@ function change_hp(tokenID, changeHPData = null) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.change_hp", change_hp);
+MTScript.registerMacro("ca.pz2e.change_hp", change_hp);
 
 function troop_segment_change(maxHP, oldHP, newHP) {
 	//MapTool.chat.broadcast(String(oldHP)+"/"+String(maxHP)+" -> " +String(newHP)+"/"+String(maxHP));

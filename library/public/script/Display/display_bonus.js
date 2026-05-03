@@ -8,4 +8,4 @@ function display_bonus(tokenID, scope) {
 	return effect_bonus;
 }
 
-MTScript.registerMacro("ca.pf2e.display_bonus", display_bonus);
+MTScript.registerMacro("ca.pz2e.display_bonus", display_bonus);

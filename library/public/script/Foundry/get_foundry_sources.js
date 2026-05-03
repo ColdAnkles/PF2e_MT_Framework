@@ -3,7 +3,7 @@
 function get_foundry_sources(git = true) {
 	if (git) {
 		let headers = { accept: ["application/json"] };
-		let base_content_url = "http://api.github.com/repos/foundryvtt/pf2e/contents";
+		let base_content_url = "http://api.github.com/repos/foundryvtt/pz2e/contents";
 		let base_pack_url = "";
 		let sources = {};
 
@@ -53,7 +53,7 @@ function get_foundry_sources(git = true) {
 			} else {
 				store_object_data(sources[source]);
 			}
-			//MapTool.chat.broadcast(JSON.stringify(Object.keys(JSON.parse(read_data("pf2e_source")))));
+			//MapTool.chat.broadcast(JSON.stringify(Object.keys(JSON.parse(read_data("pz2e_source")))));
 		}
 
 		//MapTool.chat.broadcast(JSON.stringify(Object.keys(sources)));
@@ -64,4 +64,4 @@ function get_foundry_sources(git = true) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.get_foundry_sources", get_foundry_sources);
+MTScript.registerMacro("ca.pz2e.get_foundry_sources", get_foundry_sources);

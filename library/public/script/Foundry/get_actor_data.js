@@ -16,7 +16,7 @@ function get_actor_data(actor, varName) {
 
     if (result == null && varName.includes("flags.system")) {
         try {
-            varName = varName.replace("flags.system", "flags.pf2e")
+            varName = varName.replace("flags.system", "flags.pz2e")
             result = eval("actorData." + varName);
         } catch {
             result = null
@@ -62,4 +62,4 @@ function get_actor_data_mtscript(actor, varName) {
     return JSON.stringify(get_actor_data(actor, varName));
 }
 
-MTScript.registerMacro("ca.pf2e.get_actor_data_mtscript", get_actor_data_mtscript);
+MTScript.registerMacro("ca.pz2e.get_actor_data_mtscript", get_actor_data_mtscript);

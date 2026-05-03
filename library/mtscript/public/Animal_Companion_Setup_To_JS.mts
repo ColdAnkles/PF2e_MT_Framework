@@ -1,1 +1,1 @@
-[h: js.ca.pf2e.setup_animal_companion(macro.args)]
+[h: js.ca.pz2e.setup_animal_companion(macro.args)]

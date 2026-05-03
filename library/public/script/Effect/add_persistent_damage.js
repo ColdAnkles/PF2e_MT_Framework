@@ -1,9 +1,9 @@
 "use strict";
 
 function add_persistent_damage() {
-    let conditionDict = JSON.parse(read_data("pf2e_condition"));
+    let conditionDict = JSON.parse(read_data("pz2e_condition"));
     let persistentDamageData = search_dict(conditionDict, "name", "Persistent Damage")[0];
-    let damageSource = getLibProperty("lib:ca.pf2e", "lastAction");
+    let damageSource = getLibProperty("lib:ca.pz2e", "lastAction");
     if (String(damageSource) == "") {
         damageSource = "Source";
     }
@@ -53,4 +53,4 @@ function add_persistent_damage() {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.add_persistent_damage", add_persistent_damage);
+MTScript.registerMacro("ca.pz2e.add_persistent_damage", add_persistent_damage);

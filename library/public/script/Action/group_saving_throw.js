@@ -27,7 +27,7 @@ function group_saving_throw(tokens) {
     saving_throw_dialog("group", "Group", saveData, {}, saveStrings, tokens);
 }
 
-MTScript.registerMacro("ca.pf2e.group_saving_throw", group_saving_throw);
+MTScript.registerMacro("ca.pz2e.group_saving_throw", group_saving_throw);
 
 function display_group_saving_throw(saveData) {
     //MapTool.chat.broadcast(JSON.stringify(saveData));
@@ -35,7 +35,7 @@ function display_group_saving_throw(saveData) {
     let displayData = { "name": "The group attempts a " + capitalise(saveData.saveName) + " save.", "system": { "description": { "value": "" } } };
 
     let tokenList = saveData.tokenList.split(",");
-    let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+    let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
     for (var t in tokenList) {
         let saveToken = tokenList[t]
         let tokenSave = saving_throw(saveToken, saveData, { "applyEffect": "" }, true);
@@ -61,4 +61,4 @@ function display_group_saving_throw(saveData) {
     chat_display(displayData);
 }
 
-MTScript.registerMacro("ca.pf2e.display_group_saving_throw", display_group_saving_throw);
+MTScript.registerMacro("ca.pz2e.display_group_saving_throw", display_group_saving_throw);

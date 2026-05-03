@@ -22,7 +22,7 @@ function get_equipped_shield(token) {
 	return null;
 }
 
-MTScript.registerMacro("ca.pf2e.get_equipped_shield", get_equipped_shield);
+MTScript.registerMacro("ca.pz2e.get_equipped_shield", get_equipped_shield);
 
 function get_equipped_armor(token) {
 	if (typeof (token) == "string") {
@@ -39,7 +39,7 @@ function get_equipped_armor(token) {
 	return null;
 }
 
-MTScript.registerMacro("ca.pf2e.get_equipped_armor", get_equipped_armor);
+MTScript.registerMacro("ca.pz2e.get_equipped_armor", get_equipped_armor);
 
 function find_handwraps(token) {
 	let bestHandwraps = null;
@@ -57,7 +57,7 @@ function find_handwraps(token) {
 	return bestHandwraps;
 }
 
-MTScript.registerMacro("ca.pf2e.find_handwraps", find_handwraps);
+MTScript.registerMacro("ca.pz2e.find_handwraps", find_handwraps);
 
 function get_equipped_items(token) {
 	if (typeof (token) == "string") {

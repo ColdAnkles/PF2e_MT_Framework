@@ -113,7 +113,7 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 				dTwenty = Math.min(dTwenty, Number(MTScript.getVariable("dTwenty")));
 			}
 
-			let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+			let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
 			let dTwentyColour = themeData.colours.standardText;
 			if (dTwenty == 1) {
@@ -184,4 +184,4 @@ function saving_throw(saveToken, saveData = null, additionalData = { "applyEffec
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.saving_throw", saving_throw);
+MTScript.registerMacro("ca.pz2e.saving_throw", saving_throw);

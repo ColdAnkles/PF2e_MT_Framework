@@ -1,14 +1,14 @@
 "use strict";
 
 function load_glossary() {
-    MTScript.evalMacro("[h: output = library.getContents('ca.pf2e')]")
+    MTScript.evalMacro("[h: output = library.getContents('ca.pz2e')]")
     let libContents = JSON.parse(MTScript.getVariable("output"));
     let glossary = null;
     for (var file in libContents) {
         let fileName = libContents[file];
         if (fileName.includes("/lang_data/")) {
             MTScript.setVariable("item", fileName);
-            MTScript.evalMacro("[h: importData = data.getStaticData('ca.pf2e', item)]");
+            MTScript.evalMacro("[h: importData = data.getStaticData('ca.pz2e', item)]");
             let importData = JSON.parse(MTScript.getVariable("importData"));
             if (glossary == null) {
                 glossary = importData;
@@ -19,7 +19,7 @@ function load_glossary() {
         }
     }
     //MapTool.chat.broadcast(JSON.stringify(glossary));
-    write_data("pf2e_glossary", glossary);
+    write_data("pz2e_glossary", glossary);
 }
 
-MTScript.registerMacro("ca.pf2e.load_glossary", load_glossary);
+MTScript.registerMacro("ca.pz2e.load_glossary", load_glossary);

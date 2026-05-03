@@ -167,7 +167,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			return;
 		}
 
-		let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+		let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
 		let dTwenty = 0;
 		let dTwentyColour = themeData.colours.standardText;
@@ -394,4 +394,4 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.skill_check", skill_check);
+MTScript.registerMacro("ca.pz2e.skill_check", skill_check);

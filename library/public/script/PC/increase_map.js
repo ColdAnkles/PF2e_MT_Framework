@@ -22,4 +22,4 @@ function increase_map(token) {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.increase_map", increase_map);
+MTScript.registerMacro("ca.pz2e.increase_map", increase_map);

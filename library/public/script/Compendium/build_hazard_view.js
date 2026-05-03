@@ -3,7 +3,7 @@
 function build_hazard_view(itemName, tokenID = null) {
 	let itemData = null;
 	if (tokenID == null) {
-		let itemList = JSON.parse(read_data("pf2e_hazard"));
+		let itemList = JSON.parse(read_data("PZ2E_Hazard"));
 		if (!(itemName in itemList)) {
 			return "<b>Could not find hazard " + itemName + ".</b>";
 		}
@@ -163,4 +163,4 @@ function build_hazard_view(itemName, tokenID = null) {
 	return HTMLString;
 }
 
-MTScript.registerMacro("ca.pf2e.build_hazard_view", build_hazard_view);
+MTScript.registerMacro("ca.pz2e.build_hazard_view", build_hazard_view);

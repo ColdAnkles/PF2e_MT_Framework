@@ -3,8 +3,8 @@
 function chat_display(displayData, broadcast = true, additionalData = { "rollDice": false, "gm": false, "isPC": false, "overrideName": null }) {
 	//MapTool.chat.broadcast(JSON.stringify(displayData));
 
-	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
-	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).pz2e;
+	let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
 	additionalData.invertImages = themeData.icons == "W";
 
@@ -131,7 +131,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 			let runeStrings = [];
 			for (var r in displayData.system.runes) {
 				runeStrings.push(
-					create_macroLink(displayData.system.runes[r], "Item_View_Frame@Lib:ca.pf2e", { "itemType": "item", "itemName": displayData.system.runes[r] }));
+					create_macroLink(displayData.system.runes[r], "Item_View_Frame@Lib:ca.pz2e", { "itemType": "item", "itemName": displayData.system.runes[r] }));
 			}
 			outputText += "<div style='margin:0px;padding:3px; background-color:" + themeData.colours.standardBackground + "; color:" + themeData.colours.standardText + "'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
 			gmOutputText += "<div style='margin:0px;padding:3px; background-color:" + themeData.colours.standardBackground + "; color:" + themeData.colours.standardText + "'><i>Item Runes</i><br />" + runeStrings.join(", ") + "</div>";
@@ -196,4 +196,4 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.chat_display", chat_display);
+MTScript.registerMacro("ca.pz2e.chat_display", chat_display);

@@ -2,26 +2,26 @@
 
 function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToken = null) {
 
-    let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
-    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
+    let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
+    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
     let itemList = null;
 
     try {
-        itemList = JSON.parse(read_data("pf2e_" + itemType));
+        itemList = JSON.parse(read_data("pz2e_" + itemType));
     } catch (e) {
         MapTool.chat.broadcast("Error in build_item_list during read_item_list");
         MapTool.chat.broadcast("itemType: " + itemType);
-        MapTool.chat.broadcast("itemList_raw: " + read_data("pf2e_" + itemType));
+        MapTool.chat.broadcast("itemList_raw: " + read_data("pz2e_" + itemType));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
     let enabledSources = null;
 
     try {
-        enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
+        enabledSources = JSON.parse(read_data("pz2e_enabledSources"));
     } catch (e) {
         MapTool.chat.broadcast("Error in build_item_list during read_enabled_sources");
-        MapTool.chat.broadcast("enabledSources_raw: " + read_data("pf2e_enabledSources"));
+        MapTool.chat.broadcast("enabledSources_raw: " + read_data("pz2e_enabledSources"));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
@@ -33,7 +33,7 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
     }
     itemSorted.sort(sort_by(sortKey, sortDir == "d", (a) => ((typeof (a) == "string") ? a.toUpperCase() : a)));
 
-    returnHTML += "<script src='lib://ca.pf2e/html/filterTable.js'></script> <form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
+    returnHTML += "<script src='lib://ca.pz2e/html/filterTable.js'></script> <form action='macro://Compendium_Window@Lib:ca.pz2e/self/impersonated?'>\
     <div><input name='searchKey' id='filterText' placeholder='Search' value='"+ searchKey + "' style='font-family:Arial;'></input>";
 
     if (itemType != "action") {
@@ -50,17 +50,17 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
     }
     returnHTML += "</div></form>";
 
-    returnHTML += "<table id='filterTable'><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "name", "dir": ((sortKey == "name") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
-    returnHTML += "<th>" + create_macroLink("Type", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "type", "dir": ((sortKey == "type") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
-    returnHTML += "<th>" + create_macroLink("Rarity", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "rarity", "dir": ((sortKey == "rarity") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<table id='filterTable'><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": itemType, "sort": "name", "dir": ((sortKey == "name") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<th>" + create_macroLink("Type", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": itemType, "sort": "type", "dir": ((sortKey == "type") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<th>" + create_macroLink("Rarity", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": itemType, "sort": "rarity", "dir": ((sortKey == "rarity") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th width=10% align=center>Traits</th>";
     if (itemType == "action") {
         if (relatedToken != null) {
             returnHTML += "<th width=10% align=center>Add Macro</th>";
         }
     } else {
-        returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "level", "dir": ((sortKey == "level") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
-        returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": itemType, "sort": "source", "dir": ((sortKey == "source") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+        returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": itemType, "sort": "level", "dir": ((sortKey == "level") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+        returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": itemType, "sort": "source", "dir": ((sortKey == "source") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     }
     if (itemType == "hazard") {
         returnHTML += "<th>Spawn Link</th>";
@@ -94,9 +94,9 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
         }
 
         if (itemType == "hazard") {
-            returnHTML += "<td id='name'>" + create_macroLink(capitalise(thisItem.name), "Hazard_View_Frame@Lib:ca.pf2e", { "name": thisItem.key, "tokenID": "null" }) + "</td>";
+            returnHTML += "<td id='name'>" + create_macroLink(capitalise(thisItem.name), "Hazard_View_Frame@Lib:ca.pz2e", { "name": thisItem.key, "tokenID": "null" }) + "</td>";
         } else {
-            returnHTML += "<td id='name'>" + create_macroLink(capitalise(thisItem.name), "Item_View_Frame@Lib:ca.pf2e", { "itemType": itemType, "itemName": thisItem.key }) + "</td>";
+            returnHTML += "<td id='name'>" + create_macroLink(capitalise(thisItem.name), "Item_View_Frame@Lib:ca.pz2e", { "itemType": itemType, "itemName": thisItem.key }) + "</td>";
         }
         returnHTML += "<td id='type'>" + capitalise(thisItem.type) + "</td>";
         if ("rarity" in thisItem) {
@@ -117,12 +117,12 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
             }
             returnHTML += "<td align=center id='source'>" + thisItem.source + "</td>";
         } else if (itemType == "action" && relatedToken != null) {
-            returnHTML += "<td align=center>" + create_macroLink("Add Macro", "Add_Action_To_Token@Lib:ca.pf2e", "[" + JSON.stringify({ "name": thisItem.name, "type": "basic", "group": "Extra" }) + ", " + relatedToken + "]") + "</td>";
+            returnHTML += "<td align=center>" + create_macroLink("Add Macro", "Add_Action_To_Token@Lib:ca.pz2e", "[" + JSON.stringify({ "name": thisItem.name, "type": "basic", "group": "Extra" }) + ", " + relatedToken + "]") + "</td>";
         }
         if (itemType == "hazard") {
-            returnHTML += "<td width=0%>" + create_macroLink("Make Token", "Spawn_Hazard@Lib:ca.pf2e", thisItem.key);
+            returnHTML += "<td width=0%>" + create_macroLink("Make Token", "Spawn_Hazard@Lib:ca.pz2e", thisItem.key);
         } else if (itemType == "consumable" || itemType == "weapon" || itemType == "armor" || itemType == "shield" || itemType == "item") {
-            returnHTML += "<td width=0%>" + create_macroLink("Spawn Item", "Spawn_Item@Lib:ca.pf2e", thisItem.key);
+            returnHTML += "<td width=0%>" + create_macroLink("Spawn Item", "Spawn_Item@Lib:ca.pz2e", thisItem.key);
         }
         returnHTML += "</tr>";
     }
@@ -131,4 +131,4 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
 
 }
 
-MTScript.registerMacro("ca.pf2e.build_item_list", build_item_list);
+MTScript.registerMacro("ca.pz2e.build_item_list", build_item_list);

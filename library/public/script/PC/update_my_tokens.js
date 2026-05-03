@@ -21,4 +21,4 @@ function update_my_tokens(token) {
 	token.setProperty("pcTokens", JSON.stringify(validTokenList));
 }
 
-MTScript.registerMacro("ca.pf2e.update_my_tokens", update_my_tokens);
+MTScript.registerMacro("ca.pz2e.update_my_tokens", update_my_tokens);

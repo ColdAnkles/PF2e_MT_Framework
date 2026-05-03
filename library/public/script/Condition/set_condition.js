@@ -19,8 +19,8 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 	}
 
 	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pf2e_condition"));
-	let property = JSON.parse(read_data("pf2e_condition"));
+	//let property = JSON.parse(libToken.getProperty("pz2e_condition"));
+	let property = JSON.parse(read_data("pz2e_condition"));
 	let conditionData = search_dict(property, "name", trueConditionName);
 
 	if (conditionData.length == 0) {
@@ -221,4 +221,4 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 
 }
 
-MTScript.registerMacro("ca.pf2e.set_condition", set_condition);
+MTScript.registerMacro("ca.pz2e.set_condition", set_condition);

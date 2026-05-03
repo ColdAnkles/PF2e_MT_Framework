@@ -77,4 +77,4 @@ function display_speeds(token) {
 	return speedString;
 }
 
-MTScript.registerMacro("ca.pf2e.display_speeds", display_speeds);
+MTScript.registerMacro("ca.pz2e.display_speeds", display_speeds);

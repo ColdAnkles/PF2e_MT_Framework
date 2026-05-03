@@ -177,4 +177,4 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 	return returnData;
 }
 
-MTScript.registerMacro("ca.pf2e.calculate_bonus", calculate_bonus);
+MTScript.registerMacro("ca.pz2e.calculate_bonus", calculate_bonus);

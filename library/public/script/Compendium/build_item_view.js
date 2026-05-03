@@ -4,8 +4,8 @@ function build_item_view(itemType, itemName, itemData = null) {
 	if (["consumable", "armor", "weapon"].includes(itemType)) {
 		itemType = "item";
 	}
-	let itemList = JSON.parse(read_data("pf2e_" + itemType));
-	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
+	let itemList = JSON.parse(read_data("pz2e_" + itemType));
+	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).pz2e;
 
 	try {
 		if (itemData == null || itemData == "") {
@@ -25,7 +25,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 		return;
 	}
 
-	let HTMLString = "<h5>" + create_macroLink("Share", "Share_To_Chat@Lib:ca.pf2e", JSON.stringify({ "data": itemData })) + "</h5>";
+	let HTMLString = "<h5>" + create_macroLink("Share", "Share_To_Chat@Lib:ca.pz2e", JSON.stringify({ "data": itemData })) + "</h5>";
 
 	try {
 		HTMLString += "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + (("level" in itemData.system) ? itemData.system.level.value : "") + "</span></h1>";
@@ -77,4 +77,4 @@ function build_item_view(itemType, itemName, itemData = null) {
 	return HTMLString;
 }
 
-MTScript.registerMacro("ca.pf2e.build_item_view", build_item_view);
+MTScript.registerMacro("ca.pz2e.build_item_view", build_item_view);

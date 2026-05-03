@@ -6,12 +6,12 @@
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
 [h: yCoord=getStrProp(center,"centerY")]
-[h: val = json.set("{}", "tokenImage", "lib://ca.pf2e/image/PetDefault.png", "name", "NewPC","x",xCoord,"y",yCoord)]
+[h: val = json.set("{}", "tokenImage", "lib://ca.pz2e/image/PetDefault.png", "name", "NewPC","x",xCoord,"y",yCoord)]
 [h: newToken = createToken(val)]
-[h: setPropertyType("PF2E_Character", newToken)]
+[h: setPropertyType("pz2e_Character", newToken)]
 [h: setPC(newToken)]
 
-[h: js.ca.pf2e.write_creature_properties(petData, newToken)]
+[h: js.ca.pz2e.write_creature_properties(petData, newToken)]
 
 [h: tokenMaps = getTokenMap(newToken)]
 [h, if(!json.contains(tokenMaps,"Player Characters")), code:{
@@ -27,7 +27,7 @@
 [h: visionList = json.append("[]","low-light","darkvision","greater darkvision")]
 [h, foreach(sense, senseList), code:{
 	[h, if(json.contains(visionList,sense)), code:{
-		[h: setSightType(js.ca.pf2e.capitalise(sense),newToken,"Player Characters")]
+		[h: setSightType(js.ca.pz2e.capitalise(sense),newToken,"Player Characters")]
 	};{}]
 }]
 [h: playerData = player.getInfo()]

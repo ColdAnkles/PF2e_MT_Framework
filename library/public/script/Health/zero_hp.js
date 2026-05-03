@@ -13,7 +13,7 @@ function kill_creature(token) {
 	MTScript.evalMacro("[h: removeFromInitiative(\"" + tokenID + "\")]");
 }
 
-MTScript.registerMacro("ca.pf2e.kill_creature", kill_creature);
+MTScript.registerMacro("ca.pz2e.kill_creature", kill_creature);
 
 function zero_hp(tokenID) {
 
@@ -87,4 +87,4 @@ function zero_hp(tokenID) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.zero_hp", zero_hp);
+MTScript.registerMacro("ca.pz2e.zero_hp", zero_hp);

@@ -21,8 +21,8 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		castLevel = Number(castLevel);
 
 		//let libToken = get_runtime("libToken");
-		//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
-		let property = JSON.parse(read_data("pf2e_spell"));
+		//let property = JSON.parse(libToken.getProperty("pz2e_spell"));
+		let property = JSON.parse(read_data("pz2e_spell"));
 
 		if (!(spellName in property)) {
 			let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
@@ -116,7 +116,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 
 			let transferData = { "spellName": spellName, "castLevel": String(castLevel), "casterToken": casterToken.getId(), "inputText": inputText, "first": first, "castGroup": castGroup };
 			MTScript.setVariable("transferData", JSON.stringify(transferData));
-			MTScript.evalMacro("[h: ca.pf2e.Spell_Actions_Form_To_JS(transferData)]");
+			MTScript.evalMacro("[h: ca.pz2e.Spell_Actions_Form_To_JS(transferData)]");
 			return;
 		} else if (spellData.system.time.value.includes("to") && additionalData != null) {
 			actionData.system.actionType.value = "action";
@@ -211,4 +211,4 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 
 }
 
-MTScript.registerMacro("ca.pf2e.cast_spell", cast_spell);
+MTScript.registerMacro("ca.pz2e.cast_spell", cast_spell);

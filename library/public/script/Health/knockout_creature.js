@@ -21,4 +21,4 @@ function knockout_creature(tokenID) {
 	chat_display({ "name": token.getName() + " unconscious!", "system": { "description": { "value": token.getName() + " knocked unconscious!" } } }, true);
 }
 
-MTScript.registerMacro("ca.pf2e.knockout_creature", knockout_creature);
+MTScript.registerMacro("ca.pz2e.knockout_creature", knockout_creature);

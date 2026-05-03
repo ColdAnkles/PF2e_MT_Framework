@@ -9,10 +9,10 @@
 }]
 [h, if(existingID==""), code:{
 	[h: data = json.set("{}","pathbuilderID",pbID,"isPB",true)]
-	[r: ca.pf2e.Spawn_PC_Lib(data)]
+	[r: ca.pz2e.Spawn_PC_Lib(data)]
 };{
-	[r: ca.pf2e.Update_PC_Lib(json.set("{}","pbID",pbID,"tokenID",existingID))]
+	[r: ca.pz2e.Update_PC_Lib(json.set("{}","pbID",pbID,"tokenID",existingID))]
 }]
 [h, if(isFrameVisible("Compendium")), code:{
-	[h: ca.pf2e.Compendium_Home()]
+	[h: ca.pz2e.Compendium_Home()]
 };{}]

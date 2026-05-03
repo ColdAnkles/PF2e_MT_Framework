@@ -123,11 +123,11 @@ function setup_familiar(baseData) {
         write_creature_properties(newFamiliarData, ownerPetList[newFamiliarData.name])
     } else {
         MTScript.setVariable("petData", JSON.stringify(newFamiliarData));
-        MTScript.evalMacro("[h: newPetID = ca.pf2e.Spawn_Pet_Lib(petData)]")
+        MTScript.evalMacro("[h: newPetID = ca.pz2e.Spawn_Pet_Lib(petData)]")
         let newPetID = MTScript.getVariable("newPetID");
         ownerPetList[newFamiliarData.name] = newPetID;
         ownerToken.setProperty("pets", JSON.stringify(ownerPetList));
     }
 }
 
-MTScript.registerMacro("ca.pf2e.setup_familiar", setup_familiar);
+MTScript.registerMacro("ca.pz2e.setup_familiar", setup_familiar);

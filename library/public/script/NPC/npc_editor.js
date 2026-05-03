@@ -180,11 +180,11 @@ function npc_editor(inputData) {
                 }
                 if (("itemWeaponLink_" + i) in inputData) {
                     if (!("flags" in itemData)) {
-                        itemData.flags = { "pf2e": { "linkedWeapon": null } }
-                    } else if (!("pf2e" in itemData.flags)) {
-                        itemData.flags.pf2e = { "linkedWeapon": null }
+                        itemData.flags = { "pz2e": { "linkedWeapon": null } }
+                    } else if (!("pz2e" in itemData.flags)) {
+                        itemData.flags.pz2e = { "linkedWeapon": null }
                     }
-                    itemData.flags.pf2e.linkedWeapon = weaponIDs[inputData["itemWeaponLink_" + i]];
+                    itemData.flags.pz2e.linkedWeapon = weaponIDs[inputData["itemWeaponLink_" + i]];
                 }
                 if (("itemCastBonusVal_" + i) in inputData) {
                     itemData.system.spelldc.value = inputData["itemCastBonusVal_" + i];
@@ -245,10 +245,10 @@ function npc_editor(inputData) {
             }
         }
         if ("addAttack" in inputData) {
-            npcData.items.push({ "_id": generate_uid(20), "flags": { "pf2e": { "linkedWeapon": null } }, "img": "systems/pf2e/icons/default-icons/melee.svg", "name": "New Attack", "sort": 99999999, "system": { "attack": { "value": "" }, "attackEffects": { "custom": "", "value": [] }, "bonus": { "value": 15 }, "damageRolls": { "mjadst6lj09xzqchu9ct": { "damage": "1d10", "damageType": "slashing" } }, "description": { "value": "" }, "publication": { "license": "OGL", "remaster": false, "title": "" }, "rules": [], "slug": null, "traits": { "rarity": "common", "value": [] }, "weaponType": { "value": "melee" } }, "type": "melee" })
+            npcData.items.push({ "_id": generate_uid(20), "flags": { "pz2e": { "linkedWeapon": null } }, "img": "systems/pz2e/icons/default-icons/melee.svg", "name": "New Attack", "sort": 99999999, "system": { "attack": { "value": "" }, "attackEffects": { "custom": "", "value": [] }, "bonus": { "value": 15 }, "damageRolls": { "mjadst6lj09xzqchu9ct": { "damage": "1d10", "damageType": "slashing" } }, "description": { "value": "" }, "publication": { "license": "OGL", "remaster": false, "title": "" }, "rules": [], "slug": null, "traits": { "rarity": "common", "value": [] }, "weaponType": { "value": "melee" } }, "type": "melee" })
         }
         if ("addItem" in inputData) {
-            let allItems = JSON.parse(read_data("pf2e_item"));
+            let allItems = JSON.parse(read_data("PZ2E_Item"));
             if (inputData.newItemName in allItems) {
                 let newItemData = allItems[inputData.newItemName];
                 if ("fileURL" in newItemData) {
@@ -269,7 +269,7 @@ function npc_editor(inputData) {
             }
         }
         if ("addSpell" in inputData) {
-            let allSpells = JSON.parse(read_data("pf2e_spell"));
+            let allSpells = JSON.parse(read_data("pz2e_spell"));
             for (var s in spellCastingNames) {
                 if (("addSpellName_" + s) in inputData) {
                     let newSpellName = inputData["addSpellName_" + s];
@@ -377,13 +377,13 @@ function npc_editor(inputData) {
         return;
     }
 
-    let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+    let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
     //workaround for weirdness
     npcData.system.traits.value = JSON.parse(JSON.stringify(npcData.system.traits.value));
 
-    let outputHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'>";
-    outputHTML += "<form action='macro://NPC_Editor@Lib:ca.pf2e/self/impersonated?'>";
+    let outputHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'>";
+    outputHTML += "<form action='macro://NPC_Editor@Lib:ca.pz2e/self/impersonated?'>";
     outputHTML += "<input type='hidden' name='untouchedData' value='" + encode(JSON.stringify(npcData)) + "'></input>"
     outputHTML += "<input type='hidden' name='currentPage' value='" + page + "'></input>"
 
@@ -476,8 +476,8 @@ function npc_editor(inputData) {
                 outputHTML += "<tr><td>Linked Weapon</td><td colspan='5'><select name='itemWeaponLink_" + itemCounter + "'><option>None</option>";
 
                 var linkedWeapon = null;
-                if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e) {
-                    linkedWeapon = itemData.flags.pf2e.linkedWeapon;
+                if ("flags" in itemData && "pz2e" in itemData.flags && "linkedWeapon" in itemData.flags.pz2e) {
+                    linkedWeapon = itemData.flags.pz2e.linkedWeapon;
                 }
                 for (var w in weaponNames) {
                     outputHTML += "<option " + ((w == linkedWeapon) ? "selected" : "") + ">" + weaponNames[w] + "</option>";
@@ -613,4 +613,4 @@ function npc_editor(inputData) {
     MTScript.evalMacro("[frame5(\"Edit NPC\", \"width=500; height=700; temporary=1; noframe=0; input=1\"):{[r: outputHTML]}]");
 }
 
-MTScript.registerMacro('ca.pf2e.npc_editor', npc_editor);
+MTScript.registerMacro('ca.pz2e.npc_editor', npc_editor);

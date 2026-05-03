@@ -19,4 +19,4 @@ function find_pc_libs() {
 	return pcList;
 }
 
-MTScript.registerMacro("ca.pf2e.find_pc_libs", find_pc_libs);
+MTScript.registerMacro("ca.pz2e.find_pc_libs", find_pc_libs);

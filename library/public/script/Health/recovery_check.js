@@ -102,4 +102,4 @@ function recovery_check(token) {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.recovery_check", recovery_check);
+MTScript.registerMacro("ca.pz2e.recovery_check", recovery_check);

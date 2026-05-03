@@ -1,16 +1,16 @@
 [h: conditionName = json.get(macro.args,0)]
 [h: tokenID = json.get(macro.args,1)]
 [h: tokenName = getName(tokenID)]
-[h: conditionDict = getLibProperty("pf2e_condition")]
+[h: conditionDict = getLibProperty("pz2e_condition")]
 
 [h: tempConditionName = replace(conditionName," \\(Time\\)","")]
 
-[h: conditionData = js.ca.pf2e.search_dict(conditionDict, "name", tempConditionName, true)]
+[h: conditionData = js.ca.pz2e.search_dict(conditionDict, "name", tempConditionName, true)]
 
 [h, if(json.length(conditionData) == 0), code:{
 	[h: allStates = getTokenStates("json")]
 	[h, if(json.contains(allStates,tempConditionName)),code:{
-		[h: js.ca.pf2e.set_condition(conditionName, tokenID)]
+		[h: js.ca.pz2e.set_condition(conditionName, tokenID)]
 	};{}]
 	[h: return(0)]
 };{
@@ -31,7 +31,7 @@
 	[h: inputText = "conditionValue|0,1,2,3,4,5,6|Condition Value (Current="+currentConditionValue+")|RADIO|SELECT="+if(currentConditionValue==0,"1","0")]
 	[h: ans = input("junkVarN|Condition for "+tokenName+"||LABEL|SPAN=TRUE","junkVar|Condition Values|Enter Value for "+conditionName+"|LABEL",inputText)]
 	[h: abort(ans)]
-	[h: js.ca.pf2e.set_condition(conditionName, tokenID, conditionValue)]	
+	[h: js.ca.pz2e.set_condition(conditionName, tokenID, conditionValue)]	
 };{
-	[h: js.ca.pf2e.set_condition(conditionName, tokenID)]
+	[h: js.ca.pz2e.set_condition(conditionName, tokenID)]
 }]

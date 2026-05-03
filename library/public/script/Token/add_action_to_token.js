@@ -49,7 +49,7 @@ function add_action_to_token(actionData, tokenID, token) {
 			if ("actionType" in actionData.system) {
 				actionData.type = actionData.system.actionType.value;
 			} else {
-				let property = JSON.parse(read_data("pf2e_action"));
+				let property = JSON.parse(read_data("pz2e_action"));
 				let lookupAction = null;
 				let lookupActions = search_dict(property, "name", actionData.name);
 				if (lookupActions.length > 0) {
@@ -94,8 +94,8 @@ function add_action_to_token(actionData, tokenID, token) {
 
 		try {
 			//let libToken = get_runtime("libToken");
-			//let property = JSON.parse(libToken.getProperty("pf2e_action"));
-			let property = JSON.parse(read_data("pf2e_action"));
+			//let property = JSON.parse(libToken.getProperty("pz2e_action"));
+			let property = JSON.parse(read_data("pz2e_action"));
 			let lookupAction = null;
 			Object.keys(property).forEach(x => { lookupAction = property[x].name === actionData.name ? property[x] : lookupAction; actionKey = property[x].name === actionData.name ? x : actionKey });
 
@@ -109,7 +109,7 @@ function add_action_to_token(actionData, tokenID, token) {
 			}
 
 			let actionDesc = chat_display(lookupAction, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": lookupAction });
-			let props = { "label": action_icon_label(lookupAction.system.actionType.value, lookupAction.system.actions.value) + " " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pf2e.simple_action(\"" + actionKey + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
+			let props = { "label": action_icon_label(lookupAction.system.actionType.value, lookupAction.system.actions.value) + " " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pz2e.simple_action(\"" + actionKey + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
 			if ("group" in actionData) {
 				props.group = actionData.group;
 			}
@@ -126,8 +126,8 @@ function add_action_to_token(actionData, tokenID, token) {
 		var inventory = JSON.parse(token.getProperty("inventory"));
 		var itemData = null;
 		var overrideName = null;
-		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e && actionData.flags.pf2e.linkedWeapon != "unarmed") {
-			itemData = inventory[actionData.flags.pf2e.linkedWeapon];
+		if ("flags" in actionData && "pz2e" in actionData.flags && "linkedWeapon" in actionData.flags.pz2e && actionData.flags.pz2e.linkedWeapon != "unarmed") {
+			itemData = inventory[actionData.flags.pz2e.linkedWeapon];
 			overrideName = itemData.name;
 			actionData.system.description = itemData.system.description;
 			actionData.system.runes = itemData.system.runes.property.map((a) => { return capitalise(a) });
@@ -151,9 +151,9 @@ function add_action_to_token(actionData, tokenID, token) {
 			let actionDesc = chat_display(actionData, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": actionData, "overrideName": overrideName });
 			let props = null;
 			if ("_id" in actionData) {
-				props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.personal_action(\"" + actionData._id + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
+				props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pz2e.personal_action(\"" + actionData._id + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
 			} else {
-				props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.personal_action(\"" + actionData.name + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
+				props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pz2e.personal_action(\"" + actionData.name + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
 			}
 			if ("group" in actionData.system) {
 				props.group = actionData.system.group;
@@ -171,8 +171,8 @@ function add_action_to_token(actionData, tokenID, token) {
 
 		try {
 			//let libToken = get_runtime("libToken");
-			//let property = JSON.parse(libToken.getProperty("pf2e_spell"));
-			let property = JSON.parse(read_data("pf2e_spell"));
+			//let property = JSON.parse(libToken.getProperty("pz2e_spell"));
+			let property = JSON.parse(read_data("pz2e_spell"));
 			let spellName = actionData.name.replaceAll(/\(.*\)/g, "").trim();
 			let lookupSpell = null;
 			if (!(spellName in property)) {
@@ -293,7 +293,7 @@ function add_action_to_token(actionData, tokenID, token) {
 				spellLabel += " (" + String(actionData.system.castLevel.value) + ")";
 			}
 
-			let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pf2e.cast_spell(\"" + spellName + "\"," + actionData.system.castLevel.value + ",\"" + actionData.system.group.value + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": String(sortNum), "group": actionData.system.group.value };
+			let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pz2e.cast_spell(\"" + spellName + "\"," + actionData.system.castLevel.value + ",\"" + actionData.system.group.value + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": String(sortNum), "group": actionData.system.group.value };
 
 			//MapTool.chat.broadcast(JSON.stringify(props));
 			createMacro(props, tokenID);
@@ -307,4 +307,4 @@ function add_action_to_token(actionData, tokenID, token) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.add_action_to_token", add_action_to_token);
+MTScript.registerMacro("ca.pz2e.add_action_to_token", add_action_to_token);

@@ -26,4 +26,4 @@ function display_weaknesses(token) {
     return weaknessString;
 }
 
-MTScript.registerMacro("ca.pf2e.display_weaknesses", display_weaknesses);
+MTScript.registerMacro("ca.pz2e.display_weaknesses", display_weaknesses);

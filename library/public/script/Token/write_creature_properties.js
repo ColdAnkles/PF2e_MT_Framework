@@ -183,4 +183,4 @@ function write_creature_properties(creatureData, token) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.write_creature_properties", write_creature_properties);
+MTScript.registerMacro("ca.pz2e.write_creature_properties", write_creature_properties);

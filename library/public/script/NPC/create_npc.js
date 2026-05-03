@@ -3,8 +3,8 @@
 function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 	let newToken = MapTool.tokens.getTokenByID(newNPCTokenID);
 	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pf2e_npc"));
-	let property = JSON.parse(read_data("pf2e_npc"));
+	//let property = JSON.parse(libToken.getProperty("pz2e_npc"));
+	let property = JSON.parse(read_data("pz2e_npc"));
 	let creatureData = property[creatureName];
 	if (creatureData == null) {
 		property = JSON.parse(read_data("customContent")).npc;
@@ -22,12 +22,12 @@ function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 	if ("FastHealing" in regenData.otherEffects) {
 		regenData = regenData.otherEffects.FastHealing;
 		createMacro({
-			"label": "Disable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pf2e.disable_regeneration(myID)]",
+			"label": "Disable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pz2e.disable_regeneration(myID)]",
 			"tooltip": chat_display({ "name": "Disable Regeneration", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Disable when taking any of the following damage types: " + regenData.deactivations.join(", ") } } }, false),
 			"sortBy": "", "group": "1. Common"
 		}, newNPCTokenID);
 		createMacro({
-			"label": "Enable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pf2e.enable_regeneration(myID)]",
+			"label": "Enable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pz2e.enable_regeneration(myID)]",
 			"tooltip": chat_display({ "name": "Enable Regeneration", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Enable regeneration and fast healing when outside initiative." } } }, false),
 			"sortBy": "", "group": "1. Common"
 		}, newNPCTokenID)
@@ -53,7 +53,7 @@ function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 
 	if (creatureData.traits.includes("troop")) {
 		createMacro({
-			"label": "Spawn Troop Segments", "playerEditable": 0, "command": "[h: ca.pf2e.Spawn_Troop_Segments(myID)]",
+			"label": "Spawn Troop Segments", "playerEditable": 0, "command": "[h: ca.pz2e.Spawn_Troop_Segments(myID)]",
 			"tooltip": chat_display({ "name": "Spawn Troop Segments", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Spawn the three additional troop segments." } } }, false),
 			"sortBy": "", "group": "3. Additional"
 		}, newNPCTokenID)
@@ -90,4 +90,4 @@ function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 	//MapTool.chat.broadcast(JSON.stringify(creatureData));
 }
 
-MTScript.registerMacro("ca.pf2e.create_npc", create_npc);
+MTScript.registerMacro("ca.pz2e.create_npc", create_npc);

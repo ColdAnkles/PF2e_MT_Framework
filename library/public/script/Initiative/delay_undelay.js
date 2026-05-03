@@ -17,7 +17,7 @@ function delay_undelay(tokenID) {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.delay_undelay", delay_undelay);
+MTScript.registerMacro("ca.pz2e.delay_undelay", delay_undelay);
 
 function delay_token(tokenID) {
     MTScript.evalMacro("[h: setInitiativeHold(1, \"" + tokenID + "\")]");

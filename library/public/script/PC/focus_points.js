@@ -21,7 +21,7 @@ function add_focus_point(token) {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.add_focus_point", add_focus_point);
+MTScript.registerMacro("ca.pz2e.add_focus_point", add_focus_point);
 
 function use_focus_point(token) {
     if (typeof (token) == "string") {
@@ -44,4 +44,4 @@ function use_focus_point(token) {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.use_focus_point", use_focus_point);
+MTScript.registerMacro("ca.pz2e.use_focus_point", use_focus_point);

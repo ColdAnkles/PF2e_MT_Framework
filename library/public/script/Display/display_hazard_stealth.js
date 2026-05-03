@@ -14,4 +14,4 @@ function display_hazard_stealth(hazardID) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.display_hazard_stealth", display_hazard_stealth);
+MTScript.registerMacro("ca.pz2e.display_hazard_stealth", display_hazard_stealth);

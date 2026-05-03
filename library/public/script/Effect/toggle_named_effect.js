@@ -30,7 +30,7 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 		currentRound = 0;
 	}
 
-	let property = JSON.parse(read_data("pf2e_effect"));
+	let property = JSON.parse(read_data("pz2e_effect"));
 	if (!(effectName in property)) {
 		MapTool.chat.broadcast("Cannot find effect: " + effectName);
 		return;
@@ -143,4 +143,4 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 
 }
 
-MTScript.registerMacro("ca.pf2e.toggle_named_effect", toggle_named_effect);
+MTScript.registerMacro("ca.pz2e.toggle_named_effect", toggle_named_effect);

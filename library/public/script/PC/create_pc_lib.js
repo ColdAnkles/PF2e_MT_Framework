@@ -64,4 +64,4 @@ function create_pc_lib(pathbuilderID, tokenID) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.create_pc_lib", create_pc_lib);
+MTScript.registerMacro("ca.pz2e.create_pc_lib", create_pc_lib);

@@ -1,1 +1,1 @@
-[js.ca.pf2e.rebuildMacroPanels()]
+[js.ca.pz2e.rebuildMacroPanels()]

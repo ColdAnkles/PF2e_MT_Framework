@@ -2,4 +2,4 @@ function lowercase(aString) {
 	return aString.toLowerCase();
 }
 
-MTScript.registerMacro("ca.pf2e.lowercase", lowercase);
+MTScript.registerMacro("ca.pz2e.lowercase", lowercase);

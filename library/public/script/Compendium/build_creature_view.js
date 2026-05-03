@@ -2,14 +2,14 @@
 
 function build_creature_view(creatureName, tokenID = null, creatureData = null) {
 	let token = null;
-	let traitGlossary = JSON.parse(read_data("pf2e_glossary")).PF2E;
+	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).pz2e;
 
 	let additionalData = { "rollDice": false };
 
 	try {
 		if (creatureData == null) {
 			if (tokenID == null) {
-				let property = JSON.parse(read_data("pf2e_npc"));
+				let property = JSON.parse(read_data("pz2e_npc"));
 				creatureData = property[creatureName];
 				if (creatureData == null) {
 					property = JSON.parse(read_data("customContent")).npc;
@@ -45,7 +45,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	additionalData.variant = creatureData.foundryActor.variant;
 
 	//MapTool.chat.broadcast(JSON.stringify(creatureData.senses));
-	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+	let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
 	let HTMLString = "";
 	try {
@@ -423,7 +423,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 				} else {
 					spellString = spellString + ", ";
 				}
-				spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)", ""), "Spell_View_Frame@Lib:ca.pf2e", spellData.name.replaceAll(" (Constant)", "").replaceAll(/\(.*\)/g, "").trim());
+				spellString = spellString + create_macroLink(spellData.name.replaceAll(" (Constant)", ""), "Spell_View_Frame@Lib:ca.pz2e", spellData.name.replaceAll(" (Constant)", "").replaceAll(/\(.*\)/g, "").trim());
 			}
 
 			HTMLString += spellString;
@@ -462,4 +462,4 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	return HTMLString;
 }
 
-MTScript.registerMacro("ca.pf2e.build_creature_view", build_creature_view);
+MTScript.registerMacro("ca.pz2e.build_creature_view", build_creature_view);

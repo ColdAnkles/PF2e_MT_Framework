@@ -10,4 +10,4 @@ function roll_dice(diceString) {
 	return result;
 }
 
-MTScript.registerMacro("ca.pf2e.roll_dice", roll_dice);
+MTScript.registerMacro("ca.pz2e.roll_dice", roll_dice);

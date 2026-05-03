@@ -17,8 +17,8 @@ function enabled_source_list(action = null, searchKey = null) {
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
-    let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
-    let allSources = JSON.parse(read_data("pf2e_publications"));
+    let enabledSources = JSON.parse(read_data("pz2e_enabledSources"));
+    let allSources = JSON.parse(read_data("pz2e_publications"));
     try {
         allSources = allSources.concat(JSON.parse(read_data("customContent")).source);
         allSources = allSources.sort();
@@ -33,7 +33,7 @@ function enabled_source_list(action = null, searchKey = null) {
                     enabledSources.splice(index, 1);
                 }
             }
-            write_data("pf2e_enabledSources", JSON.stringify(enabledSources));
+            write_data("pz2e_enabledSources", JSON.stringify(enabledSources));
         }
     } catch (e) {
         MapTool.chat.broadcast("Error in enabled_source_list during custom-content-add");
@@ -45,14 +45,14 @@ function enabled_source_list(action = null, searchKey = null) {
         searchKey = "";
     }
     try {
-        enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
+        enabledSources = JSON.parse(read_data("pz2e_enabledSources"));
     } catch (e) {
         MapTool.chat.broadcast("Error in enabled_source_list during read-enabled-sources");
-        MapTool.chat.broadcast("enabled sources: " + JSON.stringify(JSON.parse(read_data("pf2e_enabledSources"))));
+        MapTool.chat.broadcast("enabled sources: " + JSON.stringify(JSON.parse(read_data("pz2e_enabledSources"))));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
-    let returnHTML = "<form action='macro://Source_Enable_Form_To_JS@Lib:ca.pf2e/self/impersonated?'>";
+    let returnHTML = "<form action='macro://Source_Enable_Form_To_JS@Lib:ca.pz2e/self/impersonated?'>";
     returnHTML += "<div><input name='searchKey' placeholder='Search' value='" + searchKey + "'></input>\
     <input type='submit' name='searchButton' value='Search'></input>";
     returnHTML += "<table><tr><th>Source Name</th><th>Enabled</th></tr>";
@@ -85,4 +85,4 @@ function enabled_source_list(action = null, searchKey = null) {
     return returnHTML;
 }
 
-MTScript.registerMacro("ca.pf2e.enabled_source_list", enabled_source_list);
+MTScript.registerMacro("ca.pz2e.enabled_source_list", enabled_source_list);

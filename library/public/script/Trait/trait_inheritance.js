@@ -12,4 +12,4 @@ function trait_inheritance(trait) {
 }
 
 
-MTScript.registerMacro("ca.pf2e.trait_inheritance", trait_inheritance);
+MTScript.registerMacro("ca.pz2e.trait_inheritance", trait_inheritance);

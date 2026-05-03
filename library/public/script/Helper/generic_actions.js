@@ -14,7 +14,7 @@ function generic_use_action(token) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.generic_use_action", generic_use_action);
+MTScript.registerMacro("ca.pz2e.generic_use_action", generic_use_action);
 
 function generic_use_reaction(token) {
 	if (typeof (token) == "string") {
@@ -30,7 +30,7 @@ function generic_use_reaction(token) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.generic_use_reaction", generic_use_reaction);
+MTScript.registerMacro("ca.pz2e.generic_use_reaction", generic_use_reaction);
 
 function generic_refund_action(token) {
 	if (typeof (token) == "string") {
@@ -46,7 +46,7 @@ function generic_refund_action(token) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.generic_refund_action", generic_refund_action);
+MTScript.registerMacro("ca.pz2e.generic_refund_action", generic_refund_action);
 
 function generic_refund_reaction(token) {
 	if (typeof (token) == "string") {
@@ -62,7 +62,7 @@ function generic_refund_reaction(token) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.generic_refund_reaction", generic_refund_reaction);
+MTScript.registerMacro("ca.pz2e.generic_refund_reaction", generic_refund_reaction);
 
 function add_hero_point(token) {
 
@@ -110,7 +110,7 @@ function add_hero_point(token) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.add_hero_point", add_hero_point);
+MTScript.registerMacro("ca.pz2e.add_hero_point", add_hero_point);
 
 function use_hero_point(token) {
 
@@ -141,7 +141,7 @@ function use_hero_point(token) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.use_hero_point", use_hero_point);
+MTScript.registerMacro("ca.pz2e.use_hero_point", use_hero_point);
 
 function remove_hero_point(token) {
 
@@ -165,4 +165,4 @@ function remove_hero_point(token) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.remove_hero_point", remove_hero_point);
+MTScript.registerMacro("ca.pz2e.remove_hero_point", remove_hero_point);

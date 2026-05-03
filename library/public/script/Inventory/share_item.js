@@ -11,4 +11,4 @@ function share_item(itemID, broadcast = true) {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.share_item", share_item);
+MTScript.registerMacro("ca.pz2e.share_item", share_item);

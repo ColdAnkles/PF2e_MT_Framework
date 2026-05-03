@@ -8,7 +8,7 @@
 	[h: broadcast("Player Token Removed!")]
 	[h: return(0)]
 };{}]
-[h: js.ca.pf2e.create_pc_lib(pathbuilderID, tokenID)]
+[h: js.ca.pz2e.create_pc_lib(pathbuilderID, tokenID)]
 [h: setPC(tokenID, "Player Characters")]
 [h: tokenSize = getProperty("size",tokenID,"Player Characters")]
 [h: tokenName = getName(tokenID,"Player Characters")]
@@ -18,7 +18,7 @@
 [h: visionList = json.append("[]","darkvision","low-light","greater darkvision")]
 [h, foreach(sense, senseList), code:{
 	[h, if(json.contains(visionList,sense)), code:{
-		[h: setSightType(js.ca.pf2e.capitalise(sense),tokenID,"Player Characters")]
+		[h: setSightType(js.ca.pz2e.capitalise(sense),tokenID,"Player Characters")]
 	};{}]
 }]
-[h: js.ca.pf2e.update_my_tokens(tokenID)]
+[h: js.ca.pz2e.update_my_tokens(tokenID)]

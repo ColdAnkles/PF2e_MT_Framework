@@ -40,4 +40,4 @@ function flat_check(token, extraVars = { "dc": null, "failMsg": null, "successMs
 
 }
 
-MTScript.registerMacro("ca.pf2e.flat_check", flat_check);
+MTScript.registerMacro("ca.pz2e.flat_check", flat_check);

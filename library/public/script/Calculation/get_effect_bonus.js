@@ -70,7 +70,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				if (ruleData.path == "system.attributes.shield" && bonusScopes.includes("ac")) {
 					//MapTool.chat.broadcast(JSON.stringify(ruleData));
 					let shieldData = null;
-					if ("name" in ruleData.value && ruleData.value.name == "PF2E.ShieldLabel") {
+					if ("name" in ruleData.value && ruleData.value.name == "pz2e.ShieldLabel") {
 						shieldData = ruleData.value;
 					} else if (actor != null) {
 						shieldData = get_equipped_shield(actor);
@@ -159,4 +159,4 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 	return returnData;
 }
 
-MTScript.registerMacro("ca.pf2e.get_effect_bonus", get_effect_bonus);
+MTScript.registerMacro("ca.pz2e.get_effect_bonus", get_effect_bonus);

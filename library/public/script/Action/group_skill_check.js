@@ -39,7 +39,7 @@ function group_skill_check(tokens) {
     skill_check_dialog("group", "Group", "NPC", 0, [], skillStrings, {}, null, tokens);
 }
 
-MTScript.registerMacro("ca.pf2e.group_skill_check", group_skill_check);
+MTScript.registerMacro("ca.pz2e.group_skill_check", group_skill_check);
 
 function display_group_skill_check(checkData) {
     //MapTool.chat.broadcast(JSON.stringify(checkData));
@@ -52,7 +52,7 @@ function display_group_skill_check(checkData) {
     let displayData = { "name": "The group attempts " + an + capitalise(checkData.skillName) + " skill Check.", "system": { "description": { "value": "" } } };
 
     let tokenList = checkData.tokenList.split(",");
-    let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+    let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
     for (var t in tokenList) {
         let checkToken = tokenList[t]
         let tokenCheck = skill_check(checkToken, false, checkData, [], true);
@@ -90,4 +90,4 @@ function display_group_skill_check(checkData) {
     chat_display(displayData);
 }
 
-MTScript.registerMacro("ca.pf2e.display_group_skill_check", display_group_skill_check);
+MTScript.registerMacro("ca.pz2e.display_group_skill_check", display_group_skill_check);

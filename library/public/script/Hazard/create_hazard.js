@@ -2,7 +2,7 @@
 
 function create_hazard(newHazardID, hazardName) {
 	let newToken = MapTool.tokens.getTokenByID(newHazardID);
-	let property = JSON.parse(read_data("pf2e_hazard"));
+	let property = JSON.parse(read_data("PZ2E_Hazard"));
 	let hazardData = property[hazardName];
 	try {
 		if ("fileURL" in hazardData) {
@@ -38,9 +38,9 @@ function create_hazard(newHazardID, hazardName) {
 		}
 	}
 
-	createMacro({ "label": "Character Sheet", "playerEditable": 0, "command": "[r: ca.pf2e.Hazard_View_Frame(json.set(\"{}\",\"name\",getName(),\"tokenID\",myID))]", "tooltip": "View Character Sheet", "sortBy": "", "group": "Common" }, newHazardID);
+	createMacro({ "label": "Character Sheet", "playerEditable": 0, "command": "[r: ca.pz2e.Hazard_View_Frame(json.set(\"{}\",\"name\",getName(),\"tokenID\",myID))]", "tooltip": "View Character Sheet", "sortBy": "", "group": "Common" }, newHazardID);
 	let tooltipDescription = share_hazard(newHazardID, "all", false);
-	createMacro({ "label": "Hazard Details", "playerEditable": 0, "command": "[r: js.ca.pf2e.share_hazard(myID,\"all\")]", "tooltip": tooltipDescription, "sortBy": "", "group": "Common" }, newHazardID);
+	createMacro({ "label": "Hazard Details", "playerEditable": 0, "command": "[r: js.ca.pz2e.share_hazard(myID,\"all\")]", "tooltip": tooltipDescription, "sortBy": "", "group": "Common" }, newHazardID);
 }
 
-MTScript.registerMacro("ca.pf2e.create_hazard", create_hazard);
+MTScript.registerMacro("ca.pz2e.create_hazard", create_hazard);

@@ -34,4 +34,4 @@ function display_conditions(token) {
 	return outputString;
 }
 
-MTScript.registerMacro("ca.pf2e.display_conditions", display_conditions);
+MTScript.registerMacro("ca.pz2e.display_conditions", display_conditions);

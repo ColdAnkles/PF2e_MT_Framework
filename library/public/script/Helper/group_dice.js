@@ -55,4 +55,4 @@ function group_dice(diceString) {
 	return resultString;
 }
 
-MTScript.registerMacro("ca.pf2e.group_dice", group_dice);
+MTScript.registerMacro("ca.pz2e.group_dice", group_dice);

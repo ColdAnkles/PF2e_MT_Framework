@@ -16,4 +16,4 @@ function pos_neg_sign(number, space = false) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.pos_neg_sign", pos_neg_sign);
+MTScript.registerMacro("ca.pz2e.pos_neg_sign", pos_neg_sign);

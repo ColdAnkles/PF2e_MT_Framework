@@ -3,7 +3,7 @@
 };{}]
 [h: table=macro.args]
 
-[h: cssName = "lib://ca.pf2e/css/" + json.get(json.get(getLibProperty("pf2e_themes","Lib:ca.pf2e"), getLibProperty("selectedTheme","Lib:ca.pf2e")),"css")]
+[h: cssName = "lib://ca.pz2e/css/" + json.get(json.get(getLibProperty("pz2e_themes","Lib:ca.pz2e"), getLibProperty("selectedTheme","Lib:ca.pz2e")),"css")]
 
 [h: windowWidth=200]
 [h: windowHeight=200]
@@ -78,44 +78,44 @@
     <html>
     <link rel="stylesheet" type="text/css" href=[r:cssName]>
 	[r, if(table=="encounters"), code:{
-        <script src='lib://ca.pf2e/html/encounterHelper.js'></script>
-        [r: data.getStaticData('ca.pf2e', "public/html/encounterTable.html")]
+        <script src='lib://ca.pz2e/html/encounterHelper.js'></script>
+        [r: data.getStaticData('ca.pz2e', "public/html/encounterTable.html")]
     }]
 	[r, if(table=="simpleDCs"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/simpleDCs.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/simpleDCs.html")]
     }]
 	[r, if(table=="spellDCs"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/spellDCs.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/spellDCs.html")]
     }]
 	[r, if(table=="levelDCs"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/dcsByLevel.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/dcsByLevel.html")]
     }]
 	[r, if(table=="magicItemDCs"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/magicItemDCs.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/magicItemDCs.html")]
     }]
 	[r, if(table=="adjustingDifficulty"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/adjustingDifficulty.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/adjustingDifficulty.html")]
     }]
 	[r, if(table=="costOfLiving"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/costOfLiving.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/costOfLiving.html")]
     }]
 	[r, if(table=="cover"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/cover.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/cover.html")]
     }]
 	[r, if(table=="learnASpell"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/learnASpell.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/learnASpell.html")]
     }]
 	[r, if(table=="earnIncome"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/earnIncome.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/earnIncome.html")]
     }]
 	[r, if(table=="locks"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/locks.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/locks.html")]
     }]
 	[r, if(table=="structures"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/structures.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/structures.html")]
     }]
 	[r, if(table=="services"), code:{
-        [r: data.getStaticData('ca.pf2e', "public/html/services.html")]
+        [r: data.getStaticData('ca.pz2e', "public/html/services.html")]
     }]
     </html>
 }]

@@ -36,4 +36,4 @@ function share_hazard(hazardID, details, broadcast = true) {
     }
 }
 
-MTScript.registerMacro("ca.pf2e.share_hazard", share_hazard);
+MTScript.registerMacro("ca.pz2e.share_hazard", share_hazard);

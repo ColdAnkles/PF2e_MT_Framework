@@ -24,4 +24,4 @@ function update_pc_token(sourceTokenID, tokenID) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.update_pc_token", update_pc_token);
+MTScript.registerMacro("ca.pz2e.update_pc_token", update_pc_token);

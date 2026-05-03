@@ -32,7 +32,7 @@ function getTokenWeaknesses(token) {
     return trueWeaknesses;
 }
 
-MTScript.registerMacro("ca.pf2e.getTokenWeaknesses", getTokenWeaknesses);
+MTScript.registerMacro("ca.pz2e.getTokenWeaknesses", getTokenWeaknesses);
 
 function getTokenResistances(token) {
     if (typeof (token) == "string") {
@@ -66,7 +66,7 @@ function getTokenResistances(token) {
     return trueResistances;
 }
 
-MTScript.registerMacro("ca.pf2e.getTokenResistances", getTokenResistances);
+MTScript.registerMacro("ca.pz2e.getTokenResistances", getTokenResistances);
 
 function getTokenImmunities(token) {
     if (typeof (token) == "string") {
@@ -97,4 +97,4 @@ function getTokenImmunities(token) {
     return trueTokenImmunities;
 }
 
-MTScript.registerMacro("ca.pf2e.getTokenImmunities", getTokenImmunities);
+MTScript.registerMacro("ca.pz2e.getTokenImmunities", getTokenImmunities);

@@ -189,4 +189,4 @@ function read_creature_properties(token) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.read_creature_properties", read_creature_properties);
+MTScript.registerMacro("ca.pz2e.read_creature_properties", read_creature_properties);

@@ -65,7 +65,7 @@ function core_action(actionData, actingToken) {
 	if (canAct) {
 		//MapTool.chat.broadcast("Performing Action: "+ actionData.name);
 		//MapTool.chat.broadcast(JSON.stringify(actionData));
-		setLibProperty("lib:ca.pf2e", "lastAction", actionData.name);
+		setLibProperty("lib:ca.pz2e", "lastAction", actionData.name);
 
 		if ("isSpell" in actionData.system && actionData.system.isSpell) {
 			try {
@@ -182,4 +182,4 @@ function core_action(actionData, actingToken) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.core_action", core_action);
+MTScript.registerMacro("ca.pz2e.core_action", core_action);

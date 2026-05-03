@@ -6,7 +6,7 @@
 		{
             "label": "build-simple",
             "type": "shell",
-            "command": "rm PF2e_MT_Framework.mtlib; 7z a -tzip PF2e_MT_Framework.mtlib '@.vscode/listfile.txt'",
+            "command": "./build.ps1 simple",
             "problemMatcher": []
 		}
     ]

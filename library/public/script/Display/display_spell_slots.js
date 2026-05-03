@@ -55,4 +55,4 @@ function display_spell_slots(token) {
     return returnString;
 }
 
-MTScript.registerMacro("ca.pf2e.display_spell_slots", display_spell_slots);
+MTScript.registerMacro("ca.pz2e.display_spell_slots", display_spell_slots);

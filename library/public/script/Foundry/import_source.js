@@ -102,7 +102,7 @@ function import_source_file(fileURL) {
 function import_source(sourceName) {
 	//let libToken = get_runtime("libToken");
 	//let property = JSON.parse(libToken.getProperty("foundrySourceData"));
-	let property = JSON.parse(read_data("pf2e_source"));
+	let property = JSON.parse(read_data("pz2e_source"));
 	let sourceData = null;
 	if (sourceName in property) {
 		sourceData = property[sourceName];
@@ -112,7 +112,7 @@ function import_source(sourceName) {
 		return;
 	}
 
-	let base_file_path = "https://raw.githubusercontent.com/foundryvtt/pf2e/master/packs/";
+	let base_file_path = "https://raw.githubusercontent.com/foundryvtt/pz2e/master/packs/";
 	for (var file in sourceData.content) {
 		let fileData = sourceData.content[file];
 		//MapTool.chat.broadcast("Importing " + file);
@@ -122,4 +122,4 @@ function import_source(sourceName) {
 }
 
 
-MTScript.registerMacro("ca.pf2e.import_source", import_source);
+MTScript.registerMacro("ca.pz2e.import_source", import_source);

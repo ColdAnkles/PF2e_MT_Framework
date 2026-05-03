@@ -25,4 +25,4 @@ function apply_effect_query(inputData) {
     toggle_named_effect(effectName, tokens[tokenChoice], 1, inputData.effectSource);
 }
 
-MTScript.registerMacro("ca.pf2e.apply_effect_query", apply_effect_query);
+MTScript.registerMacro("ca.pz2e.apply_effect_query", apply_effect_query);

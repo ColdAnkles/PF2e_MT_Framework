@@ -9,10 +9,10 @@
 [h: center=getViewCenter(0,";")]
 [h: xCoord=getStrProp(center,"centerX")]
 [h: yCoord=getStrProp(center,"centerY")]
-[h: val = json.set("{}", "tokenImage", "lib://ca.pf2e/image/PCDefault.png", "name", tokenName,"x",xCoord,"y",yCoord)]
+[h: val = json.set("{}", "tokenImage", "lib://ca.pz2e/image/PCDefault.png", "name", tokenName,"x",xCoord,"y",yCoord)]
 [h: newToken = createToken(val)]
 [h: setPC(newToken)]
-[h: setPropertyType("PF2E_Character", newToken)]
+[h: setPropertyType("PZ2E_Character", newToken)]
 
 [h: tokenSize = getProperty("size",sourceTokenID, "Player Characters")]
 [h: setSize(tokenSize,newToken)]
@@ -22,10 +22,10 @@
 [h: visionList = json.append("[]","darkvision","low-light","greater darkvision")]
 [h, foreach(sense, senseList), code:{
 	[h, if(json.contains(visionList,sense)), code:{
-		[h: setSightType(js.ca.pf2e.capitalise(sense),newToken)]
+		[h: setSightType(js.ca.pz2e.capitalise(sense),newToken)]
 	};{}]
 }]
-[h: js.ca.pf2e.update_pc_token(sourceTokenID, newToken)]
+[h: js.ca.pz2e.update_pc_token(sourceTokenID, newToken)]
 [h: setProperty("myID", sourceTokenID, newToken)]
 
 [h: myTokens = getProperty("pcTokens", sourceTokenID, "Player Characters")]
@@ -34,7 +34,7 @@
 };{}]
 [h: myTokens = json.append(myTokens, newToken)]
 [h: setProperty("pcTokens", myTokens, sourceTokenID, "Player Characters")]
-[h: js.ca.pf2e.create_pc_token(newToken, sourceTokenID)]
+[h: js.ca.pz2e.create_pc_token(newToken, sourceTokenID)]
 [h: setOwner(getOwners("json", sourceTokenID, "Player Characters"), newToken)]
 [h: setTokenImage(getTokenImage("", sourceTokenID, "Player Characters"), newToken)]
 [h: setName(tokenName, newToken)]

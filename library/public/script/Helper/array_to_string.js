@@ -11,4 +11,4 @@ function array_to_string(arrayList) {
 }
 
 
-MTScript.registerMacro("ca.pf2e.array_to_string", array_to_string);
+MTScript.registerMacro("ca.pz2e.array_to_string", array_to_string);

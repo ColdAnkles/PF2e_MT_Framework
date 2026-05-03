@@ -39,4 +39,4 @@ function display_active_effects(token) {
 	return outputString;
 }
 
-MTScript.registerMacro("ca.pf2e.display_active_effects", display_active_effects);
+MTScript.registerMacro("ca.pz2e.display_active_effects", display_active_effects);

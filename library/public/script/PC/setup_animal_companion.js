@@ -299,9 +299,9 @@ function setup_animal_companion(baseData) {
     //MapTool.chat.broadcast(JSON.stringify(baseData));
     if (!("save" in baseData)) {
 
-        let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+        let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
-        let queryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><p><form action='macro://Animal_Companion_Setup_To_JS@Lib:ca.pf2e/self/impersonated?'><h1 class='feel-title'>Animal Companion</h1>"
+        let queryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><p><form action='macro://Animal_Companion_Setup_To_JS@Lib:ca.pz2e/self/impersonated?'><h1 class='feel-title'>Animal Companion</h1>"
         queryHTML += "<input type='hidden' name='ownerID' value='" + String(companionData.ownerID) + "'>";
         queryHTML += "<table style='width:100%' class='staticTable'><tbody>";
         queryHTML += "<input type='hidden' name='baseName' value='" + String(companionData.baseName) + "'></input>";
@@ -507,7 +507,7 @@ function setup_animal_companion(baseData) {
                 write_creature_properties(companionData, ownerPetList[companionData.baseName])
             } else {
                 MTScript.setVariable("petData", JSON.stringify(companionData));
-                MTScript.evalMacro("[h: newPetID = ca.pf2e.Spawn_Pet_Lib(petData)]")
+                MTScript.evalMacro("[h: newPetID = ca.pz2e.Spawn_Pet_Lib(petData)]")
                 let newPetID = MTScript.getVariable("newPetID");
                 ownerPetList[companionData.baseName] = newPetID;
                 ownerToken.setProperty("pets", JSON.stringify(ownerPetList));
@@ -522,4 +522,4 @@ function setup_animal_companion(baseData) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.setup_animal_companion", setup_animal_companion);
+MTScript.registerMacro("ca.pz2e.setup_animal_companion", setup_animal_companion);

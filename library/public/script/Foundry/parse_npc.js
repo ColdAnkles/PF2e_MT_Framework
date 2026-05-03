@@ -281,4 +281,4 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 	return npcData;
 }
 
-MTScript.registerMacro("ca.pf2e.parse_npc", parse_npc);
+MTScript.registerMacro("ca.pz2e.parse_npc", parse_npc);

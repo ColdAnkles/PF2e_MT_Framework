@@ -3,7 +3,7 @@
 function custom_content_window() {
     let customContent = JSON.parse(read_data("customContent"));
     let returnHTML = "";
-    returnHTML += create_macroLink("Export", "Custom_Content_Window_Link@Lib:ca.pf2e", { "action": "export", "key": "all" }) + "&nbsp;" + create_macroLink("Import", "Custom_Content_Window_Link@Lib:ca.pf2e", { "action": "import", "key": "all" })
+    returnHTML += create_macroLink("Export", "Custom_Content_Window_Link@Lib:ca.pz2e", { "action": "export", "key": "all" }) + "&nbsp;" + create_macroLink("Import", "Custom_Content_Window_Link@Lib:ca.pz2e", { "action": "import", "key": "all" })
 
     returnHTML += "<body><table>";
 
@@ -20,9 +20,9 @@ function custom_content_window() {
             if (!isNaN(contentDisplay)) {
                 contentDisplay = customContent[key][contentEntry]
             }
-            returnHTML += "<tr><td>" + contentDisplay + "</td><td>" + create_macroLink("Edit", "Custom_Content_Window_Link@Lib:ca.pf2e", { "key": key, "entry": contentEntry, "action": "edit" })
-                + "</td><td>" + create_macroLink("Delete", "Custom_Content_Window_Link@Lib:ca.pf2e", { "key": key, "entry": contentEntry, "action": "delete" })
-                + "</td><td>" + create_macroLink("Export", "Custom_Content_Window_Link@Lib:ca.pf2e", { "key": key, "entry": contentEntry, "action": "export" })
+            returnHTML += "<tr><td>" + contentDisplay + "</td><td>" + create_macroLink("Edit", "Custom_Content_Window_Link@Lib:ca.pz2e", { "key": key, "entry": contentEntry, "action": "edit" })
+                + "</td><td>" + create_macroLink("Delete", "Custom_Content_Window_Link@Lib:ca.pz2e", { "key": key, "entry": contentEntry, "action": "delete" })
+                + "</td><td>" + create_macroLink("Export", "Custom_Content_Window_Link@Lib:ca.pz2e", { "key": key, "entry": contentEntry, "action": "export" })
                 + "</td></tr>";
         }
     }
@@ -31,4 +31,4 @@ function custom_content_window() {
     return returnHTML;
 }
 
-MTScript.registerMacro("ca.pf2e.custom_content_window", custom_content_window);
+MTScript.registerMacro("ca.pz2e.custom_content_window", custom_content_window);

@@ -139,4 +139,4 @@ function end_turn(turnToken, forwards = true) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.end_turn", end_turn);
+MTScript.registerMacro("ca.pz2e.end_turn", end_turn);

@@ -1,7 +1,7 @@
 "use strict";
 
 function spell_action(actionData, actingToken) {
-	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+	let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
 	let spellData = actionData.system.rawSpellData;
 	let spellBaseName = spellData.baseName;

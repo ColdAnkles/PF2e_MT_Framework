@@ -7,9 +7,9 @@ function store_object_data(data) {
 	//MapTool.chat.broadcast(data.type);
 	let property = null;
 	try {
-		//property = JSON.parse(libToken.getProperty("pf2e_"+data.type));
-		//property = JSON.parse(getLibProperty("Lib:ca.pf2e","pf2e_"+data.type));
-		property = JSON.parse(read_data("pf2e_" + data.type));
+		//property = JSON.parse(libToken.getProperty("pz2e_"+data.type));
+		//property = JSON.parse(getLibProperty("Lib:ca.pz2e","pz2e_"+data.type));
+		property = JSON.parse(read_data("pz2e_" + data.type));
 	} catch (error) {
 		MapTool.chat.broadcast(String(error));
 		property = {};
@@ -19,9 +19,9 @@ function store_object_data(data) {
 	}
 	property[data.name] = data;
 	//MapTool.chat.broadcast(JSON.stringify(property[data.name]));
-	//libToken.setProperty("pf2e_"+data.type, JSON.stringify(property));
-	//setLibProperty("Lib:ca.pf2e","pf2e_"+data.type,JSON.stringify(property));
-	write_data("pf2e_" + data.type, JSON.stringify(property));
+	//libToken.setProperty("pz2e_"+data.type, JSON.stringify(property));
+	//setLibProperty("Lib:ca.pz2e","pz2e_"+data.type,JSON.stringify(property));
+	write_data("pz2e_" + data.type, JSON.stringify(property));
 }
 
-MTScript.registerMacro("ca.pf2e.store_object_data", store_object_data);
+MTScript.registerMacro("ca.pz2e.store_object_data", store_object_data);

@@ -2,9 +2,9 @@
 
 function saving_throw_dialog(tokenID, tokenName, bonuses, specialEffects, saveStrings, tokenList = "") {
     try {
-        let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+        let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
-        let queryHTML = "<html><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pf2e/self/impersonated?'><table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pf2e/css/" + themeData.css + "\">";
+        let queryHTML = "<html><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pz2e/self/impersonated?'><table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pz2e/css/" + themeData.css + "\">";
         queryHTML += "<input type='hidden' name='saveTokenID' value='" + tokenID + "'>";
         queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
         queryHTML += "<input type='hidden' name='tokenList' value='" + tokenList + "'>";

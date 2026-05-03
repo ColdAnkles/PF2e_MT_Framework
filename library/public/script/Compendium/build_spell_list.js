@@ -2,10 +2,10 @@
 
 function build_spell_list(sortKey, sortDir, searchKey = "") {
 
-    let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
-    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pf2e/css/" + themeData.css + "'/><h1 class='feel-title'>Spells</h1>";
-    let spellList = JSON.parse(read_data("pf2e_spell"));
-    let enabledSources = JSON.parse(read_data("pf2e_enabledSources"));
+    let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
+    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><h1 class='feel-title'>Spells</h1>";
+    let spellList = JSON.parse(read_data("pz2e_spell"));
+    let enabledSources = JSON.parse(read_data("pz2e_enabledSources"));
 
     let spellSorted = [];
     for (var s in spellList) {
@@ -13,20 +13,20 @@ function build_spell_list(sortKey, sortDir, searchKey = "") {
     }
     spellSorted.sort(sort_by(sortKey, sortDir == "d", (a) => ((typeof (a) == "string") ? a.toUpperCase() : a)));
 
-    returnHTML += "<form action='macro://Compendium_Window@Lib:ca.pf2e/self/impersonated?'>\
+    returnHTML += "<form action='macro://Compendium_Window@Lib:ca.pz2e/self/impersonated?'>\
     <div><input name='searchKey' placeholder='Search' value='"+ searchKey + "'></input>\
     <input type='submit' name='searchButton' value='Search'></input>\
     <input type='hidden' name='window' value='spells'></input>\
     <input type='hidden' name='sort' value='"+ sortKey + "'></input>\
     <input type='hidden' name='dir' value='"+ sortDir + "'></input></div></form>";
 
-    returnHTML += "<table><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells", "sort": "name", "dir": ((sortKey == "name") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
-    returnHTML += "<th>" + create_macroLink("Type", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells", "sort": "type", "dir": ((sortKey == "type") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<table><tr><th>" + create_macroLink("Name", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": "spells", "sort": "name", "dir": ((sortKey == "name") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<th>" + create_macroLink("Type", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": "spells", "sort": "type", "dir": ((sortKey == "type") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th width=10%>Traditions</th>";
-    returnHTML += "<th>" + create_macroLink("Rarity", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells", "sort": "rarity", "dir": ((sortKey == "rarity") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<th>" + create_macroLink("Rarity", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": "spells", "sort": "rarity", "dir": ((sortKey == "rarity") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th width=10% align=center>Traits</th>";
-    returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells", "sort": "level", "dir": ((sortKey == "level") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
-    returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pf2e", JSON.stringify({ "window": "spells", "sort": "source", "dir": ((sortKey == "source") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<th width=5% align=center>" + create_macroLink("Level", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": "spells", "sort": "level", "dir": ((sortKey == "level") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
+    returnHTML += "<th width=20% align=center>" + create_macroLink("Source", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": "spells", "sort": "source", "dir": ((sortKey == "source") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
 
     let odd = 1;
 
@@ -57,7 +57,7 @@ function build_spell_list(sortKey, sortDir, searchKey = "") {
             odd = 1;
         }
 
-        returnHTML += "<td>" + create_macroLink(capitalise(thisSpell.name), "Spell_View_Frame@Lib:ca.pf2e", thisSpell.name) + "</td>";
+        returnHTML += "<td>" + create_macroLink(capitalise(thisSpell.name), "Spell_View_Frame@Lib:ca.pz2e", thisSpell.name) + "</td>";
         returnHTML += "<td>" + capitalise(thisSpell.type) + "</td>";
         returnHTML += "<td>" + capitalise(thisSpell.traditions.join(", ")) + "</td>";
         returnHTML += "<td align=center>" + capitalise(thisSpell.rarity) + "</td>";
@@ -71,4 +71,4 @@ function build_spell_list(sortKey, sortDir, searchKey = "") {
 
 }
 
-MTScript.registerMacro("ca.pf2e.build_spell_list", build_spell_list);
+MTScript.registerMacro("ca.pz2e.build_spell_list", build_spell_list);

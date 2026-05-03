@@ -37,4 +37,4 @@ function create_simple_pc_lib(simpleData, tokenID) {
     write_creature_properties(PCData, tokenID);
 }
 
-MTScript.registerMacro("ca.pf2e.create_simple_pc_lib", create_simple_pc_lib);
+MTScript.registerMacro("ca.pz2e.create_simple_pc_lib", create_simple_pc_lib);

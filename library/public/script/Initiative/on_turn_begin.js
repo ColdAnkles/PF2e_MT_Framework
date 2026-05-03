@@ -185,4 +185,4 @@ function on_turn_begin(turnToken, turnData = {}) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.on_turn_begin", on_turn_begin);
+MTScript.registerMacro("ca.pz2e.on_turn_begin", on_turn_begin);

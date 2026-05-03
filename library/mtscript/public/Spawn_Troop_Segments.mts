@@ -6,7 +6,7 @@
 [h: tokenSize = getProperty("size",tokenID)]
 [h: senseList = stringToList(getProperty("senses", tokenID),",")]
 [h: visionList = json.append("[]","darkvision","low-light","greater darkvision")]
-[h: segmentKillMacroProps = json.set("{}","label","Kill/Unkill Segment","playerEditable", 0, "command", "[h: ca.pf2e.Kill_Troop_Segment(currentToken())]","tooltip","Kill/Unkill This Segment")]
+[h: segmentKillMacroProps = json.set("{}","label","Kill/Unkill Segment","playerEditable", 0, "command", "[h: ca.pz2e.Kill_Troop_Segment(currentToken())]","tooltip","Kill/Unkill This Segment")]
 [h: val = json.set("{}", "tokenImage", tokenImg, "name", tokenName + " B","x",xCoord+2,"y",yCoord, "gmName", "Secondary Troop Segment")]
 [h: newTokenA = createToken(val)]
 [h: createMacro(segmentKillMacroProps, newTokenA)]
@@ -24,9 +24,9 @@
 [h: setHasSight(1, newTokenC)]
 [h, foreach(sense, senseList), code:{
 	[h, if(json.contains(visionList,sense)), code:{
-		[h: setSightType(js.ca.pf2e.capitalise(sense),newTokenA)]
-		[h: setSightType(js.ca.pf2e.capitalise(sense),newTokenB)]
-		[h: setSightType(js.ca.pf2e.capitalise(sense),newTokenC)]
+		[h: setSightType(js.ca.pz2e.capitalise(sense),newTokenA)]
+		[h: setSightType(js.ca.pz2e.capitalise(sense),newTokenB)]
+		[h: setSightType(js.ca.pz2e.capitalise(sense),newTokenC)]
 	};{}]
 }]
 [h: setGMName("Primary Troop Segment", tokenID)]

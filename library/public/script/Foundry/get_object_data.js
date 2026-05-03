@@ -6,8 +6,8 @@ function get_object_data(key, type) {
 	//let libToken = get_runtime("libToken");
 	let property = "";
 	try {
-		//property = JSON.parse(libToken.getProperty("pf2e_"+type));
-		property = JSON.parse(read_data("pf2e_" + type));
+		//property = JSON.parse(libToken.getProperty("pz2e_"+type));
+		property = JSON.parse(read_data("pz2e_" + type));
 		//MapTool.chat.broadcast(String(JSON.stringify(property)));
 	} catch (error) {
 		MapTool.chat.broadcast(String(error));
@@ -17,4 +17,4 @@ function get_object_data(key, type) {
 	return JSON.stringify(property[key]);
 }
 
-MTScript.registerMacro("ca.pf2e.get_object_data", get_object_data);
+MTScript.registerMacro("ca.pz2e.get_object_data", get_object_data);

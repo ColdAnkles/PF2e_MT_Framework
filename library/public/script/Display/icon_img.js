@@ -47,4 +47,4 @@ function icon_img(imageName, invert = false, srcLocOnly = false) {
 }
 
 
-MTScript.registerMacro("ca.pf2e.icon_img", icon_img);
+MTScript.registerMacro("ca.pz2e.icon_img", icon_img);

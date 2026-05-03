@@ -11,7 +11,7 @@ function disable_regeneration(token) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.disable_regeneration", disable_regeneration);
+MTScript.registerMacro("ca.pz2e.disable_regeneration", disable_regeneration);
 
 function enable_regeneration(token) {
 	if (typeof (token) == "string") {
@@ -24,4 +24,4 @@ function enable_regeneration(token) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.enable_regeneration", enable_regeneration);
+MTScript.registerMacro("ca.pz2e.enable_regeneration", enable_regeneration);

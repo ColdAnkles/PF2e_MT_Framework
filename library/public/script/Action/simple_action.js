@@ -2,7 +2,7 @@
 
 function simple_action(actionName, actingToken) {
 	actingToken = MapTool.tokens.getTokenByID(actingToken);
-	let property = JSON.parse(read_data("pf2e_action"));
+	let property = JSON.parse(read_data("pz2e_action"));
 	let actionData = property[actionName];
 
 	if (actionData == null) {
@@ -22,4 +22,4 @@ function simple_action(actionName, actingToken) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.simple_action", simple_action);
+MTScript.registerMacro("ca.pz2e.simple_action", simple_action);

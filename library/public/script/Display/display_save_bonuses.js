@@ -10,9 +10,9 @@ function display_save_bonuses(tokenID) {
 	let eqArmor = null;
 	//MapTool.chat.broadcast(String(token));
 
-	if (get_token_property_type(token) == "PF2E_Character") {
+	if (get_token_property_type(token) == "PZ2E_Character") {
 		eqArmor = get_equipped_armor(token);
-	} else if (get_token_property_type(token) == "PF2E_Hazard") {
+	} else if (get_token_property_type(token) == "PZ2E_Hazard") {
 		return "Fort: " + pos_neg_sign(fortitude) + ", Ref: " + pos_neg_sign(reflex) + ", Will: " + pos_neg_sign(will);
 	}
 
@@ -36,4 +36,4 @@ function display_save_bonuses(tokenID) {
 	return returnString;
 }
 
-MTScript.registerMacro("ca.pf2e.display_save_bonuses", display_save_bonuses);
+MTScript.registerMacro("ca.pz2e.display_save_bonuses", display_save_bonuses);

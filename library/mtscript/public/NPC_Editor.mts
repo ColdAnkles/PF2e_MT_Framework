@@ -4,10 +4,10 @@
 };{}]
 [h: type = json.type(macro.args)]
 [h, if(type=="UNKNOWN"), code:{
-    [h: allNPC = getLibProperty("pf2e_npc","lib:ca.pf2e")]
+    [h: allNPC = getLibProperty("pz2e_npc","lib:ca.pz2e")]
     [h: npcData = json.get(allNPC, macro.args)]
     [h, if(!json.contains(npcData,"name")), code:{
-        [h: allNPC = json.get(getLibProperty("customContent","lib:ca.pf2e"),"npc")]
+        [h: allNPC = json.get(getLibProperty("customContent","lib:ca.pz2e"),"npc")]
         [h: npcData = json.get(allNPC, macro.args)]
     };{}]
     [h, if(json.contains(npcData, "fileURL")), code:{
@@ -17,4 +17,4 @@
     [h: npcData = macro.args]
 }]
 
-[r: js.ca.pf2e.npc_editor(npcData)]
+[r: js.ca.pz2e.npc_editor(npcData)]

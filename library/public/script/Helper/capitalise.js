@@ -13,4 +13,4 @@ function capitalise(aString) {
 	}).join(" ");
 }
 
-MTScript.registerMacro("ca.pf2e.capitalise", capitalise);
+MTScript.registerMacro("ca.pz2e.capitalise", capitalise);

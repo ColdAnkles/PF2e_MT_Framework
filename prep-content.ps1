@@ -297,10 +297,10 @@ function import-source-file {
         $foundSources.Add($storeData.source) | Out-Null
     }
     if ( !$packData.ContainsKey("pf2e_" + $storedata.type)) {
-        $packData["pf2e_" + $storedata.type] = @{}
+        $packData["pz2e_" + $storedata.type] = @{}
     }
-    if (!$packData["pf2e_" + $storedata.type].Contains($storeData.id)){
-        $packData["pf2e_" + $storedata.type][$storeData.id] = $storeData
+    if (!$packData["pz2e_" + $storedata.type].Contains($storeData.id)){
+        $packData["pz2e_" + $storedata.type][$storeData.id] = $storeData
     }
 }
 
@@ -322,14 +322,15 @@ function import-lang-file {
 
 function write-data-files {
 
+    $data_dir = "./" + $system + "_data/"
     $script:packData = $script:packData
-    $script:foundSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_publications.json"
-    $script:wantedSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_enabledSources.json"
-    $script:tagData | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 ".\library\public\data\pf2e_tagData.json"
+    $script:foundSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $data_dir\pz2e_publications.json
+    $script:wantedSources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $data_dir\pz2e_enabledSources.json
+    $script:tagData | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $data_dir\pz2e_tagData.json
 
     ForEach ($dataType in $packData.Keys) {
         $dataSet = $packData[$dataType]
-        $outFile = ".\library\public\data\" + $dataType + ".json"
+        $outFile = $data_dir + $dataType + ".json"
 
         $dataSet | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $outFile
     }
@@ -392,7 +393,7 @@ if ($runFuncs -eq "diffCheckTest"){
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "import") {
     Invoke-Diff-Check-Prep
-    Write-Host "Importing Sources"
+    Write-Host "Importing Sources For " + $system
     Import-All-Sources
     Write-Host "Sources Imported"
     Write-Host "Writing Files"

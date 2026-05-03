@@ -40,4 +40,4 @@ function personal_action(actionName, actingToken) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.personal_action", personal_action);
+MTScript.registerMacro("ca.pz2e.personal_action", personal_action);

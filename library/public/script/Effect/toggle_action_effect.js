@@ -32,4 +32,4 @@ function toggle_action_effect(effectData, affectedCreature, state = -1) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.toggle_action_effect", toggle_action_effect);
+MTScript.registerMacro("ca.pz2e.toggle_action_effect", toggle_action_effect);

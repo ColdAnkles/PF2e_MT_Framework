@@ -97,8 +97,8 @@ function add_pc_macros(tokenID, pcLibID) {
             }
             if (spellSource.name.includes("Focus") && !addedRefocus) {
                 //add_action_to_token({ "name": "Refocus", "type": "basic", "group": "1. Common" }, tokenID);
-                createMacro({ "label": "Add Focus Point", "playerEditable": 0, "command": "[h: js.ca.pf2e.add_focus_point(myID)]", "tooltip": "Add 1 Focus Point", "sortBy": "", "group": "1. Common" }, tokenID);
-                createMacro({ "label": "Use Focus Point", "playerEditable": 0, "command": "[h: js.ca.pf2e.use_focus_point(myID)]", "tooltip": "Use 1 Focus Point", "sortBy": "", "group": "1. Common" }, tokenID);
+                createMacro({ "label": "Add Focus Point", "playerEditable": 0, "command": "[h: js.ca.pz2e.add_focus_point(myID)]", "tooltip": "Add 1 Focus Point", "sortBy": "", "group": "1. Common" }, tokenID);
+                createMacro({ "label": "Use Focus Point", "playerEditable": 0, "command": "[h: js.ca.pz2e.use_focus_point(myID)]", "tooltip": "Use 1 Focus Point", "sortBy": "", "group": "1. Common" }, tokenID);
                 addedRefocus = true;
             }
         }

@@ -1,7 +1,7 @@
 "use strict";
 
 function getLibraryContents(subdir = "") {
-    MTScript.evalMacro("[h: response = libContents = library.getContents('ca.pf2e')]");
+    MTScript.evalMacro("[h: response = libContents = library.getContents('ca.pz2e')]");
     let allData = MTScript.getVariable("response");
 
     let matchData = [];

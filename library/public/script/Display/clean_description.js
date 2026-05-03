@@ -112,41 +112,41 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 
 	if (parsed.braceContents != null) {
 		uuidString = parsed.braceContents;
-	} else if ("Compendium.pf2e.bestiary-effects.Item.Effect" in parsed.bracketDetail) {
+	} else if ("Compendium.pz2e.bestiary-effects.Item.Effect" in parsed.bracketDetail) {
 		uuidString = "";
 	} else if (parsed.bracketContents.includes("spell-effects") && !additionalData.rollDice) {
 		let tempArray = parsed.bracketContents.split(/[^(Vs)]\./);
 		let effectName = tempArray[tempArray.length - 1];
-		uuidString = create_macroLink(capitalise(effectName), "Item_View_Frame@Lib:ca.pf2e", { "itemType": "effect", "itemName": effectName });
+		uuidString = create_macroLink(capitalise(effectName), "Item_View_Frame@Lib:ca.pz2e", { "itemType": "effect", "itemName": effectName });
 	} else if (parsed.bracketContents.includes("spell-effects") && additionalData.rollDice) {
 		let tempArray = parsed.bracketContents.split(/[^(Vs)]\./);
 		let effectName = tempArray[tempArray.length - 1];
-		uuidString = create_macroLink("Apply " + effectName, "Apply_Effect_Query@Lib:ca.pf2e", { "effectName": effectName, "effectSource": additionalData.item });
+		uuidString = create_macroLink("Apply " + effectName, "Apply_Effect_Query@Lib:ca.pz2e", { "effectName": effectName, "effectSource": additionalData.item });
 	} else if (parsed.bracketContents.includes("Effect") && !additionalData.rollDice) {
 		let tempArray = parsed.bracketContents.split(".");
 		let effectName = tempArray[tempArray.length - 1];
-		uuidString = create_macroLink(capitalise(effectName), "Item_View_Frame@Lib:ca.pf2e", { "itemType": "effect", "itemName": effectName });
+		uuidString = create_macroLink(capitalise(effectName), "Item_View_Frame@Lib:ca.pz2e", { "itemType": "effect", "itemName": effectName });
 	} else if (parsed.bracketContents.includes("Effect") && additionalData.rollDice) {
 		let tempArray = parsed.bracketContents.split(".");
 		let effectName = tempArray[tempArray.length - 1];
 		tempArray = tempArray[tempArray.length - 1].split(":");
-		uuidString = create_macroLink("Apply " + effectName, "Apply_Effect_Query@Lib:ca.pf2e", { "effectName": effectName, "effectSource": additionalData.item });
+		uuidString = create_macroLink("Apply " + effectName, "Apply_Effect_Query@Lib:ca.pz2e", { "effectName": effectName, "effectSource": additionalData.item });
 	} else if (parsed.bracketContents.includes("spells-srd")) {
 		let tempArray = parsed.bracketContents.split(".");
 		let spellName = tempArray[tempArray.length - 1];
-		uuidString = create_macroLink(capitalise(spellName), "Spell_View_Frame@Lib:ca.pf2e", spellName);
+		uuidString = create_macroLink(capitalise(spellName), "Spell_View_Frame@Lib:ca.pz2e", spellName);
 	} else if (parsed.bracketContents.includes("conditionitems")) {
 		let tempArray = parsed.bracketContents.split(".");
 		let conditionName = tempArray[tempArray.length - 1];
-		uuidString = create_macroLink(capitalise(conditionName), "Item_View_Frame@Lib:ca.pf2e", { "itemType": "condition", "itemName": conditionName });
-	} else if (parsed.bracketContents.includes("actionspf2e")) {
+		uuidString = create_macroLink(capitalise(conditionName), "Item_View_Frame@Lib:ca.pz2e", { "itemType": "condition", "itemName": conditionName });
+	} else if (parsed.bracketContents.includes("actionspz2e")) {
 		let tempArray = parsed.bracketContents.split(".");
 		let actionName = tempArray[tempArray.length - 1];
 		uuidString = actionName;
 	} else if (parsed.bracketContents.includes("feats-srd")) {
 		let tempArray = parsed.bracketContents.split(".");
 		let featName = tempArray[tempArray.length - 1];
-		uuidString = create_macroLink(capitalise(featName), "Item_View_Frame@Lib:ca.pf2e", { "itemType": "feat", "itemName": featName });
+		uuidString = create_macroLink(capitalise(featName), "Item_View_Frame@Lib:ca.pz2e", { "itemType": "feat", "itemName": featName });
 	} else if (parsed.bracketContents.includes("classfeatures")) {
 		let tempArray = parsed.bracketContents.split(".");
 		let featName = tempArray[tempArray.length - 1];
@@ -154,8 +154,8 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 	} else if (parsed.bracketContents.includes("equipment-srd.Item")) {
 		let tempArray = parsed.bracketContents.split(".");
 		let itemName = tempArray[tempArray.length - 1];
-		uuidString = create_macroLink(capitalise(itemName), "Item_View_Frame@Lib:ca.pf2e", { "itemType": "item", "itemName": itemName });
-	} else if (parsed.bracketContents.includes("pf2e-macros")) {
+		uuidString = create_macroLink(capitalise(itemName), "Item_View_Frame@Lib:ca.pz2e", { "itemType": "item", "itemName": itemName });
+	} else if (parsed.bracketContents.includes("pz2e-macros")) {
 		uuidString = "";
 	}
 	//MapTool.chat.broadcast(uuidString);
@@ -233,7 +233,7 @@ function parse_localize(localizeString, additionalData) {
 
 	if (parsed.bracketContents != "") {
 		let keySplit = parsed.bracketContents.split(".");
-		let glossaryData = JSON.parse(read_data("pf2e_glossary"));
+		let glossaryData = JSON.parse(read_data("pz2e_glossary"));
 		for (var k in keySplit) {
 			if (!(keySplit[k] in glossaryData)) {
 				return "";
@@ -246,7 +246,7 @@ function parse_localize(localizeString, additionalData) {
 	//if (parsed.bracketContents.includes("NPC.Abilities")) {
 	//	let tempArray = parsed.bracketContents.split(".");
 	//	let abilityName = tempArray[tempArray.length - 1];
-	//	let actionList = JSON.parse(read_data("pf2e_glossary")).PF2E;
+	//	let actionList = JSON.parse(read_data("pz2e_glossary")).pz2e;
 	//	if (abilityName in actionList) {
 	//		let actionDesc = actionList[abilityName];
 	//		return "<br />" + clean_description(actionDesc, additionalData.removeLineBreaks, additionalData.removeHR, additionalData.removeP, additionalData);
@@ -574,4 +574,4 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 }
 
 
-MTScript.registerMacro("ca.pf2e.clean_description", clean_description);
+MTScript.registerMacro("ca.pz2e.clean_description", clean_description);

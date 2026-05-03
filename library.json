@@ -1,13 +1,13 @@
 {
-  "name": "Lib:ca.pf2e",
+  "name": "Lib:ca.pz2e",
   "version": "0.13.0",
   "website": "",
   "gitUrl": "https://github.com/ColdAnkles/PF2e_MT_Framework",
   "authors": ["Cold_Ankles"],
   "license": "",
-  "namespace": "ca.pf2e",
-  "description": "A MapTool addon for Pathfinder 2E.",
-  "shortDescription": "A MapTool addon for Pathfinder 2E.",
+  "namespace": "ca.pz2e",
+  "description": "A MapTool addon for Pathfinder and Starfinder 2E.",
+  "shortDescription": "A MapTool addon for Pathfinder and Starfinder 2E.",
   "allowsUriAccess": true,
   "licenseFile": "",
   "readMeFile": ""

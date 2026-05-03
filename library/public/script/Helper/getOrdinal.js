@@ -17,4 +17,4 @@ function getOrdinal(n) {
 }
 
 
-MTScript.registerMacro("ca.pf2e.getOrdinal", getOrdinal);
+MTScript.registerMacro("ca.pz2e.getOrdinal", getOrdinal);

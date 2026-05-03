@@ -15,4 +15,4 @@ function typeArray_to_string(arrayList) {
 }
 
 
-MTScript.registerMacro("ca.pf2e.typeArray_to_string", typeArray_to_string);
+MTScript.registerMacro("ca.pz2e.typeArray_to_string", typeArray_to_string);

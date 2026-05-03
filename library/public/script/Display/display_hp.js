@@ -31,4 +31,4 @@ function display_hp(tokenID) {
     return HPString;
 }
 
-MTScript.registerMacro("ca.pf2e.display_hp", display_hp);
+MTScript.registerMacro("ca.pz2e.display_hp", display_hp);

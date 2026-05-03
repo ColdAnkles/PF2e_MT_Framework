@@ -3,19 +3,19 @@
 function parse_pathbuilder_export(data) {
 
 	//let libToken = get_runtime("libToken");
-	//let featLibrary = JSON.parse(libToken.getProperty("pf2e_feat"));
-	//let actionLibrary = JSON.parse(libToken.getProperty("pf2e_action"));
-	//let ancestryLibrary = JSON.parse(libToken.getProperty("pf2e_ancestry"));
-	//let heritageLibrary = JSON.parse(libToken.getProperty("pf2e_heritage"));
-	//let spellLibrary = JSON.parse(libToken.getProperty("pf2e_spell"));
+	//let featLibrary = JSON.parse(libToken.getProperty("pz2e_feat"));
+	//let actionLibrary = JSON.parse(libToken.getProperty("pz2e_action"));
+	//let ancestryLibrary = JSON.parse(libToken.getProperty("pz2e_ancestry"));
+	//let heritageLibrary = JSON.parse(libToken.getProperty("pz2e_heritage"));
+	//let spellLibrary = JSON.parse(libToken.getProperty("pz2e_spell"));
 
-	let featLibrary = JSON.parse(read_data("pf2e_feat"));
-	let actionLibrary = JSON.parse(read_data("pf2e_action"));
-	let classLibrary = JSON.parse(read_data("pf2e_class"));
-	let ancestryLibrary = JSON.parse(read_data("pf2e_ancestry"));
-	let heritageLibrary = JSON.parse(read_data("pf2e_heritage"));
-	let spellLibrary = JSON.parse(read_data("pf2e_spell"));
-	let itemLibrary = JSON.parse(read_data("pf2e_item"));
+	let featLibrary = JSON.parse(read_data("pz2e_feat"));
+	let actionLibrary = JSON.parse(read_data("pz2e_action"));
+	let classLibrary = JSON.parse(read_data("pz2e_class"));
+	let ancestryLibrary = JSON.parse(read_data("pz2e_ancestry"));
+	let heritageLibrary = JSON.parse(read_data("pz2e_heritage"));
+	let spellLibrary = JSON.parse(read_data("pz2e_spell"));
+	let itemLibrary = JSON.parse(read_data("pz2e_item"));
 
 	let unfoundData = [];
 
@@ -444,7 +444,7 @@ function parse_pathbuilder_export(data) {
 					"senses": []
 				},
 			}
-		}, "flags": { "pf2e": { "rulesSelections": {} } }
+		}, "flags": { "pz2e": { "rulesSelections": {} } }
 	};
 
 	let features_to_parse = [];
@@ -672,7 +672,7 @@ function parse_pathbuilder_export(data) {
 						"traits": itemData.system.traits, "category": itemData.system.category, "group": itemData.system.group
 					},
 					"type": ((itemData.system.range == null) ? "melee" : "ranged"),
-					"flags": { "pf2e": {} }
+					"flags": { "pz2e": {} }
 				}
 				if (thisWeapon.str == "striking") {
 					itemData.system.runes.striking = 1;
@@ -684,7 +684,7 @@ function parse_pathbuilder_export(data) {
 					itemData.system.runes.striking = 3;
 					newAttackData.system.damageRolls["0"].dice += 3;
 				}
-				newAttackData.flags.pf2e.linkedWeapon = trueID;
+				newAttackData.flags.pz2e.linkedWeapon = trueID;
 				newAttackData.system.damageRolls["0"].damage = String(newAttackData.system.damageRolls["0"].dice) + newAttackData.system.damageRolls["0"].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
 				itemData.system.runes.potency = thisWeapon.pot;
 				for (var rI of thisWeapon.runes) {
@@ -728,7 +728,7 @@ function parse_pathbuilder_export(data) {
 			"description": { "value": "" }, "attackEffects": { "value": [] }, "isMelee": true, "group": "",
 			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "category": "unarmed"
 		},
-		"flags": { "pf2e": { "linkedWeapon": "unarmed" } },
+		"flags": { "pz2e": { "linkedWeapon": "unarmed" } },
 		"type": "melee"
 	}
 	unarmedAttack.system.damageRolls["0"].damage = String(unarmedAttack.system.damageRolls["0"].dice) + unarmedAttack.system.damageRolls["0"].die + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
@@ -851,4 +851,4 @@ function parse_pathbuilder_export(data) {
 	return characterData;
 }
 
-MTScript.registerMacro("ca.pf2e.parse_pathbuilder_export", parse_pathbuilder_export);
+MTScript.registerMacro("ca.pz2e.parse_pathbuilder_export", parse_pathbuilder_export);

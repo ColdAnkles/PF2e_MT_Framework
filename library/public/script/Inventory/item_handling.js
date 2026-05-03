@@ -93,7 +93,7 @@ function find_items_on_ground(token = null) {
         let itemList = [];
 
         for (var t in mapTokens) {
-            if (get_token_property_type(mapTokens[t]) == "PF2E_Item") {
+            if (get_token_property_type(mapTokens[t]) == "PZ2E_Item") {
                 if (token == null) {
                     itemList.push(mapTokens[t]);
                 } else {

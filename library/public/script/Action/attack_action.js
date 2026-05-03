@@ -6,7 +6,7 @@ function attack_action(actionData, actingToken) {
 	}
 
 	//MapTool.chat.broadcast(JSON.stringify(actionData));
-	let themeData = JSON.parse(read_data("pf2e_themes"))[read_data("selectedTheme")];
+	let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
 	let currentAttackCount = Number(actingToken.getProperty("attacksThisRound"));
 	if (isNaN(currentAttackCount)) {
@@ -29,14 +29,14 @@ function attack_action(actionData, actingToken) {
 
 	try {
 		inventory = JSON.parse(actingToken.getProperty("inventory"));
-		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
-			itemData = inventory[actionData.flags.pf2e.linkedWeapon];
+		if ("flags" in actionData && "pz2e" in actionData.flags && "linkedWeapon" in actionData.flags.pz2e) {
+			itemData = inventory[actionData.flags.pz2e.linkedWeapon];
 		}
 		if (actingToken.isPC()) {
-			if (itemData == null && !actionData.flags.pf2e.linkedWeapon == "unarmed") {
+			if (itemData == null && !actionData.flags.pz2e.linkedWeapon == "unarmed") {
 				MapTool.chat.broadcast("Linked Weapon Missing!");
 				return
-			} else if (itemData == null && actionData.flags.pf2e.linkedWeapon == "unarmed") {
+			} else if (itemData == null && actionData.flags.pz2e.linkedWeapon == "unarmed") {
 				itemData = find_handwraps(actingToken);
 				if (itemData != null) {
 					actionData.system.damageRolls[0].dice = itemData.system.runes.striking + 1;
@@ -398,4 +398,4 @@ function attack_action(actionData, actingToken) {
 
 }
 
-MTScript.registerMacro("ca.pf2e.attack_action", attack_action);
+MTScript.registerMacro("ca.pz2e.attack_action", attack_action);

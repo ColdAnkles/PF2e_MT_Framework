@@ -1,1 +1,1 @@
-[h: js.ca.pf2e.apply_effect_query(macro.args)]
+[h: js.ca.pz2e.apply_effect_query(macro.args)]

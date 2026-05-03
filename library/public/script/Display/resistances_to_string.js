@@ -11,4 +11,4 @@ function resistances_to_string(resistancesList) {
 }
 
 
-MTScript.registerMacro("ca.pf2e.resistances_to_string", resistances_to_string);
+MTScript.registerMacro("ca.pz2e.resistances_to_string", resistances_to_string);

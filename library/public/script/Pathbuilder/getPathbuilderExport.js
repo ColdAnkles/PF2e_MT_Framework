@@ -22,7 +22,7 @@ function get_pathbuilder_export_via_id(idNumber) {
 	}
 }
 
-MTScript.registerMacro("ca.pf2e.get_pathbuilder_export_via_id", get_pathbuilder_export_via_id);
+MTScript.registerMacro("ca.pz2e.get_pathbuilder_export_via_id", get_pathbuilder_export_via_id);
 
 "use strict";
 
@@ -41,4 +41,4 @@ function get_pathbuilder_export_via_input() {
 	return parsed;
 }
 
-MTScript.registerMacro("ca.pf2e.get_pathbuilder_export_via_input", get_pathbuilder_export_via_input);
+MTScript.registerMacro("ca.pz2e.get_pathbuilder_export_via_input", get_pathbuilder_export_via_input);

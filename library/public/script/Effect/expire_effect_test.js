@@ -10,7 +10,7 @@ function expire_effect_test(initiativeData, cause) {
 	for (var t in allTokens) {
 		let effectToken = allTokens[t];
 
-		if (!(get_token_property_type(effectToken) == "PF2E_Character")) {
+		if (!(get_token_property_type(effectToken) == "PZ2E_Character")) {
 			continue;
 		}
 

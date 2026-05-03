@@ -30,7 +30,7 @@ function manage_custom_content(key, entry, action) {
             write_data("customContent", JSON.stringify(customContent));
         }
     }
-    MTScript.evalMacro("[h: ca.pf2e.Custom_Content_Window()]")
+    MTScript.evalMacro("[h: ca.pz2e.Custom_Content_Window()]")
 }
 
-MTScript.registerMacro("ca.pf2e.manage_custom_content", manage_custom_content);
+MTScript.registerMacro("ca.pz2e.manage_custom_content", manage_custom_content);

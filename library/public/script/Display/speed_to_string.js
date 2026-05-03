@@ -16,4 +16,4 @@ function speed_to_string(speedList) {
 }
 
 
-MTScript.registerMacro("ca.pf2e.speed_to_string", speed_to_string);
+MTScript.registerMacro("ca.pz2e.speed_to_string", speed_to_string);

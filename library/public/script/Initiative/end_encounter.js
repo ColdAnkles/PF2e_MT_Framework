@@ -21,4 +21,4 @@ function end_encounter() {
     MTScript.evalMacro("[h: removeAllFromInitiative()]");
 }
 
-MTScript.registerMacro("ca.pf2e.end_encounter", end_encounter);
+MTScript.registerMacro("ca.pz2e.end_encounter", end_encounter);
