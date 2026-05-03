@@ -126,8 +126,8 @@ function add_action_to_token(actionData, tokenID, token) {
 		var inventory = JSON.parse(token.getProperty("inventory"));
 		var itemData = null;
 		var overrideName = null;
-		if ("flags" in actionData && "pz2e" in actionData.flags && "linkedWeapon" in actionData.flags.pz2e && actionData.flags.pz2e.linkedWeapon != "unarmed") {
-			itemData = inventory[actionData.flags.pz2e.linkedWeapon];
+		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e && actionData.flags.pf2e.linkedWeapon != "unarmed") {
+			itemData = inventory[actionData.flags.pf2e.linkedWeapon];
 			overrideName = itemData.name;
 			actionData.system.description = itemData.system.description;
 			actionData.system.runes = itemData.system.runes.property.map((a) => { return capitalise(a) });

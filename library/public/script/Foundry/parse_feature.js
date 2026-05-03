@@ -170,8 +170,8 @@ function parse_feature(featureName, feature, assignDict = null) {
 		newItem.source = itemData.system.publication.title;
 		newItem.rarity = itemData.system.traits.rarity;
 		newItem.baseName = itemData.baseName;
-		if ("flags" in itemData && "pz2e" in itemData.flags && "linkedWeapon" in itemData.flags.pz2e) {
-			newItem.linkedWeapon = itemData.flags.pz2e.linkedWeapon;
+		if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e) {
+			newItem.linkedWeapon = itemData.flags.pf2e.linkedWeapon;
 		}
 		if (!simpleReturn) {
 			assignDict.basicAttacks.push(newItem);

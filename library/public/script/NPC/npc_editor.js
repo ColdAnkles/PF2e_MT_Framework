@@ -180,11 +180,11 @@ function npc_editor(inputData) {
                 }
                 if (("itemWeaponLink_" + i) in inputData) {
                     if (!("flags" in itemData)) {
-                        itemData.flags = { "pz2e": { "linkedWeapon": null } }
-                    } else if (!("pz2e" in itemData.flags)) {
-                        itemData.flags.pz2e = { "linkedWeapon": null }
+                        itemData.flags = { "pf2e": { "linkedWeapon": null } }
+                    } else if (!("pf2e" in itemData.flags)) {
+                        itemData.flags.pf2e = { "linkedWeapon": null }
                     }
-                    itemData.flags.pz2e.linkedWeapon = weaponIDs[inputData["itemWeaponLink_" + i]];
+                    itemData.flags.pf2e.linkedWeapon = weaponIDs[inputData["itemWeaponLink_" + i]];
                 }
                 if (("itemCastBonusVal_" + i) in inputData) {
                     itemData.system.spelldc.value = inputData["itemCastBonusVal_" + i];
@@ -476,8 +476,8 @@ function npc_editor(inputData) {
                 outputHTML += "<tr><td>Linked Weapon</td><td colspan='5'><select name='itemWeaponLink_" + itemCounter + "'><option>None</option>";
 
                 var linkedWeapon = null;
-                if ("flags" in itemData && "pz2e" in itemData.flags && "linkedWeapon" in itemData.flags.pz2e) {
-                    linkedWeapon = itemData.flags.pz2e.linkedWeapon;
+                if ("flags" in itemData && "pf2e" in itemData.flags && "linkedWeapon" in itemData.flags.pf2e) {
+                    linkedWeapon = itemData.flags.pf2e.linkedWeapon;
                 }
                 for (var w in weaponNames) {
                     outputHTML += "<option " + ((w == linkedWeapon) ? "selected" : "") + ">" + weaponNames[w] + "</option>";

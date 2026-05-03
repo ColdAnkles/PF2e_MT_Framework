@@ -684,7 +684,7 @@ function parse_pathbuilder_export(data) {
 					itemData.system.runes.striking = 3;
 					newAttackData.system.damageRolls["0"].dice += 3;
 				}
-				newAttackData.flags.pz2e.linkedWeapon = trueID;
+				newAttackData.flags.pf2e.linkedWeapon = trueID;
 				newAttackData.system.damageRolls["0"].damage = String(newAttackData.system.damageRolls["0"].dice) + newAttackData.system.damageRolls["0"].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
 				itemData.system.runes.potency = thisWeapon.pot;
 				for (var rI of thisWeapon.runes) {

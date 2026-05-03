@@ -113,20 +113,20 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
             }
             //MapTool.chat.broadcast(choiceResult);
             try {
-                if ("flags" in assignDict && "pz2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pz2e && choiceFlag in assignDict.flags.pz2e.rulesSelections) {
-                    assignDict.flags.pz2e.rulesSelections[choiceFlag].push(choiceResult.toLowerCase());
+                if ("flags" in assignDict && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && choiceFlag in assignDict.flags.pf2e.rulesSelections) {
+                    assignDict.flags.pf2e.rulesSelections[choiceFlag].push(choiceResult.toLowerCase());
                 } else {
-                    assignDict.flags.pz2e.rulesSelections[choiceFlag] = [choiceResult.toLowerCase()];
+                    assignDict.flags.pf2e.rulesSelections[choiceFlag] = [choiceResult.toLowerCase()];
                 }
-                if ("rollOption" in newRule && "pz2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pz2e && newRule.rollOption in assignDict.flags.pz2e.rulesSelections) {
-                    assignDict.flags.pz2e.rulesSelections[newRule.rollOption].push(choiceResult.toLowerCase());
+                if ("rollOption" in newRule && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && newRule.rollOption in assignDict.flags.pf2e.rulesSelections) {
+                    assignDict.flags.pf2e.rulesSelections[newRule.rollOption].push(choiceResult.toLowerCase());
                 } else if ("rollOption" in newRule) {
-                    assignDict.flags.pz2e.rulesSelections[newRule.rollOption] = [choiceResult.toLowerCase()];
+                    assignDict.flags.pf2e.rulesSelections[newRule.rollOption] = [choiceResult.toLowerCase()];
                 }
                 chosenValues.push(choiceResult);
             } catch (e) {
                 MapTool.chat.broadcast("Error in feature_require_choice during assign-ruleSelection");
-                MapTool.chat.broadcast("assignDict.flags.pz2e.rulesSelections: " + JSON.stringify(assignDict.flags.pz2e.rulesSelections));
+                MapTool.chat.broadcast("assignDict.flags.pf2e.rulesSelections: " + JSON.stringify(assignDict.flags.pf2e.rulesSelections));
                 MapTool.chat.broadcast("choiceFlag: " + choiceFlag);
                 MapTool.chat.broadcast("choiceResult: " + choiceResult);
                 MapTool.chat.broadcast("chosenValues: " + JSON.stringify(chosenValues));

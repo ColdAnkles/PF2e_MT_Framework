@@ -16,7 +16,7 @@ function get_actor_data(actor, varName) {
 
     if (result == null && varName.includes("flags.system")) {
         try {
-            varName = varName.replace("flags.system", "flags.pz2e")
+            varName = varName.replace("flags.system", "flags.pf2e")
             result = eval("actorData." + varName);
         } catch {
             result = null
