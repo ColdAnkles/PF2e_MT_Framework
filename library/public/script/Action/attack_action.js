@@ -29,7 +29,7 @@ function attack_action(actionData, actingToken) {
 
 	try {
 		inventory = JSON.parse(actingToken.getProperty("inventory"));
-		if ("flags" in actionData && "pz2e" in actionData.flags && "linkedWeapon" in actionData.flags.pz2e) {
+		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
 			itemData = inventory[actionData.flags.pz2e.linkedWeapon];
 		}
 		if (actingToken.isPC()) {
