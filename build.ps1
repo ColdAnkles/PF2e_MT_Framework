@@ -2,7 +2,13 @@
     [Parameter(Mandatory)][ValidateSet("simple", "all")][string] $build
 )
 
-if ($build -eq "simple"){
+if($build -eq "all"){
+    .\prep-content.ps1 pf2e all
+    .\prep-content.ps1 sf2e source
+    .\prep-content.ps1 sf2e import
+}
+
+if ($build -eq "simple" -or $build -eq "all"){
     #Remove Old Libs
     Remove-Item PF2e_MT_Framework.mtlib
     Remove-Item SF2e_MT_Framework.mtlib

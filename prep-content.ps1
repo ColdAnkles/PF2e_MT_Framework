@@ -10,7 +10,7 @@ function Get-Master-Zip {
 
 function Expand-Master-Zip {
     #Expand-Archive -LiteralPath pf2e-master.zip -DestinationPath pf2e-master
-    if (Test-Path "./pf2e-master/" ){
+    if (Test-Path "./pf2e-master/" ) {
         Remove-Item -Recurse -Force pf2e-master
     }
     7z x pf2e-master.zip -o"pf2e-master" */packs/* */static/lang/* -r
@@ -33,15 +33,20 @@ function Get-Foundry-Sources {
     $response = Invoke-RestMethod -Uri $base_pack_url
 
     ForEach ($item in $response.tree) {
-        if ($item.path -eq $system) {
-            $base_pack_url = $item.url + "?recursive=true"
+        if ($item.path -eq "pf2e") {
+            $pf2e_pack_url = $item.url + "?recursive=true"
             continue
+        } else {
+            $sf2e_pack_url = $item.url + "?recursive=true"
         }
     }
 
-    $response = Invoke-RestMethod -Uri $base_pack_url
+    $pf2e_response = Invoke-RestMethod -Uri $pf2e_pack_url
+    $sf2e_response = Invoke-RestMethod -Uri $sf2e_pack_url
 
-    ForEach ($p in $response.tree) {
+    $parseData = $pf2e_response.tree + $sf2e_response.tree
+
+    ForEach ($p in $parseData) {
         if ($p.type -eq "tree") {
             if (!$script:unwantedPacks.Contains($p.path)) {
                 $newSource = @{name = $p.path; content = @{}; enabled = $false; }
@@ -71,23 +76,34 @@ function Get-Foundry-Sources {
         }
     }
 
-    ForEach ($r in $removeSources){
+    ForEach ($r in $removeSources) {
         $sources.Remove($r)
     }
 
-    $sources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii ".\library\public\data\pf2e_source.json"
+    $data_file = "./" + $system + "_data/pz2e_source.json"
+    $sources | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding ascii $data_file
 }
 
 function Import-All-Sources {
     
     $sourceList = Get-ChildItem .\pf2e-master\*\packs\$system\* | ForEach-Object { $_.FullName }
 
+    if ($system -eq "sf2e") {
+        #Need PF2E Data for Shared Actions and Conditions
+        $sourceList += Get-ChildItem .\pf2e-master\*\packs\pf2e\actions* | ForEach-Object { $_.FullName }
+        $sourceList += Get-ChildItem .\pf2e-master\*\packs\pf2e\conditions* | ForEach-Object { $_.FullName }
+    }
+
     #Load More Important Sources First
-    $coreContent = @("actions","ancestries","backgrounds","classes","classfeatures","conditions","equipment","feats","hazards","spells","spell-effects","pathfinder-monster-core","pathfinder-monster-core-2","pathfinder-npc-core")
+    if ($system -eq "pf2e") {
+        $coreContent = @("actions", "ancestries", "backgrounds", "classes", "classfeatures", "conditions", "equipment", "feats", "hazards", "spells", "spell-effects", "pathfinder-monster-core", "pathfinder-monster-core-2", "pathfinder-npc-core")
+    } else {
+        $coreContent = @("actions", "ancestries", "backgrounds", "classes", "classfeatures", "conditions", "equipment", "feats", "hazards", "spells", "spell-effects", "alien-core-bestiary")
+    }
     $skipItems = @()
     ForEach ($source in $sourceList) {
-        ForEach($coreItem in $coreContent){
-            if ($source.Contains("\packs\"+$coreItem)) {
+        ForEach ($coreItem in $coreContent) {
+            if ($source.Contains("\packs\" + $system + "\" + $coreItem)) {
                 $skipItems += $source
                 $splitArray = $source -split "\\"
                 $sourceName = $splitArray[$splitArray.length - 1 ]
@@ -105,8 +121,7 @@ function Import-All-Sources {
         if (!$script:unwantedPacks.Contains($sourceName) -and !$skipItems.Contains($source)) {
             #Write-Host "Importing " $sourceName
             import-source $source $sourceName
-        }
-        else {
+        } else {
             #Write-Host "Skipping" $sourceName
         }
     }
@@ -123,7 +138,6 @@ function import-source {
 
     $counter = 0
     $total = $childList.Length
-    $importText = "Importing " + $sourceName
 
     ForEach ($file in $childList) {
         if ( -not ($file -like "*.json")) {
@@ -131,12 +145,13 @@ function import-source {
         }
         $splitArray = $file -split "\\"
         $childName = $splitArray[$splitArray.length - 1 ]
+        $importText = "Importing " + $sourceName + " : " + $childName
         #Write-Host "Reading " $childName
         #Write-Host $file
         $subPath = ""
         $begin = $false
-        ForEach ($p in $splitArray){
-            if (( $p -eq "packs" -or $begin ) -and $p -ne $childName){
+        ForEach ($p in $splitArray) {
+            if (( $p -eq "packs" -or $begin ) -and $p -ne $childName) {
                 $begin = $true
                 $subPath += "/" + $p
             }
@@ -162,13 +177,12 @@ function import-source-file {
     #$data = Invoke-RestMethod -Uri $fileURL
     try {
         $data = Get-Content -Encoding UTF8 $filePath | ConvertFrom-JSON 
-    }
-    Catch {
+    } catch {
         Write-Host "Error reading" $filePath
         return
     }
 
-    if (($data.getType().FullName -eq "System.Object[]")){
+    if (($data.getType().FullName -eq "System.Object[]")) {
         return
     }
 
@@ -184,9 +198,9 @@ function import-source-file {
     $baseNameSplit = $fileName -split "\.";
     $storeData.baseName = $baseNameSplit[0]
 
-    if ($data.system.traits.PSObject.Properties.name -contains "otherTags"){
-        ForEach ($tagDef in $data.system.traits.otherTags){
-            if ( -not ($tagData.Contains($tagDef))){
+    if ($data.system.traits.PSObject.Properties.name -contains "otherTags") {
+        ForEach ($tagDef in $data.system.traits.otherTags) {
+            if ( -not ($tagData.Contains($tagDef))) {
                 $tagData[$tagDef] = [System.Collections.ArrayList]@()
             }
             $tagData[$tagDef].Add($data.name) | Out-Null
@@ -203,8 +217,7 @@ function import-source-file {
         $storeData.rarity = $data.system.traits.rarity
         $storeData.size = $data.system.traits.size.value
         $storeData.source = $data.system.details.publication.title
-    }
-    elseif ($data.type -eq "action") {
+    } elseif ($data.type -eq "action") {
         $storeData.traits = $data.system.traits.value
         $storeData.actionCost = $data.system.actions.value
         $storeData.actionType = $data.system.actionType.value
@@ -212,24 +225,20 @@ function import-source-file {
         $storeData.requirements = $data.system.requirements
         $storeData.description = $data.system.description.value
         $storeData.source = $data.system.publication.title;
-    }
-    elseif ($data.type -eq "ancestry") {
+    } elseif ($data.type -eq "ancestry") {
         $storeData.traits = $data.system.traits.value
         $storeData.rarity = $data.system.traits.rarity
         $storeData.source = $data.system.publication.title
-    }
-    elseif ($data.type -eq "condition") {
+    } elseif ($data.type -eq "condition") {
         $storeData.description = $data.system.description.value
         $storeData.overrides = $data.system.overrides
         $storeData.value = $data.system.value
         $storeData.rules = $data.system.rules
         $storeData.source = $data.system.publication.title
-    }
-    elseif ($data.type -eq "class") {
+    } elseif ($data.type -eq "class") {
         $storeData.source = $data.system.publication.title;
         $storeData.rarity = $data.system.traits.rarity;
-    }
-    elseif ($data.type -eq "feat") {
+    } elseif ($data.type -eq "feat") {
         $storeData.source = $data.system.publication.title;
         $storeData.rarity = $data.system.traits.rarity;
         $storeData.traits = $data.system.traits.value;
@@ -239,23 +248,20 @@ function import-source-file {
         if ($storeData.name -eq "Aquatic Adaptation" -and $storeData.traits.Contains("lizardfolk")) {
             $storeData.name = "Aquatic Adaptation (Lizardfolk)";
         }
-    }
-    elseif ($data.type -eq "spell") {
+    } elseif ($data.type -eq "spell") {
         $storeData.source = $data.system.publication.title;
         $storeData.rarity = $data.system.traits.rarity;
         $storeData.traits = $data.system.traits.value;
         $storeData.traditions = $data.system.traits.traditions;
         $storeData.level = $data.system.level.value;
-    }
-    elseif ($data.type -eq "hazard") {
+    } elseif ($data.type -eq "hazard") {
         $storeData.source = $data.system.details.publication.title;
         $storeData.rarity = $data.system.traits.rarity;
         $storeData.traits = $data.system.traits.value;
         $storeData.level = $data.system.details.level.value;
         $storeData.isComplex = $data.system.isComplex;
         $storeData.hazardType = $data.system.value;
-    }
-    elseif ($data.type -eq "effect") {
+    } elseif ($data.type -eq "effect") {
         $storeData.source = $data.system.publication.title;
         $storeData.duration = $data.system.duration;
         $storeData.rules = $data.system.rules;
@@ -263,16 +269,14 @@ function import-source-file {
         $storeData.rarity = $data.system.traits.rarity;
         $storeData.traits = $data.system.traits.value;
         $storeData.level = $data.system.level.value;
-    }
-    elseif ($data.type -eq "heritage") {
+    } elseif ($data.type -eq "heritage") {
         $storeData.source = $data.system.publication.title;
         $storeData.description = $data.system.description.value;
         $storeData.ancestry = $data.system.ancestry;
         $storeData.rules = $data.system.rules;
         $storeData.traits = $data.system.traits.value;
         $storeData.rarity = $data.system.traits.rarity;
-    }
-    elseif ($data.type -eq "weapon" -or $data.type -eq "armor" -or $data.type -eq "consumable" -or $data.type -eq "equipment" -or $data.type -eq "shield" -or $data.type -eq "treasure" -or $data.type -eq "backpack") {
+    } elseif ($data.type -eq "weapon" -or $data.type -eq "armor" -or $data.type -eq "consumable" -or $data.type -eq "equipment" -or $data.type -eq "shield" -or $data.type -eq "treasure" -or $data.type -eq "backpack") {
         $storedata.type = "item";
         $storeData.source = $data.system.publication.title;
         $storeData.rules = $data.system.rules;
@@ -281,25 +285,24 @@ function import-source-file {
         $storeData.itemType = $data.system.type;
         $storeData.level = $data.system.level.value;
         $storeData.bulk = $data.system.bulk.value;
-    }
-    else {
+    } else {
         #Write-Host "Unknown Type: " $data.type
     }
 
-    if ($wantedSources.Contains($storeData.source)){
+    if ($wantedSources.Contains($storeData.source)) {
         $storeData.items = $data.items
         $storeData.system = $data.system
-    }else{
+    } else {
         $storeData.fileURL = "https://raw.githubusercontent.com/foundryvtt/pf2e/HEAD" + $subPath + "/" + $fileName
     }
 
     if ( !$foundSources.Contains($storeData.source)) {
         $foundSources.Add($storeData.source) | Out-Null
     }
-    if ( !$packData.ContainsKey("pf2e_" + $storedata.type)) {
+    if ( !$packData.ContainsKey("pz2e_" + $storedata.type)) {
         $packData["pz2e_" + $storedata.type] = @{}
     }
-    if (!$packData["pz2e_" + $storedata.type].Contains($storeData.id)){
+    if (!$packData["pz2e_" + $storedata.type].Contains($storeData.id)) {
         $packData["pz2e_" + $storedata.type][$storeData.id] = $storeData
     }
 }
@@ -308,11 +311,11 @@ function import-lang-file {
     $script:langData = $script:langData
     $langSources = Get-ChildItem .\pf2e-master\*\static\lang\*
     $data = $null
-    ForEach ( $source in $langSources ){
+    ForEach ( $source in $langSources ) {
         $rawData = Get-Content -Encoding UTF8 $source
         #Windows PS doesn't do case sensitive keys in JSON - 
         $data = $rawData.replace("""condition""", "conditionList").replace("""ui""", "_ui") | ConvertFrom-JSON
-        $outFile = ".\library\public\lang_data\"+$source.Name
+        $outFile = ".\library\public\lang_data\" + $source.Name
         $data | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $outFile
     }
 
@@ -339,17 +342,17 @@ function write-data-files {
 
 function Invoke-Diff-Check-Prep {
     $script:diffCheckFiles = $script:diffCheckFiles
-    if (Test-Path pf2e-master){
-        Foreach ($file in $diffCheckFiles){
+    if (Test-Path pf2e-master) {
+        Foreach ($file in $diffCheckFiles) {
             Get-ChildItem -Path "./pf2e-master" -Recurse -File -Filter $file | Copy-Item -Destination "diffChecks"
         }
     }
 }
 
 function Invoke-Diff-Checks {
-    Foreach ($file in $diffCheckFiles){
+    Foreach ($file in $diffCheckFiles) {
         $test = Compare-Object -DifferenceObject (Get-Content "diffChecks/$file") -ReferenceObject (Get-ChildItem -Path "./pf2e-master" -Recurse -File -Filter $file | Get-Content) | Out-Null
-        if ($test){
+        if ($test) {
             Write-Host "Differences found in" $file
         }
     }
@@ -357,7 +360,11 @@ function Invoke-Diff-Checks {
 
 $diffCheckFiles = @("black-dragon-adult.json", "heal.json", "force-barrage.json", "affix-a-talisman.json", "recall-knowledge.json", "off-guard.json")
 $unwantedPacks = @("paizo-pregens", "rollable-tables", "vehicles", "kingmaker-features", "macros", "deities", "kingmaker-bestiary", "journals", "kingmaker-features", "iconics", "criticaldeck", "action-macros")
-$wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder Player Core 2", "Pathfinder Rage of Elements", "Pathfinder GM Core", "Pathfinder Advanced Player's Guide", "Pathfinder Treasure Vault", "Pathfinder Dark Archive", "Pathfinder Gamemastery Guide", "Pathfinder Secrets of Magic", "Pathfinder Bestiary", "Pathfinder Bestiary 2", "Pathfinder Bestiary 3", "Pathfinder Book of the Dead", "Pathfinder Guns & Gears","Pathfinder Monster Core", "Pathfinder Monster Core 2", "Pathfinder NPC Core")
+if ($system -eq "pf2e") {
+    $wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder Player Core 2", "Pathfinder Rage of Elements", "Pathfinder GM Core", "Pathfinder Advanced Player's Guide", "Pathfinder Treasure Vault", "Pathfinder Dark Archive", "Pathfinder Gamemastery Guide", "Pathfinder Secrets of Magic", "Pathfinder Bestiary", "Pathfinder Bestiary 2", "Pathfinder Bestiary 3", "Pathfinder Book of the Dead", "Pathfinder Guns & Gears", "Pathfinder Monster Core", "Pathfinder Monster Core 2", "Pathfinder NPC Core")
+} else {
+    $wantedSources = @("Pathfinder Core Rulebook", "Pathfinder Player Core", "Pathfinder GM Core", "Starfinder Player Core", "Starfinder GM Core", "Starfinder Alien Core")
+}
 $sources = @{}
 $packData = @{}
 $langData = @{}
@@ -386,14 +393,14 @@ if ($runFuncs -eq "all" -or $runFuncs -eq "source") {
     Write-Host "Source Data Prepared"
 }
 
-if ($runFuncs -eq "diffCheckTest"){
+if ($runFuncs -eq "diffCheckTest") {
     Invoke-Diff-Check-Prep
     Invoke-Diff-Checks
 }
 
 if ($runFuncs -eq "all" -or $runFuncs -eq "import") {
     Invoke-Diff-Check-Prep
-    Write-Host "Importing Sources For " + $system
+    Write-Host "Importing Sources For" $system
     Import-All-Sources
     Write-Host "Sources Imported"
     Write-Host "Writing Files"
