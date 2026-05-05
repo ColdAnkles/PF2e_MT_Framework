@@ -53,6 +53,8 @@ function core_action(actionData, actingToken) {
 			failAct = "Insufficient Reactions";
 		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "passive") {
 			canAct = true;
+		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "free") {
+			canAct = true;
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in core_action during setup");
