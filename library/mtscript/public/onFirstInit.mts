@@ -38,8 +38,14 @@
     [h: imageDict = json.set(imageDict, imageName, assetString)]
 }]
 
+[h: system = data.getStaticData('ca.pz2e', "public/data/system.txt")]
+[h: setLibProperty("gameSystem", system, "Lib:ca.pz2e")]
 [h: setLibProperty("image_dict", imageDict, "Lib:ca.pz2e")]
-[h: setLibProperty("selectedTheme", "Argrinyxia", "Lib:ca.pz2e")]
+[h, if(system == "pf2e"), code:{
+    [h: setLibProperty("selectedTheme", "Argrinyxia", "Lib:ca.pz2e")]
+};{
+    [h: setLibProperty("selectedTheme", "Veskarium", "Lib:ca.pz2e")]
+}]
 
 <!-- First Time Init Only-->
 [h: customContentVar = json.set("{}","action","{}","ancestry","{}","background","{}","class","{}","condition","{}","effect","{}","feat","{}","hazard","{}","heritage","{}","item","{}","npc","{}","spell","{}","vehicle","{}","source","[]")]
