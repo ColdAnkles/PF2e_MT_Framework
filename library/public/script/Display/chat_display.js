@@ -3,7 +3,7 @@
 function chat_display(displayData, broadcast = true, additionalData = { "rollDice": false, "gm": false, "isPC": false, "overrideName": null }) {
 	//MapTool.chat.broadcast(JSON.stringify(displayData));
 
-	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).pz2e;
+	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).PF2E;
 	let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
 	additionalData.invertImages = themeData.icons == "W";
