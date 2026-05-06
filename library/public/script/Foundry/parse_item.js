@@ -25,6 +25,11 @@ function parse_item(itemData, parentObject) {
             }
             newName += itemData.name;
             itemData.name = newName;
+            if (itemData.system.range != null && itemData.system.range > 0){
+                if (itemData.system.reload.value != null && itemData.system.reload.value>0){
+                    itemData.needsReload = true;
+                }
+            }
         }
         parentObject.inventory[itemData._id] = itemData;
     } else if (itemData.type == "melee" || itemData.type == "ranged") {
@@ -37,11 +42,27 @@ function parse_item(itemData, parentObject) {
         if ("weaponType" in itemData.system && "value" in itemData.system.weaponType) {
             itemData.type = itemData.system.weaponType.value;
         }
+        if (itemData.system.range != null) {
+            itemData.type = "ranged";
+        }
         for (var t in itemData.system.traits.value) {
             let trait = itemData.system.traits.value[t];
             if (trait.includes("thrown")) {
                 itemData.type = "ranged";
             }
+        }
+        if (itemData.type == "ranged") {
+            var isThrown = false;
+            var reloadCount = 0;
+            for (var t in itemData.system.traits.value) {
+                let trait = itemData.system.traits.value[t];
+                if (trait.includes("thrown")) {
+                    isThrown = true;
+                } else if (trait.includes("reload")) {
+                    reloadCount = Number(trait.split("-")[1]);
+                }
+            }
+            itemData.needsReload = (!isThrown && reloadCount > 0);
         }
         parentObject.basicAttacks.push(itemData);
     } else if (itemData.type == "spellcastingEntry") {
