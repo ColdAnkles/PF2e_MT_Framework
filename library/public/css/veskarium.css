@@ -79,7 +79,7 @@ a:link {
   background-color: #2b4f6a;
   border-style: double;
   border-width: 2px;
-  color: white;
+  color: black;
   font-size: 1.1em;
   font-style: normal;
   font-variant: small-caps;
@@ -239,15 +239,6 @@ th a:link{
 td a:link {  
   font-style: normal;
   color: #ffffff;
-}
-
-table tr td:first-child,
-table tr th:first-child {
-  border-left: 0;
-}
-table tr td:last-child,
-table tr th:last-child {
-  border-right: 0;
 }
 
 .staticTable tr {

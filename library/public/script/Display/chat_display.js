@@ -66,17 +66,20 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	try {
 		if ("traits" in displayData.system && "value" in displayData.system.traits && displayData.system.traits.value.length > 0) {
-			outputText = outputText + "<table border='0', bgcolor='" + themeData.colours.traitOuter + "', style='font-size:13pt;font-family:Century Gothic;font-weight:bold;border-spacing:0px'>";
+			outputText += "<table border='0', style='font-size:13pt;font-family:Century Gothic;font-weight:bold;border-spacing:0px'><tr>";
 			for (var t in displayData.system.traits.value) {
 				let traitName = displayData.system.traits.value[t];
 				let traitNormal = capitalise(traitName).split('-')[0];
 				if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
-					outputText = outputText + "<td style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'><span title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
+					outputText += "<td bgcolor='" + themeData.colours.traitOuter + "', style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'><span title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
 				} else {
-					outputText = outputText + "<td style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
+					outputText += "<td bgcolor='" + themeData.colours.traitOuter + "', style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
+				}
+				if (((Number(t) + 1) % 4) != NaN && Number(t) != 0 && ((Number(t) + 1) % 4) == 0){
+					outputText += "</tr><tr>"
 				}
 			}
-			outputText = outputText + "</table>"
+			outputText = outputText + "</tr></table>"
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in chat_display during trait display");

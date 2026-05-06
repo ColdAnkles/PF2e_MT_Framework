@@ -312,14 +312,15 @@ function import-lang-file {
     $langSources = Get-ChildItem .\pf2e-master\*\static\lang\*
     $data = $null
     ForEach ( $source in $langSources ) {
+        if ($system -ne "sf2e" -and $source.Name -eq "sf2e-overrides-en.json"){
+            continue
+        }
         $rawData = Get-Content -Encoding UTF8 $source
         #Windows PS doesn't do case sensitive keys in JSON - 
         $data = $rawData.replace("""condition""", "conditionList").replace("""ui""", "_ui") | ConvertFrom-JSON
-        $outFile = ".\library\public\lang_data\" + $source.Name
+        $outFile = ".\"+$system+"_lang\" + $source.Name
         $data | ConvertTo-Json -depth 100 -Compress | Out-File -Encoding UTF8 $outFile
     }
-
-    
 
 }
 
