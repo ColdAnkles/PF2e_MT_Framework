@@ -2,7 +2,7 @@
 
 function build_creature_view(creatureName, tokenID = null, creatureData = null) {
 	let token = null;
-	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).pz2e;
+	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).PF2E;
 
 	let additionalData = { "rollDice": false };
 
@@ -61,8 +61,8 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	try {
 		if (creatureData.rarity != "common" && creatureData.rarity != "") {
 			let normalRarity = capitalise(creatureData.rarity).split('-')[0];
-			if ("traitDescription" + normalRarity in traitGlossary && traitGlossary["traitDescription" + normalRarity] != null) {
-				HTMLString += "<span class='trait" + creatureData.rarity + "' title=\"" + traitGlossary["traitDescription" + normalRarity] + "\">" + capitalise(creatureData.rarity) + "</span>";
+			if ("TraitDescription" + normalRarity in traitGlossary && traitGlossary["TraitDescription" + normalRarity] != null) {
+				HTMLString += "<span class='trait" + creatureData.rarity + "' title=\"" + traitGlossary["TraitDescription" + normalRarity] + "\">" + capitalise(creatureData.rarity) + "</span>";
 			} else {
 				HTMLString += "<span class='trait" + creatureData.rarity + "'>" + capitalise(creatureData.rarity) + "</span>";
 			}
@@ -74,23 +74,29 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	}
 	//HTMLString += "<span class='traitalignment'>" + capitalise(creatureData.alignment) + "</span>";
 	let normalSize = capitalise(creatureData.size).split('-')[0];
+	let traitName = null;
+	let traitNormal = null;
 	try {
-		if ("traitDescription" + normalSize in traitGlossary && traitGlossary["traitDescription" + normalSize] != null) {
-			HTMLString += "<span class='traitsize' title=\"" + traitGlossary["traitDescription" + normalSize] + "\">" + capitalise(creatureData.size) + "</span>"
+		if ((("TraitDescription" + normalSize) in traitGlossary) && traitGlossary["TraitDescription" + normalSize] != null) {
+			HTMLString += "<span class='traitsize' title=\"" + traitGlossary["TraitDescription" + normalSize] + "\">" + capitalise(creatureData.size) + "</span>"
 		} else {
 			HTMLString += "<span class='traitsize'>" + capitalise(creatureData.size) + "</span>"
 		}
 		for (var t in creatureData.traits) {
-			let traitName = creatureData.traits[t];
-			let traitNormal = capitalise(traitName).split('-')[0];
-			if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
-				HTMLString += "<span class='trait' title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + capitalise(traitName) + "</span>";
+			traitName = creatureData.traits[t];
+			traitNormal = capitalise(traitName).split('-')[0];
+			if ("TraitDescription" + traitNormal in traitGlossary && traitGlossary["TraitDescription" + traitNormal] != null) {
+				HTMLString += "<span class='trait' title=\"" + traitGlossary["TraitDescription" + traitNormal] + "\">" + capitalise(traitName) + "</span>";
 			} else {
 				HTMLString += "<span class='trait'>" + capitalise(traitName) + "</span>";
 			}
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_creature_view during trait-step");
+		MapTool.chat.broadcast("traitName: " + normalSize);
+		MapTool.chat.broadcast("traitName: " + traitName);
+		MapTool.chat.broadcast("traitNormal: " + traitNormal);
+		MapTool.chat.broadcast("creatureData.traits: " + JSON.stringify(creatureData.traits));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
