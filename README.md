@@ -4,7 +4,8 @@ Does:
 - Fancy PC Importing from Pathbuilder (works okay)
 - Simpler PC Setup
 - HP Tracking including correct handling for temp HP
-- Persistent Damage Automation (with resistance/weakness handling)
+- Resistance, Weakness, Immunity Handling
+- Persistent Damage Automation
 - Automated Regeneration
 - Compendium with Creatures, Hazards, Items, Feats, Effects.
 - Creature and Hazard Token Spawning
@@ -16,7 +17,6 @@ Does:
 - WIP Custom Creature Tool
 
 Does Not:
-- Resistance, Weakness, Immunity Handling
 - Does Check/Save Meet DC comparison
 - Any Movement management
 - Handle Abilities like "When X gets Y condition, reduce its value by one."

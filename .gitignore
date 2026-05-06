@@ -11,5 +11,7 @@ testData/*
 diffChecks/*
 pf2e_data/*
 sf2e_data/*
+pf2e_lang/*
+sf2e_lang/*
 library/public/pf2e_data/*
 library/public/sf2e_data/*
