@@ -10,6 +10,8 @@ function core_action(actionData, actingToken) {
 	let actionsLeft = Number(actingToken.getProperty("actionsLeft"));
 	let reactionsLeft = Number(actingToken.getProperty("reactionsLeft"));
 
+	let itemData = null;
+
 	try {
 		if (typeof (actingToken) == "string") {
 			actingToken = MapTool.tokens.getTokenByID(actingToken);
@@ -22,6 +24,10 @@ function core_action(actionData, actingToken) {
 
 		if ("requirements" in actionData.system && actionData.system.requirements != null && "value" in actionData.system.requirements && actionData.system.requirements.value != "") {
 			MapTool.chat.broadcast("Test Requirements:\n" + JSON.stringify(actionData.system.requirements));
+		}
+
+		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
+			itemData = get_linked_weapon(actingToken, actionData.flags.pf2e.linkedWeapon);
 		}
 
 		if (isNaN(initiative)) {
@@ -56,10 +62,16 @@ function core_action(actionData, actingToken) {
 		} else if ("actionType" in actionData.system && actionData.system.actionType.value == "free") {
 			canAct = true;
 		}
+
+		if (itemData != null && itemData.system.reload.value != null && itemData.system.reload.value > 0 && itemData.system.ammo.value != null && itemData.system.expend != null && itemData.system.ammo.value < itemData.system.expend) {
+			failAct = "Weapon Doesn't have Enough Ammo";
+			canAct = false;
+		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in core_action during setup");
 		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 		MapTool.chat.broadcast("actingToken: " + String(actingToken));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
@@ -81,14 +93,28 @@ function core_action(actionData, actingToken) {
 			}
 		} else if ("isMelee" in actionData.system || actionData.type == "melee" || actionData.type == "ranged") {
 			try {
+				let inputTexts = [];
 				if (!(isNaN(initiative)) && (("noQuery" in actionData && actionData.noQuery) || !("noQuery" in actionData))) {
-					MTScript.setVariable("useMAP", (("useMAP" in actionData) ? ((actionData.useMAP) ? 1 : 0) : 1));
-					MTScript.setVariable("increaseMAP", (("increaseMAP" in actionData) ? ((actionData.increaseMAP) ? 1 : 0) : 1));
-					MTScript.setVariable("spendAction", (("spendAction" in actionData) ? ((actionData.spendAction) ? 1 : 0) : 1));
-					MTScript.evalMacro("[h: input(\"useMap|\"+useMAP+\"|Use MAP|CHECK\",\"increaseMAP|\"+increaseMAP+\"|Increase MAP|CHECK\",\"spendAction|\"+spendAction+\"|Spend Action|CHECK\")]");
+					inputTexts.push("\"useMap|" + String((("useMAP" in actionData) ? ((actionData.useMAP) ? 1 : 0) : 1)) +"|Use MAP|CHECK\"");
+					inputTexts.push("\"increaseMAP|" + String((("increaseMAP" in actionData) ? ((actionData.increaseMAP) ? 1 : 0) : 1)) + "|Increase MAP|CHECK\"");
+					inputTexts.push("\"spendAction|" + String((("spendAction" in actionData) ? ((actionData.spendAction) ? 1 : 0) : 1)) + "|Spend Action|CHECK\"");
+				}
+				if (actionData.needsReload != null && actionData.needsReload && itemData.system.expend == null ){
+					inputTexts.push("\"spendAmmo|1|Expend Ammunition\"");
+				}
+				if (inputTexts.length > 0){
+					let inputText = inputTexts.join(",");
+					MTScript.evalMacro("[h: input("+inputText+")]");
+				}
+				if (!(isNaN(initiative)) && (("noQuery" in actionData && actionData.noQuery) || !("noQuery" in actionData))) {
 					actionData.useMAP = (Number(MTScript.getVariable("useMAP")) == 1);
 					actionData.increaseMAP = (Number(MTScript.getVariable("increaseMAP")) == 1);
 					actionData.spendAction = (Number(MTScript.getVariable("spendAction")) == 1);
+				}
+				if (actionData.needsReload != null && actionData.needsReload && itemData.system.expend == null ){
+					let expend = Number(MTScript.getVariable("spendAmmo"));
+					itemData.system.ammo.value = Math.max(itemData.system.ammo.value -= expend, 0);
+					set_linked_weapon(actingToken, actionData.flags.pf2e.linkedWeapon, itemData);
 				}
 
 				attack_action(actionData, actingToken);

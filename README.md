@@ -7,6 +7,7 @@ Does:
 - Resistance, Weakness, Immunity Handling
 - Persistent Damage Automation
 - Automated Regeneration
+- Ammo Tracking (Basic, Needs More Testing)
 - Compendium with Creatures, Hazards, Items, Feats, Effects.
 - Creature and Hazard Token Spawning
 - Automated Condition and Effect modifier application
@@ -22,7 +23,6 @@ Does Not:
 - Handle Abilities like "When X gets Y condition, reduce its value by one."
 - Handle bonuses or maluses like "When taking P action in S circumstances, get +1."
 - Polymorph or any shape changing
-- Ammo Tracking
 
 Character Display:
 

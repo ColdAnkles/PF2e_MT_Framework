@@ -24,19 +24,27 @@ function attack_action(actionData, actingToken) {
 
 	let dieUpgrades = { "d4": "d6", "d6": "d8", "d8": "d10", "d10": "d12" };
 
-	let inventory = null;
 	let itemData = null;
+	let weaponID = null;
+	if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
+		weaponID = actionData.flags.pf2e.linkedWeapon;
+		itemData = get_linked_weapon(actingToken, weaponID);
+		if (itemData != null && itemData.needsReload && itemData.system.expend != null) {
+			if (itemData.system.ammo.value == null) {
+				itemData.system.ammo.value = itemData.system.ammo.capacity - itemData.system.expend;
+			} else {
+				itemData.system.ammo.value -= itemData.system.expend;
+			}
+			set_linked_weapon(actingToken, weaponID, itemData);
+		}
+	}
 
 	try {
-		inventory = JSON.parse(actingToken.getProperty("inventory"));
-		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
-			itemData = inventory[actionData.flags.pz2e.linkedWeapon];
-		}
 		if (actingToken.isPC()) {
-			if (itemData == null && !actionData.flags.pz2e.linkedWeapon == "unarmed") {
+			if (itemData == null && !weaponID == "unarmed") {
 				MapTool.chat.broadcast("Linked Weapon Missing!");
 				return
-			} else if (itemData == null && actionData.flags.pz2e.linkedWeapon == "unarmed") {
+			} else if (itemData == null && weaponID == "unarmed") {
 				itemData = find_handwraps(actingToken);
 				if (itemData != null) {
 					actionData.system.damageRolls[0].dice = itemData.system.runes.striking + 1;
@@ -58,9 +66,11 @@ function attack_action(actionData, actingToken) {
 			}
 		}
 	} catch (e) {
-		MapTool.chat.broadcast("Error in attack_action during item-getting");
+		MapTool.chat.broadcast("Error in attack_action during linked_item setup");
 		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
-		MapTool.chat.broadcast("casterToken: " + String(actingToken));
+		MapTool.chat.broadcast("actingToken: " + String(actingToken));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("weaponID: " + weaponID);
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}

@@ -147,6 +147,10 @@ function add_action_to_token(actionData, tokenID, token) {
 				} else {
 					actionLabel = actionLabel + " " + icon_img("ranged");
 				}
+				if ("needsReload" in actionData && actionData.needsReload && "flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
+					let reloadAction = { "label": "Reload " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pz2e.reload_weapon(currentToken(),\"" + actionData.flags.pf2e.linkedWeapon + "\")]", "tooltip": "Reload " + actionData.name + ".\nManually Use Actions Depending on Reload Specifics.", "sortBy": actionData.name };
+					createMacro(reloadAction, tokenID);
+				}
 			}
 			let actionDesc = chat_display(actionData, false, { "level": token.getProperty("level"), "rollDice": false, "actor": token, "variant": variant, "action": actionData, "overrideName": overrideName });
 			let props = null;
