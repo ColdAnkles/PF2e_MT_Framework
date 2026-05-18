@@ -7,9 +7,9 @@ const search_dict = (dict, key, value, asString = false) => {
             foundItems.push(dict[x])
         }
     });
-    if (!asString){
+    if (!asString) {
         return foundItems;
-    }else{
+    } else {
         return JSON.stringify(foundItems);
     }
 }

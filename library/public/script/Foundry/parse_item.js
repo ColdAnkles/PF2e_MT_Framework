@@ -25,8 +25,8 @@ function parse_item(itemData, parentObject) {
             }
             newName += itemData.name;
             itemData.name = newName;
-            if (itemData.system.range != null && itemData.system.range > 0){
-                if (itemData.system.reload.value != null && itemData.system.reload.value>0){
+            if (itemData.system.range != null && itemData.system.range > 0) {
+                if (itemData.system.reload.value != null && itemData.system.reload.value > 0) {
                     itemData.needsReload = true;
                 }
             }

@@ -75,7 +75,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 				} else {
 					outputText += "<td bgcolor='" + themeData.colours.traitOuter + "', style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
 				}
-				if (((Number(t) + 1) % 4) != NaN && Number(t) != 0 && ((Number(t) + 1) % 4) == 0){
+				if (((Number(t) + 1) % 4) != NaN && Number(t) != 0 && ((Number(t) + 1) % 4) == 0) {
 					outputText += "</tr><tr>"
 				}
 			}

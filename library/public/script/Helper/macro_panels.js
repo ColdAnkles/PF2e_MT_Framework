@@ -8,7 +8,7 @@ function getFrameworkMacros() {
 function getConditionList() {
     let system = read_data("gameSystem");
     let conditionList = ["Blinded", "Broken", "Clumsy", "Confused", "Controlled", "Dazzled", "Deafened", "Doomed", "Drained", "Dying", "Encumbered", "Enfeebled", "Fascinated", "Fatigued", "Fleeing", "Frightened", "Frightened (Time)", "Grabbed", "Immobilized", "Invisible", "Off-Guard", "Paralyzed", "Petrified", "Prone", "Quickened", "Restrained", "Sickened", "Slowed", "Slowed (Time)", "Stunned", "Stunned (Time)", "Stupefied", "Unconscious", "Wounded"];
-    if (system == "sf2e"){
+    if (system == "sf2e") {
         conditionList = conditionList.concat(["Untethered", "Glitching", "Suppressed"])
     }
     return conditionList;

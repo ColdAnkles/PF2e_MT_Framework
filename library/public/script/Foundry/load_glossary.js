@@ -20,7 +20,7 @@ function load_glossary() {
         }
     }
     //Merge SF2E Overrides Afterwards
-    if (system == "sf2e" && libContents.includes("public/lang_data/sf2e-overrides-en.json")){
+    if (system == "sf2e" && libContents.includes("public/lang_data/sf2e-overrides-en.json")) {
         MTScript.evalMacro("[h: importData = data.getStaticData('ca.pz2e', item)]");
         let importData = JSON.parse(MTScript.getVariable("importData"));
         glossary = merge_dict(glossary, importData)
