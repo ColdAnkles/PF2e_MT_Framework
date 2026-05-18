@@ -25,7 +25,7 @@ function add_common_macros(tokenID, isSimple = false) {
         { "label": "View Active Effects", "playerEditable": 0, "command": "[h: ca.pz2e.View_Active_Effects(json.set(\"{}\",\"tokenID\",currentToken()))]", "tooltip": "View current active effects.", "sortBy": "", "group": "1. Common" },
         { "label": "Flat Check", "playerEditable": 0, "command": "[h: js.ca.pz2e.flat_check(myID)]", "tooltip": "Attempt Flat Check.", "sortBy": "", "group": "1. Common" },
         { "label": "Other Actions", "playerEditable": 0, "command": "[h: ca.pz2e.Compendium_Window(json.set(\"{}\",\"window\",\"action\",\"tokenID\",currentToken()))]", "tooltip": "View other actions.", "sortBy": "", "group": "3. Additional" },
-        { "label": "Increase MAP", "playerEditable": 0, "command": "[h: js.ca.pz2e.increase_map(myID))]", "tooltip": "Increase your MAP by 1.", "sortBy": "", "group": "3. Additional" },
+        { "label": "Increase MAP", "playerEditable": 0, "command": "[h: js.ca.pz2e.increase_map(myID)]", "tooltip": "Increase your MAP by 1.", "sortBy": "", "group": "3. Additional" },
         { "label": "Daily Preparations", "playerEditable": 0, "command": "[h: js.ca.pz2e.daily_preparations(myID)]", "tooltip": "Perform Daily Preparations.", "group": "3. Additional" },
         { "label": "Inventory", "playerEditable": 0, "command": "[h: js.ca.pz2e.view_inventory(myID)]", "tooltip": "View Inventory", "sortBy": "", "group": "1. Common" },
         { "label": "Delay/Undelay", "playerEditable": 0, "command": "[h: js.ca.pz2e.delay_undelay(currentToken())]", "tooltip": "Delay/Undelay Token", "sortBy": "", "group": "1. Common" }
