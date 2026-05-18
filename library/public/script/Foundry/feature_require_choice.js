@@ -4,6 +4,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
     let tagData = JSON.parse(read_data("pz2e_tagData"));
     let rules = feature.system.rules;
     let nameSplit = feature.name.split(".");
+    let gameSystem = read_data("gameSystem");
     let choiceTitle = nameSplit[nameSplit.length - 1];
     MTScript.setVariable("choiceTitle", choiceTitle);
     //MapTool.chat.broadcast(JSON.stringify(possibleSelections));
@@ -73,10 +74,13 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                     }
                 }
             } catch (e) {
+                if (String(e).startsWith("PZ2E")) {
+                    throw e;
+                }
                 MapTool.chat.broadcast("Error in feature_require_choice during choice-list-setup");
                 MapTool.chat.broadcast("newRule: " + JSON.stringify(newRule));
                 MapTool.chat.broadcast("" + e + "\n" + e.stack);
-                return;
+                throw new Error("PZ2E: Error in feature_require_choice during choice-list-setup");
             }
             let choiceResult = null;
             //MapTool.chat.broadcast(JSON.stringify(choices));
@@ -105,33 +109,43 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                     return;
                 }
             } catch (e) {
+                if (String(e).startsWith("PZ2E")) {
+                    throw e;
+                }
                 MapTool.chat.broadcast("Error in feature_require_choice during ask-choice");
                 MapTool.chat.broadcast("choices: " + JSON.stringify(choices));
                 MapTool.chat.broadcast("newRule: " + JSON.stringify(newRule));
                 MapTool.chat.broadcast("" + e + "\n" + e.stack);
-                return;
+                throw new Error("PZ2E: Error in feature_require_choice during ask-choice");
             }
             //MapTool.chat.broadcast(choiceResult);
             try {
-                if ("flags" in assignDict && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && choiceFlag in assignDict.flags.pf2e.rulesSelections) {
-                    assignDict.flags.pf2e.rulesSelections[choiceFlag].push(choiceResult.toLowerCase());
+                if ("flags" in assignDict && gameSystem in assignDict.flags && "rulesSelections" in assignDict.flags[gameSystem] && choiceFlag in assignDict.flags[gameSystem].rulesSelections) {
+                    assignDict.flags[gameSystem].rulesSelections[choiceFlag].push(choiceResult.toLowerCase());
                 } else {
-                    assignDict.flags.pf2e.rulesSelections[choiceFlag] = [choiceResult.toLowerCase()];
+                    assignDict.flags[gameSystem].rulesSelections[choiceFlag] = [choiceResult.toLowerCase()];
                 }
-                if ("rollOption" in newRule && "pf2e" in assignDict.flags && "rulesSelections" in assignDict.flags.pf2e && newRule.rollOption in assignDict.flags.pf2e.rulesSelections) {
-                    assignDict.flags.pf2e.rulesSelections[newRule.rollOption].push(choiceResult.toLowerCase());
+                if ("rollOption" in newRule && gameSystem in assignDict.flags && "rulesSelections" in assignDict.flags[gameSystem] && newRule.rollOption in assignDict.flags[gameSystem].rulesSelections) {
+                    assignDict.flags[gameSystem].rulesSelections[newRule.rollOption].push(choiceResult.toLowerCase());
                 } else if ("rollOption" in newRule) {
-                    assignDict.flags.pf2e.rulesSelections[newRule.rollOption] = [choiceResult.toLowerCase()];
+                    assignDict.flags[gameSystem].rulesSelections[newRule.rollOption] = [choiceResult.toLowerCase()];
                 }
                 chosenValues.push(choiceResult);
             } catch (e) {
+                if (String(e).startsWith("PZ2E")) {
+                    throw e;
+                }
                 MapTool.chat.broadcast("Error in feature_require_choice during assign-ruleSelection");
-                MapTool.chat.broadcast("assignDict.flags.pf2e.rulesSelections: " + JSON.stringify(assignDict.flags.pf2e.rulesSelections));
+                if (assignDict.flags[gameSystem] != null) {
+                    MapTool.chat.broadcast("assignDict.flags[gameSystem].rulesSelections: " + JSON.stringify(assignDict.flags[gameSystem].rulesSelections));
+                } else {
+                    MapTool.chat.broadcast("assignDict.flags[gameSystem].rulesSelections: null");
+                }
                 MapTool.chat.broadcast("choiceFlag: " + choiceFlag);
                 MapTool.chat.broadcast("choiceResult: " + choiceResult);
                 MapTool.chat.broadcast("chosenValues: " + JSON.stringify(chosenValues));
                 MapTool.chat.broadcast("" + e + "\n" + e.stack);
-                return;
+                throw new Error("PZ2E: Error in feature_require_choice during assign-ruleSelection");
             }
         }
     }

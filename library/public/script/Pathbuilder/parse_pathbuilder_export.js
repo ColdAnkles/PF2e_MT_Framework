@@ -17,6 +17,8 @@ function parse_pathbuilder_export(data) {
 	let spellLibrary = JSON.parse(read_data("pz2e_spell"));
 	let itemLibrary = JSON.parse(read_data("pz2e_item"));
 
+	let gameSystem = read_data("gameSystem");
+
 	let unfoundData = [];
 
 	function matching_keys(arr, sub) {
@@ -82,11 +84,14 @@ function parse_pathbuilder_export(data) {
 			}
 			return null;
 		} catch (e) {
+			if (String(e).startsWith("PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in parse_pathbuilder_export - find_object_data");
 			MapTool.chat.broadcast("objectName: " + String(objectName));
 			MapTool.chat.broadcast("searchSet: " + JSON.stringify(searchSet));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: parse_pathbuilder_export - find_object_data");
 		}
 	}
 
@@ -138,11 +143,14 @@ function parse_pathbuilder_export(data) {
 				}
 			}
 		} catch (e) {
+			if (String(e).startsWith("PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in parse_pathbuilder_export - find setup_spell");
 			MapTool.chat.broadcast("testSpellName: " + testSpellName);
 			MapTool.chat.broadcast("fSpellData: " + JSON.stringify(fSpellData));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: parse_pathbuilder_export - find setup_spell");
 		}
 	}
 
@@ -160,7 +168,7 @@ function parse_pathbuilder_export(data) {
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - find class data");
 		MapTool.chat.broadcast("class: " + JSON.stringify(data.class));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - find class data");
 	}
 
 	if (classData == null) {
@@ -171,10 +179,13 @@ function parse_pathbuilder_export(data) {
 		try {
 			classData = rest_call(classData.fileURL);
 		} catch (e) {
+			if (String(e).startsWith("PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in parse_pathbuilder_export - retrieve class data");
 			MapTool.chat.broadcast("classData: " + JSON.stringify(classData));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in parse_pathbuilder_export - retrieve class data");
 		}
 	}
 
@@ -193,17 +204,20 @@ function parse_pathbuilder_export(data) {
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - Stats setup");
 		MapTool.chat.broadcast("abilities: " + JSON.stringify(data.abilities));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - Stats setup");
 	}
 
 	//__HEALTH__
 	try {
 		characterData.hp = { "max": data.attributes.ancestryhp + ((data.attributes.classhp + characterData.abilities.con) * data.level) + (data.attributes.bonushpPerLevel * data.level) + data.attributes.bonushp };
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - HP setup");
 		MapTool.chat.broadcast("attributes: " + JSON.stringify(data.attributes));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - HP setup");
 	}
 
 	//__OFFENSE__
@@ -234,10 +248,13 @@ function parse_pathbuilder_export(data) {
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - saves setup");
 		MapTool.chat.broadcast("saves: " + JSON.stringify(data.proficiencies));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - saves setup");
 	}
 
 	characterData.immunities = [];
@@ -249,10 +266,13 @@ function parse_pathbuilder_export(data) {
 			characterData.resistances.push({ "type": resString[0], "value": Number(resString[1]) })
 		}
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - resistances setup");
 		MapTool.chat.broadcast("resistances: " + JSON.stringify(data.resistances));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - resistances setup");
 	}
 
 	characterData.weaknesses = [];
@@ -444,8 +464,9 @@ function parse_pathbuilder_export(data) {
 					"senses": []
 				},
 			}
-		}, "flags": { "pz2e": { "rulesSelections": {} } }
+		}, "flags": {}
 	};
+	characterData.foundryActor.flags[gameSystem] = { "rulesSelections": {} };
 
 	let features_to_parse = [];
 	let featSubChoices = [];
@@ -501,11 +522,14 @@ function parse_pathbuilder_export(data) {
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - specials setup");
 		MapTool.chat.broadcast("classData.system.items: " + JSON.stringify(classData.system.items));
 		MapTool.chat.broadcast("data.specials: " + JSON.stringify(data.specials));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - specials setup");
 	}
 
 	let foundSpecials = [];
@@ -544,12 +568,15 @@ function parse_pathbuilder_export(data) {
 			data.specials[s] = tempName;
 		}
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - specials finding");
 		MapTool.chat.broadcast("foundSpecials: " + JSON.stringify(foundSpecials));
 		MapTool.chat.broadcast("unfoundSpecials: " + JSON.stringify(unfoundSpecials));
 		MapTool.chat.broadcast("featSubChoices: " + JSON.stringify(featSubChoices));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - specials finding");
 	}
 
 	let grantedAttacks = [];
@@ -589,11 +616,14 @@ function parse_pathbuilder_export(data) {
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - specials grant attacks");
 		MapTool.chat.broadcast("featureData: " + JSON.stringify(featureData));
 		MapTool.chat.broadcast("grantedAttacks: " + JSON.stringify(grantedAttacks));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - specials grant attacks");
 	}
 	characterData.basicAttacks = characterData.basicAttacks.concat(grantedAttacks);
 
@@ -672,8 +702,9 @@ function parse_pathbuilder_export(data) {
 						"traits": itemData.system.traits, "category": itemData.system.category, "group": itemData.system.group
 					},
 					"type": ((itemData.system.range == null) ? "melee" : "ranged"),
-					"flags": { "pz2e": {} }
-				}
+					"flags": {}
+				};
+				newAttackData.flags[gameSystem] = {};
 				if (thisWeapon.str == "striking") {
 					itemData.system.runes.striking = 1;
 					newAttackData.system.damageRolls["0"].dice += 1;
@@ -713,12 +744,15 @@ function parse_pathbuilder_export(data) {
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - weapons");
 		MapTool.chat.broadcast("weapons: " + JSON.stringify(data.weapons));
 		MapTool.chat.broadcast("inventory: " + JSON.stringify(characterData.inventory));
 		MapTool.chat.broadcast("attacks: " + JSON.stringify(characterData.basicAttacks));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: parse_pathbuilder_export - weapons");
 	}
 
 	let unarmedAttack = {
@@ -728,9 +762,10 @@ function parse_pathbuilder_export(data) {
 			"description": { "value": "" }, "attackEffects": { "value": [] }, "isMelee": true, "group": "",
 			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "category": "unarmed"
 		},
-		"flags": { "pz2e": { "linkedWeapon": "unarmed" } },
+		"flags": {},
 		"type": "melee"
 	}
+	unarmedAttack[gameSystem] = { "linkedWeapon": "unarmed" };
 	unarmedAttack.system.damageRolls["0"].damage = String(unarmedAttack.system.damageRolls["0"].dice) + unarmedAttack.system.damageRolls["0"].die + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
 	characterData.basicAttacks.push(unarmedAttack);
 
@@ -799,11 +834,14 @@ function parse_pathbuilder_export(data) {
 		characterData.pets = data.pets;
 		characterData.familiars = data.familiars;
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - pet and familiar assignment");
 		MapTool.chat.broadcast("data: " + JSON.stringify(data));
 		MapTool.chat.broadcast("characterData: " + JSON.stringify(characterData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: parse_pathbuilder_export - pet and familiar assignment");
 	}
 
 	//Familiars
