@@ -2,13 +2,6 @@
 
 function parse_pathbuilder_export(data) {
 
-	//let libToken = get_runtime("libToken");
-	//let featLibrary = JSON.parse(libToken.getProperty("pz2e_feat"));
-	//let actionLibrary = JSON.parse(libToken.getProperty("pz2e_action"));
-	//let ancestryLibrary = JSON.parse(libToken.getProperty("pz2e_ancestry"));
-	//let heritageLibrary = JSON.parse(libToken.getProperty("pz2e_heritage"));
-	//let spellLibrary = JSON.parse(libToken.getProperty("pz2e_spell"));
-
 	let featLibrary = JSON.parse(read_data("pz2e_feat"));
 	let actionLibrary = JSON.parse(read_data("pz2e_action"));
 	let classLibrary = JSON.parse(read_data("pz2e_class"));
@@ -20,13 +13,6 @@ function parse_pathbuilder_export(data) {
 	let gameSystem = read_data("gameSystem");
 
 	let unfoundData = [];
-
-	function matching_keys(arr, sub) {
-		sub = sub.toLowerCase();
-		return arr.filter(str => (str
-			.toLowerCase() == sub)
-		);
-	}
 
 	function find_object_data(objectName, searchSet = ["all"], searchKey = "name") {
 		try {
@@ -52,29 +38,36 @@ function parse_pathbuilder_export(data) {
 				characterData.senses.push("darkvision");
 				return;
 			} else {
-				var lookupItems = []
+				let lookupItems = []
 				if ((searchSet.includes("all") || searchSet.includes("feat"))) {
 					lookupItems = lookupItems.concat(search_dict(featLibrary, searchKey, testVar));
 					lookupItems = lookupItems.concat(search_dict(featLibrary, searchKey, testCaps));
-				} else if ((searchSet.includes("all") || searchSet.includes("action"))) {
+				}
+				if ((searchSet.includes("all") || searchSet.includes("action"))) {
 					lookupItems = lookupItems.concat(search_dict(actionLibrary, searchKey, testVar));
 					lookupItems = lookupItems.concat(search_dict(actionLibrary, searchKey, testCaps));
-				} else if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
+				}
+				if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
 					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testVar));
 					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testCaps));
-				} else if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
+				}
+				if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
 					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testVar2));
 					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testCaps2));
-				} else if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
+				}
+				if ((searchSet.includes("all") || searchSet.includes("heritage"))) {
 					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testVar3));
 					lookupItems = lookupItems.concat(search_dict(heritageLibrary, searchKey, testCaps3));
-				} else if ((searchSet.includes("all") || searchSet.includes("item"))) {
+				}
+				if ((searchSet.includes("all") || searchSet.includes("item"))) {
 					lookupItems = lookupItems.concat(search_dict(itemLibrary, searchKey, testVar));
 					lookupItems = lookupItems.concat(search_dict(itemLibrary, searchKey, testCaps));
-				} else if ((searchSet.includes("all") || searchSet.includes("item"))) {
+				}
+				if ((searchSet.includes("all") || searchSet.includes("item"))) {
 					lookupItems = lookupItems.concat(search_dict(itemLibrary, searchKey, testVar4));
 					lookupItems = lookupItems.concat(search_dict(itemLibrary, searchKey, testCaps4));
-				} else if ((searchSet.includes("all") || searchSet.includes("class"))) {
+				}
+				if ((searchSet.includes("all") || searchSet.includes("class"))) {
 					lookupItems = lookupItems.concat(search_dict(classLibrary, searchKey, testVar));
 					lookupItems = lookupItems.concat(search_dict(classLibrary, searchKey, testCaps));
 				}
@@ -96,58 +89,34 @@ function parse_pathbuilder_export(data) {
 	}
 
 	function setup_spell(spellName) {
-		let testSpellName = null;
 		let fSpellData = null;
+		let lookupItems = []
+		let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
+		if (spellName in remasterChanges) {
+			spellName = remasterChanges[spellName];
+		}
 		try {
-			let keyList = matching_keys(Object.keys(spellLibrary), spellName);
-			if (keyList.length != 0) {
-				testSpellName = keyList[0];
+			lookupItems = lookupItems.concat(search_dict(spellLibrary, "name", spellName));
+			if (lookupItems.length == 0) {
+				return null;
 			}
-			if (testSpellName in spellLibrary) {
-				fSpellData = spellLibrary[testSpellName];
-				if ("fileURL" in fSpellData) {
-					let loadedData = rest_call(fSpellData.fileURL);
-					loadedData.source = loadedData.system.publication.title;
-					loadedData.rarity = loadedData.system.traits.rarity;
-					loadedData.traits = loadedData.system.traits.value;
-					loadedData.traditions = loadedData.system.traits.traditions;
-					loadedData.level = loadedData.system.level.value;
-					return loadedData
-				} else {
-					return fSpellData;
-				}
-			} else {
-				let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
-
-				if (!(spellName in remasterChanges)) {
-					MapTool.chat.broadcast("Couldn't Find " + spellName);
-					return null;
-				} else {
-					spellName = remasterChanges[spellName];
-					keyList = matching_keys(spellLibrary, spellName);
-					if (keyList.length != 0) {
-						testSpellName = keyList[0];
-					}
-					fSpellData = spellLibrary[testSpellName];
-					if ("fileURL" in fSpellData) {
-						let loadedData = rest_call(fSpellData.fileURL);
-						loadedData.source = loadedData.system.publication.title;
-						loadedData.rarity = loadedData.system.traits.rarity;
-						loadedData.traits = loadedData.system.traits.value;
-						loadedData.traditions = loadedData.system.traits.traditions;
-						loadedData.level = loadedData.system.level.value;
-						return loadedData
-					} else {
-						return fSpellData;
-					}
-				}
+			fSpellData = lookupItems[0];
+			if ("fileURL" in fSpellData) {
+				let loadedData = rest_call(fSpellData.fileURL);
+				loadedData.source = loadedData.system.publication.title;
+				loadedData.rarity = loadedData.system.traits.rarity;
+				loadedData.traits = loadedData.system.traits.value;
+				loadedData.traditions = loadedData.system.traits.traditions;
+				loadedData.level = loadedData.system.level.value;
+				return loadedData
 			}
+			return fSpellData
 		} catch (e) {
 			if (String(e).startsWith("PZ2E")) {
 				throw e;
 			}
 			MapTool.chat.broadcast("Error in parse_pathbuilder_export - find setup_spell");
-			MapTool.chat.broadcast("testSpellName: " + testSpellName);
+			MapTool.chat.broadcast("spellName: " + spellName);
 			MapTool.chat.broadcast("fSpellData: " + JSON.stringify(fSpellData));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
 			throw new Error("PZ2E: parse_pathbuilder_export - find setup_spell");
@@ -357,6 +326,7 @@ function parse_pathbuilder_export(data) {
 			}
 			for (var s in castingData.spells[l].list) {
 				let spellName = castingData.spells[l].list[s];
+				message_window("Importing " + data.name, "Importing Focus Spells\n" + newCastingRules.name + " - " + spellName);
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
 					spellData.system.castLevel = { "value": castLevel };
@@ -390,6 +360,7 @@ function parse_pathbuilder_export(data) {
 			let focusLevel = Math.max(1, Math.ceil(data.level / 2));
 			for (var l in castingData.focusCantrips) {
 				let spellName = castingData.focusCantrips[l].replaceAll(" (Amped)", "");
+				message_window("Importing " + data.name, "Importing Focus Spells\n" + newCastingRules.name + " - " + spellName);
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
 					spellData.system.castLevel = { "value": focusLevel };
@@ -399,6 +370,7 @@ function parse_pathbuilder_export(data) {
 			}
 			for (var l in castingData.focusSpells) {
 				let spellName = castingData.focusSpells[l].replaceAll(" (Amped)", "");
+				message_window("Importing " + data.name, "Importing Focus Spells\n" + newCastingRules.name + " - " + spellName);
 				let spellData = setup_spell(spellName);
 				if (spellData != null) {
 					spellData.system.castLevel = { "value": focusLevel };
@@ -497,13 +469,12 @@ function parse_pathbuilder_export(data) {
 		}
 		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 		if (tempData != null && "error" in tempData) {
-			MapTool.chat.broadcast("error finding " + tempName)
 			unfoundData.push(data.feats[f][0] + " (Feats)");
 		} else if (tempData != null) {
 			features_to_parse.push(tempData);
 			featSubChoices.push({ "name": tempName, "value": subChoice });
 		} else {
-			if (data.feats[f][0] != null) {
+			if (data.feats[f][0] != null && !data.specials.includes(data.feats[f][0])) {
 				unfoundData.push(data.feats[f][0] + " (Feat)");
 			}
 		}
@@ -549,11 +520,18 @@ function parse_pathbuilder_export(data) {
 			if (tempName == "Aquatic Adaptation" && data.ancestry == "Lizardfolk") {
 				tempName = "Aquatic Adaptation (Lizardfolk)";
 			}
-			if (tempName == "Spellbook") {
-				continue; //Spellbook not treated as a feature in foundry
+			if (tempName == "Spellbook" || tempName == "Vessel Spells") {
+				continue; //Spellbook/Spell Lists not treated as a feature in foundry
+			}
+			if (tempName.includes("Spellcasting")){
+				continue; //Spellcasting Done Differently
 			}
 			if (tempName == "Anathema") {
 				continue; //There are more specific anathema features per class
+			}
+			if (tempName == "Darkvision" || tempName == "Greater Darkvision" || tempName == "Low-Light Vision") {
+				features_to_parse.push({ "name": tempName, "system": {} });
+				continue; //Vision Not Handled as Feature
 			}
 			let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
 			if (tempData != null && "error" in tempData) {
@@ -562,7 +540,7 @@ function parse_pathbuilder_export(data) {
 				features_to_parse.push(tempData);
 				featSubChoices.push({ "name": tempName, "value": null });
 				foundSpecials.push(tempName);
-			} else if (tempData == null && tempName != null) {
+			} else if (tempData == null && tempName != null && tempName != data.heritage) {
 				unfoundSpecials.push(tempName + " (Special)");
 			}
 			data.specials[s] = tempName;
@@ -594,7 +572,10 @@ function parse_pathbuilder_export(data) {
 			if (featureData != null && "rules" in featureData.system && featureData.system.rules != null && featureData.system.rules.length > 0) {
 				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
 				//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
-				let choice = feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
+				let choice = null;
+				if (f in featSubChoices) {
+					feature_require_choice(featureData, characterData.foundryActor, data.specials.concat(featSubChoices[f].value));
+				}
 				if (choice != null) {
 					data.specials = data.specials.filter(item => !choice.includes(item));
 					unfoundSpecials = unfoundSpecials.filter(item => !choice.includes(item));
@@ -853,8 +834,8 @@ function parse_pathbuilder_export(data) {
 			let tempData = find_object_data(ability);
 			if (tempData != null) {
 				characterData.familiars[f].familiarAbilities.push(tempData);
-			} else if (ability != "Darkvision") {
-				MapTool.chat.broadcast("Couldn't find familiar ability " + ability);
+			} else if (ability != "Darkvision" && ability != "Low-Light Vison" && ability != "Greater Darkvision") {
+				unfoundData.push(ability + " (Familiar)")
 			} else {
 				if (ability != null) {
 					unfoundData.push(ability + " (Familiar)");
