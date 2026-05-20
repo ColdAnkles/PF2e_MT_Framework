@@ -1,27 +1,37 @@
 "use strict";
 
 function build_spell_view(spellName) {
-	//MapTool.chat.broadcast(spellName);
-	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pz2e_spell"));
 	let property = JSON.parse(read_data("pz2e_spell"));
-	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).pz2e;
+	let traitGlossary = JSON.parse(read_data("pz2e_glossary")).PF2E;
 	let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
+
+	let spellData = null;
 
 	if (!(spellName in property)) {
 		let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
 		if (!(spellName in remasterChanges)) {
-			return "<h2>Could not find spell " + spellName + "</h2>";
+			let lookupItem = search_dict(property, "name", spellName);
+			if (lookupItem.length > 0) {
+				spellData = lookupItem[0];
+			} else {
+				return "<h2>Could not find spell " + spellName + "</h2>";
+			}
 		} else {
 			if (remasterChanges[spellName] in property) {
 				spellName = remasterChanges[spellName];
 			} else {
-				return "<h2>Could not find spell " + remasterChanges[spellName] + "</h2>";
+				let lookupItem = search_dict(property, "name", spellName);
+				if (lookupItem.length > 0) {
+					spellData = lookupItem[0];
+				} else {
+					return "<h2>Could not find spell " + remasterChanges[spellName] + "</h2>";
+				}
 			}
 		}
+	}else{
+		spellData = property[spellName];
 	}
-
-	let spellData = property[spellName];
+	
 	let spellBaseName = spellData.baseName;
 	try {
 		if ("fileURL" in spellData) {

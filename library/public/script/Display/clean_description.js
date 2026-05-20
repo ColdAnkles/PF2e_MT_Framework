@@ -139,7 +139,7 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 		let tempArray = parsed.bracketContents.split(".");
 		let conditionName = tempArray[tempArray.length - 1];
 		uuidString = create_macroLink(capitalise(conditionName), "Item_View_Frame@Lib:ca.pz2e", { "itemType": "condition", "itemName": conditionName });
-	} else if (parsed.bracketContents.includes("actionspz2e")) {
+	} else if (parsed.bracketContents.includes("actionspf2e")) {
 		let tempArray = parsed.bracketContents.split(".");
 		let actionName = tempArray[tempArray.length - 1];
 		uuidString = actionName;
@@ -155,7 +155,7 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 		let tempArray = parsed.bracketContents.split(".");
 		let itemName = tempArray[tempArray.length - 1];
 		uuidString = create_macroLink(capitalise(itemName), "Item_View_Frame@Lib:ca.pz2e", { "itemType": "item", "itemName": itemName });
-	} else if (parsed.bracketContents.includes("pz2e-macros")) {
+	} else if (parsed.bracketContents.includes("pf2e-macros")) {
 		uuidString = "";
 	}
 	//MapTool.chat.broadcast(uuidString);
