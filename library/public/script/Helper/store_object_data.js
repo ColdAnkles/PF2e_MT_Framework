@@ -1,10 +1,6 @@
 "use strict";
 
 function store_object_data(data) {
-	//let libToken = get_runtime("libToken");
-	//MapTool.chat.broadcast("Storing Data");
-	//MapTool.chat.broadcast(JSON.stringify(data));
-	//MapTool.chat.broadcast(data.type);
 	let property = null;
 	try {
 		//property = JSON.parse(libToken.getProperty("pz2e_"+data.type));

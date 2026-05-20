@@ -10,10 +10,13 @@ function get_pathbuilder_export_via_id(idNumber) {
 		try {
 			parsed = parse_pathbuilder_export(data.build);
 		} catch (e) {
+			if (String(e).startsWith("PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in get_pathbuilder_export_via_id - parse pb export");
 			MapTool.chat.broadcast("parsed: " + JSON.stringify(parsed));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in get_pathbuilder_export_via_id - parse pb export");
 		}
 
 		return parsed;
@@ -33,10 +36,13 @@ function get_pathbuilder_export_via_input() {
 	try {
 		parsed = parse_pathbuilder_export(pbData);
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in get_pathbuilder_export_via_input - parse pb export");
 		MapTool.chat.broadcast("parsed: " + JSON.stringify(parsed));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in get_pathbuilder_export_via_input - parse pb export");
 	}
 	return parsed;
 }

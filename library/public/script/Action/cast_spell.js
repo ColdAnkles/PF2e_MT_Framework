@@ -19,9 +19,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 	try {
 
 		castLevel = Number(castLevel);
-
-		//let libToken = get_runtime("libToken");
-		//let property = JSON.parse(libToken.getProperty("pz2e_spell"));
+		
 		let property = JSON.parse(read_data("pz2e_spell"));
 
 		if (!(spellName in property)) {

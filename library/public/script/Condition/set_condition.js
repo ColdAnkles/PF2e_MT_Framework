@@ -18,8 +18,6 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 		autoDecrease = false;
 	}
 
-	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pz2e_condition"));
 	let property = JSON.parse(read_data("pz2e_condition"));
 	let conditionData = search_dict(property, "name", trueConditionName);
 

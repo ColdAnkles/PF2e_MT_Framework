@@ -2,8 +2,6 @@
 
 function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 	let newToken = MapTool.tokens.getTokenByID(newNPCTokenID);
-	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("pz2e_npc"));
 	let property = JSON.parse(read_data("pz2e_npc"));
 	let creatureData = property[creatureName];
 	if (creatureData == null) {

@@ -1,9 +1,6 @@
 "use strict";
 
 function get_object_data(key, type) {
-	//MapTool.chat.broadcast(String(JSON.stringify(key)));
-	//MapTool.chat.broadcast(String(JSON.stringify(type)));
-	//let libToken = get_runtime("libToken");
 	let property = "";
 	try {
 		//property = JSON.parse(libToken.getProperty("pz2e_"+type));

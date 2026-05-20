@@ -14,4 +14,8 @@ const search_dict = (dict, key, value, asString = false) => {
     }
 }
 
-MTScript.registerMacro("ca.pz2e.search_dict", search_dict);
+function MTScript_search_dict(dict, key, value){
+    return search_dict(dict, key, value, true);
+}
+
+MTScript.registerMacro("ca.pz2e.search_dict", MTScript_search_dict);

@@ -93,8 +93,6 @@ function add_action_to_token(actionData, tokenID, token) {
 	if (actionData.type == "basic") {
 
 		try {
-			//let libToken = get_runtime("libToken");
-			//let property = JSON.parse(libToken.getProperty("pz2e_action"));
 			let property = JSON.parse(read_data("pz2e_action"));
 			let lookupAction = null;
 			Object.keys(property).forEach(x => { lookupAction = property[x].name === actionData.name ? property[x] : lookupAction; actionKey = property[x].name === actionData.name ? x : actionKey });
@@ -174,8 +172,6 @@ function add_action_to_token(actionData, tokenID, token) {
 	} else if (actionData.type == "spell") {
 
 		try {
-			//let libToken = get_runtime("libToken");
-			//let property = JSON.parse(libToken.getProperty("pz2e_spell"));
 			let property = JSON.parse(read_data("pz2e_spell"));
 			let spellName = actionData.name.replaceAll(/\(.*\)/g, "").trim();
 			let lookupSpell = null;

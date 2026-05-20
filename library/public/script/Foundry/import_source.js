@@ -100,8 +100,6 @@ function import_source_file(fileURL) {
 }
 
 function import_source(sourceName) {
-	//let libToken = get_runtime("libToken");
-	//let property = JSON.parse(libToken.getProperty("foundrySourceData"));
 	let property = JSON.parse(read_data("pz2e_source"));
 	let sourceData = null;
 	if (sourceName in property) {

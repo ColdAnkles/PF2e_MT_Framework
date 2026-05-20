@@ -9,11 +9,14 @@ function create_pc_lib(pathbuilderID, tokenID) {
 			PCData = get_pathbuilder_export_via_id(pathbuilderID);
 		}
 	} catch (e) {
+		if (String(e).startsWith("PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in create_pc_lib - getting pb export");
 		MapTool.chat.broadcast("pathbuilderID: " + String(pathbuilderID));
 		MapTool.chat.broadcast("tokenID: " + String(tokenID));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in create_pc_lib - getting pb export");
 	}
 
 	let pcToken = MapTool.tokens.getTokenByID(tokenID);
