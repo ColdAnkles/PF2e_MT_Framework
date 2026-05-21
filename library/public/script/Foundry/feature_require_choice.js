@@ -74,7 +74,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                     }
                 }
             } catch (e) {
-                if (String(e).startsWith("PZ2E")) {
+                if (String(e).startsWith("Error: PZ2E")) {
                     throw e;
                 }
                 MapTool.chat.broadcast("Error in feature_require_choice during choice-list-setup");
@@ -109,7 +109,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                     return;
                 }
             } catch (e) {
-                if (String(e).startsWith("PZ2E")) {
+                if (String(e).startsWith("Error: PZ2E")) {
                     throw e;
                 }
                 MapTool.chat.broadcast("Error in feature_require_choice during ask-choice");
@@ -132,7 +132,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
                 }
                 chosenValues.push(choiceResult);
             } catch (e) {
-                if (String(e).startsWith("PZ2E")) {
+                if (String(e).startsWith("Error: PZ2E")) {
                     throw e;
                 }
                 MapTool.chat.broadcast("Error in feature_require_choice during assign-ruleSelection");

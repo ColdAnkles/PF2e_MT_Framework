@@ -49,6 +49,9 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		actionData.system.rawSpellData = spellData;
 
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error cast_spell during pre-setup");
 		MapTool.chat.broadcast("spellName: " + spellName);
 		MapTool.chat.broadcast("castLevel: " + String(castLevel));
@@ -56,7 +59,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		MapTool.chat.broadcast("casterToken: " + String(casterToken));
 		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: cast_spell during pre-setup");
 	}
 
 	try {
@@ -79,6 +82,9 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 			castLevel = actionData.castLevel;
 		}
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in cast_spell during signature-setup");
 		MapTool.chat.broadcast("spellName: " + spellName);
 		MapTool.chat.broadcast("castLevel: " + String(castLevel));
@@ -87,7 +93,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData));
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in cast_spell during signature-setup");
 	}
 
 	try {
@@ -147,6 +153,9 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in cast_spell during time setup");
 		MapTool.chat.broadcast("spellName: " + spellName);
 		MapTool.chat.broadcast("castLevel: " + String(castLevel));
@@ -155,7 +164,7 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData));
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in cast_spell during time setup");
 	}
 
 	try {
@@ -184,6 +193,9 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in cast_spell during spell-slot-subtraction");
 		MapTool.chat.broadcast("spellName: " + spellName);
 		MapTool.chat.broadcast("castLevel: " + String(castLevel));
@@ -193,18 +205,21 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
 		MapTool.chat.broadcast("castingData: " + JSON.stringify(castingData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: cast_spell during spell-slot-subtraction");
 	}
 
 	try {
 		actionData.system.castLevel.value = castLevel;
 		core_action(actionData, casterToken);
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in cast_spell during call-core-action");
 		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 		MapTool.chat.broadcast("casterToken: " + String(casterToken));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in cast_spell during call-core-action");
 	}
 
 }

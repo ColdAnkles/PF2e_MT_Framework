@@ -200,13 +200,16 @@ function spell_action(actionData, actingToken) {
 			displayData.system.description.value += "<br />";
 		}
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in spell_action during display-data-setup");
 		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 		MapTool.chat.broadcast("actingToken: " + String(actingToken));
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
 		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in spell_action during display-data-setup");
 	}
 
 	let currentAttackCount = 0;

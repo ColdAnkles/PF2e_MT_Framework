@@ -28,7 +28,7 @@ function build_spell_view(spellName) {
 				}
 			}
 		}
-	}else{
+	} else {
 		spellData = property[spellName];
 	}
 	

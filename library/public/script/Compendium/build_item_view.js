@@ -24,7 +24,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 			}
 		}
 	} catch (e) {
-		if (String(e).startsWith("PZ2E")) {
+		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
 		}
 		MapTool.chat.broadcast("Error in build_item_view during basic-step");
@@ -47,7 +47,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 			}
 		}
 	} catch (e) {
-		if (String(e).startsWith("PZ2E")) {
+		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
 		}
 		MapTool.chat.broadcast("Error in build_item_view during rarity-step");
@@ -70,7 +70,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 			}
 		}
 	} catch (e) {
-		if (String(e).startsWith("PZ2E")) {
+		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
 		}
 		MapTool.chat.broadcast("Error in build_item_view during traits-step");
@@ -86,7 +86,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 		HTMLString += "<b>Source </b><span class='ext-link'>" + itemData.system.publication.title + "</span><br />";
 		HTMLString += clean_description(itemData.system.description.value, false, false, false);
 	} catch (e) {
-		if (String(e).startsWith("PZ2E")) {
+		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
 		}
 		MapTool.chat.broadcast("Error in build_item_view during last-step");

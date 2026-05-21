@@ -23,7 +23,7 @@ function increase_map(token) {
             update_my_tokens(token);
         }
     } catch (e) {
-        if (String(e).startsWith("PZ2E")) {
+        if (String(e).startsWith("Error: PZ2E")) {
             throw e;
         }
         MapTool.chat.broadcast("Error in increase_map");

@@ -85,11 +85,14 @@ function core_action(actionData, actingToken) {
 			try {
 				spell_action(actionData, actingToken);
 			} catch (e) {
+				if (String(e).startsWith("Error: PZ2E")) {
+					throw e;
+				}
 				MapTool.chat.broadcast("Error in spell-action during core_action");
 				MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 				MapTool.chat.broadcast("actingToken: " + String(actingToken));
 				MapTool.chat.broadcast("" + e + "\n" + e.stack);
-				return;
+				throw new Error("PZ2E: Error in spell-action during core_action");
 			}
 		} else if ("isMelee" in actionData.system || actionData.type == "melee" || actionData.type == "ranged") {
 			try {

@@ -9,7 +9,7 @@ function create_pc_lib(pathbuilderID, tokenID) {
 			PCData = get_pathbuilder_export_via_id(pathbuilderID);
 		}
 	} catch (e) {
-		if (String(e).startsWith("PZ2E")) {
+		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
 		}
 		MapTool.chat.broadcast("Error in create_pc_lib - getting pb export");

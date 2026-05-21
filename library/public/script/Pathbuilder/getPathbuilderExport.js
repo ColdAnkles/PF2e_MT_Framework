@@ -10,7 +10,7 @@ function get_pathbuilder_export_via_id(idNumber) {
 		try {
 			parsed = parse_pathbuilder_export(data.build);
 		} catch (e) {
-			if (String(e).startsWith("PZ2E")) {
+			if (String(e).startsWith("Error: PZ2E")) {
 				throw e;
 			}
 			MapTool.chat.broadcast("Error in get_pathbuilder_export_via_id - parse pb export");
@@ -36,7 +36,7 @@ function get_pathbuilder_export_via_input() {
 	try {
 		parsed = parse_pathbuilder_export(pbData);
 	} catch (e) {
-		if (String(e).startsWith("PZ2E")) {
+		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
 		}
 		MapTool.chat.broadcast("Error in get_pathbuilder_export_via_input - parse pb export");
