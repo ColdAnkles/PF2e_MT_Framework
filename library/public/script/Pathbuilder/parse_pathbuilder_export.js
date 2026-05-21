@@ -23,6 +23,8 @@ function parse_pathbuilder_export(data) {
 
 			if (objectName == "Oil") {
 				objectName = "Oil (1 pint)";
+			} else if (objectName == "Clothing"){
+				objectName = "Clothing (Ordinary)";
 			}
 
 			let testVar = objectName;
@@ -863,7 +865,7 @@ function parse_pathbuilder_export(data) {
 	//MapTool.chat.broadcast(JSON.stringify(characterData.inventory));
 
 	if (unfoundData.length > 0) {
-		message_window("Importing " + data.name, "<b>The following features/items could not be located/assigned.</b><br />" + unfoundData.join("<br />"));
+		message_window("Importing " + data.name, "<b>The following features/items could not be located/assigned.</b><br />" + unfoundData.join("<br />") + "<br /><br /><i>Explanation:<br />Many Features in Pathbuilder do not have corresponding entries in the Foundry Data. Check whether any of these missing things will impact your play, or if they are included in other features, or are unncessary.</i>");
 	} else {
 		close_message_window("Importing " + data.name);
 	}
