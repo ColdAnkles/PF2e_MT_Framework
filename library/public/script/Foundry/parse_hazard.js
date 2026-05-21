@@ -1,8 +1,19 @@
 "use strict";
 
 function parse_hazard(rawData, parseRaw = false) {
-	if (parseRaw) {
-		rawData = JSON.parse(rawData);
+	try {
+		if (parseRaw) {
+			rawData = JSON.parse(rawData);
+		}
+	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
+		MapTool.chat.broadcast("Error in parse_hazard during parse-raw");
+		MapTool.chat.broadcast("rawData: " + JSON.stringify(rawData));
+		MapTool.chat.broadcast("false: " + String(false));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		throw new Error("PZ2E: Error in parse_hazard during parse-raw");
 	}
 	//MapTool.chat.broadcast(JSON.stringify(rawData));
 	let hazardData = { "name": rawData.name, "description": rawData.system.details.description, "type": "hazard" };
@@ -74,12 +85,15 @@ function parse_hazard(rawData, parseRaw = false) {
 			parse_item(itemData, hazardData);
 		}
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_hazard during items-step");
 		MapTool.chat.broadcast("hazardData: " + JSON.stringify(hazardData));
 		MapTool.chat.broadcast("rawData: " + JSON.stringify(rawData));
 		MapTool.chat.broadcast("itemData: " + JSON.stringify(errorItem));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_hazard during items-step");
 	}
 
 	try {
@@ -99,10 +113,13 @@ function parse_hazard(rawData, parseRaw = false) {
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_hazard during features-step");
 		MapTool.chat.broadcast("hazardData: " + JSON.stringify(hazardData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in parse_hazard during features-step");
 	}
 
 	hazardData.passiveDefenses = hazardData.passiveDefenses.concat(hazardData.passiveSkills);

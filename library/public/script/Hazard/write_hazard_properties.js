@@ -26,6 +26,7 @@ function write_hazard_properties(data, token) {
 		token.setProperty(s, data.saves[s]);
 		token.setProperty(s + "DC", data.saves[s] + 10);
 	}
+	token.setProperty("saves", JSON.stringify(data.saves));
 	token.setProperty("weaknesses", JSON.stringify(data.weaknesses));
 	token.setProperty("resistances", JSON.stringify(data.resistances));
 	token.setProperty("immunities", JSON.stringify(data.immunities));

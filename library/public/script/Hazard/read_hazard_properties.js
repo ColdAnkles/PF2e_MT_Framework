@@ -19,9 +19,7 @@ function read_hazard_properties(token) {
 
 	//__DEFENSES__
 	data.ac = token.getProperty("AC");
-	for (var s in data.saves) {
-		data.saves[s] = token.getProperty(s);
-	}
+	data.saves = JSON.parse(token.getProperty("saves"));
 
 	data.weaknesses = JSON.parse(token.getProperty("weaknesses"));
 	data.resistances = JSON.parse(token.getProperty("resistances"));

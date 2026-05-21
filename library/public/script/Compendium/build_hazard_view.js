@@ -3,17 +3,32 @@
 function build_hazard_view(itemName, tokenID = null) {
 	let itemData = null;
 	if (tokenID == null) {
-		let itemList = JSON.parse(read_data("PZ2E_Hazard"));
-		if (!(itemName in itemList)) {
-			return "<b>Could not find hazard " + itemName + ".</b>";
+		try {
+			let itemList = JSON.parse(read_data("pz2e_hazard"));
+			if (!(itemName in itemList)) {
+				let lookupItem = search_dict(itemList, "name", itemName);
+				if (lookupItem.length > 0) {
+					itemData = lookupItem[0];
+				} else {
+					return "<b>Could not find " + itemType + " " + itemName + ".</b>";
+				}
+			} else {
+				itemData = itemList[itemName];
+			}
+			if ("fileURL" in itemData) {
+				itemData = rest_call(itemData["fileURL"], "");
+			}
+			itemData = parse_hazard(itemData);
+		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
+			MapTool.chat.broadcast("Error in build_hazard_view during get-data");
+			MapTool.chat.broadcast("itemName: " + itemName);
+			MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+			MapTool.chat.broadcast("" + e + "\n" + e.stack);
+			throw new Error("PZ2E: Error in build_hazard_view during get-data");
 		}
-		itemData = itemList[itemName];
-		let itemBaseName = itemData.baseName;
-		if ("fileURL" in itemData) {
-			itemData = rest_call(itemData["fileURL"], "");
-		}
-		//itemData = parse_feature(itemBaseName, itemData);
-		itemData = parse_hazard(itemData);
 	} else {
 		itemData = read_hazard_properties(tokenID);
 	}
@@ -51,12 +66,15 @@ function build_hazard_view(itemName, tokenID = null) {
 
 		HTMLString += "<b>Disable</b> " + clean_description(itemData.disable, true, true, true, additionalData) + "<br />";
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in build_hazard_view during basic-step");
 		MapTool.chat.broadcast("itemName: " + itemName);
 		MapTool.chat.broadcast("tokenID: " + String(tokenID));
 		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in build_hazard_view during basic-step");
 	}
 
 	for (var pSkill in itemData.passiveSkills) {
@@ -143,10 +161,13 @@ function build_hazard_view(itemName, tokenID = null) {
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in build_hazard_view during features");
 		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in build_hazard_view during features");
 	}
 	HTMLString += "<hr/>";
 	if (itemData.routine != "") {

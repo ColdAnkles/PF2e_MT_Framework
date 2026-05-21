@@ -2,7 +2,7 @@
 
 function create_hazard(newHazardID, hazardName) {
 	let newToken = MapTool.tokens.getTokenByID(newHazardID);
-	let property = JSON.parse(read_data("PZ2E_Hazard"));
+	let property = JSON.parse(read_data("pz2e_hazard"));
 	let hazardData = property[hazardName];
 	try {
 		if ("fileURL" in hazardData) {
