@@ -1,6 +1,9 @@
 "use strict";
 
 function parse_item(itemData, parentObject) {
+    if (!("id" in itemData) && "_id" in itemData){
+        itemData.id = itemData._id;
+    }
     if (itemData.type == "lore") {
         let newSkill = { "string": itemData.name + " +" + itemData.system.mod.value, "name": itemData.name, "bonus": itemData.system.mod.value };
         parentObject.proficiencies.push(newSkill);

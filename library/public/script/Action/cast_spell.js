@@ -1,6 +1,6 @@
 "use strict";
 
-function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData = null) {
+function cast_spell(spellID, castLevel, castGroup, casterToken, additionalData = null) {
 	//MapTool.chat.broadcast(spellName);
 	//MapTool.chat.broadcast(String(castLevel));
 	//MapTool.chat.broadcast(casterToken);
@@ -15,28 +15,42 @@ function cast_spell(spellName, castLevel, castGroup, casterToken, additionalData
 	let castingData = spellCasting[castGroup];
 	let spellData = null;
 	let remasterName = null;
+	let spellName = null;
 
 	try {
 
 		castLevel = Number(castLevel);
-		
+
 		let property = JSON.parse(read_data("pz2e_spell"));
 
-		if (!(spellName in property)) {
+		spellData = null;
+
+		if (!(spellID in property)) {
 			let remasterChanges = JSON.parse(read_data("remaster_changes")).spells;
-			if (!spellName in remasterChanges) {
-				return "<h2>Could not find spell " + spellName + "</h2>";
-			} else {
-				if (remasterChanges[spellName] in property) {
-					remasterName = spellName;
-					spellName = remasterChanges[spellName];
+			if (!(spellID in remasterChanges)) {
+				let lookupItem = search_dict(property, "name", spellID);
+				if (lookupItem.length > 0) {
+					spellData = lookupItem[0];
 				} else {
-					return "<h2>Could not find spell " + remasterChanges[spellName] + "</h2>";
+					return "<h2>Could not find spell - " + spellID + "</h2>";
+				}
+			} else {
+				if (remasterChanges[spellID] in property) {
+					spellID = property[remasterChanges[spellID]];
+				} else {
+					let lookupItem = search_dict(property, "name", remasterChanges[spellID]);
+					if (lookupItem.length > 0) {
+						spellData = lookupItem[0];
+					} else {
+						return "<h2>Could not find spell _ " + remasterChanges[spellID] + "</h2>";
+					}
 				}
 			}
+		} else {
+			spellData = property[spellID];
 		}
 
-		spellData = property[spellName];
+		spellName = spellData.name;
 
 		let spellBaseName = spellData.baseName;
 		if ("fileURL" in spellData) {

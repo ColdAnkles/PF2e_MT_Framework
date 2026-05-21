@@ -173,13 +173,13 @@ function spell_action(actionData, actingToken) {
 			displayData.system.description.value += "<b>Range</b> " + spellData.system.range.value;
 			hasRange = true;
 		}
-		if ("details" in spellData.system.area) {
+		if (spellData.system.area != null && "details" in spellData.system.area) {
 			if (hasRange) {
 				displayData.system.description.value += "; ";
 			}
 			hasArea = true;
 			displayData.system.description.value += "<b>Area</b> " + spellData.system.area.details;
-		} else {
+		} else if (spellData.system.area != null && "value" in spellData.system.area) {
 			if (hasRange) {
 				displayData.system.description.value += "; ";
 			}

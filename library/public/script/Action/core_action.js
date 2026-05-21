@@ -98,23 +98,23 @@ function core_action(actionData, actingToken) {
 			try {
 				let inputTexts = [];
 				if (!(isNaN(initiative)) && (("noQuery" in actionData && actionData.noQuery) || !("noQuery" in actionData))) {
-					inputTexts.push("\"useMap|" + String((("useMAP" in actionData) ? ((actionData.useMAP) ? 1 : 0) : 1)) +"|Use MAP|CHECK\"");
+					inputTexts.push("\"useMap|" + String((("useMAP" in actionData) ? ((actionData.useMAP) ? 1 : 0) : 1)) + "|Use MAP|CHECK\"");
 					inputTexts.push("\"increaseMAP|" + String((("increaseMAP" in actionData) ? ((actionData.increaseMAP) ? 1 : 0) : 1)) + "|Increase MAP|CHECK\"");
 					inputTexts.push("\"spendAction|" + String((("spendAction" in actionData) ? ((actionData.spendAction) ? 1 : 0) : 1)) + "|Spend Action|CHECK\"");
 				}
-				if (actionData.needsReload != null && actionData.needsReload && itemData.system.expend == null ){
+				if (actionData.needsReload != null && actionData.needsReload && itemData.system.expend == null) {
 					inputTexts.push("\"spendAmmo|1|Expend Ammunition\"");
 				}
-				if (inputTexts.length > 0){
+				if (inputTexts.length > 0) {
 					let inputText = inputTexts.join(",");
-					MTScript.evalMacro("[h: input("+inputText+")]");
+					MTScript.evalMacro("[h: input(" + inputText + ")]");
 				}
 				if (!(isNaN(initiative)) && (("noQuery" in actionData && actionData.noQuery) || !("noQuery" in actionData))) {
 					actionData.useMAP = (Number(MTScript.getVariable("useMAP")) == 1);
 					actionData.increaseMAP = (Number(MTScript.getVariable("increaseMAP")) == 1);
 					actionData.spendAction = (Number(MTScript.getVariable("spendAction")) == 1);
 				}
-				if (actionData.needsReload != null && actionData.needsReload && itemData.system.expend == null ){
+				if (actionData.needsReload != null && actionData.needsReload && itemData.system.expend == null) {
 					let expend = Number(MTScript.getVariable("spendAmmo"));
 					itemData.system.ammo.value = Math.max(itemData.system.ammo.value -= expend, 0);
 					set_linked_weapon(actingToken, actionData.flags.pf2e.linkedWeapon, itemData);
