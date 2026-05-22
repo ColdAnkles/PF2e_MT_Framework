@@ -156,6 +156,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 			if ("extraScopes" in checkData) {
 				extraScopes = checkData.extraScopes;
+				extraScopes = JSON.parse(JSON.stringify(extraScopes)); //Sometimes the Array is Not an Array
 			} else {
 				extraScopes = JSON.parse(JSON.stringify(extraScopes));
 			}
@@ -352,7 +353,7 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 			try {
 				if (tokenArmor != null && extraScopes.includes("initiative")) {
-					if (tokenArmor.system.traits.value.includes("ponderous")){
+					if (tokenArmor.system.traits.value != null && tokenArmor.system.traits.value.includes("ponderous")){
 						if (tokenArmor.system.strength > tokenStr){
 							armorPenalty = tokenArmor.system.checkPenalty;
 						}else{
