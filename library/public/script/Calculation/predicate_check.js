@@ -13,6 +13,7 @@ function predicate_check(predicate, predicateScopes, actor, item) {
 
     function predicate_and(contents, predicateScopes, actor) {
         let results = [];
+        MapTool.chat.broadcast(JSON.stringify(contents))
         for (var c in contents) {
             results.push(predicate_check(contents[c], predicateScopes, actor, item))
         }
@@ -96,18 +97,18 @@ function predicate_check(predicate, predicateScopes, actor, item) {
     function predicate_not(contents, predicateScopes, actor) {
         return !(predicate_check(contents, predicateScopes, actor, item));
     }
-
     if (typeof (predicate) == "string") {
         predicate = [predicate];
     }
 
     //MapTool.chat.broadcast(JSON.stringify(predicateScopes));
+    //MapTool.chat.broadcast(JSON.stringify(predicate));
 
     let predicate_resolution = true;
     for (var pK in predicate) {
         if (typeof (predicate[pK]) == "string") {
             let pText = predicate[pK];
-            //MapTool.chat.broadcast(pText);
+            //MapTool.chat.broadcast("pText:" + pText);
             if (pText.match(/^feat:/)) {
                 let featSlug = pText.split(":")[1];
                 predicate_resolution = predicate_resolution && featSlug in actorFeats;
@@ -183,31 +184,35 @@ function predicate_check(predicate, predicateScopes, actor, item) {
             } else if (pText.match(/^action:/)) {
                 let actionSlug = pText.split(":")[1];
                 predicate_resolution = predicate_resolution && predicateScopes.includes(actionSlug);
+            } else if (pText.match(/^origin:/)) {
+                predicate_resolution = false;
             } else {
                 predicate_resolution = predicateScopes.includes(pText);
             }
         } else {
-            //MapTool.chat.broadcast(JSON.stringify(predicate[pK]));
+            //MapTool.chat.broadcast("predicate[pK]: " + JSON.stringify(predicate[pK]));
+            //MapTool.chat.broadcast("pK: " + pK);
             for (var k in predicate[pK]) {
-                //MapTool.chat.broadcast(JSON.stringify(predicate[pK][k]));
+                //MapTool.chat.broadcast("predicate[pK][k]: " + JSON.stringify(predicate[pK][k]));
+                //MapTool.chat.broadcast("k: " + k);
                 if (k == "and") {
-                    predicate_resolution = predicate_resolution && predicate_and(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_and([predicate[pK][k]], predicateScopes, actor);
                 } else if (k == "nand") {
-                    predicate_resolution = predicate_resolution && predicate_nand(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_nand([predicate[pK][k]], predicateScopes, actor);
                 } else if (k == "or") {
-                    predicate_resolution = predicate_resolution && predicate_or(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_or([predicate[pK][k]], predicateScopes, actor);
                 } else if (k == "nor") {
-                    predicate_resolution = predicate_resolution && predicate_nor(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_nor([predicate[pK][k]], predicateScopes, actor);
                 } else if (k == "gte") {
-                    predicate_resolution = predicate_resolution && predicate_gte(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_gte([predicate[pK][k]], predicateScopes, actor);
                 } else if (k == "gt") {
-                    predicate_resolution = predicate_resolution && predicate_gt(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_gt([predicate[pK][k]], predicateScopes, actor);
                 } else if (k == "lt") {
-                    predicate_resolution = predicate_resolution && predicate_lt(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_lt([predicate[pK][k]], predicateScopes, actor);
                 } else if (k == "lte") {
-                    predicate_resolution = predicate_resolution && predicate_lte(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_lte([predicate[pK][k]], predicateScopes, actor);
                 } else if (k == "not") {
-                    predicate_resolution = predicate_resolution && predicate_not(predicate[pK][k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_not([predicate[pK][k]], predicateScopes, actor);
                 } else {
                 }
             }
