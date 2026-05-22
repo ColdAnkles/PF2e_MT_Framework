@@ -95,13 +95,16 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			skill_check_dialog(checkToken.getId(), checkToken.getName(), tokenType, altStat, JSON.stringify(extraScopes), skillStrings, statStrings, initiative);
 
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in checkData-NULL during skill_check");
 			MapTool.chat.broadcast("checkToken: " + String(checkToken));
 			MapTool.chat.broadcast("altStat: " + String(altStat));
 			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
 			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in checkData-NULL during skill_check");
 		}
 
 	} else {
@@ -153,18 +156,23 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 			if ("extraScopes" in checkData) {
 				extraScopes = checkData.extraScopes;
+			} else {
+				extraScopes = JSON.parse(JSON.stringify(extraScopes));
 			}
 			if (!("overrideBonus" in checkData)) {
 				checkData.overrideBonus = null;
 			}
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in default-checkData during skill_check");
 			MapTool.chat.broadcast("checkToken: " + String(checkToken));
 			MapTool.chat.broadcast("altStat: " + String(altStat));
 			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
 			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in default-checkData during skill_check");
 		}
 
 		let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
@@ -187,13 +195,16 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				dTwentyColour = "green";
 			}
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in d20Roll during skill_check");
 			MapTool.chat.broadcast("checkToken: " + String(checkToken));
 			MapTool.chat.broadcast("altStat: " + String(altStat));
 			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
 			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in d20Roll during skill_check");
 		}
 
 		let stat_bonus = 0;
@@ -211,12 +222,15 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				checkData.statName = skills[checkData.skillName].stat;
 			}
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in get-stat-bonus during skill_check");
 			MapTool.chat.broadcast("checkToken: " + String(checkToken));
 			MapTool.chat.broadcast("checkData.statName: " + String(checkData.statName));
 			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in get-stat-bonus during skill_check");
 		}
 
 		let initiative = 0;
@@ -229,13 +243,16 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				currentAttackCount = 0;
 			}
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in get-init during skill_check");
 			MapTool.chat.broadcast("checkToken: " + String(checkToken));
 			MapTool.chat.broadcast("altStat: " + String(altStat));
 			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
 			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in get-init during skill_check");
 		}
 
 		let map_malus = Math.min(currentAttackCount, 2) * -5;
@@ -276,13 +293,16 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 				}
 			}
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in get-effect-bonuses during skill_check");
 			MapTool.chat.broadcast("checkToken: " + String(checkToken));
 			MapTool.chat.broadcast("altStat: " + String(altStat));
 			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
 			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in get-effect-bonuses during skill_check");
 		}
 
 		//MapTool.chat.broadcast(JSON.stringify(effect_bonus_raw));
@@ -321,13 +341,35 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			}
 
 			let armorPenalty = 0;
+			let tokenArmor = get_equipped_armor(checkToken);
+			let tokenStr = checkToken.getProperty("str")
 
 			if (checkData.statName == "str" || checkData.statName == "dex") {
-				let tokenArmor = get_equipped_armor(checkToken);
-				let tokenStr = checkToken.getProperty("str")
 				if (tokenArmor != null && "checkPenalty" in tokenArmor && "strReq" in tokenArmor && tokenStr < tokenArmor.strReq) {
-					armorPenalty = tokenArmor.checkPenalty;
+					armorPenalty = tokenArmor.system.checkPenalty;
 				}
+			}
+
+			try {
+				if (tokenArmor != null && extraScopes.includes("initiative")) {
+					if (tokenArmor.system.traits.value.includes("ponderous")){
+						if (tokenArmor.system.strength > tokenStr){
+							armorPenalty = tokenArmor.system.checkPenalty;
+						}else{
+							armorPenalty = -1;
+						}
+					}
+				}
+			} catch (e) {
+				if (String(e).startsWith("Error: PZ2E")) {
+					throw e;
+				}
+				MapTool.chat.broadcast("Error in ponderous-check during skill_check");
+				MapTool.chat.broadcast("checkToken: " + String(checkToken));
+				MapTool.chat.broadcast("tokenArmor: " + JSON.stringify(tokenArmor));
+				MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
+				MapTool.chat.broadcast("" + e + "\n" + e.stack);
+				throw new Error("PZ2E: Error in ponderous-check during skill_check");
 			}
 
 			let checkMod = stat_bonus + prof_bonus + misc_bonus + effect_bonus + map_malus + armorPenalty;
@@ -383,13 +425,16 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 			return returnData;
 
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in checkData-else during skill_check");
 			MapTool.chat.broadcast("checkToken: " + String(checkToken));
 			MapTool.chat.broadcast("altStat: " + String(altStat));
 			MapTool.chat.broadcast("checkData: " + JSON.stringify(checkData));
 			MapTool.chat.broadcast("extraScopes: " + JSON.stringify(extraScopes));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in checkData-else during skill_check");
 		}
 	}
 }
