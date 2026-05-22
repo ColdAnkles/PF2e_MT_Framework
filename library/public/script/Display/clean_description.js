@@ -61,6 +61,7 @@ function parse_template(templateString) {
 function parse_damage(damageString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
 	let parsed = parse_foundry_strings(damageString);
 	let addDamage = 0;
+	let returnValue = damageString;
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 
 	if (additionalData.variant == "elite" && "action" in additionalData && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
@@ -72,7 +73,7 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 		addDamage = addDamage * 2;
 	}
 	//MapTool.chat.broadcast(JSON.stringify(parsed));
-	let diceMatch = parsed.bracketContents.match(/([0-9d +-]+)/gm);
+	let diceMatch = parsed.bracketContents.match(/([0-9d +\-\*\/\(\)]+)/gm);
 	//MapTool.chat.broadcast(JSON.stringify(diceMatch));
 	if (additionalData.rollDice || !diceMatch[0].includes("d")) {
 		if (diceMatch.length > 0) {
@@ -87,21 +88,23 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 			if (parsed.braceContents == null) {
 				parsed.braceContents = "";
 			}
-			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 ($2)").replaceAll(/(.*)\[(.*)\]/gm, "$1 ($2) " + parsed.braceContents);
+			returnValue = parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 ($2)").replaceAll(/(.*)\[(.*)\]/gm, "$1 ($2) " + parsed.braceContents);
 		} else {
 			let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
 			if (parsed.braceContents == null) {
 				parsed.braceContents = "";
 			}
-			return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
+			returnValue = parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
 		}
 	} else {
 		let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
 		if (parsed.braceContents == null) {
 			parsed.braceContents = "";
 		}
-		return parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
+		returnValue = parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
 	}
+	//MapTool.chat.broadcast(String(returnValue));
+	return returnValue;
 }
 
 function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
@@ -440,6 +443,27 @@ function clean_calculations(calculationString, additionalData = { "rollDice": fa
 	return String(completedCalculation);
 }
 
+function clean_actor_data(actorString, actor){
+	let splitString = actorString.split(".")
+	//MapTool.chat.broadcast(JSON.stringify(splitString));
+	let returnValue = actorString;
+
+	if (splitString[1] == "level"){
+		returnValue = String(actor.getProperty("level"));
+	} else if (splitString[1] == "abilities"){
+		if (splitString[3] != null && splitString[3] == "mod"){
+			returnValue = String(actor.getProperty(splitString[2]));
+		}
+	} else if (splitString[1] == "skills"){
+		let prof = calculate_proficiency(splitString[2], actor, null);
+		if (splitString[3] != null && splitString[3] == "rank"){
+			returnValue = String(prof);
+		}
+	}
+	//MapTool.chat.broadcast(returnValue);
+	return returnValue;
+}
+
 function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true, "invertImages": true }) {
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
@@ -499,6 +523,14 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription = cleanDescription.replaceAll("@actor.level", String(additionalData.level));
 		cleanDescription = cleanDescription.replaceAll("@item.level", String(additionalData.level));
 		cleanDescription = cleanDescription.replaceAll("@item.rank", String(additionalData.level));
+	}
+
+	if ("actor" in additionalData){
+		let actor_matches = cleanDescription.match(/(@actor[.a-zA-Z0-9]*)/gm);
+		for (var m in actor_matches){
+			let replaceString = clean_actor_data(actor_matches[m], additionalData.actor);
+			cleanDescription = cleanDescription.replaceAll(actor_matches[m], replaceString);
+		}
 	}
 
 	//Horrible Regex to balance parens

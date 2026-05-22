@@ -1,7 +1,23 @@
 "use strict";
 
 function group_dice(diceString) {
+	diceString = diceString.replaceAll(" ", "")
 	//MapTool.chat.broadcast(diceString);
+
+	const subRegexp = /\([^\(\)]*\)/g
+
+	let subMatch = diceString.match(subRegexp);
+	while (subMatch != null && subMatch.length > 0) {
+		let match = subMatch[0]
+		match = match.replace("(", "").replace(")", "");
+		let rep = group_dice(match);
+		diceString = diceString.replaceAll(subMatch[0], rep)
+		subMatch = diceString.match(subRegexp);
+	}
+
+	if (!diceString.includes("d")) {
+		return eval(diceString);
+	}
 
 	const dieRegexp = /[+-]?[0-9]*d[0-9]+/g;
 	const flatRegexp = /(?<!d)[+-]?[0-9]+(?![0-9]*d)/g;
