@@ -9,6 +9,7 @@ function parse_pathbuilder_export(data) {
 	let heritageLibrary = JSON.parse(read_data("pz2e_heritage"));
 	let spellLibrary = JSON.parse(read_data("pz2e_spell"));
 	let itemLibrary = JSON.parse(read_data("pz2e_item"));
+	let profList = ["Acrobatics", "Arcana", "Athletics", "Crafting", "Deception", "Diplomacy", "Intimidation", "Medicine", "Nature", "Occultism", "Performance", "Religion", "Society", "Stealth", "Survival", "Thievery"];
 
 	let gameSystem = read_data("gameSystem");
 
@@ -279,7 +280,7 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 	for (var l in data.lores) {
-		let newProf = { "bonus": data.lores[l][1] + data.level, "name": "Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(data.proficiencies[p] + data.level) };
+		let newProf = { "bonus": Number(data.lores[l][1]) + Number(data.level), "name": "Lore: " + data.lores[l][0], "string": "Lore: " + data.lores[l][0] + " " + pos_neg_sign(Number(data.lores[l][1]) + Number(data.level)) };
 		if (data.lores[l][1] == 2) {
 			newProf.pName = "T";
 		} else if (data.lores[l][1] == 4) {
@@ -518,6 +519,9 @@ function parse_pathbuilder_export(data) {
 			}
 			for (var r in removeRegex) {
 				tempName = tempName.replace(removeRegex[r], "");
+			}
+			if (profList.includes(tempName)){
+				continue; //No need to include proficiency
 			}
 			if (tempName == "Aquatic Adaptation" && data.ancestry == "Lizardfolk") {
 				tempName = "Aquatic Adaptation (Lizardfolk)";

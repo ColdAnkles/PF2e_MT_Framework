@@ -8,7 +8,7 @@
 [h: yCoord=getStrProp(center,"centerY")]
 [h: val = json.set("{}", "tokenImage", "lib://ca.pz2e/image/PetDefault.png", "name", "NewPC","x",xCoord,"y",yCoord)]
 [h: newToken = createToken(val)]
-[h: setPropertyType("pz2e_Character", newToken)]
+[h: setPropertyType("PZ2E_Character", newToken)]
 [h: setPC(newToken)]
 
 [h: js.ca.pz2e.write_creature_properties(petData, newToken)]

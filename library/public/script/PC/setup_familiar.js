@@ -96,7 +96,11 @@ function setup_familiar(baseData) {
         let featureData = familiarDataRaw.familiarAbilities[f];
         if (featureData.name != "Climber" && featureData.name != "Tough" && featureData.name != "Scent" && featureData.name != "Resistance") {
             if ("fileURL" in featureData) {
-                parse_feature(featureData.baseName, rest_call(featureData.fileURL), newFamiliarData);
+                parse_item(featureData.baseName, rest_call(featureData.fileURL), newFamiliarData);
+            } else {
+                if (featureData.type == "action") {
+                    newFamiliarData.offensiveActions.push(featureData);
+                }
             }
         } else if (featureData.name == "Tough") {
             newFamiliarData.hp.max += 2 * PCData.level;
