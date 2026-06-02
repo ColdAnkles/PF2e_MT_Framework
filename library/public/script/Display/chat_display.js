@@ -14,7 +14,9 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	} else {
 		outputText += ";width:500px;'>";
 	}
-	outputText = outputText + "<table style='width:100%;padding: 4px 0px;'><tr height=20px style='background-color: " + themeData.colours.titleBackground + ";'><td><h1 style='color: " + themeData.colours.titleText + ";line-height: 1em;vertical-align: middle;font-variant: small-caps;'>";
+	outputText += "<table style='width:100%; padding: 4px 0px; border-spacing: 0px;'>";
+	outputText += "<tr height=20px style='background-color: " + themeData.colours.titleBackground + ";'><td>";
+	outputText += "<h1 style='color: " + themeData.colours.titleText + ";line-height: 1em;vertical-align: middle;font-variant: small-caps;'>";
 
 	try {
 		if ("actions" in displayData.system && "actionType" in displayData.system) {
@@ -46,12 +48,16 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	}
 	outputText += "</h1></td>";
 
+	if (displayData.name.length > 20){
+		outputText += "</tr><tr height=20px style='background-color: " + themeData.colours.titleBackground + ";'>";
+	}
+
 	try {
 		if ("level" in displayData.system) {
 			if ("castLevel" in displayData.system && displayData.system.castLevel.value != displayData.system.level.value) {
 				displayData.system.level.value = displayData.system.level.value + " (" + displayData.system.castLevel.value + ")";
 			}
-			outputText = outputText + "<td style='text-align:right'><h1 style='color: " + themeData.colours.titleText + ";line-height: 1em;vertical-align: middle;font-variant: small-caps;'>" + capitalise(displayData.type) + " " + displayData.system.level.value + "</h1></td>";
+			outputText = outputText + "<td style='text-align:right;'><h1 style='color: " + themeData.colours.titleText + ";line-height: 1em;vertical-align: middle;font-variant: small-caps;'>" + capitalise(displayData.type) + " " + displayData.system.level.value + "</h1></td>";
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in chat_display during level display");
@@ -75,7 +81,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 				} else {
 					outputText += "<td bgcolor='" + themeData.colours.traitOuter + "', style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
 				}
-				if ((((Number(t) + 1) % 4) != NaN && Number(t) != 0 && ((Number(t) + 1) % 4) == 0) && displayData.system.traits.value.length >= (t+1)) {
+				if ((Number(t) + 1) % 3 == 0 && Number(t) != (displayData.system.traits.value.length - 1)) {
 					outputText += "</tr><tr>"
 				}
 			}
