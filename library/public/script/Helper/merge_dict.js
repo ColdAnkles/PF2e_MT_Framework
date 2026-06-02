@@ -15,6 +15,8 @@ const mergeDeep = (target, ...sources) => {
           [key]: {}
         });
         mergeDeep(target[key], source[key]);
+      } else if (Array.isArray(source[key])) {
+        target[key] = target[key].concat(source[key]);
       } else {
         Object.assign(target, {
           [key]: source[key]

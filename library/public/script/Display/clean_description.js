@@ -235,26 +235,11 @@ function parse_localize(localizeString, additionalData) {
 	//MapTool.chat.broadcast(JSON.stringify(parsed));
 
 	if (parsed.bracketContents != "") {
-		let keySplit = parsed.bracketContents.split(".");
-		let glossaryData = JSON.parse(read_data("pz2e_glossary"));
-		for (var k in keySplit) {
-			if (!(keySplit[k] in glossaryData)) {
-				return "";
-			}
-			glossaryData = glossaryData[keySplit[k]]
+		let glossaryData = glossary_find(parsed.bracketContents);
+		if (glossaryData != null) {
+			return glossaryData;
 		}
-		return glossaryData;
 	}
-
-	//if (parsed.bracketContents.includes("NPC.Abilities")) {
-	//	let tempArray = parsed.bracketContents.split(".");
-	//	let abilityName = tempArray[tempArray.length - 1];
-	//	let actionList = JSON.parse(read_data("pz2e_glossary")).pz2e;
-	//	if (abilityName in actionList) {
-	//		let actionDesc = actionList[abilityName];
-	//		return "<br />" + clean_description(actionDesc, additionalData.removeLineBreaks, additionalData.removeHR, additionalData.removeP, additionalData);
-	//	}
-	//}
 
 	return "";
 }
@@ -443,20 +428,20 @@ function clean_calculations(calculationString, additionalData = { "rollDice": fa
 	return String(completedCalculation);
 }
 
-function clean_actor_data(actorString, actor){
+function clean_actor_data(actorString, actor) {
 	let splitString = actorString.split(".")
 	//MapTool.chat.broadcast(JSON.stringify(splitString));
 	let returnValue = actorString;
 
-	if (splitString[1] == "level"){
+	if (splitString[1] == "level") {
 		returnValue = String(actor.getProperty("level"));
-	} else if (splitString[1] == "abilities"){
-		if (splitString[3] != null && splitString[3] == "mod"){
+	} else if (splitString[1] == "abilities") {
+		if (splitString[3] != null && splitString[3] == "mod") {
 			returnValue = String(actor.getProperty(splitString[2]));
 		}
-	} else if (splitString[1] == "skills"){
+	} else if (splitString[1] == "skills") {
 		let prof = calculate_proficiency(splitString[2], actor, null);
-		if (splitString[3] != null && splitString[3] == "rank"){
+		if (splitString[3] != null && splitString[3] == "rank") {
 			returnValue = String(prof);
 		}
 	}
@@ -525,9 +510,9 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription = cleanDescription.replaceAll("@item.rank", String(additionalData.level));
 	}
 
-	if ("actor" in additionalData){
+	if ("actor" in additionalData) {
 		let actor_matches = cleanDescription.match(/(@actor[.a-zA-Z0-9]*)/gm);
-		for (var m in actor_matches){
+		for (var m in actor_matches) {
 			let replaceString = clean_actor_data(actor_matches[m], additionalData.actor);
 			cleanDescription = cleanDescription.replaceAll(actor_matches[m], replaceString);
 		}
