@@ -78,6 +78,10 @@ function parse_item(itemData, parentObject) {
         parentObject.spellRules[itemData._id] = newSpellEntry;
 
     } else if (itemData.type == "spell") {
+        if (itemData.name.includes(" (At Will)")){
+            itemData.displayName = itemData.name;
+            itemData.name = itemData.name.replace(" (At Will)","");
+        }
         if (itemData.system.traits.value.includes("cantrip") || itemData.system.traits.value.includes("focus")) {
             itemData.system.castLevel = { "value": parentObject.spellRules[itemData.system.location.value].autoHeighten };
         } else {

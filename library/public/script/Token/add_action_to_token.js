@@ -281,7 +281,12 @@ function add_action_to_token(actionData, tokenID, token) {
 			actionData.system.level.value = lookupSpell.system.level.value;
 			//actionData.traits = lookupSpell.traits.value.push(lookupSpell.traits.rarity);
 
-			let spellLabel = action_icon_label(actionData.system.actionType.value, actionData.system.actions.value) + " " + actionData.name;
+			let displayName = actionData.name;
+			if ("displayName" in actionData){
+				displayName = actionData.displayName;
+			}
+
+			let spellLabel = action_icon_label(actionData.system.actionType.value, actionData.system.actions.value) + " " + displayName;
 			actionData.name = spellName;
 			let tooltipDescription = chat_display(actionData, false, { "level": actionData.system.castLevel.value, "rollDice": false, "variant": variant, "action": actionData });
 
