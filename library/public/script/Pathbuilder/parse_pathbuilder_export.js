@@ -651,11 +651,7 @@ function parse_pathbuilder_export(data) {
 			itemData.system.runes.resilient = 3;
 		}
 		for (var rI of thisArmor.runes) {
-			let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
-			if (runeData != null && "fileURL" in runeData) {
-				runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
-				itemData.system.runes.property.push(runeData);
-			}
+			itemData.system.runes.property.push(rI.replaceAll(" (Minor)", ""));
 		}
 		itemData.system.id = trueID;
 		itemData.system._id = trueID;
@@ -706,11 +702,7 @@ function parse_pathbuilder_export(data) {
 				newAttackData.system.damageRolls["0"].damage = String(newAttackData.system.damageRolls["0"].dice) + newAttackData.system.damageRolls["0"].die + ((thisWeapon.damageBonus > 0) ? "+" + String(thisWeapon.damageBonus) : "");
 				itemData.system.runes.potency = thisWeapon.pot;
 				for (var rI of thisWeapon.runes) {
-					let runeData = find_object_data(rI.replaceAll(" (Minor)", ""), "item");
-					if (runeData != null && "fileURL" in runeData) {
-						runeData = parse_feature(runeData.baseName, rest_call(runeData.fileURL), null);
-						itemData.system.runes.property.push(runeData);
-					}
+					itemData.system.runes.property.push(rI.replaceAll(" (Minor)", ""));
 				}
 				if (thisWeapon.mat != null && thisWeapon.mat != "") {
 					if (thisWeapon.mat.match(/([^\s]*) \((.*)\)/)) {

@@ -8,7 +8,7 @@ function parse_item(itemData, parentObject) {
         let newSkill = { "string": itemData.name + " +" + itemData.system.mod.value, "name": itemData.name, "bonus": itemData.system.mod.value };
         parentObject.proficiencies.push(newSkill);
 
-    } else if (itemData.type == "item" || itemData.type == "shield" || itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable") {
+    } else if (itemData.type == "item" || itemData.type == "shield" || itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "consumable" || itemData.type == "equipment") {
         if (itemData.type == "shield" && (!("shield" in parentObject.foundryActor.system.attributes) || parentObject.foundryActor.system.attributes.shield == null)) {
             itemData.system.equipped = true;
             parentObject.foundryActor.system.attributes.shield = itemData;

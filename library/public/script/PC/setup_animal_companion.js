@@ -15,22 +15,32 @@ function setup_animal_companion(baseData) {
     } else if ("nameVal" in baseData) {
         //Path For When baseData is from the Setup Form
         //MapTool.chat.broadcast(JSON.stringify(baseData));
-        companionData.ownerID = baseData.ownerID;
-        companionData.name = baseData.nameVal;
-        companionData.baseName = baseData.baseName;
-        companionData.level = parseInt(baseData.levelVal);
-        companionData.hp = { "max": parseInt(baseData.hpVal) };
-        companionData.ac = { "value": parseInt(baseData.acVal) }
-        companionData.abilities = { "str": parseInt(baseData.strVal), "dex": parseInt(baseData.dexVal), "con": parseInt(baseData.conVal), "int": parseInt(baseData.intVal), "wis": parseInt(baseData.wisVal), "cha": parseInt(baseData.chaVal) };
-        companionData.saves = { "fortitude": parseInt(baseData.fortitudeVal), "reflex": parseInt(baseData.reflexVal), "will": parseInt(baseData.willVal) };
-        companionData.perception = parseInt(baseData.perceptionVal);
-        companionData.speeds = { "base": parseInt(baseData.speedVal), "other": [] };
-        companionData.senses = baseData.sensesVal.replaceAll(" vision", "");
-        companionData.size = baseData.sizeVal.toLowerCase()
-        companionData.traits = baseData.traitsVal.split(/,(?![^(]*\)) /);
-        companionData.supportBenefit = baseData.benefitVal;
-        if (baseData.otherSpeedVal != "") {
-            companionData.speeds.other = baseData.otherSpeedVal.split(/,(?![^(]*\)) /);
+        try {
+            companionData.ownerID = baseData.ownerID;
+            companionData.name = baseData.nameVal;
+            companionData.baseName = baseData.baseName;
+            companionData.level = parseInt(baseData.levelVal);
+            companionData.hp = { "max": parseInt(baseData.hpVal) };
+            companionData.ac = { "value": parseInt(baseData.acVal) }
+            companionData.abilities = { "str": parseInt(baseData.strVal), "dex": parseInt(baseData.dexVal), "con": parseInt(baseData.conVal), "int": parseInt(baseData.intVal), "wis": parseInt(baseData.wisVal), "cha": parseInt(baseData.chaVal) };
+            companionData.saves = { "fortitude": parseInt(baseData.fortitudeVal), "reflex": parseInt(baseData.reflexVal), "will": parseInt(baseData.willVal) };
+            companionData.perception = parseInt(baseData.perceptionVal);
+            companionData.speeds = { "base": parseInt(baseData.speedVal), "other": [] };
+            companionData.senses = baseData.sensesVal.replaceAll(" vision", "");
+            companionData.size = baseData.sizeVal.toLowerCase()
+            companionData.traits = baseData.traitsVal.split(/,(?![^(]*\)) /);
+            companionData.supportBenefit = baseData.benefitVal;
+            if (baseData.otherSpeedVal != "") {
+                companionData.speeds.other = baseData.otherSpeedVal.split(/,(?![^(]*\)) /);
+            }
+        } catch (e) {
+            if (String(e).startsWith("Error: PZ2E")) {
+                throw e;
+            }
+            MapTool.chat.broadcast("Error in setup_animal_companion during basic setup");
+            MapTool.chat.broadcast("companionData: " + JSON.stringify(companionData));
+            MapTool.chat.broadcast("" + e + "\n" + e.stack);
+            throw new Error("PZ2E: Error in setup_animal_companion during basic setup");
         }
 
         let profBonus = { "U": 0, "T": 2, "E": 4, "M": 6, "L": 8 };
@@ -125,61 +135,72 @@ function setup_animal_companion(baseData) {
         companionData.resources = {};
 
         var counter = 0;
-        while (counter < baseData.totalAttacks) {
-            if ("removeAttack_" + String(counter) in baseData) {
-                continue;
+        try {
+            while (counter < baseData.totalAttacks) {
+                if ("removeAttack_" + String(counter) in baseData) {
+                    continue;
+                }
+                let newAttackData = {
+                    "bonus": parseInt(baseData["actionRoll_" + String(counter)]),
+                    "damage": [{
+                        "damage": baseData["actionDamage_" + String(counter)],
+                        "damageType": "piercing"
+                    }],
+                    "isMelee": ("actionMelee_" + String(counter) in baseData),
+                    "name": baseData["actionName_" + String(counter)],
+                    "traits": baseData["actionTraits_" + String(counter)].replaceAll(", ", ",").split(","),
+                    "effects": [],
+                    "description": ""
+                };
+
+                let newAttackAction = baseData["actionType_" + String(counter)]
+                if (newAttackAction == "reaction") {
+                    newAttackData.actionType = "reaction";
+                    newAttackData.actionCost = 1;
+                } else if (newAttackAction == "passive") {
+                    newAttackData.actionType = "passive";
+                    newAttackData.actionCost = 0;
+                } else if (newAttackAction == "freeAction") {
+                    newAttackData.actionType = "freeAction";
+                    newAttackData.actionCost = 0;
+                } else if (newAttackAction == "1action") {
+                    newAttackData.actionType = "action";
+                    newAttackData.actionCost = 1;
+                } else if (newAttackAction == "2action") {
+                    newAttackData.actionType = "action";
+                    newAttackData.actionCost = 2;
+                } else if (newAttackAction == "2action") {
+                    newAttackData.actionType = "action";
+                    newAttackData.actionCost = 2;
+                }
+
+                companionData.basicAttacks.push(newAttackData);
+                counter += 1;
             }
-            let newAttackData = {
-                "bonus": parseInt(baseData["actionRoll_" + String(counter)]),
-                "damage": [{
-                    "damage": baseData["actionDamage_" + String(counter)],
-                    "damageType": "piercing"
-                }],
-                "isMelee": ("actionMelee_" + String(counter) in baseData),
-                "name": baseData["actionName_" + String(counter)],
-                "traits": baseData["actionTraits_" + String(counter)].replaceAll(", ", ",").split(","),
-                "effects": [],
-                "description": ""
-            };
 
-            let newAttackAction = baseData["actionType_" + String(counter)]
-            if (newAttackAction == "reaction") {
-                newAttackData.actionType = "reaction";
-                newAttackData.actionCost = 1;
-            } else if (newAttackAction == "passive") {
-                newAttackData.actionType = "passive";
-                newAttackData.actionCost = 0;
-            } else if (newAttackAction == "freeAction") {
-                newAttackData.actionType = "freeAction";
-                newAttackData.actionCost = 0;
-            } else if (newAttackAction == "1action") {
-                newAttackData.actionType = "action";
-                newAttackData.actionCost = 1;
-            } else if (newAttackAction == "2action") {
-                newAttackData.actionType = "action";
-                newAttackData.actionCost = 2;
-            } else if (newAttackAction == "2action") {
-                newAttackData.actionType = "action";
-                newAttackData.actionCost = 2;
+            if ("addAttack" in baseData) {
+                let newAttackData = {
+                    "actionCost": 1,
+                    "actionType": "action",
+                    "bonus": companionData.skills.unarmed + companionData.level + Math.max(companionData.abilities.str, companionData.abilities.dex),
+                    "damage": [{ "damage": "1d6+0", "damageType": "piercing" }],
+                    "isMelee": true,
+                    "name": "New Attack",
+                    "traits": [],
+                    "effects": [],
+                    "description": ""
+                };
+                companionData.basicAttacks.push(newAttackData);
             }
 
-            companionData.basicAttacks.push(newAttackData);
-            counter += 1;
-        }
-
-        if ("addAttack" in baseData) {
-            let newAttackData = {
-                "actionCost": 1,
-                "actionType": "action",
-                "bonus": companionData.skills.unarmed + companionData.level + Math.max(companionData.abilities.str, companionData.abilities.dex),
-                "damage": [{ "damage": "1d6+0", "damageType": "piercing" }],
-                "isMelee": true,
-                "name": "New Attack",
-                "traits": [],
-                "effects": [],
-                "description": ""
-            };
-            companionData.basicAttacks.push(newAttackData);
+        } catch (e) {
+            if (String(e).startsWith("Error: PZ2E")) {
+                throw e;
+            }
+            MapTool.chat.broadcast("Error in setup_animal_companion during attack setup");
+            MapTool.chat.broadcast("companionData.basicAttacks: " + JSON.stringify(companionData.basicAttacks));
+            MapTool.chat.broadcast("" + e + "\n" + e.stack);
+            throw new Error("PZ2E: Error in setup_animal_companion during attack setup");
         }
     } else {
         //Path For When BaseData not from Form
@@ -484,12 +505,22 @@ function setup_animal_companion(baseData) {
             let otherSpeeds = companionData.speeds.other;
             let otherSpeedData = [];
 
-            for (var s in otherSpeeds) {
-                let speedString = otherSpeeds[s];
-                let speedSplit = speedString.split(" ");
-                //format fly 50ft to {"type":"fly","value":120}
-                let newSpeed = { "type": speedSplit[0], "value": Number(speedSplit[1].replaceAll(/[a-z]/gi, "")) }
-                otherSpeedData.push(newSpeed);
+            try {
+                for (var s in otherSpeeds) {
+                    let speedString = otherSpeeds[s];
+                    let speedSplit = speedString.split(" ");
+                    //format fly 50ft to {"type":"fly","value":120}
+                    let newSpeed = { "type": speedSplit[0], "value": Number(speedSplit[1].replaceAll(/[a-z]/gi, "")) }
+                    otherSpeedData.push(newSpeed);
+                }
+            } catch (e) {
+                if (String(e).startsWith("Error: PZ2E")) {
+                    throw e;
+                }
+                MapTool.chat.broadcast("Error in setup_animal_companion during speed setup");
+                MapTool.chat.broadcast("otherSpeedData: " + JSON.stringify(otherSpeedData));
+                MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                throw new Error("PZ2E: Error in setup_animal_companion during speed setup");
             }
 
             companionData.speeds.other = otherSpeedData;
