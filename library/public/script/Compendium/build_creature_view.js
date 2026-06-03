@@ -104,7 +104,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 	HTMLString += "<br />"
 	try {
 		if (tokenID != null) {
-			HTMLString += "<img style='float:right;margin:5px' src=" + getTokenImage(tokenID, 200) + "></img>";
+			HTMLString += "<img style='float:right;margin:5px' src=" + get_token_image(tokenID, 200) + "></img>";
 		}
 		if ("source" in creatureData) {
 			HTMLString += "<b>Source </b><span class='ext-link'>" + creatureData.source + "</span><br />";

@@ -41,3 +41,4 @@
 [h: oldSourceConf = getLibProperty("pz2e_enabledSources","Lib:ca.pz2e")]
 [h: ca.pz2e.Load_Addon_JSON()]
 [h: setLibProperty("pz2e_enabledSources", oldSourceConf ,"Lib:ca.pz2e")]
+[h: execFunction("ca.pz2e.updateUI", "[]", 1)]

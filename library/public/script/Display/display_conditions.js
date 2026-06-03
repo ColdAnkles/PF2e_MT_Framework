@@ -1,6 +1,6 @@
 "use strict";
 
-function display_conditions(token) {
+function display_conditions(token, condition = null) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
 	}
@@ -21,12 +21,14 @@ function display_conditions(token) {
 			separator = " \n";
 		}
 		let conditionData = tokenConditions[sorted[c]];
-		outputString = outputString + sorted[c];
-		if (conditionData.system.value.isValued) {
-			outputString = outputString + " " + conditionData.system.value.value;
+		if (condition == null || condition == sorted[c]) {
+			outputString = outputString + sorted[c];
+			if (conditionData.system.value.isValued) {
+				outputString = outputString + " " + conditionData.system.value.value;
+			}
+			outputString = outputString + separator;
+			counter += 1;
 		}
-		outputString = outputString + separator;
-		counter += 1;
 	}
 
 	outputString = outputString.substring(0, outputString.length - 2);

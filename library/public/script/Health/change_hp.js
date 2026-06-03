@@ -222,6 +222,10 @@ function change_hp(tokenID, changeHPData = null) {
 		update_my_tokens(token);
 	}
 
+	if (token.isPC()){
+		MTScript.evalMacro("[h: ca.pz2e.loadOverlays()]");
+	}
+
 }
 
 MTScript.registerMacro("ca.pz2e.change_hp", change_hp);

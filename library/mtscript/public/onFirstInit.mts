@@ -63,3 +63,4 @@
 [h: js.ca.pz2e.createGMMacros()]
 [h: js.ca.pz2e.createCampaignMacros()]
 [h: ca.pz2e.Welcome()]
+[h: execFunction("ca.pz2e.updateUI", "[]", 1)]
