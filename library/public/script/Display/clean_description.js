@@ -573,6 +573,11 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription = cleanDescription.replaceAll(roll_matchesB[m], replaceString);
 	}
 
+	let embedMatches = cleanDescription.match(/@Embed\[.*\]/gm);
+	for (var e in embedMatches){
+		cleanDescription = cleanDescription.replaceAll(embedMatches[e], "");
+	}
+
 	cleanDescription = cleanDescription.replaceAll(/\[\[\/act.*\]\]{(.*)}/g, "$1");
 
 	cleanDescription = cleanDescription.replaceAll(/\[\[\/act ([^=]*)[\s\]]+.*\]/g, "$1");
