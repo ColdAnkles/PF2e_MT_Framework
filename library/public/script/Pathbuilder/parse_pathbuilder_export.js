@@ -24,7 +24,7 @@ function parse_pathbuilder_export(data) {
 
 			if (objectName == "Oil") {
 				objectName = "Oil (1 pint)";
-			} else if (objectName == "Clothing"){
+			} else if (objectName == "Clothing") {
 				objectName = "Clothing (Ordinary)";
 			}
 
@@ -137,6 +137,9 @@ function parse_pathbuilder_export(data) {
 	try {
 		classData = find_object_data(data.class, ["class"]);
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in parse_pathbuilder_export - find class data");
 		MapTool.chat.broadcast("class: " + JSON.stringify(data.class));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
@@ -520,7 +523,7 @@ function parse_pathbuilder_export(data) {
 			for (var r in removeRegex) {
 				tempName = tempName.replace(removeRegex[r], "");
 			}
-			if (profList.includes(tempName)){
+			if (profList.includes(tempName)) {
 				continue; //No need to include proficiency
 			}
 			if (tempName == "Aquatic Adaptation" && data.ancestry == "Lizardfolk") {
@@ -529,7 +532,7 @@ function parse_pathbuilder_export(data) {
 			if (tempName == "Spellbook" || tempName == "Vessel Spells") {
 				continue; //Spellbook/Spell Lists not treated as a feature in foundry
 			}
-			if (tempName.includes("Spellcasting")){
+			if (tempName.includes("Spellcasting")) {
 				continue; //Spellcasting Done Differently
 			}
 			if (tempName == "Anathema") {
@@ -570,11 +573,12 @@ function parse_pathbuilder_export(data) {
 			featureData = features_to_parse[f];
 			//MapTool.chat.broadcast(JSON.stringify(featureData))
 			if ("fileURL" in featureData) {
-				featureData = rest_call(featureData.fileURL);
+				featureData = import_and_parse(featureData.name, featureData.type, false);
+				
 			}
 			characterData.features[featureData.name] = featureData;
 			//MapTool.chat.broadcast(JSON.stringify(featureData));
-			//MapTool.chat.broadcast(featureData.baseName);
+			//MapTool.chat.broadcast(featureData.name);
 			if (featureData != null && "rules" in featureData.system && featureData.system.rules != null && featureData.system.rules.length > 0) {
 				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
 				//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
@@ -606,11 +610,11 @@ function parse_pathbuilder_export(data) {
 		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
 		}
-		MapTool.chat.broadcast("Error in parse_pathbuilder_export - specials grant attacks");
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - specials parsing");
 		MapTool.chat.broadcast("featureData: " + JSON.stringify(featureData));
 		MapTool.chat.broadcast("grantedAttacks: " + JSON.stringify(grantedAttacks));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		throw new Error("PZ2E: Error in parse_pathbuilder_export - specials grant attacks");
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - specials parsing");
 	}
 	characterData.basicAttacks = characterData.basicAttacks.concat(grantedAttacks);
 
@@ -619,6 +623,7 @@ function parse_pathbuilder_export(data) {
 	}
 
 	unfoundData = unfoundData.concat(unfoundSpecials);
+	let eqShield = null;
 
 	//Armor
 	message_window("Importing " + data.name, "Importing Armor");
@@ -658,11 +663,16 @@ function parse_pathbuilder_export(data) {
 		if ("type" in itemData && itemData.type != "shield") {
 			itemData.type = "armor";
 		}
+		if (thisArmor.worn && thisArmor.prof == "shield") {
+			eqShield = itemData;
+		}
 		characterData.inventory[trueID] = itemData;
 	}
 
 	//Weapons
 	message_window("Importing " + data.name, "Importing Weapons");
+	let bashAttack = null;
+	let fistAttack = null;
 	try {
 		for (var w in data.weapons) {
 			let thisWeapon = data.weapons[w];
@@ -717,8 +727,12 @@ function parse_pathbuilder_export(data) {
 				itemData._id = trueID;
 				characterData.basicAttacks.push(newAttackData);
 			} else {
-				if (thisWeapon.name != "Fist" && thisWeapon.name != null) {
+				if (thisWeapon.name != "Fist" && thisWeapon.name != "Shield Bash" && thisWeapon.name != null) {
 					unfoundData.push(thisWeapon.name + " (Weapon)");
+				} else if (thisWeapon.name == "Fist") {
+					fistAttack = thisWeapon;
+				} else if (thisWeapon.name == "Shield Bash") {
+					bashAttack = thisWeapon;
 				}
 			}
 		}
@@ -734,10 +748,35 @@ function parse_pathbuilder_export(data) {
 		throw new Error("PZ2E: parse_pathbuilder_export - weapons");
 	}
 
+	if (eqShield != null) {
+		let bashDie = "d4";
+		if (bashAttack != null){
+			bashDie = bashAttack.die;
+		}
+		let shieldBash = {
+			"name": "Shield Bash",
+			"system": {
+				"actions": { "value": 1 }, "actionType": { "value": "action" }, "bonus": { "value": unarmedProf }, "damageRolls": { "0": { "die": bashDie, "dice": 1, "damageType": "bludgeoning" } },
+				"description": { "value": "" }, "attackEffects": { "value": [] }, "isMelee": true, "group": "",
+				"traits": { "value": [] }, "category": "martial"
+			},
+			"flags": {},
+			"type": "melee"
+		}
+		shieldBash[gameSystem] = { "linkedWeapon": eqShield.id };
+		shieldBash.system.damageRolls["0"].damage = String(shieldBash.system.damageRolls["0"].dice) + shieldBash.system.damageRolls["0"].die + ((Number(characterData.abilities.str) != 0) ? "+" + Number(characterData.abilities.str) : "");
+		characterData.basicAttacks.push(shieldBash);
+	}
+
+	let fistDie = "d4";
+	if (fistAttack != null) {
+		fistDie = fistAttack.die;
+	}
+
 	let unarmedAttack = {
 		"name": "Fist",
 		"system": {
-			"actions": { "value": 1 }, "actionType": { "value": "action" }, "bonus": { "value": unarmedProf }, "damageRolls": { "0": { "die": "d4", "dice": 1, "damageType": "bludgeoning" } },
+			"actions": { "value": 1 }, "actionType": { "value": "action" }, "bonus": { "value": unarmedProf }, "damageRolls": { "0": { "die": fistDie, "dice": 1, "damageType": "bludgeoning" } },
 			"description": { "value": "" }, "attackEffects": { "value": [] }, "isMelee": true, "group": "",
 			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "category": "unarmed"
 		},
@@ -854,7 +893,7 @@ function parse_pathbuilder_export(data) {
 		} else if (("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "action") || featureData.system.category == "offensive") {
 			characterData.offensiveActions.push(featureData);
 		} else if ("actionType" in featureData.system && "value" in featureData.system.actionType && featureData.system.actionType.value == "reaction") {
-			characterData.rections.push(featureData);
+			characterData.otherDefenses.push(featureData);
 		}
 	}
 
