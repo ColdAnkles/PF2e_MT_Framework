@@ -13,7 +13,6 @@ function add_common_macros(tokenID, isSimple = false) {
         { "label": "Saving Throw", "playerEditable": 0, "command": "[h: js.ca.pz2e.saving_throw(currentToken())]", "tooltip": "Attempt Saving Throw", "sortBy": "", "group": "1. Common" },
         { "label": "Skill Check", "playerEditable": 0, "command": "[h: js.ca.pz2e.skill_check(currentToken())]", "tooltip": "Attempt Skill Check", "sortBy": "", "group": "1. Common" },
         { "label": "Skill Check (Diff Ability)", "playerEditable": 0, "command": "[h: js.ca.pz2e.skill_check(currentToken(),true)]", "tooltip": "Attempt Skill Check with a different Ability", "sortBy": "", "group": "1. Common" },
-        //{"label":"Increase MAP","playerEditable":0,"command":"[h: js.ca.pz2e.increase_map(myID)]","tooltip":"Increase Token MAP","sortBy":"","group":"Common"},
         { "label": "End Turn", "playerEditable": 0, "command": "[h: js.ca.pz2e.end_turn(currentToken())]", "tooltip": "End Turn", "sortBy": "", "group": "2. Encounter" },
         { "label": "Set Initiative", "playerEditable": 0, "command": "[h: ca.pz2e.Roll_Initiative(currentToken(), true)]", "tooltip": "Set Initiative if manually rolled", "sortBy": "", "group": "2. Encounter" },
         { "label": "Initiative", "playerEditable": 0, "command": "[h: ca.pz2e.Roll_Initiative(currentToken(), false)]", "tooltip": "Roll Initiative", "sortBy": "", "group": "2. Encounter" },
@@ -35,11 +34,7 @@ function add_common_macros(tokenID, isSimple = false) {
         }
 
         if (token.isPC()) {
-            let PCMacros = [
-                { "label": "Recall Knowledge", "playerEditable": 0, "command": "[h: js.ca.pz2e.simple_action(\"Recall Knowledge\",currentToken())]", "tooltip": "Recall Knowledge", "sortBy": "", "group": "1. Common" }]
-            for (var m in PCMacros) {
-                createMacro(PCMacros[m], tokenID);
-            }
+            add_action_to_token({ "name": "Recall Knowledge", "source": "Pathfinder Player Core", "type": "basic", "system": { "group": "1. Common", "description": { "value": "" } } }, tokenID);
         }
     } else {
         let commonMacros = [{ "label": "Change HP", "playerEditable": 0, "command": "[h: js.ca.pz2e.change_hp(currentToken())]", "tooltip": "Change Token HP", "sortBy": "", "group": "1. Common" },
