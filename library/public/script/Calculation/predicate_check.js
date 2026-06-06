@@ -13,7 +13,6 @@ function predicate_check(predicate, predicateScopes, actor, item) {
 
     function predicate_and(contents, predicateScopes, actor) {
         let results = [];
-        MapTool.chat.broadcast(JSON.stringify(contents))
         for (var c in contents) {
             results.push(predicate_check(contents[c], predicateScopes, actor, item))
         }
