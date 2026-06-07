@@ -18,18 +18,36 @@ function party_overlay() {
         overlayHTML += "<div><h3>" + pc.getName().replace("Lib:", "") + "</h3></div>";
 
         let tokenStates = pc.getActiveStates();
-        if (tokenStates.length > 0) {
-            overlayHTML += "<div style='margin-left: 5px; display: flex; align-items: center;'>"
-        }
+        let tokenStateHTML = "<div style='margin-left: 5px; display: grid; align-items: center;'><div style='margin-left: 5px; display: flex; align-items: center;'>";
+        let displayTokenStates = false;
+
+        let heroPointCount = 0;
 
         for (var s in tokenStates) {
             let stateName = tokenStates[s];
+            if (stateName.includes("HeroPoint")) {
+                heroPointCount = Number(stateName.split("_")[1]);
+                continue;
+            } else if (stateName == "Dead" || stateName.includes("ActionsLeft" || stateName == "Reaction")) {
+                continue;
+            }
+            displayTokenStates = true;
             let stateImage = get_state_image(stateName, 20);
-            overlayHTML += "<img height=20px width=20px src='" + stateImage + "' title='" + display_conditions(pc, stateName) + "'/>";
+            tokenStateHTML += "<img height=20px width=20px src='" + stateImage + "' title='" + display_conditions(pc, stateName) + "'/>";
         }
-        if (tokenStates.length > 0) {
-            overlayHTML += "</div>"
+        tokenStateHTML += "</div>";
+        if (displayTokenStates) {
+            overlayHTML += tokenStateHTML;
         }
+        if (heroPointCount > 0) {
+            overlayHTML += "<div style='margin-left: 5px; display: flex; align-items: center;'>";
+            let heroPointImage = get_state_image("HeroPoint_1", 20);
+            for (var i = 0; i < heroPointCount; i++) {
+                overlayHTML += "<img height=20px width=20px src='" + heroPointImage + "'/>";
+            }
+            overlayHTML += "</div>";
+        }
+        overlayHTML += "</div>";
 
         overlayHTML += "</div><div class='player-hp'>";
 

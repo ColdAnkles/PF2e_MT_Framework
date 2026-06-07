@@ -1,14 +1,14 @@
 * {
 	box-sizing: border-box;
-	font-variant:  small-caps;
-  	font-weight: bold;
-  	font-style: normal;
+	font-variant: small-caps;
+	font-weight: bold;
+	font-style: normal;
 }
 
 body {
 	font-size: 16px;
 	padding: 0.5rem;
-	color:white;
+	color: white;
 }
 
 div {
@@ -17,9 +17,9 @@ div {
 }
 
 .player {
-	display:flex;
-	align-items: middle;	
-	color:white;
+	display: flex;
+	align-items: middle;
+	color: white;
 	margin-top: 0.75rem;
 }
 
@@ -33,12 +33,12 @@ div {
 }
 
 .player-hp-bar-back {
-	position:relative;
-	background-color: rgba( 0, 0, 0, 0.5);
+	position: relative;
+	background-color: rgba(0, 0, 0, 0.5);
 	border: 2px solid black
 }
 
 .player-hp-bar {
-	height:1.5rem;
+	height: 1.5rem;
 	background-color: green;
 }

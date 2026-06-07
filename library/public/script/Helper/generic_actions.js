@@ -107,6 +107,7 @@ function add_hero_point(token) {
 
 	if (gained) {
 		chat_display({ "name": "Hero Point", "system": { "description": { "value": token.getName().replace("Lib:", "") + " gains a hero point!" } } });
+		MTScript.evalMacro("[h: ca.pz2e.loadOverlays()]");
 	}
 }
 
@@ -138,6 +139,7 @@ function use_hero_point(token) {
 	}
 	if (used) {
 		chat_display({ "name": "Hero Point", "system": { "description": { "value": token.getName().replace("Lib:", "") + " uses a hero point!<br />New Roll: " + String(roll_dice("1d20")) } } });
+		MTScript.evalMacro("[h: ca.pz2e.loadOverlays()]");
 	}
 }
 
@@ -163,6 +165,7 @@ function remove_hero_point(token) {
 		set_state("HeroPoint_2", false, token);
 		set_state("HeroPoint_1", false, token);
 	}
+	MTScript.evalMacro("[h: ca.pz2e.loadOverlays()]");
 }
 
 MTScript.registerMacro("ca.pz2e.remove_hero_point", remove_hero_point);

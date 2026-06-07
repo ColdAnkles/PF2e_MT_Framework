@@ -216,14 +216,15 @@ function change_hp(tokenID, changeHPData = null) {
 				}
 			}
 		}
-	}
 
-	if (token.getName().includes("Lib")) {
-		update_my_tokens(token);
-	}
+		if (token.getName().includes("Lib")) {
+			update_my_tokens(token);
+		}
 
-	if (token.isPC()){
-		MTScript.evalMacro("[h: ca.pz2e.loadOverlays()]");
+		if (token.isPC()) {
+			MTScript.evalMacro("[h: ca.pz2e.loadOverlays()]");
+		}
+
 	}
 
 }

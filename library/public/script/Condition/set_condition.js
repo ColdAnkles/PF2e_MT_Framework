@@ -215,6 +215,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 
 	if (token.isPC()) {
 		update_my_tokens(token);
+		MTScript.evalMacro("[h: ca.pz2e.loadOverlays()]");
 	}
 
 }
