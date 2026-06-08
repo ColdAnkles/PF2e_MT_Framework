@@ -75,7 +75,24 @@ function parse_pathbuilder_export(data) {
 					lookupItems = lookupItems.concat(search_dict(classLibrary, searchKey, testCaps));
 				}
 				if (lookupItems.length > 0) {
-					return lookupItems[0];
+					let returnData = [];
+					let foundItems = [];
+					for (var i in lookupItems){
+						let item = lookupItems[i];
+						let id = null;
+						if ("id" in item){
+							id = item.id;
+						}else if("_id" in item){
+							id = item._id;
+						}else{
+							id = item.name;
+						}
+						if (!(foundItems.includes(id))){
+							returnData.push(lookupItems[i]);
+							foundItems.push(id);
+						}
+					}
+					return returnData;
 				}
 			}
 			return null;
@@ -135,7 +152,7 @@ function parse_pathbuilder_export(data) {
 	let classData = null;
 
 	try {
-		classData = find_object_data(data.class, ["class"]);
+		classData = find_object_data(data.class, ["class"])[0];
 	} catch (e) {
 		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
@@ -473,15 +490,18 @@ function parse_pathbuilder_export(data) {
 		for (var r in removeRegex) {
 			tempName = tempName.replace(removeRegex[r], "");
 		}
-		let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
-		if (tempData != null && "error" in tempData) {
-			unfoundData.push(data.feats[f][0] + " (Feats)");
-		} else if (tempData != null) {
-			features_to_parse.push(tempData);
-			featSubChoices.push({ "name": tempName, "value": subChoice });
-		} else {
-			if (data.feats[f][0] != null && !data.specials.includes(data.feats[f][0])) {
-				unfoundData.push(data.feats[f][0] + " (Feat)");
+		let tempDataList = find_object_data(tempName, ["feat", "action", "heritage"]);
+		for (var t in tempDataList) {
+			let tempData = tempDataList[t];
+			if (tempData != null && "error" in tempData) {
+				unfoundData.push(data.feats[f][0] + " (Feats)");
+			} else if (tempData != null) {
+				features_to_parse.push(tempData);
+				featSubChoices.push({ "name": tempName, "value": subChoice });
+			} else {
+				if (data.feats[f][0] != null && !data.specials.includes(data.feats[f][0])) {
+					unfoundData.push(data.feats[f][0] + " (Feat)");
+				}
 			}
 		}
 	}
@@ -573,15 +593,18 @@ function parse_pathbuilder_export(data) {
 				features_to_parse.push({ "name": tempName, "system": {} });
 				continue; //Vision Not Handled as Feature
 			}
-			let tempData = find_object_data(tempName, ["feat", "action", "heritage"]);
-			if (tempData != null && "error" in tempData) {
-				unfoundSpecials.push(tempName + " (Special)");
-			} else if (tempData != null && !foundSpecials.includes(tempName)) {
-				features_to_parse.push(tempData);
-				featSubChoices.push({ "name": tempName, "value": null });
-				foundSpecials.push(tempName);
-			} else if (tempData == null && tempName != null && tempName != data.heritage && !tempName.includes("-gate")) {
-				unfoundSpecials.push(tempName + " (Special)");
+			let tempDataList = find_object_data(tempName, ["feat", "action", "heritage"]);
+			for (var t in tempDataList) {
+				let tempData = tempDataList[t];
+				if (tempData != null && "error" in tempData) {
+					unfoundSpecials.push(tempName + " (Special)");
+				} else if (tempData != null && !foundSpecials.includes(tempName)) {
+					features_to_parse.push(tempData);
+					featSubChoices.push({ "name": tempName, "value": null });
+					foundSpecials.push(tempName);
+				} else if (tempData == null && tempName != null && tempName != data.heritage && !tempName.includes("-gate")) {
+					unfoundSpecials.push(tempName + " (Special)");
+				}
 			}
 			data.specials[s] = tempName;
 		}
@@ -661,6 +684,11 @@ function parse_pathbuilder_export(data) {
 	for (var a in data.armor) {
 		let thisArmor = data.armor[a];
 		let itemData = find_object_data(thisArmor.name, "item");
+		if (itemData == null || itemData.length == 0) {
+			continue;
+		} else {
+			itemData = itemData[0]
+		}
 		if ("fileURL" in itemData) {
 			itemData = rest_call(itemData.fileURL);
 		} else if (itemData == null && thisArmor.name != null) {
@@ -704,10 +732,19 @@ function parse_pathbuilder_export(data) {
 	message_window("Importing " + data.name, "Importing Weapons");
 	let bashAttack = null;
 	let fistAttack = null;
+	let thisWeapon = null;
+	let tempData = null;
 	try {
 		for (var w in data.weapons) {
-			let thisWeapon = data.weapons[w];
-			let tempData = find_object_data(thisWeapon.name, "item");
+			thisWeapon = data.weapons[w];
+			tempData = find_object_data(thisWeapon.name, "item");
+			if (tempData == null) {
+				//pass
+			} else if (tempData != null && tempData.length == 0) {
+				tempData = null;
+			} else {
+				tempData = tempData[0]
+			}
 			//MapTool.chat.broadcast(JSON.stringify(tempData))
 			if (tempData != null) {
 				let itemData = tempData;
@@ -775,6 +812,8 @@ function parse_pathbuilder_export(data) {
 		MapTool.chat.broadcast("weapons: " + JSON.stringify(data.weapons));
 		MapTool.chat.broadcast("inventory: " + JSON.stringify(characterData.inventory));
 		MapTool.chat.broadcast("attacks: " + JSON.stringify(characterData.basicAttacks));
+		MapTool.chat.broadcast("thisWeapon: " + JSON.stringify(thisWeapon));
+		MapTool.chat.broadcast("tempData: " + JSON.stringify(tempData));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		throw new Error("PZ2E: parse_pathbuilder_export - weapons");
 	}
@@ -822,16 +861,37 @@ function parse_pathbuilder_export(data) {
 	message_window("Importing " + data.name, "Importing Gear");
 	for (var e in data.equipment) {
 		let eqName = data.equipment[e][0];
-		let tempData = find_object_data(eqName, "item");
+		tempData = find_object_data(eqName, "item");
+		if (tempData == null) {
+			//pass
+		} else if (tempData != null && tempData.length == 0) {
+			tempData = null;
+		} else {
+			tempData = tempData[0]
+		}
 		if (tempData == null) {
 			eqName = eqName.match(/([^\(\)]*) \(.*\)/);
 			if (eqName != null) {
 				if (eqName.length > 1) {
 					eqName = eqName[1];
 					tempData = find_object_data(eqName, "item");
+					if (tempData == null) {
+						//pass
+					} else if (tempData != null && tempData.length == 0) {
+						tempData = null;
+					} else {
+						tempData = tempData[0]
+					}
 				} else {
 					eqName = eqName[0];
 					tempData = find_object_data(eqName, "item");
+					if (tempData == null) {
+						//pass
+					} else if (tempData != null && tempData.length == 0) {
+						tempData = null;
+					} else {
+						tempData = tempData[0]
+					}
 				}
 			}
 		}
@@ -895,13 +955,19 @@ function parse_pathbuilder_export(data) {
 
 	//Familiars
 	message_window("Importing " + data.name, "Importing Familiars");
-	let tempData = null;
 	try {
 		for (var f in characterData.familiars) {
 			characterData.familiars[f].familiarAbilities = [];
 			for (var a in characterData.familiars[f].abilities) {
 				let ability = characterData.familiars[f].abilities[a];
 				tempData = find_object_data(ability);
+				if (tempData == null) {
+					//pass
+				} else if (tempData != null && tempData.length == 0) {
+					tempData = null;
+				} else {
+					tempData = tempData[0]
+				}
 				if (tempData != null) {
 					characterData.familiars[f].familiarAbilities.push(tempData);
 				} else if (ability != "Darkvision" && ability != "Low-Light Vison" && ability != "Greater Darkvision") {
