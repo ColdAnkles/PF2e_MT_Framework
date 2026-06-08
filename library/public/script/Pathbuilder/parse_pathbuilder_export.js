@@ -511,6 +511,37 @@ function parse_pathbuilder_export(data) {
 
 	let foundSpecials = [];
 	let unfoundSpecials = [];
+
+	//Kineticist Name Differeces
+	try {
+		if (data.specials.includes("Single Gate") && data.class == "Kineticist") {
+			data.specials.push("Single-gate");
+			data.specials.splice(data.specials.indexOf("Single Gate"), 1);
+		}
+		var s = 0;
+		if (data.class == "Kineticist") {
+			while (s < data.specials.length) {
+				let tempName = data.specials[s];
+				let elementMatch = tempName.match("(.*) Element");
+				if (elementMatch != null && elementMatch.length > 1 && elementMatch[1] != "Channel") {
+					data.specials.push(elementMatch[1] + " Gate");
+					data.specials.splice(data.specials.indexOf(tempName), 1);
+					s = 0;
+				} else {
+					s += 1;
+				}
+			}
+		}
+	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - kineticist fixes");
+		MapTool.chat.broadcast("data.specials: " + JSON.stringify(data.specials));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		throw new Error("PZ2E: Error in parse_pathbuilder_export - kineticist fixes");
+	}
+
 	try {
 		for (var s in data.specials) {
 			let tempName = data.specials[s];
@@ -549,7 +580,7 @@ function parse_pathbuilder_export(data) {
 				features_to_parse.push(tempData);
 				featSubChoices.push({ "name": tempName, "value": null });
 				foundSpecials.push(tempName);
-			} else if (tempData == null && tempName != null && tempName != data.heritage) {
+			} else if (tempData == null && tempName != null && tempName != data.heritage && !tempName.includes("-gate")) {
 				unfoundSpecials.push(tempName + " (Special)");
 			}
 			data.specials[s] = tempName;
@@ -574,7 +605,7 @@ function parse_pathbuilder_export(data) {
 			//MapTool.chat.broadcast(JSON.stringify(featureData))
 			if ("fileURL" in featureData) {
 				featureData = import_and_parse(featureData.name, featureData.type, false);
-				
+
 			}
 			characterData.features[featureData.name] = featureData;
 			//MapTool.chat.broadcast(JSON.stringify(featureData));
@@ -750,7 +781,7 @@ function parse_pathbuilder_export(data) {
 
 	if (eqShield != null) {
 		let bashDie = "d4";
-		if (bashAttack != null){
+		if (bashAttack != null) {
 			bashDie = bashAttack.die;
 		}
 		let shieldBash = {
@@ -864,21 +895,33 @@ function parse_pathbuilder_export(data) {
 
 	//Familiars
 	message_window("Importing " + data.name, "Importing Familiars");
-	for (var f in characterData.familiars) {
-		characterData.familiars[f].familiarAbilities = [];
-		for (var a in characterData.familiars[f].abilities) {
-			let ability = characterData.familiars[f].abilities[a];
-			let tempData = find_object_data(ability);
-			if (tempData != null) {
-				characterData.familiars[f].familiarAbilities.push(tempData);
-			} else if (ability != "Darkvision" && ability != "Low-Light Vison" && ability != "Greater Darkvision") {
-				unfoundData.push(ability + " (Familiar)")
-			} else {
-				if (ability != null) {
-					unfoundData.push(ability + " (Familiar)");
+	let tempData = null;
+	try {
+		for (var f in characterData.familiars) {
+			characterData.familiars[f].familiarAbilities = [];
+			for (var a in characterData.familiars[f].abilities) {
+				let ability = characterData.familiars[f].abilities[a];
+				tempData = find_object_data(ability);
+				if (tempData != null) {
+					characterData.familiars[f].familiarAbilities.push(tempData);
+				} else if (ability != "Darkvision" && ability != "Low-Light Vison" && ability != "Greater Darkvision") {
+					unfoundData.push(ability + " (Familiar)")
+				} else {
+					if (ability != null) {
+						unfoundData.push(ability + " (Familiar)");
+					}
 				}
 			}
 		}
+	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
+		MapTool.chat.broadcast("Error in parse_pathbuilder_export - familiar importing");
+		MapTool.chat.broadcast("tempData: " + JSON.stringify(tempData));
+		MapTool.chat.broadcast("characterData.familiars: " + JSON.stringify(characterData.familiars));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		throw new Error("PZ2E: parse_pathbuilder_export - familiar importing");
 	}
 
 	for (var f in characterData.features) {
