@@ -64,55 +64,103 @@ function setup_familiar(baseData) {
     };
 
     let bestSpellAbility = 0;
-    for (var a in PCData.spellRules) {
-        let castingData = PCData.spellRules[a];
-        let spellAbility = PCData.abilities[castingData.castingAbility];
-        if (spellAbility > bestSpellAbility) {
-            bestSpellAbility = spellAbility;
-        }
-    }
-
-    for (var s in skills) {
-        if (s != "Perception" && s != "Acrobatics" && s != "Stealth") {
-            newFamiliarData.proficiencies.push({ "name": s, "bonus": PCData.level, "string": (s + " +" + String(PCData.level)) });
-        } else {
-            let skillBonus = Number(PCData.level + Math.max(3, bestSpellAbility));
-            newFamiliarData.proficiencies.push({ "name": s, "bonus": skillBonus, "string": (s + " +" + String(skillBonus)) });
-            if (s == "Perception") {
-                newFamiliarData.perception = skillBonus;
+    try {
+        for (var a in PCData.spellRules) {
+            let castingData = PCData.spellRules[a];
+            let spellAbility = PCData.abilities[castingData.castingAbility];
+            if (spellAbility > bestSpellAbility) {
+                bestSpellAbility = spellAbility;
             }
         }
+    } catch (e) {
+        if (String(e).startsWith("Error: PZ2E")) {
+            throw e;
+        }
+        MapTool.chat.broadcast("Error in setup_familiar - spellcasting");
+        MapTool.chat.broadcast("PCData.spellRules: " + JSON.stringify(PCData.spellRules));
+        MapTool.chat.broadcast("bestSpellAbility: " + String(bestSpellAbility));
+        MapTool.chat.broadcast("" + e + "\n" + e.stack);
+        throw new Error("PZ2E: setup_familiar - spellcasting");
     }
 
-    MTScript.evalMacro("[h: input(\"speedData|Normal,Aquatic|Movement Type|List\")]");
-    let familiarSpeed = String(MTScript.getVariable("speedData"));
-    if (familiarSpeed == "0" || familiarSpeed == 0) {
-        newFamiliarData.speeds.base = 25;
-    } else {
-        newFamiliarData.speeds.other.push({ "type": "swim", "value": 25 });
-    }
-
-    for (var f in familiarDataRaw.familiarAbilities) {
-        let featureData = familiarDataRaw.familiarAbilities[f];
-        if (featureData.name != "Climber" && featureData.name != "Tough" && featureData.name != "Scent" && featureData.name != "Resistance") {
-            if ("fileURL" in featureData) {
-                parse_item(featureData.baseName, rest_call(featureData.fileURL), newFamiliarData);
+    try {
+        for (var s in skills) {
+            if (s != "Perception" && s != "Acrobatics" && s != "Stealth") {
+                newFamiliarData.proficiencies.push({ "name": s, "bonus": PCData.level, "string": (s + " +" + String(PCData.level)) });
             } else {
-                if (featureData.type == "action") {
-                    newFamiliarData.offensiveActions.push(featureData);
+                let skillBonus = Number(PCData.level + Math.max(3, bestSpellAbility));
+                newFamiliarData.proficiencies.push({ "name": s, "bonus": skillBonus, "string": (s + " +" + String(skillBonus)) });
+                if (s == "Perception") {
+                    newFamiliarData.perception = skillBonus;
                 }
             }
-        } else if (featureData.name == "Tough") {
-            newFamiliarData.hp.max += 2 * PCData.level;
-        } else if (featureData.name == "Climber") {
-            newFamiliarData.speeds.other.push({ "type": "climb", "value": 25 });
-        } else if (featureData.name == "Scent") {
-            newFamiliarData.senses.push("scent (imprescise, 30 feet)");
-        } else if (featureData.name == "Resistance") {
-            MTScript.evalMacro("[h: input(\"resistOne|acid,cold,electricity,fire,poison,sonic|First Resistance|List|VALUE=STRING\",\"resistTwo|acid,cold,electricity,fire,poison,sonic|Second Resistance|List|VALUE=STRING\")]");
-            newFamiliarData.resistances.push({ "type": MTScript.getVariable("resistOne"), "value": (PCData.level / 2) });
-            newFamiliarData.resistances.push({ "type": MTScript.getVariable("resistTwo"), "value": (PCData.level / 2) });
         }
+    } catch (e) {
+        if (String(e).startsWith("Error: PZ2E")) {
+            throw e;
+        }
+        MapTool.chat.broadcast("Error in setup_familiar - skills");
+        MapTool.chat.broadcast("newFamiliarData.proficiencies: " + JSON.stringify(newFamiliarData.proficiencies));
+        MapTool.chat.broadcast("" + e + "\n" + e.stack);
+        throw new Error("PZ2E: setup_familiar - skills");
+    }
+
+    try {
+        MTScript.evalMacro("[h: input(\"speedData|Normal,Aquatic|Movement Type|List\")]");
+        let familiarSpeed = String(MTScript.getVariable("speedData"));
+        if (familiarSpeed == "0" || familiarSpeed == 0) {
+            newFamiliarData.speeds.base = 25;
+        } else {
+            newFamiliarData.speeds.other.push({ "type": "swim", "value": 25 });
+        }
+    } catch (e) {
+        if (String(e).startsWith("Error: PZ2E")) {
+            throw e;
+        }
+        MapTool.chat.broadcast("Error in setup_familiar - speeds");
+        MapTool.chat.broadcast("newFamiliarData.speeds: " + JSON.stringify(newFamiliarData.proficiencies));
+        MapTool.chat.broadcast("" + e + "\n" + e.stack);
+        throw new Error("PZ2E: setup_familiar - speeds");
+    }
+
+    let featureData = null;
+    try {
+        for (var f in familiarDataRaw.familiarAbilities) {
+            featureData = familiarDataRaw.familiarAbilities[f];
+            if (!(["Climber", "Tough", "Scent", "Tremorsense", "Resistance"].includes(featureData.name))) {
+                if ("fileURL" in featureData) {
+                    MapTool.chat.broadcast(JSON.stringify(featureData));
+                    featureData = import_and_parse(featureData.name, featureData.type, false);
+                    MapTool.chat.broadcast(JSON.stringify(featureData));
+                    //parse_item(featureData.baseName, rest_call(featureData.fileURL), newFamiliarData);
+                } else {
+                    if (featureData.type == "action") {
+                        newFamiliarData.offensiveActions.push(featureData);
+                    }
+                }
+            } else if (featureData.name == "Tough") {
+                newFamiliarData.hp.max += 2 * PCData.level;
+            } else if (featureData.name == "Climber") {
+                newFamiliarData.speeds.other.push({ "type": "climb", "value": 25 });
+            } else if (featureData.name == "Scent") {
+                newFamiliarData.senses.push("scent (imprescise, 30 feet)");
+            } else if (featureData.name == "Tremorsense") {
+                newFamiliarData.senses.push("tremorsense (imprescise, 30 feet)");
+            } else if (featureData.name == "Resistance") {
+                MTScript.evalMacro("[h: input(\"resistOne|acid,cold,electricity,fire,poison,sonic|First Resistance|List|VALUE=STRING\",\"resistTwo|acid,cold,electricity,fire,poison,sonic|Second Resistance|List|VALUE=STRING\")]");
+                newFamiliarData.resistances.push({ "type": MTScript.getVariable("resistOne"), "value": (PCData.level / 2) });
+                newFamiliarData.resistances.push({ "type": MTScript.getVariable("resistTwo"), "value": (PCData.level / 2) });
+            }
+        }
+    } catch (e) {
+        if (String(e).startsWith("Error: PZ2E")) {
+            throw e;
+        }
+        MapTool.chat.broadcast("Error in setup_familiar - features");
+        MapTool.chat.broadcast("featureData: " + JSON.stringify(featureData));
+        MapTool.chat.broadcast("newFamiliarData: " + JSON.stringify(newFamiliarData));
+        MapTool.chat.broadcast("" + e + "\n" + e.stack);
+        throw new Error("PZ2E: setup_familiar - features");
     }
 
     let ownerID = baseData.ownerID;
