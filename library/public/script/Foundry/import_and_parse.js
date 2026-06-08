@@ -14,7 +14,7 @@ function import_and_parse(key, type, asString = true) {
 				return null;
 			}
 		}
-		if ("fileURL" in data){
+		if ("fileURL" in data) {
 			data = rest_call(data["fileURL"], "");
 		}
 		if (!("id" in data) && "_id" in data) {

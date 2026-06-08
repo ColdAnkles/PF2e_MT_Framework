@@ -77,17 +77,17 @@ function parse_pathbuilder_export(data) {
 				if (lookupItems.length > 0) {
 					let returnData = [];
 					let foundItems = [];
-					for (var i in lookupItems){
+					for (var i in lookupItems) {
 						let item = lookupItems[i];
 						let id = null;
-						if ("id" in item){
+						if ("id" in item) {
 							id = item.id;
-						}else if("_id" in item){
+						} else if ("_id" in item) {
 							id = item._id;
-						}else{
+						} else {
 							id = item.name;
 						}
-						if (!(foundItems.includes(id))){
+						if (!(foundItems.includes(id))) {
 							returnData.push(lookupItems[i]);
 							foundItems.push(id);
 						}

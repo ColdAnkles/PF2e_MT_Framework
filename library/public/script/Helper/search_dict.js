@@ -14,7 +14,7 @@ const search_dict = (dict, key, value, asString = false) => {
     }
 }
 
-function MTScript_search_dict(dict, key, value){
+function MTScript_search_dict(dict, key, value) {
     return search_dict(dict, key, value, true);
 }
 

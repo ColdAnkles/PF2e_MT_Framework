@@ -282,7 +282,7 @@ function add_action_to_token(actionData, tokenID, token) {
 			//actionData.traits = lookupSpell.traits.value.push(lookupSpell.traits.rarity);
 
 			let displayName = actionData.name;
-			if ("displayName" in actionData){
+			if ("displayName" in actionData) {
 				displayName = actionData.displayName;
 			}
 
@@ -297,7 +297,7 @@ function add_action_to_token(actionData, tokenID, token) {
 			} else {
 				spellLabel += " (" + String(actionData.system.castLevel.value) + ")";
 			}
-			
+
 			let props = { "label": spellLabel, "playerEditable": 0, "command": "[r: js.ca.pz2e.cast_spell(\"" + lookupSpell.name + "\"," + actionData.system.castLevel.value + ",\"" + actionData.system.group.value + "\",currentToken())]", "tooltip": tooltipDescription, "sortBy": String(sortNum), "group": actionData.system.group.value };
 
 			//MapTool.chat.broadcast(JSON.stringify(props));

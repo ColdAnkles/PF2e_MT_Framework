@@ -353,10 +353,10 @@ function skill_check(checkToken, altStat = false, checkData = null, extraScopes 
 
 			try {
 				if (tokenArmor != null && extraScopes.includes("initiative")) {
-					if (tokenArmor.system.traits.value != null && tokenArmor.system.traits.value.includes("ponderous")){
-						if (tokenArmor.system.strength > tokenStr){
+					if (tokenArmor.system.traits.value != null && tokenArmor.system.traits.value.includes("ponderous")) {
+						if (tokenArmor.system.strength > tokenStr) {
 							armorPenalty = tokenArmor.system.checkPenalty;
-						}else{
+						} else {
 							armorPenalty = -1;
 						}
 					}

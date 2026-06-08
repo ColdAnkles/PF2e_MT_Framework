@@ -31,7 +31,7 @@ function build_spell_view(spellName) {
 	} else {
 		spellData = property[spellName];
 	}
-	
+
 	let spellBaseName = spellData.baseName;
 	try {
 		if ("fileURL" in spellData) {

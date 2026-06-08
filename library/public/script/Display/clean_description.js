@@ -574,7 +574,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 	}
 
 	let embedMatches = cleanDescription.match(/@Embed\[.*\]/gm);
-	for (var e in embedMatches){
+	for (var e in embedMatches) {
 		cleanDescription = cleanDescription.replaceAll(embedMatches[e], "");
 	}
 
