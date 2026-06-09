@@ -63,6 +63,9 @@ function attack_action(actionData, actingToken) {
 				} else {
 					actionData.system.materials = [];
 				}
+				if ((actionData.system.range == null || actionData.system.range.value == null) && itemData.system.range != null) {
+					actionData.system.range = { "value": String(itemData.system.range) + " feet" };
+				}
 			}
 		}
 	} catch (e) {
@@ -80,7 +83,9 @@ function attack_action(actionData, actingToken) {
 
 	let tokLevel = Number(actingToken.getProperty("level"));
 	let profBon = null;
-	if ((((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) && actingToken.isPC()) {
+	if (actingToken.isPC() && actionData.name == "Elemental Blast") {
+		profBon = (calculate_proficiency("ClassDC", actingToken, actionData)) * 2;
+	} else if ((((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) && actingToken.isPC()) {
 		profBon = (calculate_proficiency(((itemData != null) ? itemData.system.category : actionData.system.category), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
 	} else {
 		profBon = actionData.system.bonus.value - tokLevel;
@@ -264,9 +269,18 @@ function attack_action(actionData, actingToken) {
 
 	let strBon = Number(actingToken.getProperty("str"));
 	let dexBon = Number(actingToken.getProperty("dex"));
+	let conBon = Number(actingToken.getProperty("con"));
 	try {
 		if (actingToken.isPC()) {
-			if (actionData.isMelee || actionData.type == "melee" || (actionData.system.traits.value.includes("thrown") && !actionData.isMelee)) {
+			if (actionData.name == "Elemental Blast") {
+				if (actionData.system.actions.value == 2) {
+					damage_bonus -= damage_bonus_raw.bonuses.status;
+					damage_bonus += Math.max(damage_bonus_raw.bonuses.status, conBon);
+				}
+				if (actionData.isMelee) {
+					damage_bonus += strBon;
+				}
+			} else if (actionData.isMelee || actionData.type == "melee" || (actionData.system.traits.value.includes("thrown") && !actionData.isMelee)) {
 				damage_bonus += strBon;
 			} else if (actionData.system.traits.value.includes("propulsive") && !actionData.isMelee) {
 				if (strBon >= 0) {
@@ -276,7 +290,9 @@ function attack_action(actionData, actingToken) {
 				}
 			}
 			actionData.system.damageRolls[0].damage = String(actionData.system.damageRolls[0].dice) + actionData.system.damageRolls[0].die + ((itemData != null && itemData.system.damageBonus != null && itemData.system.damageBonus > 0) ? "+" + String(itemData.system.damageBonus) : "");
-			if (actionData.system.traits.value.includes("finesse")) {
+			if (actionData.name == "Elemental Blast") {
+				attack_bonus += conBon;
+			} else if (actionData.system.traits.value.includes("finesse")) {
 				attack_bonus += Math.max(strBon, dexBon);
 			} else if (actionData.isMelee || actionData.type == "melee") {
 				attack_bonus += strBon;
@@ -335,9 +351,12 @@ function attack_action(actionData, actingToken) {
 	let attackResult = dTwenty + attackMod;
 	let displayData = { "name": actingToken.getName() + " - " + actionData.name + " " + pos_neg_sign(attackMod), "system": { "actionType": { "value": "action" }, "actions": { "value": 1 }, "description": { "value": "" } } };
 	try {
+		if (actionData.system.range != null && actionData.system.range.value != null && actionData.system.range.value != "") {
+			displayData.system.description.value += "<b>Range</b> " + actionData.system.range.value + "<br />";
+		}
 		displayData.system.appliedEffects = effect_bonus_raw.appliedEffects;
 		displayData.system.traits = actionData.system.traits;
-		displayData.system.description.value = "<i>Attack Roll</i><br /><div style='font-size:10px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span> "
+		displayData.system.description.value += "<i>Attack Roll</i><br /><div style='font-size:10px'><b><span style='color:" + dTwentyColour + "'>" + String(dTwenty) + "</span> "
 		if (attack_bonus != 0) {
 			displayData.system.description.value += pos_neg_sign(attack_bonus, true);
 		}
@@ -369,15 +388,17 @@ function attack_action(actionData, actingToken) {
 			displayData.system.description.value += "<div style='font-size:10px'><b>" + additionalDamageList.join(", ") + "</div>";
 		}
 
-		if (actionData.system.attackEffects.value.length > 1 && typeof (actionData.system.attackEffects.value == "object")) {
-			displayData.system.description.value += "</b><i>Additional Effects</i><br />"
-			displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.join(", ").replaceAll("-", " ")) + "</div>";
-		} else if (actionData.system.attackEffects.value.length == 1 && typeof (actionData.system.attackEffects.value) == "object") {
-			displayData.system.description.value += "</b><i>Additional Effects</i><br />"
-			displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value[0].replaceAll("-", " ")) + "</div>";
-		} else if (actionData.system.attackEffects.value.length > 0 && (typeof (attackData.system.attackEffects.value) == "string")) {
-			displayData.system.description.value += "</b><i>Additional Effects</i><br />"
-			displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.replaceAll("-", " ")) + "</div>";
+		if (actionData.system.attackEffects != null) {
+			if (actionData.system.attackEffects.value.length > 1 && typeof (actionData.system.attackEffects.value == "object")) {
+				displayData.system.description.value += "</b><i>Additional Effects</i><br />"
+				displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.join(", ").replaceAll("-", " ")) + "</div>";
+			} else if (actionData.system.attackEffects.value.length == 1 && typeof (actionData.system.attackEffects.value) == "object") {
+				displayData.system.description.value += "</b><i>Additional Effects</i><br />"
+				displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value[0].replaceAll("-", " ")) + "</div>";
+			} else if (actionData.system.attackEffects.value.length > 0 && (typeof (attackData.system.attackEffects.value) == "string")) {
+				displayData.system.description.value += "</b><i>Additional Effects</i><br />"
+				displayData.system.description.value += "<div style='font-size:10px'><b>" + capitalise(actionData.system.attackEffects.value.replaceAll("-", " ")) + "</div>";
+			}
 		}
 
 		displayData.system.runes = [];
