@@ -87,8 +87,8 @@ function parse_pathbuilder_export(data) {
 						} else {
 							id = item.name;
 						}
-						if (!(foundItems.includes(id))) {
-							returnData.push(lookupItems[i]);
+						if (!(foundItems.includes(id)) && ![null, "", "Pathfinder Monster Core"].includes(item.source)) {
+							returnData.push(item);
 							foundItems.push(id);
 						}
 					}
@@ -628,11 +628,13 @@ function parse_pathbuilder_export(data) {
 			//MapTool.chat.broadcast(JSON.stringify(featureData))
 			if ("fileURL" in featureData) {
 				featureData = import_and_parse(featureData.name, featureData.type, false);
-
 			}
-			characterData.features[featureData.name] = featureData;
+			characterData.features[featureData.id] = featureData;
+			//MapTool.chat.broadcast(featureData.name + " - " + featureData.type);
 			//MapTool.chat.broadcast(JSON.stringify(featureData));
-			//MapTool.chat.broadcast(featureData.name);
+			if (featureData.name == "Elemental Blast") {
+				featureData.system.actions.value = "1 to 2";
+			}
 			if (featureData != null && "rules" in featureData.system && featureData.system.rules != null && featureData.system.rules.length > 0) {
 				//MapTool.chat.broadcast(JSON.stringify(addedFeature.rules));
 				//MapTool.chat.broadcast(JSON.stringify(featSubChoices[f]));
@@ -827,7 +829,7 @@ function parse_pathbuilder_export(data) {
 			"name": "Shield Bash",
 			"system": {
 				"actions": { "value": 1 }, "actionType": { "value": "action" }, "bonus": { "value": unarmedProf }, "damageRolls": { "0": { "die": bashDie, "dice": 1, "damageType": "bludgeoning" } },
-				"description": { "value": "" }, "attackEffects": { "value": [] }, "isMelee": true, "group": "",
+				"description": { "value": "A shield bash is not actually a weapon, but a maneuver in which you thrust or swing your shield to hit your foe with an impromptu attack." }, "attackEffects": { "value": [] }, "isMelee": true,
 				"traits": { "value": [] }, "category": "martial"
 			},
 			"flags": {},
@@ -847,7 +849,7 @@ function parse_pathbuilder_export(data) {
 		"name": "Fist",
 		"system": {
 			"actions": { "value": 1 }, "actionType": { "value": "action" }, "bonus": { "value": unarmedProf }, "damageRolls": { "0": { "die": fistDie, "dice": 1, "damageType": "bludgeoning" } },
-			"description": { "value": "" }, "attackEffects": { "value": [] }, "isMelee": true, "group": "",
+			"description": { "value": "" }, "attackEffects": { "value": [] }, "isMelee": true,
 			"traits": { "value": ["agile", "finesse", "nonlethal", "unarmed"] }, "category": "unarmed"
 		},
 		"flags": {},
