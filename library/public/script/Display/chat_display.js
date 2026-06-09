@@ -48,7 +48,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	}
 	outputText += "</h1></td>";
 
-	if (displayData.name.length > 20 && broadcast) {
+	if (displayData.name.length > 20 && broadcast && "level" in displayData.system) {
 		outputText += "</tr><tr height=20px style='background-color: " + themeData.colours.titleBackground + ";'>";
 	}
 
