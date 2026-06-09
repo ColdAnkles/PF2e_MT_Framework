@@ -3,42 +3,53 @@
 function action_icon_label(actionType, actionCount) {
 	//MapTool.chat.broadcast(actionType);
 	//MapTool.chat.broadcast(String(actionCount));
-	if (actionCount == null) {
-		actionCount = 0;
+	try {
+		if (actionCount == null) {
+			actionCount = 0;
+		}
+		if (actionType == "action" && !(isNaN(actionCount))) {
+			if (actionCount == 1) {
+				return "&#9670;";
+			} else if (actionCount == 2) {
+				return "&#9670;&#9670;";
+			} else if (actionCount == 3) {
+				return "&#9670;&#9670;&#9670;";
+			}
+		} else if (actionType == "reaction") {
+			return "&#10227;";
+		} else if (actionType == "freeaction" || actionType == "free") {
+			return "&#9671;";
+		} else if (actionType == "passive") {
+			return "";
+		} else if (actionType == "long") {
+			return "(" + actionCount + ")";
+		} else if (actionCount.includes("to")) {
+			let first = actionCount.split(" to ")[0];
+			let second = actionCount.split(" to ")[1];
+			let char = "&#9670;";
+			let returnString = "";
+			for (var i = 0; i < first; i++) {
+				returnString = returnString + char;
+			}
+			returnString = returnString + " to ";
+			for (var j = 0; j < second; j++) {
+				returnString = returnString + char;
+			}
+			return returnString;
+		} else {
+			MapTool.chat.broadcast(actionType);
+		}
+		return "Error";
+	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
+		MapTool.chat.broadcast("Error in add_action_to_token during action_icon_label");
+		MapTool.chat.broadcast("actionType: " + actionType);
+		MapTool.chat.broadcast("actionCount: " + String(actionCount));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		throw new Error("PZ2E: Error in add_action_to_token during action_icon_label");
 	}
-	if (actionType == "action" && !(isNaN(actionCount))) {
-		if (actionCount == 1) {
-			return "&#9670;";
-		} else if (actionCount == 2) {
-			return "&#9670;&#9670;";
-		} else if (actionCount == 3) {
-			return "&#9670;&#9670;&#9670;";
-		}
-	} else if (actionType == "reaction") {
-		return "&#10227;";
-	} else if (actionType == "freeaction" || actionType == "free") {
-		return "&#9671;";
-	} else if (actionType == "passive") {
-		return "";
-	} else if (actionType == "long") {
-		return "(" + actionCount + ")";
-	} else if (actionCount.includes("to")) {
-		let first = actionCount.split(" to ")[0];
-		let second = actionCount.split(" to ")[1];
-		let char = "&#9670;";
-		let returnString = "";
-		for (var i = 0; i < first; i++) {
-			returnString = returnString + char;
-		}
-		returnString = returnString + " to ";
-		for (var j = 0; j < second; j++) {
-			returnString = returnString + char;
-		}
-		return returnString;
-	} else {
-		MapTool.chat.broadcast(actionType);
-	}
-	return "Error";
 }
 
 function add_action_to_token(actionData, tokenID, token) {
@@ -64,11 +75,14 @@ function add_action_to_token(actionData, tokenID, token) {
 			}
 		}
 	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
 		MapTool.chat.broadcast("Error in add_action_to_token during setup");
 		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 		MapTool.chat.broadcast("token: " + String(token));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
-		return;
+		throw new Error("PZ2E: Error in add_action_to_token during setup");
 	}
 
 	if (!("system" in actionData)) {
@@ -110,14 +124,26 @@ function add_action_to_token(actionData, tokenID, token) {
 			let props = { "label": action_icon_label(lookupAction.system.actionType.value, lookupAction.system.actions.value) + " " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pz2e.simple_action(\"" + actionKey + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
 			if ("group" in actionData) {
 				props.group = actionData.group;
+			} else if (lookupAction.system.actionType.value == "action") {
+				props.group = "0.1 Actions";
+			} else if (lookupAction.system.actionType.value == "reaction") {
+				props.group = "0.2 Reactions";
+			} else if (lookupAction.system.actionType.value == "free") {
+				props.group = "0.3 Free Actions";
+			}
+			if (props.group == null || props.group == "") {
+				props.group = "0.4 Other";
 			}
 			createMacro(props, tokenID);
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in add_action_to_token during type=basic");
 			MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 			MapTool.chat.broadcast("token: " + String(token));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in add_action_to_token during type=basic");
 		}
 
 	} else if (actionData.type == "personal" || actionData.type == "feat" || actionData.type == "action" || actionData.type == "melee" || actionData.type == "ranged") {
@@ -135,18 +161,21 @@ function add_action_to_token(actionData, tokenID, token) {
 				actionData.system.actionType = { "value": "action" };
 				actionData.system.actions = { "value": 1 };
 			} else if (actionData.actionType == "passive") {
-				actionData.system.actionType = { "value": "free" };
-				actionData.system.actions = { "value": 1 };
+				actionData.system.actionType = { "value": "passive" };
+				actionData.system.actions = { "value": 0 };
 			}
 			let actionLabel = action_icon_label(actionData.system.actionType.value, actionData.system.actions.value) + " " + actionData.name;
 			if ("isMelee" in actionData.system || (actionData.type == "melee" || actionData.type == "ranged")) {
+				if (actionData.system.traits.value != null && !actionData.system.traits.value.includes("attack")) {
+					actionData.system.traits.value.push("attack");
+				}
 				if (actionData.system.isMelee || actionData.type == "melee") {
 					actionLabel = actionLabel + " " + icon_img("melee");
 				} else {
 					actionLabel = actionLabel + " " + icon_img("ranged");
 				}
 				if ("needsReload" in actionData && actionData.needsReload && "flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
-					let reloadAction = { "label": "Reload " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pz2e.reload_weapon(currentToken(),\"" + actionData.flags.pf2e.linkedWeapon + "\")]", "tooltip": "Reload " + actionData.name + ".\nManually Use Actions Depending on Reload Specifics.", "sortBy": actionData.name };
+					let reloadAction = { "label": "Reload " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pz2e.reload_weapon(currentToken(),\"" + actionData.flags.pf2e.linkedWeapon + "\")]", "tooltip": "Reload " + actionData.name + ".\nManually Use Actions Depending on Reload Specifics.", "sortBy": actionData.name, "group": "0. Actions" };
 					createMacro(reloadAction, tokenID);
 				}
 			}
@@ -157,16 +186,28 @@ function add_action_to_token(actionData, tokenID, token) {
 			} else {
 				props = { "label": actionLabel, "playerEditable": 0, "command": "[r: js.ca.pz2e.personal_action(\"" + actionData.name + "\",currentToken())]", "tooltip": actionDesc, "sortBy": actionData.name };
 			}
-			if ("group" in actionData.system) {
+			if ("group" in actionData.system && actionData.system.group != "") {
 				props.group = actionData.system.group;
+			} else if (actionData.system.actionType.value == "action") {
+				props.group = "0.1 Actions";
+			} else if (actionData.system.actionType.value == "reaction") {
+				props.group = "0.2 Reactions";
+			} else if (actionData.system.actionType.value == "free") {
+				props.group = "0.3 Free Actions";
+			}
+			if (props.group == null || props.group == "") {
+				props.group = "0.4 Other";
 			}
 			createMacro(props, tokenID);
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in add_action_to_token during type=personal-feat-action-melee-ranged");
 			MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 			MapTool.chat.broadcast("token: " + String(token));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in add_action_to_token during type=personal-feat-action-melee-ranged");
 		}
 
 	} else if (actionData.type == "spell") {
@@ -303,11 +344,14 @@ function add_action_to_token(actionData, tokenID, token) {
 			//MapTool.chat.broadcast(JSON.stringify(props));
 			createMacro(props, tokenID);
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in add_action_to_token during type=spell");
 			MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
 			MapTool.chat.broadcast("tokenID: " + String(tokenID));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in add_action_to_token during type=spell");
 		}
 	}
 }
