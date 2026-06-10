@@ -64,6 +64,39 @@ function find_handwraps(token, asString = false) {
 
 MTScript.registerMacro("ca.pz2e.find_handwraps", find_handwraps);
 
+function find_attenuator(token, asString = false) {
+	try {
+		let bestAttenuator = null;
+		let bestAttenuatorLevel = -1;
+		if (typeof (token) == "string") {
+			token = MapTool.tokens.getTokenByID(token);
+		}
+		let inventory = JSON.parse(token.getProperty("inventory"));
+		for (var i in inventory) {
+			let itemData = inventory[i];
+			if (itemData.name.includes("Gate Attenuator") && itemData.system.level.value > bestAttenuatorLevel) {
+				bestAttenuator = itemData;
+				bestAttenuatorLevel = itemData.system.level.value;
+			}
+		}
+		if (asString) {
+			return JSON.stringify(bestAttenuator);
+		} else {
+			return bestAttenuator;
+		}
+	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
+		MapTool.chat.broadcast("Error in find_attenuator");
+		MapTool.chat.broadcast("token: " + String(token));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		throw new Error("PZ2E: Error in find_attenuator");
+	}
+}
+
+MTScript.registerMacro("ca.pz2e.find_attenuator", find_attenuator);
+
 function get_equipped_items(token) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);

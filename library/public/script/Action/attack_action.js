@@ -52,6 +52,8 @@ function attack_action(actionData, actingToken) {
 					itemData.system.category = "unarmed";
 					itemData.system.group = "brawling";
 				}
+			} else if (itemData == null && actionData.name == "Elemental Blast") {
+				itemData = find_attenuator(actingToken);
 			}
 			if (itemData != null) {
 				if (itemData.system.material.type != null) {
@@ -289,6 +291,14 @@ function attack_action(actionData, actingToken) {
 			actionData.system.damageRolls[0].damage = String(actionData.system.damageRolls[0].dice) + actionData.system.damageRolls[0].die + ((itemData != null && itemData.system.damageBonus != null && itemData.system.damageBonus > 0) ? "+" + String(itemData.system.damageBonus) : "");
 			if (actionData.name == "Elemental Blast") {
 				attack_bonus += conBon;
+				if (itemData != null && itemData.name.includes("Gate Attenuator")) {
+					attack_bonus += 1;
+					if (itemData.name.includes("(Greater)")) {
+						attack_bonus += 1;
+					} else if (itemData.name.includes("(Major)")) {
+						attack_bonus += 2;
+					}
+				}
 			} else if (actionData.system.traits.value.includes("finesse")) {
 				attack_bonus += Math.max(strBon, dexBon);
 			} else if (actionData.isMelee || actionData.type == "melee") {
