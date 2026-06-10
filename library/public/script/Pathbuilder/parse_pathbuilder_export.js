@@ -757,8 +757,10 @@ function parse_pathbuilder_export(data) {
 				let trueID = tempData.id + String(Object.keys(characterData.inventory).length);
 				characterData.inventory[trueID] = itemData;
 				itemData.system.quantity = thisWeapon.qty;
+				itemData.display = thisWeapon.display;
 				let newAttackData = {
 					"name": itemData.name,
+					"display": itemData.display,
 					"system": {
 						"actionCost": 1, "actionType": "action", "bonus": { "value": thisWeapon.attack }, "damageRolls": { "0": itemData.system.damage },
 						"description": { "value": "" }, "attackEffects": { "custom": "", "value": [] },

@@ -156,6 +156,9 @@ function add_action_to_token(actionData, tokenID, token) {
 			actionData.system.description = itemData.system.description;
 			actionData.system.runes = itemData.system.runes.property.map((a) => { return capitalise(a) });
 		}
+		if ("display" in actionData && actionData.display != null && actionData.display != "") {
+			overrideName = actionData.display;
+		}
 		try {
 			if ("isMelee" in actionData.system || (actionData.type == "melee" || actionData.type == "ranged")) {
 				actionData.system.actionType = { "value": "action" };
@@ -175,7 +178,7 @@ function add_action_to_token(actionData, tokenID, token) {
 					actionLabel = actionLabel + " " + icon_img("ranged");
 				}
 				if ("needsReload" in actionData && actionData.needsReload && "flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
-					let reloadAction = { "label": "Reload " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pz2e.reload_weapon(currentToken(),\"" + actionData.flags.pf2e.linkedWeapon + "\")]", "tooltip": "Reload " + actionData.name + ".\nManually Use Actions Depending on Reload Specifics.", "sortBy": actionData.name, "group": "0. Actions" };
+					let reloadAction = { "label": "Reload " + actionData.name, "playerEditable": 0, "command": "[r: js.ca.pz2e.reload_weapon(currentToken(),\"" + actionData.flags.pf2e.linkedWeapon + "\")]", "tooltip": "Reload " + actionData.name + ".\nManually Use Actions Depending on Reload Specifics.", "sortBy": actionData.name, "group": "0.1 Actions" };
 					createMacro(reloadAction, tokenID);
 				}
 			}
