@@ -901,40 +901,41 @@ function parse_pathbuilder_export(data) {
 		}
 		if (tempData != null) {
 			if ("fileURL" in tempData) {
-				let itemData = rest_call(tempData.fileURL)
-				//parse_feature(tempData.baseName, rest_call(tempData.fileURL), characterData);
-				let trueID = tempData.id + String(Object.keys(characterData.inventory).length);
-				characterData.inventory[trueID] = itemData;
-				itemData.system.quantity = data.equipment[e][1];
-				itemData.id = trueID;
-				itemData._id = trueID;
-				itemData.system.equipped = true;
-				if (eqName == "Handwraps of Mighty Blows") {
-					let handwrapsLevels = { 0: { 0: 0 }, 1: { 0: 2, 1: 4 }, 2: { 1: 10, 2: 12 }, 3: { 2: 16, 3: 19 } };
-					let handwrapsBonus = data.equipment[e][0].match(/\+([0-9])/);
-					let handwrapsStrike = data.equipment[e][0].match(/((Minor|Major|Greater) )?(Striking)/);
-					if (handwrapsBonus != null) {
-						itemData.system.runes.potency = handwrapsBonus[1];
-						handwrapsBonus = handwrapsBonus[1];
-					} else {
-						handwrapsBonus = 0;
-					}
-					if (handwrapsStrike != null) {
-						if (handwrapsStrike[2] == null) {
-							itemData.system.runes.striking = 1;
-							handwrapsStrike = 1;
-						} else if (handwrapsStrike[2] == "Greater") {
-							itemData.system.runes.striking = 2;
-							handwrapsStrike = 2;
-						} else if (handwrapsStrike[2] == "Major") {
-							itemData.system.runes.striking = 3;
-							handwrapsStrike = 3;
-						}
-					} else {
-						handwrapsStrike = 0;
-					}
-					itemData.system.level.value = handwrapsLevels[handwrapsBonus][handwrapsStrike];
+				tempData = rest_call(tempData.fileURL);
+			}
+			let itemData = tempData;
+			//parse_feature(tempData.baseName, rest_call(tempData.fileURL), characterData);
+			let trueID = tempData.id + String(Object.keys(characterData.inventory).length);
+			characterData.inventory[trueID] = itemData;
+			itemData.system.quantity = data.equipment[e][1];
+			itemData.id = trueID;
+			itemData._id = trueID;
+			itemData.system.equipped = true;
+			if (eqName == "Handwraps of Mighty Blows") {
+				let handwrapsLevels = { 0: { 0: 0 }, 1: { 0: 2, 1: 4 }, 2: { 1: 10, 2: 12 }, 3: { 2: 16, 3: 19 } };
+				let handwrapsBonus = data.equipment[e][0].match(/\+([0-9])/);
+				let handwrapsStrike = data.equipment[e][0].match(/((Minor|Major|Greater) )?(Striking)/);
+				if (handwrapsBonus != null) {
+					itemData.system.runes.potency = handwrapsBonus[1];
+					handwrapsBonus = handwrapsBonus[1];
+				} else {
+					handwrapsBonus = 0;
 				}
+				if (handwrapsStrike != null) {
+					if (handwrapsStrike[2] == null) {
+						itemData.system.runes.striking = 1;
+						handwrapsStrike = 1;
+					} else if (handwrapsStrike[2] == "Greater") {
+						itemData.system.runes.striking = 2;
+						handwrapsStrike = 2;
+					} else if (handwrapsStrike[2] == "Major") {
+						itemData.system.runes.striking = 3;
+						handwrapsStrike = 3;
+					}
+				} else {
+					handwrapsStrike = 0;
+				}
+				itemData.system.level.value = handwrapsLevels[handwrapsBonus][handwrapsStrike];
 			}
 		} else {
 			if (eqName != null) {

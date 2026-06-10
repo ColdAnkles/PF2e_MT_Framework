@@ -239,9 +239,6 @@ function attack_action(actionData, actingToken) {
 				let twoHandDie = traitName.split("-")[2];
 				actionData.system.damageRolls["twoHanded"] = { "damage": String(itemData.system.damage.dice) + twoHandDie + ((Number(actingToken.getProperty("str")) != 0) ? "+" + Number(actingToken.getProperty("str")) : ""), "damageType": itemData.system.damage.damageType + " (two-handed)" };
 
-			} else if (traitName == "propulsive" && actingToken.isPC()) {
-				MapTool.chat.broadcast("Propulsive Trait not Implemented");
-
 			} else if (traitName == "sweep" && effect_bonus_raw.bonuses.circumstance == 0 && currentAttackCount > 0) {
 				additionalAttackBonuses.push("+1 (Sweep (c))");
 

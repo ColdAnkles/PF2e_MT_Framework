@@ -41,7 +41,7 @@ function get_equipped_armor(token) {
 
 MTScript.registerMacro("ca.pz2e.get_equipped_armor", get_equipped_armor);
 
-function find_handwraps(token) {
+function find_handwraps(token, asString = false) {
 	let bestHandwraps = null;
 	let bestHandwrapsLevel = -1;
 	if (typeof (token) == "string") {
@@ -52,9 +52,14 @@ function find_handwraps(token) {
 		let itemData = inventory[i];
 		if (itemData.name == "Handwraps of Mighty Blows" && itemData.system.level.value > bestHandwrapsLevel) {
 			bestHandwraps = itemData;
+			bestHandwrapsLevel = itemData.system.level.value;
 		}
 	}
-	return bestHandwraps;
+	if (asString) {
+		return JSON.stringify(bestHandwraps);
+	} else {
+		return bestHandwraps;
+	}
 }
 
 MTScript.registerMacro("ca.pz2e.find_handwraps", find_handwraps);

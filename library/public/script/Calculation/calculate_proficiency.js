@@ -22,13 +22,16 @@ function calculate_proficiency(proficiencyName, actor, item) {
             foundProf = 0;
         }
     } catch (e) {
+        if (String(e).startsWith("Error: PZ2E")) {
+            throw e;
+        }
         MapTool.chat.broadcast("Error in calculate_proficiency");
         MapTool.chat.broadcast("proficiencyName: " + JSON.stringify(proficiencyName));
         MapTool.chat.broadcast("actor: " + String(actor));
         MapTool.chat.broadcast("item: " + JSON.stringify(item));
         MapTool.chat.broadcast("profData: " + JSON.stringify(profData));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
-        return;
+        throw new Error("PZ2E: Error in calculate_proficiency");
     }
     //MapTool.chat.broadcast("ProfBonus")
     //MapTool.chat.broadcast(String(foundProf));

@@ -141,6 +141,9 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                         groupSlug = groupSlug[0];
                     }
                     //MapTool.chat.broadcast(groupSlug)
+                    if (!("group" in item.system)) {
+                        item.system.group = "";
+                    }
                     predicate_resolution = predicate_resolution && (foundry_calc_value(groupSlug, actor, item).toUpperCase() == item.system.group.toUpperCase());
                 } else if (slug == "category") {
                     let categorySlug = pText.split(":")[2];
