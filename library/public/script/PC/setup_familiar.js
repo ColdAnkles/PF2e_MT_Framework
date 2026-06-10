@@ -127,7 +127,7 @@ function setup_familiar(baseData) {
     try {
         for (var f in familiarDataRaw.familiarAbilities) {
             featureData = familiarDataRaw.familiarAbilities[f];
-            if (!(["Climber", "Tough", "Scent", "Tremorsense", "Resistance"].includes(featureData.name))) {
+            if (!(["Climber", "Tough", "Scent", "Tremorsense", "Resistance", "Wavesense"].includes(featureData.name))) {
                 if ("fileURL" in featureData) {
                     MapTool.chat.broadcast(JSON.stringify(featureData));
                     featureData = import_and_parse(featureData.name, featureData.type, false);
@@ -146,6 +146,8 @@ function setup_familiar(baseData) {
                 newFamiliarData.senses.push("scent (imprescise, 30 feet)");
             } else if (featureData.name == "Tremorsense") {
                 newFamiliarData.senses.push("tremorsense (imprescise, 30 feet)");
+            } else if (featureData.name == "Wavesense") {
+                newFamiliarData.senses.push("wavesense (imprescise, 30 feet)");
             } else if (featureData.name == "Resistance") {
                 MTScript.evalMacro("[h: input(\"resistOne|acid,cold,electricity,fire,poison,sonic|First Resistance|List|VALUE=STRING\",\"resistTwo|acid,cold,electricity,fire,poison,sonic|Second Resistance|List|VALUE=STRING\")]");
                 newFamiliarData.resistances.push({ "type": MTScript.getVariable("resistOne"), "value": (PCData.level / 2) });
