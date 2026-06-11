@@ -34,6 +34,8 @@ function parse_item(itemData, parentObject) {
                 }
             }
         }
+        itemData.itemType = itemData.type;
+        itemData.type = "item";
         parentObject.inventory[itemData._id] = itemData;
     } else if (itemData.type == "melee" || itemData.type == "ranged") {
         if (!("actionType" in itemData.system)) {

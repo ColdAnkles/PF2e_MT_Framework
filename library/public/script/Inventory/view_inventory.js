@@ -46,11 +46,14 @@ function view_inventory(tokenID, inventoryAction = null) {
             }
         }
     } catch (e) {
+        if (String(e).startsWith("Error: PZ2E")) {
+            throw e;
+        }
         MapTool.chat.broadcast("Error in inventoryAction Step");
         MapTool.chat.broadcast("action: " + action);
         MapTool.chat.broadcast("actionItem: " + JSON.stringify(actionItem));
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
-        return;
+        throw new Error("PZ2E: Error in inventoryAction Step");
     }
 
     let tokenName = token.getName().replaceAll("Lib:", "");
@@ -66,7 +69,11 @@ function view_inventory(tokenID, inventoryAction = null) {
         let thisItem = inventory[itemID];
         let viewButtonJSON = { "tokenID": tokenID };
         viewButtonJSON["view_" + thisItem._id] = "Submit";
-        inventoryHTML += "<tr><td>" + create_macroLink(thisItem.name, "Inventory_Form_To_JS@Lib:ca.pz2e", viewButtonJSON) + "</td>";
+        if ("display" in thisItem) {
+            inventoryHTML += "<tr><td>" + create_macroLink(thisItem.display, "Inventory_Form_To_JS@Lib:ca.pz2e", viewButtonJSON) + "</td>";
+        } else {
+            inventoryHTML += "<tr><td>" + create_macroLink(thisItem.name, "Inventory_Form_To_JS@Lib:ca.pz2e", viewButtonJSON) + "</td>";
+        }
         inventoryHTML += "<td>" + String(thisItem.system.quantity) + "</td><td><input type='submit' name='equip_" + thisItem._id + "' value='" + ((thisItem.system.equipped) ? "Unequip" : "Equip") + "'></td>";
         inventoryHTML += "<td><input type='submit' name='share_" + thisItem._id + "' value='Submit'></td>";
         inventoryHTML += "<td><input type='submit' name='drop_" + thisItem._id + "' value='Drop'></tr>";

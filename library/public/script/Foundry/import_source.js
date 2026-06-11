@@ -91,7 +91,7 @@ function import_source_file(fileURL) {
 		storeData.rules = data.system.rules;
 		storeData.traits = data.system.traits.value;
 		storeData.rarity = data.system.traits.rarity;
-		storeData.itemType = data.system.type;
+		storeData.itemType = data.type;
 		storeData.level = data.system.level.value;
 		storeData.bulk = data.system.bulk.value;
 	} else {

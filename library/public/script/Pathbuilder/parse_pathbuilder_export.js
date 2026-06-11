@@ -24,8 +24,10 @@ function parse_pathbuilder_export(data) {
 
 			if (objectName == "Oil") {
 				objectName = "Oil (1 pint)";
-			} else if (objectName == "Clothing") {
-				objectName = "Clothing (Ordinary)";
+			} else if (objectName == "Clothing (Winter)") {
+				objectName = "Clothing (Cold-Weather)";
+			} else if (objectName.includes("Repair Kit")){
+				objectName = objectName.replace("Repair Kit", "Repair Toolkit");
 			}
 
 			let testVar = objectName;

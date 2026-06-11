@@ -277,12 +277,12 @@ function import-source-file {
         $storeData.traits = $data.system.traits.value;
         $storeData.rarity = $data.system.traits.rarity;
     } elseif ($data.type -eq "weapon" -or $data.type -eq "armor" -or $data.type -eq "consumable" -or $data.type -eq "equipment" -or $data.type -eq "shield" -or $data.type -eq "treasure" -or $data.type -eq "backpack") {
-        $storedata.type = "item";
+        $storeData.type = "item";
         $storeData.source = $data.system.publication.title;
         $storeData.rules = $data.system.rules;
         $storeData.traits = $data.system.traits.value;
         $storeData.rarity = $data.system.traits.rarity;
-        $storeData.itemType = $data.system.type;
+        $storeData.itemType = $data.type;
         $storeData.level = $data.system.level.value;
         $storeData.bulk = $data.system.bulk.value;
     } else {
