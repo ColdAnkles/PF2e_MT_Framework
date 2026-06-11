@@ -293,10 +293,8 @@ function attack_action(actionData, actingToken) {
 				attack_bonus += conBon;
 				if (itemData != null && itemData.name.includes("Gate Attenuator")) {
 					attack_bonus += 1;
-					if (itemData.name.includes("(Greater)")) {
+					if (itemData.name.includes("(Greater)") || itemData.name.includes("(Major)")) {
 						attack_bonus += 1;
-					} else if (itemData.name.includes("(Major)")) {
-						attack_bonus += 2;
 					}
 				}
 			} else if (actionData.system.traits.value.includes("finesse")) {
@@ -343,6 +341,10 @@ function attack_action(actionData, actingToken) {
 		MapTool.chat.broadcast("casterToken: " + String(actingToken));
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
+	}
+
+	if (!("runes" in itemData.system)) {
+		itemData.system.runes = { "potency": 0, "striking": 0, "property": [] };
 	}
 
 	let effect_bonus = effect_bonus_raw.bonuses.circumstance + effect_bonus_raw.bonuses.status + ((itemData != null && actingToken.isPC()) ? Math.max(effect_bonus_raw.bonuses.item, itemData.system.runes.potency) : effect_bonus_raw.bonuses.item) + effect_bonus_raw.bonuses.none +
