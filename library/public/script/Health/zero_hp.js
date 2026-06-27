@@ -56,7 +56,7 @@ function zero_hp(tokenID) {
 			for (var t in initTokens) {
 				let initToken = initTokens[t];
 				if (myTokens.includes(initToken.tokenId)) {
-					MTScript.evalMacro("[h: setInitiative(" + String(newInit) + ", \"" + initToken.tokenId + "\")]")
+					MTScript.evalMacro("[h: setInitiative(" + String(newInit) + ", \"" + initToken.tokenId + "\")][h: sortInitiative()]")
 				}
 			}
 

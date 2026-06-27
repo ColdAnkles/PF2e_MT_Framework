@@ -26,17 +26,27 @@ function attack_action(actionData, actingToken) {
 
 	let itemData = null;
 	let weaponID = null;
-	if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
-		weaponID = actionData.flags.pf2e.linkedWeapon;
-		itemData = get_linked_weapon(actingToken, weaponID);
-		if (itemData != null && itemData.needsReload && itemData.system.expend != null) {
-			if (itemData.system.ammo.value == null) {
-				itemData.system.ammo.value = itemData.system.ammo.capacity - itemData.system.expend;
-			} else {
-				itemData.system.ammo.value -= itemData.system.expend;
+	try {
+		if ("flags" in actionData && "pf2e" in actionData.flags && "linkedWeapon" in actionData.flags.pf2e) {
+			weaponID = actionData.flags.pf2e.linkedWeapon;
+			itemData = get_linked_weapon(actingToken, weaponID);
+			if (itemData != null && itemData.needsReload && itemData.system.expend != null) {
+				if (itemData.system.ammo.value == null) {
+					itemData.system.ammo.value = itemData.system.ammo.capacity - itemData.system.expend;
+				} else {
+					itemData.system.ammo.value -= itemData.system.expend;
+				}
+				set_linked_weapon(actingToken, weaponID, itemData);
 			}
-			set_linked_weapon(actingToken, weaponID, itemData);
 		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in attack_action during linked_weapon");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("actingToken: " + String(actingToken));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("weaponID: " + weaponID);
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 
 	try {
@@ -85,12 +95,20 @@ function attack_action(actionData, actingToken) {
 
 	let tokLevel = Number(actingToken.getProperty("level"));
 	let profBon = null;
-	if (actingToken.isPC() && actionData.name == "Elemental Blast") {
-		profBon = (calculate_proficiency("ClassDC", actingToken, actionData)) * 2;
-	} else if ((((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) && actingToken.isPC()) {
-		profBon = (calculate_proficiency(((itemData != null) ? itemData.system.category : actionData.system.category), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
-	} else {
-		profBon = actionData.system.bonus.value - tokLevel;
+	try {
+		if (actingToken.isPC() && actionData.name == "Elemental Blast") {
+			profBon = (calculate_proficiency("ClassDC", actingToken, actionData)) * 2;
+		} else if ((((itemData != null) ? itemData.system.category : actionData.system.category) != undefined) && actingToken.isPC()) {
+			profBon = (calculate_proficiency(((itemData != null) ? itemData.system.category : actionData.system.category), actingToken, ((itemData != null) ? itemData : actionData)) * 2);
+		} else {
+			profBon = actionData.system.bonus.value - tokLevel;
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in attack_action during calculate proficiency");
+		MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+		MapTool.chat.broadcast("itemData: " + JSON.stringify(itemData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
 	}
 	let attack_bonus = tokLevel + profBon;
 	//MapTool.chat.broadcast("Token Level: " + String(tokLevel))
@@ -343,7 +361,7 @@ function attack_action(actionData, actingToken) {
 		return;
 	}
 
-	if (!("runes" in itemData.system)) {
+	if (itemData != null && !("runes" in itemData.system)) {
 		itemData.system.runes = { "potency": 0, "striking": 0, "property": [] };
 	}
 

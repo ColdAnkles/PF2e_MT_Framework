@@ -222,7 +222,7 @@ function change_hp(tokenID, changeHPData = null) {
 		}
 
 		if (token.isPC()) {
-			MTScript.evalMacro("[h: ca.pz2e.loadOverlays()]");
+			MTScript.evalMacro("[h: ca.pz2e.updateUI()]");
 		}
 
 	}

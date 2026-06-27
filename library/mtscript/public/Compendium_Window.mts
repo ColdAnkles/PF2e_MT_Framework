@@ -56,7 +56,7 @@
     [h: windowHeight=500]
 }]
 
-[frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=0; noframe=0; input=1"):{
+[frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=0; noframe=0; input=1; scrollreset=1"):{
 	[r, if(windowType=="spells"), code:{
         [r: js.ca.pz2e.build_spell_list(sort, dir, searchKey)]
     };{}]

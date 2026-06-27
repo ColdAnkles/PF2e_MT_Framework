@@ -10,7 +10,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	let outputText = "<div style='padding:2px 5px 5px 5px; background-color:" + themeData.colours.standardBackground;
 	if (broadcast) {
-		outputText += ";width:100%;max-width:500px;'>";
+		outputText += ";width:99%;max-width:500px;'>";
 	} else {
 		outputText += ";width:500px;'>";
 	}

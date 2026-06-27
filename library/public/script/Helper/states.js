@@ -45,6 +45,9 @@ function set_state(stateName, stateVal, tokenID) {
 			MTScript.setVariable("tokenID", updateTokens[t]);
 			uT = updateTokens[t];
 			let token = MapTool.tokens.getTokenByID(updateTokens[t]);
+			if (token == null) {
+				continue;
+			}
 			let tokenName = token.getName();
 			if (tokenName.includes("Lib:")) {
 				token.setState(stateName, stateVal);
