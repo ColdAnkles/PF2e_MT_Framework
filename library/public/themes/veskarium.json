@@ -11,6 +11,7 @@
         "traitBorder":"#a0d8e4",
         "traitText":"white",
         "standardBackground":"black",
-        "standardText":"white"
+        "standardText":"white",
+        "extraBackground":"#64542F"
     }
 }

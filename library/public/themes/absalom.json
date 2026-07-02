@@ -8,8 +8,10 @@
         "titleText":"#cbc18f",
         "traitOuter":"#5a0308",
         "traitInner":"#d9c484",
+        "traitBorder":"#5a0308",
         "traitText":"white",
         "standardBackground":"#DBD0BC",
-        "standardText":"#000000"
+        "standardText":"#000000",
+        "extraBackground":"#64542F"
     }
 }
