@@ -28,6 +28,6 @@ function undelay_token(tokenID) {
     MTScript.evalMacro("[h: initToken = getInitiativeToken()][h, if(initToken==\"\"), code:{[h:currInit = -1]};{[h: currInit = getInitiative(initToken)]}][h: currRound = getInitiativeRound()][h:initiativeTokens=getInitiativeList()]")
     let currentInitiative = Number(MTScript.getVariable("currInit"));
     MTScript.evalMacro("[h: setInitiativeHold(0, \"" + tokenID + "\")]");
-    let newInit = currentInitiative - 1;
+    let newInit = (currentInitiative - 1) + 0.0;
     MTScript.evalMacro("[h: setInitiative(" + String(newInit) + ", \"" + tokenID + "\")][h: sortInitiative()]");
 }
