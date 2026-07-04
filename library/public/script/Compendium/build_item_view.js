@@ -98,7 +98,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 
 	try {
 		let lineTwo = [];
-		if (itemData.system.price.value != null) {
+		if ("price" in itemData.system && itemData.system.price.value != null) {
 			let priceString = "";
 			if ("gp" in itemData.system.price.value) {
 				priceString += String(itemData.system.price.value.gp) + " gp"
@@ -114,7 +114,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 		if (itemData.system.damage != null) {
 			lineTwo.push("<b>Damage </b> " + String(itemData.system.damage.dice) + String(itemData.system.damage.die) + " " + itemData.system.damage.damageType);
 		}
-		if (itemData.system.bulk.value != null && !itemData.system.description.value.includes("<strong>Bulk</strong>")) {
+		if ("bulk" in itemData.system && itemData.system.bulk.value != null && !itemData.system.description.value.includes("<strong>Bulk</strong>")) {
 			let bulkString = String(itemData.system.bulk.value);
 			if (itemData.system.bulk.value == 0) {
 				bulkString = "&mdash;";
@@ -138,7 +138,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 			}
 		}
 		let lineThree = [];
-		if (itemData.itemType == "weapon") {
+		if (itemType in itemData && itemData.itemType == "weapon") {
 			if (itemData.system.range == "") {
 				lineThree.push("<b>Type </b> Melee");
 			} else {
