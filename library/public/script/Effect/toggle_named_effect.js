@@ -31,15 +31,13 @@ function toggle_named_effect(effectName, token, state = -1, effectSource = null)
 	}
 
 	let property = JSON.parse(read_data("pz2e_effect"));
-	if (!(effectName in property)) {
-		MapTool.chat.broadcast("Cannot find effect: " + effectName);
-		return;
-	}
-	let effectData = JSON.parse(JSON.stringify(property[effectName]));
+	let effectData = search_dict(property, "name", effectName);
 
 	if (effectData == null) {
 		MapTool.chat.broadcast("Cannot find effect: " + effectName);
 		return;
+	} else {
+		effectData = effectData[0];
 	}
 
 	if ("fileURL" in effectData) {

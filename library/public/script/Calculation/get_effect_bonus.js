@@ -4,7 +4,7 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 	//if (!(bonusScopes.includes("all"))) {
 	//	bonusScopes.push("all");
 	//}
-	//MapTool.chat.broadcast(effectData.name)
+	//MapTool.chat.broadcast(effectData.name);
 	//MapTool.chat.broadcast(JSON.stringify(bonusScopes));
 	//MapTool.chat.broadcast(JSON.stringify(effectData));
 	//MapTool.chat.broadcast(JSON.stringify(effectData.system.rules));
@@ -32,10 +32,13 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				}
 			}
 		} catch (e) {
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
 			MapTool.chat.broadcast("Error in get_effect_bonus during selector filter");
 			MapTool.chat.broadcast("effectData: " + JSON.stringify(effectData));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in get_effect_bonus during selector filter");
 		}
 		if ("key" in ruleData && ["GrantItem", "Resistance", "Weakness"].includes(ruleData.key) && !(bonusScopes.includes(ruleData.key))) {
 			continue;
@@ -59,10 +62,13 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 				}
 			}
 		} catch (e) {
-			MapTool.chat.broadcast("Error in get_effect_bonus during predicate check");
+			if (String(e).startsWith("Error: PZ2E")) {
+				throw e;
+			}
+			MapTool.chat.broadcast("Error in get_effect_bonus during selector filter");
 			MapTool.chat.broadcast("effectData: " + JSON.stringify(effectData));
 			MapTool.chat.broadcast("" + e + "\n" + e.stack);
-			return;
+			throw new Error("PZ2E: Error in get_effect_bonus during selector filter");
 		}
 		//MapTool.chat.broadcast(JSON.stringify(ruleData));
 		if ("mode" in ruleData && ruleData.mode == "override") {
@@ -83,10 +89,13 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 					}
 				}
 			} catch (e) {
-				MapTool.chat.broadcast("Error in get_effect_bonus during overrides");
+				if (String(e).startsWith("Error: PZ2E")) {
+					throw e;
+				}
+				MapTool.chat.broadcast("Error in get_effect_bonus during selector filter");
 				MapTool.chat.broadcast("effectData: " + JSON.stringify(effectData));
 				MapTool.chat.broadcast("" + e + "\n" + e.stack);
-				return;
+				throw new Error("PZ2E: Error in get_effect_bonus during selector filter");
 			}
 			//MapTool.chat.broadcast(JSON.stringify(ruleData));
 		} else if ("mode" in ruleData && ruleData.mode == "upgrade" && "slug" in ruleData) {
@@ -117,10 +126,13 @@ function get_effect_bonus(effectData, bonusScopes, actor = null, item = null) {
 						}
 					}
 				} catch (e) {
+					if (String(e).startsWith("Error: PZ2E")) {
+						throw e;
+					}
 					MapTool.chat.broadcast("Error in get_effect_bonus during flat modifiers");
 					MapTool.chat.broadcast("effectData: " + JSON.stringify(effectData));
 					MapTool.chat.broadcast("" + e + "\n" + e.stack);
-					return;
+					throw new Error("PZ2E: Error in get_effect_bonus during flat modifiers");
 				}
 			} else if ((ruleData.key == "WeaponPotency" || ruleData.key == "Striking") && (bonusScopes.includes("weapon-attack") || bonusScopes.includes("all"))) {
 				returnData.otherEffects[ruleData.key] = foundry_calc_value(ruleData.value, actor, effectData.sourceItem);
