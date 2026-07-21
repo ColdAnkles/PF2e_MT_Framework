@@ -57,7 +57,7 @@ function party_overlay() {
         let vL = "25";
 
         overlayHTML += "<div class='player-hp-bar-back' style='height:25px; width:"+String(maxHPValue*2)+"'>";
-        overlayHTML += "<div class='player-hp-bar' style='height:95%; width:" + String((hpValue / maxHPValue) * 100) + "%; background-color: hsl(" + vH + ", " + vS + "%, " + vL + "%);'>";
+        overlayHTML += "<div class='player-hp-bar' style='height:95%; width:" + String((hpValue / maxHPValue) * 100) + "%; background-color: hsl(" + vH + ", " + vS + "%, " + vL + "%);white-space: nowrap;'>";
 
         overlayHTML += String(hpValue) + " / " + String(maxHPValue) + (tempHPValue > 0 ? " + " + String(tempHPValue) : "") + "</div></div>";
 
