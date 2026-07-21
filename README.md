@@ -47,3 +47,6 @@ Skill Checks:
 <img width="642" height="170" alt="PF2e_Char_SkillCheck" src="https://github.com/user-attachments/assets/2746cf0b-b42a-4eb7-8076-89fe8778bcac" />
 
 <img width="647" height="173" alt="PF2e_Char_SkillCheck_Frightened" src="https://github.com/user-attachments/assets/1dd283f3-457f-4b2e-b069-f060ab50e6df" />
+
+
+This MapTool Addon uses trademarks and/or copyrights owned by Paizo Inc., used under Paizo's Community Use Policy (paizo.com/licenses/communityuse). We are expressly prohibited from charging you to use or access this content. This MapTool Addon is not published, endorsed, or specifically approved by Paizo. For more information about Paizo Inc. and Paizo products, visit paizo.com.
