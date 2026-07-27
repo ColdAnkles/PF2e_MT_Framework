@@ -5,7 +5,7 @@ function toggle_owner_only_visible(token) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
 	} else {
-		tokenID = token.getID();
+		tokenID = token.getId();
 	}
 
 	if (token.isPC()) {
