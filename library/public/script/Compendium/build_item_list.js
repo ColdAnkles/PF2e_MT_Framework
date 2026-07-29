@@ -3,7 +3,7 @@
 function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToken = null) {
 
     let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
-    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
+    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><body class='compendium_body'><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
     let itemList = null;
 
     try {
@@ -126,6 +126,8 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
         }
         returnHTML += "</tr>";
     }
+
+    returnHTML += "</body>";
 
     return returnHTML;
 

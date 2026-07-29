@@ -5,6 +5,7 @@
   ],
   "legacyEvents": [
     { "name": "onInitiativeChange", "mts": "onInitiativeChange"},
-    { "name": "onTokenMove", "mts": "onTokenMove" }
+    { "name": "onTokenMove", "mts": "onTokenMove" },
+    { "name": "onMouseOver", "mts": "onMouseOver" }
   ]
 }

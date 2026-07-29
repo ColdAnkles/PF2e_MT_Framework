@@ -39,7 +39,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 	let HTMLString = "<h5>" + create_macroLink("Share", "Share_To_Chat@Lib:ca.pz2e", JSON.stringify({ "data": itemData })) + "</h5>";
 
 	try {
-		HTMLString += "<h1 class='title'><span>" + (("display" in itemData && itemData.display != null && itemData.display != "") ? itemData.display : itemData.name) + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + (("level" in itemData.system) ? itemData.system.level.value : "") + "</span></h1>";
+		HTMLString += "<body class='compendium_body'><h1 class='title'><span>" + (("display" in itemData && itemData.display != null && itemData.display != "") ? itemData.display : itemData.name) + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + (("level" in itemData.system) ? itemData.system.level.value : "") + "</span></h1>";
 		if ("traits" in itemData.system && "rarity" in itemData.system.traits && itemData.system.traits.rarity != "common") {
 			let normalRarity = capitalise(itemData.system.traits.rarity).split('-')[0];
 			if ("traitDescription" + normalRarity in traitGlossary && traitGlossary["traitDescription" + normalRarity] != null) {
@@ -185,6 +185,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 		throw new Error("PZ2E: Error in build_item_view during description");
 	}
 
+	HTMLString += "</body>";
 
 	return HTMLString;
 }

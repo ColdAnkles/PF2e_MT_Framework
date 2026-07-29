@@ -3,7 +3,7 @@
 function build_spell_list(sortKey, sortDir, searchKey = "") {
 
     let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
-    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><h1 class='feel-title'>Spells</h1>";
+    let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><body class='compendium_body'><h1 class='feel-title'>Spells</h1>";
     let spellList = JSON.parse(read_data("pz2e_spell"));
     let enabledSources = JSON.parse(read_data("pz2e_enabledSources"));
 
@@ -64,7 +64,7 @@ function build_spell_list(sortKey, sortDir, searchKey = "") {
         returnHTML += "<td>" + capitalise(thisSpell.traits.join(", ")) + "</td>";
         returnHTML += "<td align=center>" + String(thisSpell.level) + "</td>";
         returnHTML += "<td align=center>" + thisSpell.source + "</td>";
-        returnHTML += "</tr>";
+        returnHTML += "</tr></body>";
     }
 
     return returnHTML;

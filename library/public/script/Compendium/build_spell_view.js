@@ -71,7 +71,7 @@ function build_spell_view(spellName) {
 	}
 
 	try {
-		HTMLString += "<h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellCategory) + " " + spellData.system.level.value + "</span></h1>";
+		HTMLString += "<body class='compendium_body'><h1 class='title'><span>" + spellData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(spellCategory) + " " + spellData.system.level.value + "</span></h1>";
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_spell_view during title-step");
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));
@@ -244,7 +244,7 @@ function build_spell_view(spellName) {
 		return;
 	}
 
-	HTMLString += "<hr />";
+	HTMLString += "<hr /></body>";
 
 	try {
 		HTMLString += clean_description(spellData.system.description.value, false, false, false, { "rollDice": false, "level": spellData.system.level.value, "item": spellData, "action": spellData });

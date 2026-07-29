@@ -15,7 +15,7 @@
 </p>
 };{}]
 
-<body>
+<body class='compendium_body'>
 <p>[r, if(tokenID=="null"), code:{
 	[r: js.ca.pz2e.build_hazard_view(tokenName)]</p>
 };{

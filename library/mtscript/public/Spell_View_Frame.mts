@@ -5,7 +5,7 @@
     [h: cssName = "lib://ca.pz2e/css/" + json.get(json.get(getLibProperty("pz2e_themes","Lib:ca.pz2e"), getLibProperty("selectedTheme","Lib:ca.pz2e")),"css")]
 	<link rel="stylesheet" type="text/css" href=[r:cssName]>
 
-<body>
+<body class='compendium_body'>
 <p>[r: js.ca.pz2e.build_spell_view(spellName)]</p>
 </body>
 }]

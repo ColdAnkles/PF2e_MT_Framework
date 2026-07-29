@@ -5,7 +5,7 @@ function custom_content_window() {
     let returnHTML = "";
     returnHTML += create_macroLink("Export", "Custom_Content_Window_Link@Lib:ca.pz2e", { "action": "export", "key": "all" }) + "&nbsp;" + create_macroLink("Import", "Custom_Content_Window_Link@Lib:ca.pz2e", { "action": "import", "key": "all" })
 
-    returnHTML += "<body><table>";
+    returnHTML += "<body class='compendium_body'><table>";
 
     for (var key in customContent) {
         returnHTML += "<thead><tr><th colspan=4>";

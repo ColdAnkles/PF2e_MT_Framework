@@ -52,7 +52,7 @@ function enabled_source_list(action = null, searchKey = null) {
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         return;
     }
-    let returnHTML = "<form action='macro://Source_Enable_Form_To_JS@Lib:ca.pz2e/self/impersonated?'>";
+    let returnHTML = "<body class='compendium_body'><form action='macro://Source_Enable_Form_To_JS@Lib:ca.pz2e/self/impersonated?'>";
     returnHTML += "<div><input name='searchKey' placeholder='Search' value='" + searchKey + "'></input>\
     <input type='submit' name='searchButton' value='Search'></input>";
     returnHTML += "<table><tr><th>Source Name</th><th>Enabled</th></tr>";
@@ -81,7 +81,7 @@ function enabled_source_list(action = null, searchKey = null) {
         }
     }
     //returnHTML += "<tr><td colspan='2' align=center><input type='submit' name='save' value='Save'></input></td></tr></form></table>";
-    returnHTML += "</form></table>";
+    returnHTML += "</form></table></body>";
     return returnHTML;
 }
 

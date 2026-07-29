@@ -49,7 +49,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 
 	let HTMLString = "";
 	try {
-		HTMLString += "<h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
+		HTMLString += "<body class='compendium_body'><h1 class='title'><span>" + creatureData.name + "</span><span style='margin-left:auto; margin-right:0;'>Creature " + creatureData.level + "</span></h1>";
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_creature_view during header-step");
 		MapTool.chat.broadcast("creatureName: " + creatureName);
@@ -463,6 +463,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 		return;
 	}
 
+	HTMLString += "</body>";
 	//MapTool.chat.broadcast(JSON.stringify(offensiveActions));
 
 	return HTMLString;

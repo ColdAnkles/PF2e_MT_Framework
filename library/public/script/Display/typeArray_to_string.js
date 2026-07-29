@@ -2,6 +2,9 @@
 
 function typeArray_to_string(arrayList) {
 	//MapTool.chat.broadcast(JSON.stringify(arrayList));
+	if (JSON.parse(arrayList).length == 0) {
+		return "";
+	}
 	let arrayString = "";
 	for (var t in arrayList) {
 		let separator = ", ";

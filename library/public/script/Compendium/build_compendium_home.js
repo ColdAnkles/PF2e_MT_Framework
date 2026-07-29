@@ -29,7 +29,7 @@ function build_compendium_home() {
 
 	HTMLString += "</p><h3>Characters</h3><p>";
 
-	HTMLString += "<body>";
+	HTMLString += "<body class='compendium_body'>";
 
 	let pcList = find_pc_libs();
 	for (var pc in pcList) {

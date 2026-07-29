@@ -46,7 +46,7 @@ function build_hazard_view(itemName, tokenID = null) {
 	let HTMLString = "";
 
 	try {
-		HTMLString += "<h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + itemData.level + "</span></h1>";
+		HTMLString += "<body class='compendium_body'><h1 class='title'><span>" + itemData.name + "</span><span style='margin-left:auto; margin-right:0;'>" + capitalise(itemData.type) + " " + itemData.level + "</span></h1>";
 		if (itemData.rarity != "common") {
 			HTMLString += "<span class='trait" + itemData.rarity + "'>" + capitalise(itemData.rarity) + "</span>";
 		}
@@ -178,7 +178,7 @@ function build_hazard_view(itemName, tokenID = null) {
 		HTMLString += "<b>Reset</b> " + clean_description(itemData.reset, true, true, true);
 	}
 
-
+	HTMLString += "</body>";
 
 	//MapTool.chat.broadcast(HTMLString.replaceAll("<","&lt;"));
 	return HTMLString;

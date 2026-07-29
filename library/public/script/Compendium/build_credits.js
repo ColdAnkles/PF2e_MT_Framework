@@ -6,7 +6,7 @@ function build_credits() {
 	let HTMLString = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'>";
 
 	HTMLString += "<h1 style='padding-bottom:0px;margin-bottom:8px'>Credits</h1>";
-	HTMLString += "<body>";
+	HTMLString += "<body class='compendium_body'>";
 
 	HTMLString = HTMLString + "<h2>Foundry VTT pz2e</h2><p>The most excellent work done creating all the data used in this framework.<br /><i>https://github.com/foundryvtt/pz2e</i></p>";
 	HTMLString = HTMLString + "<h2>Game-Icons.net</h2><p>For the icons used within this framework.<br /><i>https://game-icons.net/about.html#authors</i></p>";

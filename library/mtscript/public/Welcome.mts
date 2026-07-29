@@ -5,7 +5,7 @@
     [h: cssName = "lib://ca.pz2e/css/" + json.get(json.get(getLibProperty("pz2e_themes","Lib:ca.pz2e"), getLibProperty("selectedTheme","Lib:ca.pz2e")),"css")]
 	<link rel="stylesheet" type="text/css" href=[r:cssName]>
     </head>
-    <body>
+    <body class='compendium_body'>
         <h1 class='title'>Welcome!</h1>
         <p>Welcome to my [r: if(system=="pf2e", "Pathfinder", "Starfinder")] 2e Framework! Based on the most excellent work of the PF2E Foundry Developers!</p>
         <p><b>Important</b>: You and all players must enable External Macro Access via "Edit -> Preferences -> Application Tab -> Macro Permissions Section -> Enable External Macro Access"</p>

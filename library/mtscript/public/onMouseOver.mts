@@ -1,0 +1,10 @@
+[h: tokenID = listGet(macro.args, 0)]
+[h: event = "enter"]
+[h: Xpos = listGet(macro.args, 1)]
+[h, if(Xpos == "exit"), code:{
+    [h: event = "exit"]
+};{}]
+[h: Ypos = listGet(macro.args, 2)]
+[h: shiftState = listGet(macro.args, 3)]
+[h: controlState = listGet(macro.args, 4)]
+[h: js.ca.pz2e.pz2e_statsheet(tokenID, event, shiftState, controlState)]
