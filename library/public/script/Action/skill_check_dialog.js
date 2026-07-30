@@ -3,7 +3,7 @@
 function skill_check_dialog(tokenID, tokenName, tokenType, altStat, extraScopes, skillStrings, statStrings, initiative, tokenList = "") {
     try {
         let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
-        let queryHTML = "<html>";
+        let queryHTML = "<html><body class='compendium_body'>";
 
         queryHTML += "<form action='macro://Skill_Check_Form_To_JS@Lib:ca.pz2e/self/impersonated?'><table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pz2e/css/" + themeData.css + "\">";
         queryHTML += "<input type='hidden' name='checkTokenID' value='" + tokenID + "'>";
@@ -55,7 +55,7 @@ function skill_check_dialog(tokenID, tokenName, tokenType, altStat, extraScopes,
 
         queryHTML += "<tr><td colspan='5' style='text-align:center'><input type='submit' name='skillCheckSubmit' value='Submit'></td></tr>";
 
-        queryHTML += "</form></table></html>"
+        queryHTML += "</form></table></body></html>"
 
         MTScript.setVariable("queryHTML", queryHTML);
         let windowHeight = 360;

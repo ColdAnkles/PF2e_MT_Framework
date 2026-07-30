@@ -30,11 +30,11 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
         overlayHTML += "<div class='statsheet'>";
         overlayHTML += "<div class='statsheet_title'><img src='" + tokenImage + "' height=150 width=150></img>";
         overlayHTML += "<div><b>" + token.getName().replace("Lib:", "") + "</b></div>";
-        overlayHTML += "</div>";
 
         let statEntries = [];
 
         if (isGM || tokenOwners.includes(playerName)) {
+            overlayHTML += "</div>";
             try {
                 if (tokenPropType == "PZ2E_Character") {
                     statEntries = [
@@ -83,6 +83,15 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                 }
                 overlayHTML += "</table></div>";
             }
+        } else {
+            if (!token.isPC() && tokenPropType == "PZ2E_Character" && Number(token.getProperty("HP")) != 0) {
+                let foundryActor = JSON.parse(token.getProperty("foundryActor"));
+                let damageTracker = foundryActor.damageTracker;
+                if (damageTracker.value > 0) {
+                    overlayHTML += "<div>" + String(damageTracker.value) + " Damage Taken</div>";
+                }
+            }
+            overlayHTML += "</div>";
         }
 
         overlayHTML += "</html>";

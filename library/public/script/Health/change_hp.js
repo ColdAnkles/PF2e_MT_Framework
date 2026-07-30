@@ -18,6 +18,7 @@ function change_hp(tokenID, changeHPData = null) {
 	let tokenCurrentTempHP = Number(token.getProperty("TempHP"));
 	let currentConditions = JSON.parse(token.getProperty("conditionDetails"));
 	let tokenTraits = JSON.parse(token.getProperty("traits"));
+	let foundryActor = JSON.parse(token.getProperty("foundryActor"));
 
 	let tokenResistances = getTokenResistances(token);
 	let tokenWeaknesses = getTokenWeaknesses(token);
@@ -30,7 +31,7 @@ function change_hp(tokenID, changeHPData = null) {
 	if (changeHPData == null) {
 		let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
-		let queryHTML = "<html><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pz2e/css/" + themeData.css + "\"><form action='macro://Change_HP_Form_To_JS@Lib:ca.pz2e/self/impersonated?'>";
+		let queryHTML = "<html><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pz2e/css/" + themeData.css + "\"><body class='compendium_body'><form action='macro://Change_HP_Form_To_JS@Lib:ca.pz2e/self/impersonated?'>";
 		queryHTML += "<input type='hidden' name='tokenID' value='" + tokenID + "'><table class='staticTable'>";
 
 		queryHTML += "<tr><th colspan=2><b>Damage, Healing, and Temporary HP</b></th></tr>";
@@ -53,7 +54,7 @@ function change_hp(tokenID, changeHPData = null) {
 		queryHTML += "<tr><td>Enter new current Maximum HP value (if desired)</td><td><input type='text' name='currentMaxHPChange' style='font-family: Arial;' value='" + tokenCurrentMaxHP + "'></td></tr>";
 
 		queryHTML += "<tr><td colspan='2' style='text-align:center;'><input type='submit' name='changeHPSubmit' value='Submit'><input type='submit' name='changeHPSubmit' value='Cancel'></td></tr>";
-		queryHTML += "</table></form></html>";
+		queryHTML += "</table></form></body></html>";
 
 		MTScript.setVariable("queryHTML", queryHTML);
 		MTScript.evalMacro("[dialog5('Change HP','width=600;height=525;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");
@@ -124,7 +125,7 @@ function change_hp(tokenID, changeHPData = null) {
 
 				tokenCurrentTempHP = tokenCurrentTempHP - actualChangeVal;
 				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
-
+				foundryActor.damageTracker.value += actualChangeVal;
 				if (tokenCurrentHP <= 0) {
 					tokenCurrentHP = 0;
 				}
@@ -140,6 +141,7 @@ function change_hp(tokenID, changeHPData = null) {
 					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": description } } }, true);
 				}
 
+				token.setProperty("foundryActor", JSON.stringify(foundryActor));
 				token.setProperty("TempHP", String(tokenCurrentTempHP));
 				if (tokenCurrentTempHP <= 0) {
 					token.setProperty("TempHP", "0");
@@ -164,6 +166,7 @@ function change_hp(tokenID, changeHPData = null) {
 
 				tokenCurrentTempHP = tokenCurrentTempHP - actualChangeVal;
 				tokenCurrentHP = tokenCurrentHP + ((tokenCurrentTempHP < 0) ? tokenCurrentTempHP : 0);
+				foundryActor.damageTracker.value += actualChangeVal;
 				if (tokenCurrentHP <= 0) {
 					tokenCurrentHP = 0;
 				}
@@ -179,6 +182,7 @@ function change_hp(tokenID, changeHPData = null) {
 					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": description } } }, true);
 				}
 
+				token.setProperty("foundryActor", JSON.stringify(foundryActor));
 				token.setProperty("TempHP", String(tokenCurrentTempHP));
 				if (tokenCurrentTempHP <= 0) {
 					token.setProperty("TempHP", "0");

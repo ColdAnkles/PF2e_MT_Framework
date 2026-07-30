@@ -108,6 +108,7 @@ function parse_npc(rawData, parseRaw = false, variant = "normal") {
 		npcData.ac = rawData.system.attributes.ac;
 		npcData.hp = rawData.system.attributes.hp;
 		npcData.foundryActor = rawData;
+		npcData.foundryActor.damageTracker = { "value": 0 };
 		//npcData.creatureType = rawData.system.details.creatureType;
 
 		npcData.saves = { "fortitude": rawData.system.saves.fortitude.value, "reflex": rawData.system.saves.reflex.value, "will": rawData.system.saves.will.value, "fortitudeProf": "", "reflexProf": "", "willProf": "" };

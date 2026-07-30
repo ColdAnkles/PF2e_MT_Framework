@@ -4,7 +4,7 @@ function saving_throw_dialog(tokenID, tokenName, bonuses, specialEffects, saveSt
     try {
         let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
-        let queryHTML = "<html><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pz2e/self/impersonated?'><table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pz2e/css/" + themeData.css + "\">";
+        let queryHTML = "<html><body class='compendium_body'><form action='macro://Saving_Throw_Form_To_JS@Lib:ca.pz2e/self/impersonated?'><table width=100% class='staticTable'><link rel=\"stylesheet\" type=\"text/css\" href=\"lib://ca.pz2e/css/" + themeData.css + "\">";
         queryHTML += "<input type='hidden' name='saveTokenID' value='" + tokenID + "'>";
         queryHTML += "<input type='hidden' name='secretCheck' value='0'>";
         queryHTML += "<input type='hidden' name='tokenList' value='" + tokenList + "'>";
@@ -46,7 +46,7 @@ function saving_throw_dialog(tokenID, tokenName, bonuses, specialEffects, saveSt
 
         queryHTML = queryHTML + "<tr><td colspan='5' style='text-align:center'><input type='submit' name='savingThrowSubmit' value='Submit'></td></tr>";
 
-        queryHTML = queryHTML + "</table></form></html>"
+        queryHTML = queryHTML + "</table></form></body></html>"
 
         MTScript.setVariable("queryHTML", queryHTML);
         MTScript.evalMacro("[dialog5('Saving Throw','width=600;height=350;temporary=1; noframe=0; input=1'):{[r:queryHTML]}]");

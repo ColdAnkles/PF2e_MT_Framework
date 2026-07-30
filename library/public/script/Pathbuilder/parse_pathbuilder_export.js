@@ -26,7 +26,7 @@ function parse_pathbuilder_export(data) {
 				objectName = "Oil (1 pint)";
 			} else if (objectName == "Clothing (Winter)") {
 				objectName = "Clothing (Cold-Weather)";
-			} else if (objectName.includes("Repair Kit")){
+			} else if (objectName.includes("Repair Kit")) {
 				objectName = objectName.replace("Repair Kit", "Repair Toolkit");
 			}
 
@@ -183,7 +183,7 @@ function parse_pathbuilder_export(data) {
 		}
 	}
 
-	characterData.foundryActor = { "name": data.name, "flags": {}, "system": {} };
+	characterData.foundryActor = { "name": data.name, "flags": {}, "system": {}, "extraMacros": [] };
 
 	//__STATS__	
 	try {
@@ -461,7 +461,7 @@ function parse_pathbuilder_export(data) {
 					"senses": []
 				},
 			}
-		}, "flags": {}
+		}, "flags": {}, "extraMacros": []
 	};
 	characterData.foundryActor.flags[gameSystem] = { "rulesSelections": {} };
 
