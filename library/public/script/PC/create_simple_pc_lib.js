@@ -29,7 +29,7 @@ function create_simple_pc_lib(simpleData, tokenID) {
         "languages": [],
         "resources": [],
         "traits": simpleData.traits.split(', '),
-        "foundryActor": { "simple": true }
+        "foundryActor": { "simple": true, "damageTracker": { "value": 0 } }
     };
 
 

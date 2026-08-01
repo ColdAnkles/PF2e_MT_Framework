@@ -461,7 +461,7 @@ function parse_pathbuilder_export(data) {
 					"senses": []
 				},
 			}
-		}, "flags": {}, "extraMacros": []
+		}, "flags": {}, "extraMacros": [], "damageTracker": { "value": 0 }
 	};
 	characterData.foundryActor.flags[gameSystem] = { "rulesSelections": {} };
 
