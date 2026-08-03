@@ -610,7 +610,7 @@ function npc_editor(inputData) {
     outputHTML += "</tbody></table></form>";
 
     MTScript.setVariable("outputHTML", outputHTML);
-    MTScript.evalMacro("[frame5(\"Edit NPC\", \"width=500; height=700; temporary=1; noframe=0; input=1\"):{[r: outputHTML]}]");
+    MTScript.evalMacro("[frame5(\"Edit NPC\", \"width=500; height=700; temporary=1;\"):{[r: outputHTML]}]");
 }
 
 MTScript.registerMacro('ca.pz2e.npc_editor', npc_editor);

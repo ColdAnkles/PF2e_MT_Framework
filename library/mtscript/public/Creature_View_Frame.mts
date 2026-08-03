@@ -4,7 +4,7 @@
 [h:tokenName=json.get(macro.args,"name")]
 [h:tokenID=json.get(macro.args,"tokenID")]
 
-[frame5(tokenName, "width=1000; height=700; temporary=1; noframe=0; input=1"):{
+[frame5(tokenName, "width=1000; height=700; temporary=1;"):{
 	[h: cssName = "lib://ca.pz2e/css/" + json.get(json.get(getLibProperty("pz2e_themes","Lib:ca.pz2e"), getLibProperty("selectedTheme","Lib:ca.pz2e")),"css")]
 	<link rel="stylesheet" type="text/css" href=[r:cssName]>
 

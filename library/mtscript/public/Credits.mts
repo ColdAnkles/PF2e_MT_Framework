@@ -1,3 +1,3 @@
-[frame5("Credits", "width=300; height=600; temporary=0; noframe=0; input=1"):{
+[frame5("Credits", "width=300; height=600; temporary=0;"):{
 	[js.ca.pz2e.build_credits()]
 }]

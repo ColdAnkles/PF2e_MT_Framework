@@ -102,7 +102,7 @@ function view_inventory(tokenID, inventoryAction = null) {
 
     MTScript.setVariable("frameHTML", inventoryHTML);
     MTScript.setVariable("frameName", token.getName().replace("Lib:", "") + "\'s Inventory")
-    MTScript.evalMacro("[frame5(frameName, 'width=500; height=600; temporary=1; noframe=0; input=1'):{[r: frameHTML]}]")
+    MTScript.evalMacro("[frame5(frameName, 'width=500; height=600; temporary=1;'):{[r: frameHTML]}]")
 
 
 

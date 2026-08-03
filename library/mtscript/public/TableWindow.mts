@@ -74,7 +74,7 @@
     [h: windowHeight=1000]
 }]
 
-[frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=0; noframe=0; input=1"):{
+[frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=1;"):{
     <html>
     <link rel="stylesheet" type="text/css" href=[r:cssName]>
 	[r, if(table=="encounters"), code:{
