@@ -38,3 +38,4 @@
 [h: setOwner(getOwners("json", sourceTokenID, "Player Characters"), newToken)]
 [h: setTokenImage(getTokenImage("", sourceTokenID, "Player Characters"), newToken)]
 [h: setName(tokenName, newToken)]
+[h: exposePCOnlyArea()]
