@@ -360,3 +360,36 @@ function add_action_to_token(actionData, tokenID, token) {
 }
 
 MTScript.registerMacro("ca.pz2e.add_action_to_token", add_action_to_token);
+
+function add_extra_action_to_token(actionData, tokenID) {
+	add_action_to_token(actionData, tokenID);
+	let token = MapTool.tokens.getTokenByID(tokenID);
+	if (!(token.getName().includes("Lib:"))) {
+		token = MapTool.tokens.getTokenByID(token.getProperty("myID"));
+	}
+	let foundryData = JSON.parse(token.getProperty("foundryActor"));
+	if (!("extraMacros" in foundryData)) {
+		foundryData.extraMacros = [];
+	}
+	foundryData.extraMacros.push(actionData.name);
+	token.setProperty("foundryActor", JSON.stringify(foundryData));
+}
+
+MTScript.registerMacro("ca.pz2e.add_extra_action_to_token", add_extra_action_to_token);
+
+function remove_extra_action_from_token(actionData, tokenID) {
+	//Remove May Not Always Work
+	removeMacro(actionData.name, tokenID);
+	let token = MapTool.tokens.getTokenByID(tokenID);
+	if (!(token.getName().includes("Lib:"))) {
+		token = MapTool.tokens.getTokenByID(token.getProperty("myID"));
+	}
+	let foundryData = JSON.parse(token.getProperty("foundryActor"));
+	if (!("extraMacros" in foundryData)) {
+		foundryData.extraMacros = [];
+	}
+	foundryData.extraMacros.splice(foundryData.extraMacros.indexOf(actionData.name), 1);
+	token.setProperty("foundryActor", JSON.stringify(foundryData));
+}
+
+MTScript.registerMacro("ca.pz2e.remove_extra_action_from_token", remove_extra_action_from_token);

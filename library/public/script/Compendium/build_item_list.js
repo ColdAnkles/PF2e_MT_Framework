@@ -1,6 +1,6 @@
 "use strict";
 
-function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToken = null) {
+function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedTokenID = null) {
 
     let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
     let returnHTML = "<link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><body class='compendium_body'><h1 class='feel-title'>" + capitalise(itemType) + "</h1>";
@@ -45,8 +45,19 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
     <input type='hidden' name='window' value='"+ itemType + "'></input>\
     <input type='hidden' name='sort' value='"+ sortKey + "'></input>\
     <input type='hidden' name='dir' value='"+ sortDir + "'></input>";
-    if (relatedToken != null) {
-        returnHTML += "<input type='hidden' name='tokenID' value='" + relatedToken + "'></input>";
+
+    let foundryData = null;
+    let relatedToken = null;
+    if (relatedTokenID != null) {
+        relatedToken = MapTool.tokens.getTokenByID(relatedTokenID);
+        if (!(relatedToken.getName().includes("Lib:"))) {
+            relatedToken = MapTool.tokens.getTokenByID(relatedToken.getProperty("myID"));
+        }
+        returnHTML += "<input type='hidden' name='tokenID' value='" + relatedTokenID + "'></input>";
+        foundryData = JSON.parse(relatedToken.getProperty("foundryActor"));
+        if (!("extraMacros" in foundryData)) {
+            foundryData.extraMacros = [];
+        }
     }
     returnHTML += "</div></form>";
 
@@ -55,7 +66,7 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
     returnHTML += "<th>" + create_macroLink("Rarity", "Compendium_Window@Lib:ca.pz2e", JSON.stringify({ "window": itemType, "sort": "rarity", "dir": ((sortKey == "rarity") ? ((sortDir == "d") ? "a" : "d") : sortDir) })) + "</th>";
     returnHTML += "<th width=10% align=center>Traits</th>";
     if (itemType == "action") {
-        if (relatedToken != null) {
+        if (relatedTokenID != null) {
             returnHTML += "<th width=10% align=center>Add Macro</th>";
         }
     } else {
@@ -116,8 +127,14 @@ function build_item_list(itemType, sortKey, sortDir, searchKey = "", relatedToke
                 returnHTML += "<td align=center id='level'>0</td>";
             }
             returnHTML += "<td align=center id='source'>" + thisItem.source + "</td>";
-        } else if (itemType == "action" && relatedToken != null) {
-            returnHTML += "<td align=center>" + create_macroLink("Add Macro", "Add_Action_To_Token@Lib:ca.pz2e", "[" + JSON.stringify({ "name": thisItem.name, "type": "basic", "group": "Extra" }) + ", " + relatedToken + "]") + "</td>";
+        } else if (itemType == "action" && relatedTokenID != null) {
+            returnHTML += "<td align=center>";
+            if (foundryData.extraMacros.includes(thisItem.name)) {
+                returnHTML += create_macroLink("Remove Macro", "Remove_Extra_Action_Macro@Lib:ca.pz2e", "[" + JSON.stringify({ "name": thisItem.name }) + ", " + relatedTokenID + "]");
+            } else {
+                returnHTML += create_macroLink("Add Macro", "Add_Extra_Action_Macro@Lib:ca.pz2e", "[" + JSON.stringify({ "name": thisItem.name, "type": "basic", "group": "Extra" }) + ", " + relatedTokenID + "]");
+            }
+            returnHTML += "</td>";
         }
         if (itemType == "hazard") {
             returnHTML += "<td width=0%>" + create_macroLink("Make Token", "Spawn_Hazard@Lib:ca.pz2e", thisItem.key);

@@ -17,6 +17,16 @@ function create_pc_token(newPCTokenID, pcLibID) {
 
 		//__ADD MACROS SPECIFIC TO THIS PC__
 		add_pc_macros(newPCTokenID, pcLibID);
+
+		//__ADD EXTRA USER SPECIFIC MACROS__
+		if (!("extraMacros" in pcData.foundryActor)) {
+			pcData.foundryActor.extraMacros = [];
+		}
+
+		for (var m in pcData.foundryActor.extraMacros) {
+			let actionData = { "name": pcData.foundryActor.extraMacros[m], "type": "basic", "group": "Extra" };
+			add_action_to_token(actionData, newPCTokenID);
+		}
 	}
 
 	update_my_tokens(pcLibID);
