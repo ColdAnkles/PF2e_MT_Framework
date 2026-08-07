@@ -28,9 +28,9 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
             }
             let tokenOwners = JSON.parse(MTScript.getVariable("owners"));
             let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
-            overlayHTML = "<html><head><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/></head>";
+            overlayHTML = "<html><head><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/></head><body>";
 
-            overlayHTML += "<div class='statsheet'>";
+            overlayHTML += "<div class='statsheet' style='position:absolute; left:5; bottom:0;'>";
             overlayHTML += "<div class='statsheet_title'><img src='" + tokenImage + "' height=150 width=150></img>";
             overlayHTML += "<div><b>" + token.getName().replace("Lib:", "") + "</b></div>";
 
@@ -47,7 +47,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                             { "text": JSON.parse(token.getProperty("immunities")).join(", "), "label": "Immunities" },
                             { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
                             { "text": display_weaknesses(tokenID), "label": "Weaknesses" },
-                            { "text": "+" + token.getProperty("perception") + display_bonus(tokenID, "perception") + " | " + array_to_string(JSON.parse(token.getProperty("senses"))), "label": "Perception" },
+                            { "text": "+" + String(Number(token.getProperty("perception")) + Number(display_bonus(tokenID, "perception"))) + " | " + array_to_string(JSON.parse(token.getProperty("senses"))), "label": "Perception" },
                             { "text": array_to_string(JSON.parse(token.getProperty("languages"))), "label": "Languages" },
                             { "text": display_conditions(tokenID), "label": "Conditions" },
                             { "text": display_spell_slots(tokenID), "label": "Spell Slots" },
@@ -118,7 +118,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                 overlayHTML += "</div>";
             }
 
-            overlayHTML += "</html>";
+            overlayHTML += "</body></html>";
         }
     }
 
