@@ -92,17 +92,25 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                     for (var s in statEntries) {
                         let statData = statEntries[s];
                         if (statData.text != "") {
-                            overlayHTML += "<tr><th><b>" + statData.label + "</b></th><td>" + statData.text + "</td></tr>";
+                            overlayHTML += "<tr><th><b>" + statData.label + "</b></th><td style='max-width:250;'>" + statData.text + "</td></tr>";
                         }
                     }
                     overlayHTML += "</table></div>";
                 }
             } else {
-                if (tokenPropType == "PZ2E_Hazard") {
+                if (tokenPropType != "PZ2E_Hazard") {
                     let tokenHP = Number(token.getProperty("HP"));
                     if (tokenPropType == "PZ2E_Character" && tokenHP != 0) {
                         let foundryActor = JSON.parse(token.getProperty("foundryActor"));
-                        let damageTracker = foundryActor.damageTracker;
+                        let damageTracker = null;
+                        if (!("damageTracker" in foundryActor)) {
+                            damageTracker = { "value": 0 }
+                        } else {
+                            damageTracker = foundryActor.damageTracker;
+                        }
+                        if (!("value" in damageTracker)) {
+                            damageTracker.value = 0;
+                        }
                         if (damageTracker.value > 0) {
                             overlayHTML += "<div>" + String(damageTracker.value) + " Damage Taken</div>";
                         }
