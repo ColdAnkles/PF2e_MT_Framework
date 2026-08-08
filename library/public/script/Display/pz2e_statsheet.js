@@ -8,11 +8,12 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
     } else {
         let token = MapTool.tokens.getTokenByID(tokenID);
         let tokenPropType = get_token_property_type(token);
+        let tokenImage = null;
         if (token == null) {
             overlayHTML = "";
         } else if (["PZ2E_Character", "PZ2E_Hazard"].includes(tokenPropType)) {
             try {
-                let tokenImage = get_token_image(token.getId(), 200);
+                tokenImage = get_token_image(token.getId(), 200);
                 if (!(token.getName().includes("Lib")) && token.isPC() && tokenPropType == "PZ2E_Character") {
                     tokenID = token.getProperty("myID");
                     token = MapTool.tokens.getTokenByID(tokenID);

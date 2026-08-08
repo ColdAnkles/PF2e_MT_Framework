@@ -17,18 +17,32 @@ function create_npc(newNPCTokenID, creatureName, variant = "normal") {
 
 	let regenData = calculate_bonus(newToken, ["regen"]);
 
-	if ("FastHealing" in regenData.otherEffects) {
-		regenData = regenData.otherEffects.FastHealing;
-		createMacro({
-			"label": "Disable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pz2e.disable_regeneration(myID)]",
-			"tooltip": chat_display({ "name": "Disable Regeneration", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Disable when taking any of the following damage types: " + regenData.deactivations.join(", ") } } }, false),
-			"sortBy": "", "group": "1. Common"
-		}, newNPCTokenID);
-		createMacro({
-			"label": "Enable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pz2e.enable_regeneration(myID)]",
-			"tooltip": chat_display({ "name": "Enable Regeneration", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Enable regeneration and fast healing when outside initiative." } } }, false),
-			"sortBy": "", "group": "1. Common"
-		}, newNPCTokenID)
+	try {
+		if ("FastHealing" in regenData.otherEffects) {
+			regenData = JSON.parse(JSON.stringify(regenData.otherEffects.FastHealing));
+			if (!("deactivations" in regenData)) {
+				regenData.deactivations = [];
+			}
+			createMacro({
+				"label": "Disable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pz2e.disable_regeneration(myID)]",
+				"tooltip": chat_display({ "name": "Disable Regeneration", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Disable when taking any of the following damage types: " + regenData.deactivations.join(", ") } } }, false),
+				"sortBy": "", "group": "1. Common"
+			}, newNPCTokenID);
+			createMacro({
+				"label": "Enable Regeneration", "playerEditable": 0, "command": "[h: js.ca.pz2e.enable_regeneration(myID)]",
+				"tooltip": chat_display({ "name": "Enable Regeneration", "type": "basic", "system": { "actionType": "freeaction", "actionCount": 1, "type": "basic", "group": "", "description": { "value": "Enable regeneration and fast healing when outside initiative." } } }, false),
+				"sortBy": "", "group": "1. Common"
+			}, newNPCTokenID);
+		}
+	} catch (e) {
+		if (String(e).startsWith("Error: PZ2E")) {
+			throw e;
+		}
+		MapTool.chat.broadcast("Error in create_npc - regen enable/disable");
+		MapTool.chat.broadcast("newToken: " + String(newToken));
+		MapTool.chat.broadcast("regenData: " + JSON.stringify(regenData));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		throw new Error("PZ2E: Error in create_npc - regen enable/disable");
 	}
 
 	//__ADDING_STANDARD_MACROS
