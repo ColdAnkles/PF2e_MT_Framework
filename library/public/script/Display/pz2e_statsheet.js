@@ -7,14 +7,24 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
         overlayHTML = "";
     } else {
         let token = MapTool.tokens.getTokenByID(tokenID);
+        let tokenPropType = get_token_property_type(token);
         if (token == null) {
             overlayHTML = "";
-        } else {
-            let tokenPropType = get_token_property_type(token);
-            let tokenImage = get_token_image(token.getId(), 200);
-            if (!(token.getName().includes("Lib")) && token.isPC()) {
-                tokenID = token.getProperty("myID");
-                token = MapTool.tokens.getTokenByID(tokenID);
+        } else if (["PZ2E_Character", "PZ2E_Hazard"].includes(tokenPropType)) {
+            try {
+                let tokenImage = get_token_image(token.getId(), 200);
+                if (!(token.getName().includes("Lib")) && token.isPC() && tokenPropType == "PZ2E_Character") {
+                    tokenID = token.getProperty("myID");
+                    token = MapTool.tokens.getTokenByID(tokenID);
+                }
+            } catch (e) {
+                if (String(e).startsWith("Error: PZ2E")) {
+                    throw e;
+                }
+                MapTool.chat.broadcast("Error in pz2e_statsheet - tokenSetup");
+                MapTool.chat.broadcast("token: " + String(token));
+                MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                throw new Error("PZ2E: Error in pz2e_statsheet - tokenSetup");
             }
             MTScript.evalMacro("[h: playerData = player.getInfo()]");
             let playerData = JSON.parse(MTScript.getVariable("playerData"));
@@ -87,33 +97,35 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                     overlayHTML += "</table></div>";
                 }
             } else {
-                let tokenHP = Number(token.getProperty("HP"));
-                if (tokenPropType == "PZ2E_Character" && tokenHP != 0) {
-                    let foundryActor = JSON.parse(token.getProperty("foundryActor"));
-                    let damageTracker = foundryActor.damageTracker;
-                    if (damageTracker.value > 0) {
-                        overlayHTML += "<div>" + String(damageTracker.value) + " Damage Taken</div>";
+                if (tokenPropType == "PZ2E_Hazard") {
+                    let tokenHP = Number(token.getProperty("HP"));
+                    if (tokenPropType == "PZ2E_Character" && tokenHP != 0) {
+                        let foundryActor = JSON.parse(token.getProperty("foundryActor"));
+                        let damageTracker = foundryActor.damageTracker;
+                        if (damageTracker.value > 0) {
+                            overlayHTML += "<div>" + String(damageTracker.value) + " Damage Taken</div>";
+                        }
+                        let tokenMaxHP = Number(token.getProperty("MaxHP"));
+                        let healthPer = tokenHP / tokenMaxHP;
+                        let healthStrings = [];
+                        if (healthPer == 1) {
+                            healthStrings = ["Unharmed", "Spry", "Uninjured", "Healthy", "Whole", "Hale", "Hearty"];
+                        } else if (healthPer > 0.8) {
+                            healthStrings = ["Scratched", "Scraped", "Scuffed", "Grazed", "Bruised", "Impaired"];
+                        } else if (healthPer > 0.6) {
+                            healthStrings = ["Injured", "Hurt", "Wounded", "Harmed", "Contused"];
+                        } else if (healthPer > 0.5) {
+                            healthStrings = ["Bloodied", "Battered"];
+                        } else if (healthPer > 0.4) {
+                            healthStrings = ["Gashed", "Wrecked", "Lamed", "Ruined"];
+                        } else if (healthPer > 0.2) {
+                            healthStrings = ["Maimed", "Mangled", "Lacerated", "Gored"];
+                        } else if (healthPer > 0) {
+                            healthStrings = ["On Last Legs", "Mutilated", "Crippled"];
+                        }
+                        let healthText = healthStrings[Math.floor(Math.random() * healthStrings.length)];
+                        overlayHTML += "<div>" + healthText + "</div>";
                     }
-                    let tokenMaxHP = Number(token.getProperty("MaxHP"));
-                    let healthPer = tokenHP / tokenMaxHP;
-                    let healthStrings = [];
-                    if (healthPer == 1) {
-                        healthStrings = ["Unharmed", "Spry", "Uninjured", "Healthy", "Whole", "Hale", "Hearty"];
-                    } else if (healthPer > 0.8) {
-                        healthStrings = ["Scratched", "Scraped", "Scuffed", "Grazed", "Bruised", "Impaired"];
-                    } else if (healthPer > 0.6) {
-                        healthStrings = ["Injured", "Hurt", "Wounded", "Harmed", "Contused"];
-                    } else if (healthPer > 0.5) {
-                        healthStrings = ["Bloodied", "Battered"];
-                    } else if (healthPer > 0.4) {
-                        healthStrings = ["Gashed", "Wrecked", "Lamed", "Ruined"];
-                    } else if (healthPer > 0.2) {
-                        healthStrings = ["Maimed", "Mangled", "Lacerated", "Gored"];
-                    } else if (healthPer > 0) {
-                        healthStrings = ["On Last Legs", "Mutilated", "Crippled"];
-                    }
-                    let healthText = healthStrings[Math.floor(Math.random() * healthStrings.length)];
-                    overlayHTML += "<div>" + healthText + "</div>";
                 }
                 overlayHTML += "</div>";
             }
