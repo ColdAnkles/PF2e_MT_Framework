@@ -20,6 +20,13 @@ function change_hp(tokenID, changeHPData = null) {
 	let tokenTraits = JSON.parse(token.getProperty("traits"));
 	let foundryActor = JSON.parse(token.getProperty("foundryActor"));
 
+	if (!("damageTracker" in foundryActor)) {
+		foundryActor.damageTracker = { "value": 0 }
+	}
+	if (!("value" in foundryActor.damageTracker)) {
+		foundryActor.damageTracker.value = 0;
+	}
+
 	let tokenResistances = getTokenResistances(token);
 	let tokenWeaknesses = getTokenWeaknesses(token);
 	let tokenImmunities = getTokenImmunities(token);
@@ -213,8 +220,10 @@ function change_hp(tokenID, changeHPData = null) {
 					}
 					if (get_state("Dead", token)) {
 						set_state("Dead", false, token);
-						chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
-					} else {
+						if (!silent) {
+							chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
+						}
+					} else if (!silent) {
 						chat_display({ "name": tokenDisplayName + " healed!", "system": { "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
 					}
 				}
