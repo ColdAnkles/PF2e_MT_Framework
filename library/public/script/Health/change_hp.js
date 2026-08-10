@@ -74,9 +74,9 @@ function change_hp(tokenID, changeHPData = null) {
 
 		//MapTool.chat.broadcast(JSON.stringify(changeHPData));
 
-		let silent = false;
-		if ("silent" in changeHPData && changeHPData.silent) {
-			silent = true;
+		let gmOnly = false;
+		if ("gmOnly" in changeHPData && changeHPData.gmOnly) {
+			gmOnly = true;
 		}
 
 		if (!("ignoreResImm" in changeHPData)) {
@@ -97,23 +97,17 @@ function change_hp(tokenID, changeHPData = null) {
 				if (get_state("Dead", token)) {
 					set_state("Dead", false, token);
 				}
-				if (!silent) {
-					chat_display({ "name": tokenDisplayName + " HP Set!", "system": { "description": { "value": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" } } }, true);
-				}
+				chat_display({ "name": tokenDisplayName + " HP Set!", "system": { "gmOnly": true, "description": { "value": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" } } }, true);
 			}
 		} else if (changeHPData.currentMaxHPChange != tokenCurrentMaxHP) {
 			token.setProperty("MaxHP", String(changeHPData.currentMaxHPChange));
 		} else if (changeHPData.currentTempHPChange != tokenCurrentTempHP) {
 			token.setProperty("TempHP", String(changeHPData.currentTempHPChange));
-			if (!silent) {
-				chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "description": { "value": tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" } } }, true);
-			}
+			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" } } }, true);
 		} else if (changeHPData.hpChangeType == "tempHP") {
 			tokenCurrentTempHP = Math.max(tokenCurrentTempHP, changeHPData.hpChangeVal);
 			token.setProperty("TempHP", String(tokenCurrentTempHP));
-			if (!silent) {
-				chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "description": { "value": tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" } } }, true);
-			}
+			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" } } }, true);
 		} else {
 			if (changeHPData.hpChangeType == "lethal") {
 
@@ -136,17 +130,14 @@ function change_hp(tokenID, changeHPData = null) {
 				if (tokenCurrentHP <= 0) {
 					tokenCurrentHP = 0;
 				}
-
-				if (!silent) {
-					let description = tokenDisplayName + " takes " + String(actualChangeVal) + " lethal " + changeHPData.damageType + " damage!";
-					if (tokenTraits.includes("troop")) {
-						let troopChange = troop_segment_change(tokenCurrentMaxHP, tokenOldHP, tokenCurrentHP)
-						if (troopChange.old > troopChange.new) {
-							description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
-						}
+				let description = tokenDisplayName + " takes " + String(actualChangeVal) + " lethal " + changeHPData.damageType + " damage!";
+				if (tokenTraits.includes("troop")) {
+					let troopChange = troop_segment_change(tokenCurrentMaxHP, tokenOldHP, tokenCurrentHP)
+					if (troopChange.old > troopChange.new) {
+						description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
 					}
-					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": description } } }, true);
 				}
+				chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "gmOnly": gmOnly, "description": { "value": description } } }, true);
 
 				token.setProperty("foundryActor", JSON.stringify(foundryActor));
 				token.setProperty("TempHP", String(tokenCurrentTempHP));
@@ -178,16 +169,14 @@ function change_hp(tokenID, changeHPData = null) {
 					tokenCurrentHP = 0;
 				}
 
-				if (!silent) {
-					let description = tokenDisplayName + " takes " + String(actualChangeVal) + " nonlethal " + changeHPData.damageType + " damage!";
-					if (tokenTraits.includes("troop")) {
-						let troopChange = troop_segment_change(tokenCurrentMaxHP, tokenOldHP, tokenCurrentHP)
-						if (troopChange.old > troopChange.new) {
-							description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
-						}
+				let description = tokenDisplayName + " takes " + String(actualChangeVal) + " nonlethal " + changeHPData.damageType + " damage!";
+				if (tokenTraits.includes("troop")) {
+					let troopChange = troop_segment_change(tokenCurrentMaxHP, tokenOldHP, tokenCurrentHP)
+					if (troopChange.old > troopChange.new) {
+						description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
 					}
-					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "description": { "value": description } } }, true);
 				}
+				chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "gmOnly": gmOnly, "description": { "value": description } } }, true);
 
 				token.setProperty("foundryActor", JSON.stringify(foundryActor));
 				token.setProperty("TempHP", String(tokenCurrentTempHP));
@@ -220,11 +209,9 @@ function change_hp(tokenID, changeHPData = null) {
 					}
 					if (get_state("Dead", token)) {
 						set_state("Dead", false, token);
-						if (!silent) {
-							chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
-						}
-					} else if (!silent) {
-						chat_display({ "name": tokenDisplayName + " healed!", "system": { "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
+						chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
+					} else {
+						chat_display({ "name": tokenDisplayName + " healed!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
 					}
 				}
 			}

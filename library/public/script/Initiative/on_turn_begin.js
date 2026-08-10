@@ -4,7 +4,9 @@ function on_turn_begin(turnToken, turnData = {}) {
 	if (typeof (turnToken) == "string") {
 		turnToken = MapTool.tokens.getTokenByID(turnToken);
 	}
-	//MapTool.chat.broadcast(turnToken.getName());
+	//MapTool.chat.broadcast(turnToken.getName());	
+
+	chat_display({ "name": turnToken.getName().replace("Lib:","") + " receives initiative!", "system": { "description": { "value": "" } } }, true);
 
 	let newActionCount = 3;
 	let newReactionCount = 1;
@@ -46,7 +48,7 @@ function on_turn_begin(turnToken, turnData = {}) {
 				"hpChangeType": "healing",
 				"currentHPChange": Number(turnToken.getProperty("HP")),
 				"currentMaxHPChange": Number(turnToken.getProperty("MaxHP")),
-				"silent": true
+				"gmOnly": true
 			};
 			change_hp(turnToken.getId(), hpData);
 		}
@@ -182,7 +184,6 @@ function on_turn_begin(turnToken, turnData = {}) {
 	turnToken.setProperty("actionsLeft", newActionCount);
 	turnToken.setProperty("reactionsLeft", newReactionCount);
 	turnToken.setProperty("attacksThisRound", 0);
-
 }
 
 MTScript.registerMacro("ca.pz2e.on_turn_begin", on_turn_begin);
