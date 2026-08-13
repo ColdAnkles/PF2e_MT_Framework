@@ -55,7 +55,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                             { "text": capitalise(token.getProperty("size")) + " | " + array_to_string(JSON.parse(token.getProperty("traits"))) + " | " + token.getProperty("level"), "label": "Creature" },
                             { "text": display_hp(tokenID) + " | " + display_speeds(tokenID), "label": "" },
                             { "text": "AC: " + calculate_ac(tokenID) + " | " + display_save_bonuses(tokenID), "label": "Defenses" },
-                            { "text": JSON.parse(token.getProperty("immunities")).join(", "), "label": "Immunities" },
+                            { "text": typeArray_to_string(token.getProperty("immunities")), "label": "Immunities" },
                             { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
                             { "text": display_weaknesses(tokenID), "label": "Weaknesses" },
                             { "text": "+" + String(Number(token.getProperty("perception")) + Number(display_bonus(tokenID, "perception"))) + " | " + array_to_string(JSON.parse(token.getProperty("senses"))), "label": "Perception" },
@@ -114,25 +114,53 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                         if (damageTracker.value > 0) {
                             overlayHTML += "<div>" + String(damageTracker.value) + " Damage Taken</div>";
                         }
+
+                        let descriptions = {
+                            "flesh": [
+                                ["Unharmed", "Spry", "Uninjured", "Healthy", "Whole", "Hale", "Hearty"],
+                                ["Scratched", "Scraped", "Scuffed", "Grazed", "Bruised", "Impaired"],
+                                ["Injured", "Hurt", "Wounded", "Harmed", "Contused"], ["Bloodied", "Battered"],
+                                ["Bloodied", "Battered"],
+                                ["Gashed", "Wrecked", "Lamed", "Ruined"],
+                                ["Maimed", "Mangled", "Lacerated", "Gored"],
+                                ["On Last Legs", "Mutilated", "Crippled"]
+                            ],
+                            "construct": [
+                                ["Untouched", "Pristine"],
+                                ["Scuffed", "Scratched", "Defaced"],
+                                ["Dented", "Cracked", "Damaged"],
+                                ["Splintered", "Fragmented"],
+                                ["Busted", "Broken", "Ruined"],
+                                ["Wrecked", "Pulverised"],
+                                ["Shattered", "Smashed"]
+                            ]
+                        };
+
+                        let tokenTraits = JSON.stringify(token.getProperty("traits"));
+                        let descriptionList = descriptions.flesh;
+                        if (tokenTraits.includes("construct")) {
+                            descriptionList = descriptions.construct;
+                        }
                         let tokenMaxHP = Number(token.getProperty("MaxHP"));
                         let healthPer = tokenHP / tokenMaxHP;
                         let healthStrings = [];
                         if (healthPer == 1) {
-                            healthStrings = ["Unharmed", "Spry", "Uninjured", "Healthy", "Whole", "Hale", "Hearty"];
+                            healthStrings = descriptionList[0];
                         } else if (healthPer > 0.8) {
-                            healthStrings = ["Scratched", "Scraped", "Scuffed", "Grazed", "Bruised", "Impaired"];
+                            healthStrings = descriptionList[1];
                         } else if (healthPer > 0.6) {
-                            healthStrings = ["Injured", "Hurt", "Wounded", "Harmed", "Contused"];
+                            healthStrings = descriptionList[2];
                         } else if (healthPer > 0.5) {
-                            healthStrings = ["Bloodied", "Battered"];
+                            healthStrings = descriptionList[3];
                         } else if (healthPer > 0.4) {
-                            healthStrings = ["Gashed", "Wrecked", "Lamed", "Ruined"];
+                            healthStrings = descriptionList[4];
                         } else if (healthPer > 0.2) {
-                            healthStrings = ["Maimed", "Mangled", "Lacerated", "Gored"];
+                            healthStrings = descriptionList[5];
                         } else if (healthPer > 0) {
-                            healthStrings = ["On Last Legs", "Mutilated", "Crippled"];
+                            healthStrings = descriptionList[6];
                         }
-                        let healthText = healthStrings[Math.floor(Math.random() * healthStrings.length)];
+                        let seededRandom = splitmix32(tokenMaxHP % token.getName().length);
+                        let healthText = healthStrings[Math.floor(seededRandom() * healthStrings.length)];
                         overlayHTML += "<div>" + healthText + "</div>";
                     }
                 }

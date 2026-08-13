@@ -5,6 +5,7 @@ function typeArray_to_string(arrayList) {
 	if (JSON.parse(arrayList).length == 0) {
 		return "";
 	}
+	arrayList = JSON.parse(arrayList);
 	let arrayString = "";
 	for (var t in arrayList) {
 		let separator = ", ";
