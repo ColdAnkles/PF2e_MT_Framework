@@ -73,6 +73,11 @@
     [h: windowWidth=500]
     [h: windowHeight=1000]
 }]
+[h, if(table=="temperature"), code:{
+    [h: windowName = "Services"]
+    [h: windowWidth=650]
+    [h: windowHeight=500]
+}]
 
 [frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=1;"):{
     <html>
@@ -116,6 +121,9 @@
     }]
 	[r, if(table=="services"), code:{
         [r: data.getStaticData('ca.pz2e', "public/html/services.html")]
+    }]
+	[r, if(table=="temperature"), code:{
+        [r: data.getStaticData('ca.pz2e', "public/html/temperature.html")]
     }]
     </html>
 }]

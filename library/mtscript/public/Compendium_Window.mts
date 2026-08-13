@@ -53,7 +53,7 @@
 }]
 [h, if(windowType=="tables"), code:{
     [h: windowName = "Tables"]
-    [h: windowHeight=500]
+    [h: windowHeight=400]
 }]
 
 [frame5(windowName, "width="+windowWidth+"; height="+windowHeight+"; temporary=1; scrollreset=1"):{
@@ -67,18 +67,22 @@
         [r: js.ca.pz2e.build_item_list(windowType, sort, dir, searchKey, tokenID)]
     };{}]
     [r, if(windowType=="tables"), code:{
-        [r:macroLink("Encounters","TableWindow@Lib:ca.pz2e","none","encounters")]<br />
-        [r:macroLink("Simple DCs","TableWindow@Lib:ca.pz2e","none","simpleDCs")]<br />
-        [r:macroLink("DCs by Level","TableWindow@Lib:ca.pz2e","none","levelDCs")]<br />
-        [r:macroLink("Spell DCs","TableWindow@Lib:ca.pz2e","none","spellDCs")]<br />
-        [r:macroLink("Magic Item DCs","TableWindow@Lib:ca.pz2e","none","magicItemDCs")]<br />
-        [r:macroLink("Adjusting Difficulty","TableWindow@Lib:ca.pz2e","none","adjustingDifficulty")]<br />
-        [r:macroLink("Cost of Living","TableWindow@Lib:ca.pz2e","none","costOfLiving")]<br />
-        [r:macroLink("Cover","TableWindow@Lib:ca.pz2e","none","cover")]<br />
-        [r:macroLink("Services","TableWindow@Lib:ca.pz2e","none","services")]<br />
-        [r:macroLink("Learning Spells","TableWindow@Lib:ca.pz2e","none","learnASpell")]<br />
-        [r:macroLink("Earning Income","TableWindow@Lib:ca.pz2e","none","earnIncome")]<br />
-        [r:macroLink("Locks","TableWindow@Lib:ca.pz2e","none","locks")]<br />
-        [r:macroLink("Structures","TableWindow@Lib:ca.pz2e","none","structures")]<br />
+        [h: cssName = "lib://ca.pz2e/css/" + json.get(json.get(getLibProperty("pz2e_themes","Lib:ca.pz2e"), getLibProperty("selectedTheme","Lib:ca.pz2e")),"css")]
+	    <link rel="stylesheet" type="text/css" href=[r:cssName]><body class='compendium_body'>
+        [r: macroLink("Encounters","TableWindow@Lib:ca.pz2e","none","encounters")]<br />
+        [r: macroLink("Simple DCs","TableWindow@Lib:ca.pz2e","none","simpleDCs")]<br />
+        [r: macroLink("DCs by Level","TableWindow@Lib:ca.pz2e","none","levelDCs")]<br />
+        [r: macroLink("Spell DCs","TableWindow@Lib:ca.pz2e","none","spellDCs")]<br />
+        [r: macroLink("Magic Item DCs","TableWindow@Lib:ca.pz2e","none","magicItemDCs")]<br />
+        [r: macroLink("Adjusting Difficulty","TableWindow@Lib:ca.pz2e","none","adjustingDifficulty")]<br />
+        [r: macroLink("Cost of Living","TableWindow@Lib:ca.pz2e","none","costOfLiving")]<br />
+        [r: macroLink("Cover","TableWindow@Lib:ca.pz2e","none","cover")]<br />
+        [r: macroLink("Services","TableWindow@Lib:ca.pz2e","none","services")]<br />
+        [r: macroLink("Learning Spells","TableWindow@Lib:ca.pz2e","none","learnASpell")]<br />
+        [r: macroLink("Earning Income","TableWindow@Lib:ca.pz2e","none","earnIncome")]<br />
+        [r: macroLink("Locks","TableWindow@Lib:ca.pz2e","none","locks")]<br />
+        [r: macroLink("Structures","TableWindow@Lib:ca.pz2e","none","structures")]<br />
+        [r: macroLink("Temperature","TableWindow@Lib:ca.pz2e","none","temperature")]<br />
+        </body>
     };{}]
 }]

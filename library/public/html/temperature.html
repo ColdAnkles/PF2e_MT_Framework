@@ -1,0 +1,120 @@
+<script>
+    let temperatures = [
+        { "a": -80, "b": "or", "c": "colder" },
+        { "a": -79, "b": "to", "c": "-20" },
+        { "a": -21, "b": "to", "c": "12" },
+        { "a": 13, "b": "to", "c": "32" },
+        { "a": 33, "b": "to", "c": "94" },
+        { "a": 95, "b": "to", "c": "104" },
+        { "a": 105, "b": "to", "c": "114" },
+        { "a": 115, "b": "to", "c": "139" },
+        { "a": 140, "b": "or", "c": "warmer" },
+    ];
+
+    let isFarenheit = true;
+
+    function ftoc(t) {
+        return Math.round((t - 32) / 1.8);
+    }
+
+    function swapTemps() {
+        isFarenheit = !isFarenheit;
+        let tempTable = document.getElementById("tempTable");
+        let adviceLine = document.getElementById("advice");
+        for (var i = 0; i < temperatures.length; i++) {
+            let text = "";
+            if (isFarenheit) {
+                text = temperatures[i].a;
+                text += "&deg; F" + ((i == 5 || i == 6) ? "* " : " ")
+                text += temperatures[i].b;
+                text += " ";
+                text += ((isNaN(Number(temperatures[i].c))) ? temperatures[i].c : temperatures[i].c + "&deg; F") + ((i == 5) ? "*" : "")
+            } else {
+                text = ftoc(temperatures[i].a);
+                text += "&deg; C ";
+                text += temperatures[i].b;
+                text += " ";
+                text += ((isNaN(Number(temperatures[i].c))) ? temperatures[i].c : ftoc(temperatures[i].c) + "&deg; C ");
+            }
+            tempTable.rows[i + 1].cells[1].innerHTML = text;
+        }
+        if (isFarenheit) {
+            adviceLine.innerHTML = "* Adjust temperatures down by 15&deg; F in areas of high humidity";
+        } else {
+            adviceLine.innerHTML = "* Adjust temperatures down by ~8.5&deg; C in areas of high humidity";
+        }
+    }
+</script>
+
+<body class="compendium_body">
+    <p>Appropriate cold-weather gear can negate the damage from severe cold or reduce the damage from extreme cold to
+        that of particularly severe cold.</p>
+
+    <table id='tempTable' class="staticTable">
+        <tbody>
+            <tr>
+                <th><b>Category</b></th>
+                <th><b>Temperature &deg;F</b></th>
+                <th><b>Fatigue</b></th>
+                <th><b>Damage</b></th>
+            </tr>
+            <tr>
+                <td>Incredible cold</td>
+                <td>-80&deg; F or colder</td>
+                <td>2 hours</td>
+                <td>Moderate cold every minute</td>
+            </tr>
+            <tr>
+                <td>Extreme cold</td>
+                <td>-79&deg; F to -20&deg; F</td>
+                <td>4 hours</td>
+                <td>Minor cold every 10 minutes</td>
+            </tr>
+            <tr>
+                <td>Severe cold</td>
+                <td>-21&deg; F to 12&deg; F</td>
+                <td>4 hours</td>
+                <td>Minor cold every hour</td>
+            </tr>
+            <tr>
+                <td>Mild cold</td>
+                <td>13&deg; F to 32&deg; F</td>
+                <td>4 hours</td>
+                <td>None</td>
+            </tr>
+            <tr>
+                <td>Normal</td>
+                <td>33&deg; F to 94&deg; F</td>
+                <td>8 hours</td>
+                <td>None</td>
+            </tr>
+            <tr>
+                <td>Mild heat</td>
+                <td>95&deg; F* to 104&deg; F*</td>
+                <td>4 hours</td>
+                <td>None</td>
+            </tr>
+            <tr>
+                <td>Severe heat</td>
+                <td>105&deg; F* to 114&deg; F</td>
+                <td>4 hours</td>
+                <td>Minor fire every hour</td>
+            </tr>
+            <tr>
+                <td>Extreme heat</td>
+                <td>115&deg; F to 139&deg; F</td>
+                <td>4 hours</td>
+                <td>Minor fire every 10 minutes</td>
+            </tr>
+            <tr>
+                <td>Incredible heat</td>
+                <td>140&deg; F or warmer</td>
+                <td>2 hours</td>
+                <td>Moderate fire every minute</td>
+            </tr>
+        </tbody>
+    </table>
+    <p id='advice'>* Adjust temperatures down by 15&deg; F in areas of high humidity</p>
+    <form><input id='swapUnit' type='button' value='Swap Unit' onclick='swapTemps();' style='font-family:Arial;' />
+    </form>
+</body>

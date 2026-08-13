@@ -5,8 +5,8 @@ function filterTable() {
     minLevel = document.getElementById("minLevel");
     maxLevel = document.getElementById("maxLevel");
 
-    if (minLevel != null) { minLevel = minLevel.value } else {minLevel = -100};
-    if (maxLevel != null) { maxLevel = maxLevel.value } else {maxLevel = 100};
+    if (minLevel != null) { minLevel = minLevel.value } else { minLevel = -100 };
+    if (maxLevel != null) { maxLevel = maxLevel.value } else { maxLevel = 100 };
 
     if (minLevel === "") { minLevel = -100; }
     if (maxLevel === "") { maxLevel = 100; }
