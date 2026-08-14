@@ -25,16 +25,16 @@
             let text = "";
             if (isFarenheit) {
                 text = temperatures[i].a;
-                text += "&deg; F" + ((i == 5 || i == 6) ? "* " : " ")
+                text += "&deg; F" + ((i == 5 || i == 6) ? "* " : " ");
                 text += temperatures[i].b;
                 text += " ";
-                text += ((isNaN(Number(temperatures[i].c))) ? temperatures[i].c : temperatures[i].c + "&deg; F") + ((i == 5) ? "*" : "")
+                text += ((isNaN(Number(temperatures[i].c))) ? temperatures[i].c : temperatures[i].c + "&deg; F") + ((i == 5) ? "*" : "");
             } else {
                 text = ftoc(temperatures[i].a);
-                text += "&deg; C ";
+                text += "&deg; C" + ((i == 5 || i == 6) ? "* " : " ");
                 text += temperatures[i].b;
                 text += " ";
-                text += ((isNaN(Number(temperatures[i].c))) ? temperatures[i].c : ftoc(temperatures[i].c) + "&deg; C ");
+                text += ((isNaN(Number(temperatures[i].c))) ? temperatures[i].c : ftoc(temperatures[i].c) + "&deg; C") + ((i == 5) ? "*" : "");
             }
             tempTable.rows[i + 1].cells[1].innerHTML = text;
         }
