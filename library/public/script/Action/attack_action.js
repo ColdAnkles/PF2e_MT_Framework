@@ -336,21 +336,26 @@ function attack_action(actionData, actingToken) {
 		for (var d in actionData.system.damageRolls) {
 			let damageData = actionData.system.damageRolls[d];
 			if (damage_bonus != 0) {
-				damageData.damage += "+" + String(damage_bonus)
+				damageData.damage += " + " + String(damage_bonus)
 			}
-			let rolledDamage = roll_dice(damageData.damage);
-			damageDetails.push(damageData.damage + " = " + String(rolledDamage) + (("category" in damageData) ? " " + damageData.category + " " : " ") + damageData.damageType);
-			let critDamage = rolledDamage * 2;
-			let critDice = "(" + damageData.damage + ")x2 = " + String(critDamage);
-			if (fatalDie != "") {
-				let critRoll = damageData.damage.replaceAll(/d[0-9]*/g, fatalDie)
-				critDamage = Number(roll_dice(critRoll)) + Number(roll_dice(fatalDie));
-				critDice = "(" + critRoll + ")x2 + 1" + fatalDie + " = " + String(critDamage);
-			} else if (deadlyDie != "") {
-				critDamage += Number(roll_dice(deadlyDie));
-				critDice = "(" + damageData.damage + ")x2 + " + deadlyDie + " = " + String(critDamage);
+			if ("category" in damageData && damageData.category == "persistent") {
+				damageDetails.push(damageData.damage + (("category" in damageData) ? " " + damageData.category + " " : " ") + damageData.damageType);
+				critDamageDetails.push("(" + damageData.damage + ")x2 " + (("category" in damageData) ? " " + damageData.category + " " : " ") + damageData.damageType);
+			} else {
+				let rolledDamage = roll_dice(damageData.damage);
+				damageDetails.push(damageData.damage + " = " + String(rolledDamage) + (("category" in damageData) ? " " + damageData.category + " " : " ") + damageData.damageType);
+				let critDamage = rolledDamage * 2;
+				let critDice = "(" + damageData.damage + ")x2 = " + String(critDamage);
+				if (fatalDie != "") {
+					let critRoll = damageData.damage.replaceAll(/d[0-9]*/g, fatalDie)
+					critDamage = Number(roll_dice(critRoll)) + Number(roll_dice(fatalDie));
+					critDice = "(" + critRoll + ")x2 + 1" + fatalDie + " = " + String(critDamage);
+				} else if (deadlyDie != "") {
+					critDamage += Number(roll_dice(deadlyDie));
+					critDice = "(" + damageData.damage + ")x2 + " + deadlyDie + " = " + String(critDamage);
+				}
+				critDamageDetails.push(critDice + " " + damageData.damageType);
 			}
-			critDamageDetails.push(critDice + " " + damageData.damageType);
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in attack_action during damage-rolls");

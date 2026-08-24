@@ -115,7 +115,11 @@ function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
 
 	if (parsed.braceContents != null) {
 		uuidString = parsed.braceContents;
-	} else if ("Compendium.pz2e.bestiary-effects.Item.Effect" in parsed.bracketDetail) {
+	} else if (parsed.bracketContents.includes("Compendium.pf2e.bestiary-ability-glossary-srd.Item")) {
+		let tempArray = parsed.bracketContents.split(".");
+		let itemName = tempArray[tempArray.length - 1];
+		uuidString = "<b>" + itemName + "</b>";
+	} else if ("Compendium.pf2e.bestiary-effects.Item.Effect" in parsed.bracketDetail) {
 		uuidString = "";
 	} else if (parsed.bracketContents.includes("spell-effects") && !additionalData.rollDice) {
 		let tempArray = parsed.bracketContents.split(/[^(Vs)]\./);

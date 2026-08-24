@@ -15,7 +15,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		outputText += ";width:500px;'>";
 	}
 	outputText += "<table style='width:100%; padding: 4px 0px; border-spacing: 0px;'>";
-	outputText += "<tr height=20px style='background-color: " + themeData.colours.titleBackground + ";'><td>";
+	outputText += "<tr height=15px style='background-color: " + themeData.colours.titleBackground + ";'><td>";
 	outputText += "<h1 style='color: " + themeData.colours.titleText + ";line-height: 1em;vertical-align: middle;font-variant: small-caps;'>";
 
 	try {
@@ -49,7 +49,7 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 	outputText += "</h1></td>";
 
 	if (displayData.name.length > 20 && broadcast && "level" in displayData.system) {
-		outputText += "</tr><tr height=20px style='background-color: " + themeData.colours.titleBackground + ";'>";
+		outputText += "</tr><tr height=15px style='background-color: " + themeData.colours.titleBackground + ";'>";
 	}
 
 	try {
@@ -76,8 +76,8 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 			for (var t in displayData.system.traits.value) {
 				let traitName = displayData.system.traits.value[t];
 				let traitNormal = capitalise(traitName).split('-')[0];
-				if ("traitDescription" + traitNormal in traitGlossary && traitGlossary["traitDescription" + traitNormal] != null) {
-					outputText += "<td bgcolor='" + themeData.colours.traitOuter + "', style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'><span title=\"" + traitGlossary["traitDescription" + traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
+				if ("TraitDescription" + traitNormal in traitGlossary && traitGlossary["TraitDescription" + traitNormal] != null) {
+					outputText += "<td bgcolor='" + themeData.colours.traitOuter + "', style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'><span title=\"" + traitGlossary["TraitDescription" + traitNormal] + "\">" + all_caps(traitName).replaceAll("-", " ") + "</span></font></td>";
 				} else {
 					outputText += "<td bgcolor='" + themeData.colours.traitOuter + "', style='border:2px solid " + themeData.colours.traitInner + ";'><font color='" + themeData.colours.traitText + "'>" + all_caps(traitName).replaceAll("-", " ") + "</font></td>";
 				}

@@ -15,7 +15,7 @@ function party_overlay() {
         overlayHTML += "<div class='player'>";
         overlayHTML += "<div class='player-image'><img height=40px width=40px src='" + tokenImage + "'/></div>";
 
-        overlayHTML += "<div><h3>" + pc.getName().replace("Lib:", "") + "</h3></div>";
+        overlayHTML += "<div><h3 class='player-name'>" + pc.getName().replace("Lib:", "") + "</h3></div>";
 
         let tokenStates = pc.getActiveStates();
         let tokenStateHTML = "<div style='margin-left: 5px; display: grid; align-items: center;'><div style='margin-left: 5px; display: flex; align-items: center;'>";
