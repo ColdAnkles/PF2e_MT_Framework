@@ -71,6 +71,7 @@ function end_turn(turnToken, forwards = true) {
 				let damageNote = "";
 
 				// No Handling of Resistance/Weakness Exceptions (like resistant to physical except silver)
+				MapTool.chat.broadcast(damageType)
 				if (!effectData.ignoreResImm) {
 					if (damageType in tokenWeaknesses) {
 						damageValue += Number(tokenWeaknesses[damageType]);

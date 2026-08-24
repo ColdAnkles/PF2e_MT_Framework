@@ -17,7 +17,8 @@
 [frame5(tokenName, "width=100; height=300; temporary=1;"):{
 
     [h: cssName = "lib://ca.pz2e/css/" + json.get(json.get(getLibProperty("pz2e_themes","Lib:ca.pz2e"), getLibProperty("selectedTheme","Lib:ca.pz2e")),"css")]
-	<link rel="stylesheet" type="text/css" href=[r:cssName]>
+	<html><link rel="stylesheet" type="text/css" href=[r:cssName]><body class='compendium_body'>
 
     [r: js.ca.pz2e.active_effect_view(tokenID)]</p>
+    </body></html>
 }]

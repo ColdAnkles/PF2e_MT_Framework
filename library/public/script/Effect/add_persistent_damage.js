@@ -50,6 +50,10 @@ function add_persistent_damage() {
             toggle_action_effect(persistentDamageData, token, true);
         }
 
+        if (token.isPC() && token.getName().includes("Lib:")) {
+            update_my_tokens(token);
+            MTScript.evalMacro("[h: ca.pz2e.updateUI()]");
+        }
     }
 }
 

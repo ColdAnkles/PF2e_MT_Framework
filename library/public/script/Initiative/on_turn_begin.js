@@ -6,7 +6,7 @@ function on_turn_begin(turnToken, turnData = {}) {
 	}
 	//MapTool.chat.broadcast(turnToken.getName());	
 
-	chat_display({ "name": turnToken.getName().replace("Lib:","") + " receives initiative!", "system": { "description": { "value": "" } } }, get_token_visible(turnToken));
+	chat_display({ "name": turnToken.getName().replace("Lib:", "") + " receives initiative!", "system": { "description": { "value": "" } } }, get_token_visible(turnToken));
 
 	let newActionCount = 3;
 	let newReactionCount = 1;

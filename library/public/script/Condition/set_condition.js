@@ -3,10 +3,9 @@
 function set_condition(conditionName, token, conditionValue = null, silent = false) {
 	if (typeof (token) == "string") {
 		token = MapTool.tokens.getTokenByID(token);
-		if (token.isPC()) {
-			token = token.getProperty("myID");
-			token = MapTool.tokens.getTokenByID(token);
-		}
+	}
+	if (token.isPC() && !(token.getName().includes("Lib:"))) {
+		token = MapTool.tokens.getTokenByID(token.getProperty("myID"));
 	}
 
 	let autoDecrease = true;
@@ -213,7 +212,7 @@ function set_condition(conditionName, token, conditionValue = null, silent = fal
 
 	//MapTool.chat.broadcast(JSON.stringify(tokenConditions));
 
-	if (token.isPC()) {
+	if (token.isPC() && token.getName().includes("Lib:")) {
 		update_my_tokens(token);
 		MTScript.evalMacro("[h: ca.pz2e.updateUI()]");
 	}

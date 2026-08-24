@@ -9,6 +9,9 @@ function active_effect_view(token) {
     } else {
         affectedCreature = MapTool.tokens.getTokenByID(token);
     }
+	if (affectedCreature.isPC() && !(affectedCreature.getName().includes("Lib:"))) {
+		affectedCreature = MapTool.tokens.getTokenByID(affectedCreature.getProperty("myID"));
+	}
 
     let tokenEffects = Object.assign({}, JSON.parse(affectedCreature.getProperty("activeEffects")), JSON.parse(affectedCreature.getProperty("specialEffects")));
 

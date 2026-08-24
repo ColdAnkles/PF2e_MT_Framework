@@ -79,6 +79,11 @@ function change_hp(tokenID, changeHPData = null) {
 			gmOnly = true;
 		}
 
+		let silent = false;
+		if ("silent" in changeHPData && changeHPData.silent) {
+			silent = true;
+		}
+
 		if (!("ignoreResImm" in changeHPData)) {
 			changeHPData.ignoreResImm = false;
 		} else if (changeHPData.ignoreResImm == "on") {
@@ -97,17 +102,25 @@ function change_hp(tokenID, changeHPData = null) {
 				if (get_state("Dead", token)) {
 					set_state("Dead", false, token);
 				}
-				chat_display({ "name": tokenDisplayName + " HP Set!", "system": { "gmOnly": true, "description": { "value": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" } } }, true);
+				if (!silent) {
+					chat_display({ "name": tokenDisplayName + " HP Set!", "system": { "gmOnly": true, "description": { "value": tokenDisplayName + " HP set to " + String(changeHPData.currentHPChange) + "!" } } }, true);
+				}
 			}
 		} else if (changeHPData.currentMaxHPChange != tokenCurrentMaxHP) {
 			token.setProperty("MaxHP", String(changeHPData.currentMaxHPChange));
 		} else if (changeHPData.currentTempHPChange != tokenCurrentTempHP) {
 			token.setProperty("TempHP", String(changeHPData.currentTempHPChange));
-			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" } } }, true);
+
+			if (!silent) {
+				chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " temp HP set to " + String(changeHPData.currentTempHPChange) + "!" } } }, true);
+			}
 		} else if (changeHPData.hpChangeType == "tempHP") {
 			tokenCurrentTempHP = Math.max(tokenCurrentTempHP, changeHPData.hpChangeVal);
 			token.setProperty("TempHP", String(tokenCurrentTempHP));
-			chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" } } }, true);
+
+			if (!silent) {
+				chat_display({ "name": tokenDisplayName + " changed Temp HP!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " temp HP set to " + String(tokenCurrentTempHP) + "!" } } }, true);
+			}
 		} else {
 			if (changeHPData.hpChangeType == "lethal") {
 
@@ -137,7 +150,10 @@ function change_hp(tokenID, changeHPData = null) {
 						description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
 					}
 				}
-				chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "gmOnly": gmOnly, "description": { "value": description } } }, true);
+
+				if (!silent) {
+					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "gmOnly": gmOnly, "description": { "value": description } } }, true);
+				}
 
 				token.setProperty("foundryActor", JSON.stringify(foundryActor));
 				token.setProperty("TempHP", String(tokenCurrentTempHP));
@@ -176,7 +192,9 @@ function change_hp(tokenID, changeHPData = null) {
 						description += "<br /> Troop Loses " + String(troopChange.old - troopChange.new) + " Segments.";
 					}
 				}
-				chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "gmOnly": gmOnly, "description": { "value": description } } }, true);
+				if (!silent) {
+					chat_display({ "name": tokenDisplayName + " takes damage!", "system": { "gmOnly": gmOnly, "description": { "value": description } } }, true);
+				}
 
 				token.setProperty("foundryActor", JSON.stringify(foundryActor));
 				token.setProperty("TempHP", String(tokenCurrentTempHP));
@@ -209,9 +227,13 @@ function change_hp(tokenID, changeHPData = null) {
 					}
 					if (get_state("Dead", token)) {
 						set_state("Dead", false, token);
-						chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
+						if (!silent) {
+							chat_display({ "name": tokenDisplayName + " resurrected!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " resurrected to " + String(tokenCurrentHP) + " HP!" } } }, true);
+						}
 					} else {
-						chat_display({ "name": tokenDisplayName + " healed!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
+						if (!silent) {
+							chat_display({ "name": tokenDisplayName + " healed!", "system": { "gmOnly": gmOnly, "description": { "value": tokenDisplayName + " heals " + String(healVal) + "!" } } }, true);
+						}
 					}
 				}
 			}
