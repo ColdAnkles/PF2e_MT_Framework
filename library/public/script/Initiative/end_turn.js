@@ -94,6 +94,7 @@ function end_turn(turnToken, forwards = true) {
 				if (damageValue > 0) {
 					let hpData = {
 						"hpChangeVal": damageValue,
+						"damageType": damageType,
 						"tokenID": turnToken.getId(),
 						"currentTempHPChange": Number(turnToken.getProperty("TempHP")),
 						"changeHPSubmit": "Submit",
@@ -101,7 +102,7 @@ function end_turn(turnToken, forwards = true) {
 						"currentHPChange": Number(turnToken.getProperty("HP")),
 						"currentMaxHPChange": Number(turnToken.getProperty("MaxHP")),
 						"silent": true,
-						"ignoreResImm": effectData.ignoreResImm
+						"ignoreResImm": true //Ignore Res/Imm in change_hp, as already done above
 					};
 					change_hp(turnToken.getId(), hpData);
 				}
