@@ -55,7 +55,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                             { "text": capitalise(token.getProperty("size")) + " | " + array_to_string(JSON.parse(token.getProperty("traits"))) + " | " + token.getProperty("level"), "label": "Creature" },
                             { "text": display_hp(tokenID) + " | " + display_speeds(tokenID), "label": "" },
                             { "text": "AC: " + calculate_ac(tokenID) + " | " + display_save_bonuses(tokenID), "label": "Defenses" },
-                            { "text": typeArray_to_string(token.getProperty("immunities")), "label": "Immunities" },
+                            { "text": typeArray_to_string(JSON.parse(token.getProperty("immunities"))), "label": "Immunities" },
                             { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
                             { "text": display_weaknesses(tokenID), "label": "Weaknesses" },
                             { "text": "+" + String(Number(token.getProperty("perception")) + Number(display_bonus(tokenID, "perception"))) + " | " + array_to_string(JSON.parse(token.getProperty("senses"))), "label": "Perception" },
@@ -69,7 +69,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                             { "text": display_hp(tokenID) + " | " + "Hardness: " + token.getProperty("hardness"), "label": "HP" },
                             { "text": "AC: " + calculate_ac(tokenID) + " | " + display_save_bonuses(tokenID), "label": "Defense" },
                             { "text": display_hazard_stealth(tokenID), "label": "Stealth" },
-                            { "text": JSON.parse(token.getProperty("immunities")).join(", "), "label": "Immunities" },
+                            { "text": typeArray_to_string(JSON.parse(token.getProperty("immunities"))), "label": "Immunities" },
                             { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
                             { "text": display_weaknesses(tokenID), "label": "Weaknesses" }
                         ];
