@@ -47,6 +47,12 @@ function create_pc_lib(pathbuilderID, tokenID) {
 	}
 	delete PCData.pets;
 
+	let foundryActor = JSON.parse(pcToken.getProperty("foundryActor"));
+	if (foundryActor != null && "extraMacros" in foundryActor){
+		let existingMacros = foundryActor.extraMacros;
+		PCData.foundryActor.extraMacros = existingMacros;
+	}
+
 	write_creature_properties(PCData, tokenID);
 
 	for (var f in PCData.familiars) {
@@ -67,8 +73,15 @@ function create_pc_lib(pathbuilderID, tokenID) {
 
 		//__ADD MACROS SPECIFIC TO THIS PC__
 		add_pc_macros(tokenID, tokenID);
+
+		//__ADD EXTRA MACROS IF ANY__
+		for (var m in PCData.foundryActor.extraMacros) {
+			let actionData = { "name": PCData.foundryActor.extraMacros[m], "type": "basic", "group": "Extra" };
+			add_action_to_token(actionData, tokenID);
+		}
 	}
 
+	MTScript.evalMacro("[h: ca.pz2e.updateUI()]");
 }
 
 MTScript.registerMacro("ca.pz2e.create_pc_lib", create_pc_lib);
