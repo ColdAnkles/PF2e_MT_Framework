@@ -31,6 +31,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
             let playerData = JSON.parse(MTScript.getVariable("playerData"));
             let isGM = playerData.role == "GM";
             let playerName = playerData.name;
+            let tokenVisible = player_sees_token(playerName, tokenID);
             MTScript.setVariable("tokenID", tokenID);
             if (token.getName().includes("Lib") && token.isPC()) {
                 MTScript.evalMacro("[h: owners = getOwners(\"json\", tokenID, \"Player Characters\")]");
@@ -97,7 +98,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                     }
                     overlayHTML += "</table></div>";
                 }
-            } else {
+            } else if (tokenVisible) {
                 if (tokenPropType != "PZ2E_Hazard") {
                     let tokenHP = Number(token.getProperty("HP"));
                     if (tokenPropType == "PZ2E_Character" && tokenHP != 0) {
@@ -165,6 +166,8 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                     }
                 }
                 overlayHTML += "</div>";
+            } else {
+                overlayHTML = "<html><body>";
             }
 
             overlayHTML += "</body></html>";
