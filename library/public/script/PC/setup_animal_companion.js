@@ -322,7 +322,7 @@ function setup_animal_companion(baseData) {
 
         let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
 
-        let queryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><p><form action='macro://Animal_Companion_Setup_To_JS@Lib:ca.pz2e/self/impersonated?'><h1 class='feel-title'>Animal Companion</h1>"
+        let queryHTML = "<html><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/><body class='compendium_body'><p><form action='macro://Animal_Companion_Setup_To_JS@Lib:ca.pz2e/self/impersonated?'><h1 class='feel-title'>Animal Companion</h1>"
         queryHTML += "<input type='hidden' name='ownerID' value='" + String(companionData.ownerID) + "'>";
         queryHTML += "<table style='width:100%' class='staticTable'><tbody>";
         queryHTML += "<input type='hidden' name='baseName' value='" + String(companionData.baseName) + "'></input>";
@@ -407,9 +407,15 @@ function setup_animal_companion(baseData) {
         queryHTML += "<tr><td colspan=2 style='text-align:right'><b>Support Benefit</b></td><td colspan=4><textarea name='benefitVal' cols=50 rows=5>" + companionData.supportBenefit + "</textarea></td></tr>"
 
         //SENSES
-        queryHTML += "<tr><td colspan=2 style='text-align:right'><b>Senses</b></td><td colspan=4><input type='input' name='sensesVal' placeholder='low-light vision, scent (imprecise, 30 feet)' value='" + companionData.senses + "' size=50></input></td>"
+        queryHTML += "<tr><td colspan=2 style='text-align:right'><b>Senses</b></td><td colspan=4><input type='input' name='sensesVal' placeholder='low-light vision, scent (imprecise, 30 feet)' value='" + companionData.senses.join(", ") + "' size=50></input></td>"
 
-        queryHTML += "<td colspan=1 style='text-align:right'><b>Other Speeds</b></td><td colspan=1><input type='input' placeholder='fly 50ft, swim 30ft' name='otherSpeedVal' value='" + companionData.speeds.other + "' size=50></input></td></tr>"
+        //SPEEDS #TODO A FIX
+        let speeds = [];
+        for (var s in companionData.speeds.other){
+            s = companionData.speeds.other[s];
+            speeds.push(s.type + " " + String(s.value) + "ft");
+        }
+        queryHTML += "<td colspan=1 style='text-align:right'><b>Other Speeds</b></td><td colspan=1><input type='input' placeholder='fly 50ft, swim 30ft' name='otherSpeedVal' value='" + speeds.join(", ") + "' size=50></input></td></tr>"
 
         queryHTML += "<tr>";
         //ADVANCED MANOUVER
@@ -471,15 +477,19 @@ function setup_animal_companion(baseData) {
         queryHTML += "</td></tr></table>";
 
         queryHTML += "<tr><td colspan=6 style='text-align:center'><input type='submit' name='update' value='Update'></input><input type='submit' name='save' value='Save'></input></td></tr></tbody></table>";
-        queryHTML += "</form></p></html>";
+        queryHTML += "</form></p></body></html>";
         MTScript.setVariable("queryHTML", queryHTML);
         MTScript.evalMacro("[dialog5('" + companionData.name + " Animal Companion', 'width=1300; height=" + String(900 + (15 * companionData.basicAttacks.length)) + "; temporary=1; noframe=0; input=1'):{[r: queryHTML]}]")
         return;
     } else if ("save" in baseData) {
         try {
-            //MapTool.chat.broadcast(JSON.stringify(companionData));
-            delete companionData.save;
+            //MapTool.chat.broadcast(JSON.stringify(companionData));;
             companionData.senses = companionData.senses.split(/,(?![^(]*\)) /);
+            if (companionData.senses.length > 0 && companionData.senses.includes("")){
+                let index = companionData.senses.indexOf("")
+                companionData.senses[index] = "normal"
+            }
+            delete companionData.save
             companionData.passiveSkills.push({ "actionCost": null, "actionType": "passive", "baseName": "support-benefit", "name": "Support Benefit", "system": { "traits": { "value": [] }, "effects": [], "description": { "value": companionData.supportBenefit }, }, "type": "personal", "traits": [], });
             delete companionData.supportBenefit;
             for (var s in companionData.proficiencies) {
@@ -509,7 +519,7 @@ function setup_animal_companion(baseData) {
                 for (var s in otherSpeeds) {
                     let speedString = otherSpeeds[s];
                     let speedSplit = speedString.split(" ");
-                    //format fly 50ft to {"type":"fly","value":120}
+                    //format fly 50ft to {"type":"fly","value":50}
                     let newSpeed = { "type": speedSplit[0], "value": Number(speedSplit[1].replaceAll(/[a-z]/gi, "")) }
                     otherSpeedData.push(newSpeed);
                 }
