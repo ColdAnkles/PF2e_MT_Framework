@@ -7,7 +7,7 @@ function find_pc_libs(playerName = null) {
 	for (var t in mapTokens) {
 		let testToken = mapTokens[t];
 		if (testToken.isPC() && testToken.getName().includes("Lib:")) {
-			if ((playerName != null && testToken.isOwner(playerName)) || playerName == null){
+			if ((playerName != null && testToken.isOwner(playerName)) || playerName == null) {
 				pcList.push(testToken);
 			}
 		}

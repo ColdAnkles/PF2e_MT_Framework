@@ -16,7 +16,7 @@ function feature_require_choice(feature, assignDict, possibleSelections = []) {
         if ("key" in newRule && newRule.key == "ChoiceSet") {
             let choicePrompt = "Choose"
             if ("prompt" in newRule) {
-                if (newRule.prompt == "PF2E.SpecificRule.Prompt.Skill"){
+                if (newRule.prompt == "PF2E.SpecificRule.Prompt.Skill") {
                     continue;
                 }
                 let testPrompt = glossary_find(newRule.prompt);

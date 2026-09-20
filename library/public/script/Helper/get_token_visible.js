@@ -1,6 +1,6 @@
 "use strict";
 
-function get_token_visible(tokenID){
+function get_token_visible_to_players(tokenID) {
     if (typeof (tokenID) != "String") {
         tokenID = tokenID.getId();
     }

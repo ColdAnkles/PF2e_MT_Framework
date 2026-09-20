@@ -411,7 +411,7 @@ function setup_animal_companion(baseData) {
 
         //SPEEDS #TODO A FIX
         let speeds = [];
-        for (var s in companionData.speeds.other){
+        for (var s in companionData.speeds.other) {
             s = companionData.speeds.other[s];
             speeds.push(s.type + " " + String(s.value) + "ft");
         }
@@ -485,7 +485,7 @@ function setup_animal_companion(baseData) {
         try {
             //MapTool.chat.broadcast(JSON.stringify(companionData));;
             companionData.senses = companionData.senses.split(/,(?![^(]*\)) /);
-            if (companionData.senses.length > 0 && companionData.senses.includes("")){
+            if (companionData.senses.length > 0 && companionData.senses.includes("")) {
                 let index = companionData.senses.indexOf("")
                 companionData.senses[index] = "normal"
             }

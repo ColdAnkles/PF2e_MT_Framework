@@ -48,7 +48,7 @@ function create_pc_lib(pathbuilderID, tokenID) {
 	delete PCData.pets;
 
 	let foundryActor = JSON.parse(pcToken.getProperty("foundryActor"));
-	if (foundryActor != null && "extraMacros" in foundryActor){
+	if (foundryActor != null && "extraMacros" in foundryActor) {
 		let existingMacros = foundryActor.extraMacros;
 		PCData.foundryActor.extraMacros = existingMacros;
 	}

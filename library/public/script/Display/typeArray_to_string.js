@@ -2,7 +2,7 @@
 
 function typeArray_to_string(arrayList) {
 	//MapTool.chat.broadcast(JSON.stringify(arrayList));
-	
+
 	if (typeof (arrayList) == "string") {
 		arrayList = JSON.parse(arrayList);
 	}

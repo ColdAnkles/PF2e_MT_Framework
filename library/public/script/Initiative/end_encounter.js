@@ -17,10 +17,10 @@ function end_encounter() {
         thisToken.setProperty("attacksThisRound", 0);
         thisToken.setProperty("actionsLeft", 0);
         thisToken.setProperty("reactionsLeft", 0);
-        if (get_token_property_type(thisToken) == "PZ2E_Character"){
-	        let foundryActor = JSON.parse(thisToken.getProperty("foundryActor"));
-			foundryActor.damageTracker.value = 0;
-			thisToken.setProperty("foundryActor", JSON.stringify(foundryActor));
+        if (get_token_property_type(thisToken) == "PZ2E_Character") {
+            let foundryActor = JSON.parse(thisToken.getProperty("foundryActor"));
+            foundryActor.damageTracker.value = 0;
+            thisToken.setProperty("foundryActor", JSON.stringify(foundryActor));
         }
     }
     MTScript.evalMacro("[h: removeAllFromInitiative()]");

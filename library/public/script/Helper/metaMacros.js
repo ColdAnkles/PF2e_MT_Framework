@@ -6,12 +6,12 @@ function createMacro(props, tokenID) {
     MTScript.evalMacro("[h: createMacro(props,tokenID)]");
 }
 
-function getMacros(tokenID){
+function getMacros(tokenID) {
     MTScript.setVariable("tokenID", tokenID);
     MTScript.evalMacro("[h: allMacros = getMacros(\"json\", tokenID)]")
     let allMacroNames = JSON.parse(MTScript.getVariable("allMacros"));
     let allMacros = [];
-    for ( var idx in allMacroNames){
+    for (var idx in allMacroNames) {
         MTScript.setVariable("MN", allMacroNames[idx]);
         MTScript.evalMacro("[h: macroIndex = getMacroIndexes(MN, \"json\", tokenID)][h: macroIndex = json.get(macroIndex,0)][h: macroProps = getMacroProps(macroIndex, \"json\", tokenID)]");
         let thisMacroData = JSON.parse(MTScript.getVariable("macroProps"));
