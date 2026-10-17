@@ -7,7 +7,7 @@ function get_pc_tokens(playerName = null) {
         tokenList = tokenList.concat(JSON.parse(pcList[l].getProperty("pcTokens")));
     }
     tokenList.sort();
-    tokenList.filter((value, index, array) => array.indexOf(value) === index);
+    tokenList = tokenList.filter((value, index, array) => array.indexOf(value) === index);
 
     for (var t in tokenList) {
         tokenList[t] = MapTool.tokens.getTokenByID(tokenList[t]);
@@ -15,4 +15,4 @@ function get_pc_tokens(playerName = null) {
     return tokenList;
 }
 
-MTScript.registerMacro("ca.pz2e.find_pc_libs", find_pc_libs);
+MTScript.registerMacro("ca.pz2e.get_pc_tokens", get_pc_tokens);

@@ -59,10 +59,10 @@ function parse_template(templateString) {
 }
 
 function parse_damage(damageString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
+	let damageData = damageString.match(/@Damage\[(.*)\]/)[1].split(/,(?![^\[]*\])/);
 	let parsed = parse_foundry_strings(damageString);
 	let addDamage = 0;
-	let returnValue = damageString;
-	//MapTool.chat.broadcast(JSON.stringify(additionalData));
+	let returnStrings = [];
 
 	if (additionalData.variant == "elite" && "action" in additionalData && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
 		addDamage = 2;
@@ -72,39 +72,33 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 	if ("action" in additionalData && (additionalData.action.system.description.value.toLowerCase().includes("recharge") || additionalData.action.type == "spell")) {
 		addDamage = addDamage * 2;
 	}
-	//MapTool.chat.broadcast(JSON.stringify(parsed));
-	let diceMatch = parsed.bracketContents.match(/([0-9d +\-\*\/\(\)]+)/gm);
-	//MapTool.chat.broadcast(JSON.stringify(diceMatch));
-	if (additionalData.rollDice || !diceMatch[0].includes("d")) {
-		if (diceMatch.length > 0) {
-			diceMatch = diceMatch[0];
-			let finalDice = group_dice(diceMatch + "+" + String(addDamage));
-			let rolledDice = roll_dice(finalDice);
-			if (!diceMatch.includes("d")) {
-				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, String(rolledDice));
+	for (var d in damageData) {
+		var damage = damageData[d];
+		var dice = damage.match(/([^[\]]*)\[(.*)\]/)[1];
+		var types = damage.match(/([^[\]]*)\[(.*)\]/)[2].split(",");
+		if ((additionalData.rollDice && !types.includes("persistent")) || !dice.includes("d")) {
+			if (dice.length > 0) {
+				let finalDice = group_dice(dice + "+" + String(addDamage));
+				let rolledDice = roll_dice(finalDice);
+				if (!dice.includes("d")) {
+					dice = dice.replace(dice, String(rolledDice));
+				} else {
+					dice = dice.replace(dice, finalDice + " (" + String(rolledDice) + ") ");
+				}
+				if (parsed.braceContents == null) {
+					parsed.braceContents = "";
+				}
+				returnStrings.push(dice + types.join(", "));
 			} else {
-				parsed.bracketContents = parsed.bracketContents.replace(diceMatch, finalDice + " (" + String(rolledDice) + ") ");
+				dice = group_dice(dice + "+" + String(addDamage));
+				returnStrings.push(dice + " " + types.join(", "));
 			}
-			if (parsed.braceContents == null) {
-				parsed.braceContents = "";
-			}
-			returnValue = parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, "$1 ($2)").replaceAll(/(.*)\[(.*)\]/gm, "$1 ($2) " + parsed.braceContents);
 		} else {
-			let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
-			if (parsed.braceContents == null) {
-				parsed.braceContents = "";
-			}
-			returnValue = parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
+			dice = group_dice(dice + "+" + String(addDamage));
+			returnStrings.push(dice + " " + types.join(", "));
 		}
-	} else {
-		let dice = group_dice(diceMatch[0] + "+" + String(addDamage));
-		if (parsed.braceContents == null) {
-			parsed.braceContents = "";
-		}
-		returnValue = parsed.bracketContents.replaceAll(/\((.*)\)\[(.*)\]/gm, dice + " ($2)").replaceAll(/(.*)\[(.*)\]/gm, dice + " ($2) " + parsed.braceContents);
 	}
-	//MapTool.chat.broadcast(String(returnValue));
-	return returnValue;
+	return returnStrings.join(" and ");
 }
 
 function parse_uuid(uuidString, additionalData = { "rollDice": false }) {
@@ -541,7 +535,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription = cleanDescription.replaceAll(template_matches[m], replaceString);
 	}
 
-	let damage_matches = cleanDescription.match(/(@Damage\[.*?\]?\])({.*?})?/gm);
+	let damage_matches = cleanDescription.match(/(@Damage\[[^@]*\]?\])({.*?})?/gm);
 	for (var m in damage_matches) {
 		let replaceString = parse_damage(damage_matches[m], additionalData);
 		cleanDescription = cleanDescription.replaceAll(damage_matches[m], replaceString);

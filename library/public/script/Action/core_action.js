@@ -154,6 +154,8 @@ function core_action(actionData, actingToken) {
 						if ("type" in ruleData && (ruleData.type == "circumstance" || ruleData.type == "status" || ruleData.type == "item")) {
 							saveData[ruleData.type.substring(0, 1) + ((ruleData.value > 0) ? "Bonus" : "Malus")] = Math.abs(ruleData.value);
 						}
+					} else if (ruleData.key == "DamageDice") {
+						actionData.system.description.value += "<br />@Damage[" + String(ruleData.diceNumber) + ruleData.dieSize + "[" + ruleData.damageType + "]]";
 					}
 				}
 
