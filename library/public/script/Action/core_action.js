@@ -107,7 +107,11 @@ function core_action(actionData, actingToken) {
 				}
 				if (inputTexts.length > 0) {
 					let inputText = inputTexts.join(",");
-					MTScript.evalMacro("[h: input(" + inputText + ")]");
+					MTScript.evalMacro("[h: abrt = input(" + inputText + ")]");
+					let abort = (Number(MTScript.getVariable("abrt")) == 0);
+					if (abort){
+						return;
+					}
 				}
 				if (!(isNaN(initiative)) && (("noQuery" in actionData && actionData.noQuery) || !("noQuery" in actionData))) {
 					actionData.useMAP = (Number(MTScript.getVariable("useMAP")) == 1);
@@ -130,61 +134,64 @@ function core_action(actionData, actingToken) {
 			}
 		} else {
 
+			let dazzled = false;
 			if (actionData.system.traits.value.includes("attack")) {
 				if (!dazzle_check(actingToken)) {
-					return;
+					dazzled = true;
 				}
 			}
 
-			try {
-				let needsEffect = false;
-				let doSave = false;
-				let saveData = { "partial": true }
-				let doCheck = false;
-				let effectType = ""
-				if (!("rules" in actionData.system)) {
-					actionData.system.rules = [];
-				}
-				for (var r in actionData.system.rules) {
-					let ruleData = actionData.system.rules[r];
-					if (ruleData.selector == "saving-throw") {
-						needsEffect = true;
-						doSave = true;
-						effectType = "saving-throw";
-						if ("type" in ruleData && (ruleData.type == "circumstance" || ruleData.type == "status" || ruleData.type == "item")) {
-							saveData[ruleData.type.substring(0, 1) + ((ruleData.value > 0) ? "Bonus" : "Malus")] = Math.abs(ruleData.value);
-						}
-					} else if (ruleData.key == "DamageDice") {
-						actionData.system.description.value += "<br />@Damage[" + String(ruleData.diceNumber) + ruleData.dieSize + "[" + ruleData.damageType + "]]";
+			if (!dazzled) {
+				try {
+					let needsEffect = false;
+					let doSave = false;
+					let saveData = { "partial": true }
+					let doCheck = false;
+					let effectType = ""
+					if (!("rules" in actionData.system)) {
+						actionData.system.rules = [];
 					}
-				}
+					for (var r in actionData.system.rules) {
+						let ruleData = actionData.system.rules[r];
+						if (ruleData.selector == "saving-throw") {
+							needsEffect = true;
+							doSave = true;
+							effectType = "saving-throw";
+							if ("type" in ruleData && (ruleData.type == "circumstance" || ruleData.type == "status" || ruleData.type == "item")) {
+								saveData[ruleData.type.substring(0, 1) + ((ruleData.value > 0) ? "Bonus" : "Malus")] = Math.abs(ruleData.value);
+							}
+						} else if (ruleData.key == "DamageDice") {
+							actionData.system.description.value += "<br />@Damage[" + String(ruleData.diceNumber) + ruleData.dieSize + "[" + ruleData.damageType + "]]";
+						}
+					}
 
-				if ("selfEffect" in actionData.system) {
-					let effectName = actionData.system.selfEffect.name;
-					toggle_named_effect(effectName, actingToken, 1, actionData);
-				}
+					if ("selfEffect" in actionData.system) {
+						let effectName = actionData.system.selfEffect.name;
+						toggle_named_effect(effectName, actingToken, 1, actionData);
+					}
 
-				if (actionData.name == "Recall Knowledge") {
-					doCheck = true;
-				}
-				if (actionData.system.traits.value.includes("skill")) {
-					doCheck = true;
-				}
-				let foundryActor = JSON.parse(actingToken.getProperty("foundryActor"));
-				chat_display(actionData, true, { "rollDice": true, "actor": actingToken, "action": actionData, "variant": foundryActor.variant, "isPC": actingToken.isPC() });
+					if (actionData.name == "Recall Knowledge") {
+						doCheck = true;
+					}
+					if (actionData.system.traits.value.includes("skill")) {
+						doCheck = true;
+					}
+					let foundryActor = JSON.parse(actingToken.getProperty("foundryActor"));
+					chat_display(actionData, true, { "rollDice": true, "actor": actingToken, "action": actionData, "variant": foundryActor.variant, "isPC": actingToken.isPC() });
 
-				if (doSave) {
-					saving_throw(actingToken, saveData, { "applyEffect": actionData.name });
+					if (doSave) {
+						saving_throw(actingToken, saveData, { "applyEffect": actionData.name });
+					}
+					if (doCheck) {
+						skill_check(actingToken, false, null, [actionData.baseName]);
+					}
+				} catch (e) {
+					MapTool.chat.broadcast("Error in canAct-else during core_action");
+					MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
+					MapTool.chat.broadcast("actingToken: " + String(actingToken));
+					MapTool.chat.broadcast("" + e + "\n" + e.stack);
+					return;
 				}
-				if (doCheck) {
-					skill_check(actingToken, false, null, [actionData.baseName]);
-				}
-			} catch (e) {
-				MapTool.chat.broadcast("Error in canAct-else during core_action");
-				MapTool.chat.broadcast("actionData: " + JSON.stringify(actionData));
-				MapTool.chat.broadcast("actingToken: " + String(actingToken));
-				MapTool.chat.broadcast("" + e + "\n" + e.stack);
-				return;
 			}
 		}
 
