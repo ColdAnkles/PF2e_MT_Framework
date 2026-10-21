@@ -58,7 +58,7 @@ function parse_template(templateString) {
 	return templateString;
 }
 
-function parse_damage(damageString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
+function parse_damage(damageString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true, "isPC":false }) {
 	let damageData = damageString.match(/@Damage\[(.*)\]/)[1].split(/,(?![^\[]*\])/);
 	let parsed = parse_foundry_strings(damageString);
 	let addDamage = 0;
@@ -83,12 +83,16 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 				if (!dice.includes("d")) {
 					dice = dice.replace(dice, String(rolledDice));
 				} else {
-					dice = dice.replace(dice, finalDice + " (" + String(rolledDice) + ") ");
+					if (additionalData.gm || additionalData.isPC) {
+						dice = dice.replace(dice, finalDice + " (" + String(rolledDice) + ")");
+					} else {
+						dice = dice.replace(dice, finalDice);
+					}
 				}
 				if (parsed.braceContents == null) {
 					parsed.braceContents = "";
 				}
-				returnStrings.push(dice + types.join(", "));
+				returnStrings.push(dice + " " + types.join(", "));
 			} else {
 				dice = group_dice(dice + "+" + String(addDamage));
 				returnStrings.push(dice + " " + types.join(", "));
@@ -447,7 +451,7 @@ function clean_actor_data(actorString, actor) {
 	return returnValue;
 }
 
-function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true, "invertImages": true }) {
+function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true, "invertImages": true, "isPC": false }) {
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 
