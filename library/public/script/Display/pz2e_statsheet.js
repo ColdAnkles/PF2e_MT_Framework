@@ -27,18 +27,38 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                 MapTool.chat.broadcast("" + e + "\n" + e.stack);
                 throw new Error("PZ2E: Error in pz2e_statsheet - tokenSetup");
             }
-            MTScript.evalMacro("[h: playerData = player.getInfo()]");
-            let playerData = JSON.parse(MTScript.getVariable("playerData"));
-            let isGM = playerData.role == "GM";
-            let playerName = playerData.name;
-            let tokenVisible = player_sees_token(playerName, tokenID);
-            MTScript.setVariable("tokenID", tokenID);
-            if (token.getName().includes("Lib") && token.isPC()) {
-                MTScript.evalMacro("[h: owners = getOwners(\"json\", tokenID, \"Player Characters\")]");
-            } else {
-                MTScript.evalMacro("[h: owners = getOwners(\"json\", tokenID)]");
+            let playerData = null;
+            let isGM = null;
+            let playerName = null;
+            let tokenVisible = null;
+            let tokenOwners = null;
+            try {
+                MTScript.evalMacro("[h: playerData = player.getInfo()]");
+                playerData = JSON.parse(MTScript.getVariable("playerData"));
+                isGM = playerData.role == "GM";
+                playerName = playerData.name;
+                tokenVisible = player_sees_token(playerName, tokenID);
+                MTScript.setVariable("tokenID", tokenID);
+                if (token.getName().includes("Lib") && token.isPC()) {
+                    MTScript.evalMacro("[h: owners = getOwners(\"json\", tokenID, \"Player Characters\")]");
+                } else {
+                    MTScript.evalMacro("[h: owners = getOwners(\"json\", tokenID)]");
+                }
+                tokenOwners = JSON.parse(MTScript.getVariable("owners"));
+            } catch (e) {
+                if (String(e).startsWith("Error: PZ2E")) {
+                    throw e;
+                }
+                MapTool.chat.broadcast("Error in pz2e_statsheet during player data get");
+                MapTool.chat.broadcast("tokenID: " + String(tokenID));
+                MapTool.chat.broadcast("playerData: " + JSON.stringify(playerData));
+                MapTool.chat.broadcast("playerName: " + String(playerName));
+                MapTool.chat.broadcast("isGM: " + String(isGM));
+                MapTool.chat.broadcast("tokenVisible: " + String(tokenVisible));
+                MapTool.chat.broadcast("tokenOwners: " + JSON.stringify(tokenOwners));
+                MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                throw new Error("PZ2E: Error in pz2e_statsheet during player data get");
             }
-            let tokenOwners = JSON.parse(MTScript.getVariable("owners"));
             let themeData = JSON.parse(read_data("pz2e_themes"))[read_data("selectedTheme")];
             overlayHTML = "<html><head><link rel='stylesheet' type='text/css' href='lib://ca.pz2e/css/" + themeData.css + "'/></head><body>";
 
@@ -172,6 +192,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                         let seededRandom = splitmix32(tokenMaxHP % token.getName().length);
                         let healthText = healthStrings[Math.floor(seededRandom() * healthStrings.length)];
                         overlayHTML += "<div>" + healthText + "</div>";
+                        overlayHTML += "<div>" + display_conditions(tokenID) + "</div>";
                     }
                 }
                 overlayHTML += "</div>";
