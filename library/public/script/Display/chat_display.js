@@ -36,7 +36,6 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		MapTool.chat.broadcast("Error in chat_display during action icon setup");
 		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
 		MapTool.chat.broadcast("broadcast: " + String(broadcast));
-		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
@@ -63,7 +62,6 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		MapTool.chat.broadcast("Error in chat_display during level display");
 		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
 		MapTool.chat.broadcast("broadcast: " + String(broadcast));
-		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
@@ -91,11 +89,41 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 		MapTool.chat.broadcast("Error in chat_display during trait display");
 		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
 		MapTool.chat.broadcast("broadcast: " + String(broadcast));
-		MapTool.chat.broadcast("additionalData: " + JSON.stringify(additionalData) + ")");
 		MapTool.chat.broadcast("" + e + "\n" + e.stack);
 		return;
 	}
 
+	try {
+		if ("range" in displayData.system && displayData.system.range != null) {
+			if ("increment" in displayData.system.range && displayData.system.range.increment != null) {
+				outputText += "<div>Range Increment: " + String(displayData.system.range.increment) + "ft.</div>";
+			} else if ("max" in displayData.system.range && displayData.system.range.max != null) {
+				outputText += "<div>Max. Range: " + String(displayData.system.range.max) + "ft.</div>";
+			}
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during range display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
+
+
+	try {
+		if ("damageRolls" in displayData.system && displayData.system.damageRolls != null) {
+			for (var d in displayData.system.damageRolls) {
+				let dd = displayData.system.damageRolls[d];
+				outputText += "<div>" + dd.damage + " " + dd.damageType + "</div>";
+			}
+		}
+	} catch (e) {
+		MapTool.chat.broadcast("Error in chat_display during range display");
+		MapTool.chat.broadcast("displayData: " + JSON.stringify(displayData));
+		MapTool.chat.broadcast("broadcast: " + String(broadcast));
+		MapTool.chat.broadcast("" + e + "\n" + e.stack);
+		return;
+	}
 	let gmOutputText = outputText;
 
 	try {

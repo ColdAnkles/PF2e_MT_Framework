@@ -28,7 +28,7 @@ function calculate_bonus(token, bonusScopes, consume = false, causeItem = null) 
 		//MapTool.chat.broadcast(JSON.stringify(effectData));
 		//MapTool.chat.broadcast(JSON.stringify(effectData.name));
 		let effectBonuses = get_effect_bonus(effectData, bonusScopes, token, causeItem);
-		//MapTool.chat.broadcast(JSON.stringify(effectBonuses));
+		//MapTool.chat.broadcast(JSON.stringify(effectBonuses, null, "\t"));
 		let hasAsked = false;
 		let askResponse = true;
 		for (var type in effectBonuses) {
