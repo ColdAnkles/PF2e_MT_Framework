@@ -30,6 +30,10 @@ function change_hp(tokenID, changeHPData = null) {
 	let tokenResistances = getTokenResistances(token);
 	let tokenWeaknesses = getTokenWeaknesses(token);
 	let tokenImmunities = getTokenImmunities(token);
+	let tokenHardness = get_actor_data(token, "system.attributes.hardness.value")
+	if (tokenHardness == null) {
+		tokenHardness = 0;
+	}
 
 	if (isNaN(tokenCurrentTempHP)) {
 		tokenCurrentTempHP = 0;
@@ -47,7 +51,7 @@ function change_hp(tokenID, changeHPData = null) {
 		queryHTML += "</td></tr>";
 		queryHTML += "<tr><td>Is the character taking lethal or nonlethal damage, being healed or gaining temporary HP?<br/>";
 
-		queryHTML += "Ignore Resist., Weak., Immunities?: <input type='checkbox' id='ignoreResImm' name='ignoreResImm'></td>";
+		queryHTML += "Ignore Resist., Weak., Immunities, Hard.?: <input type='checkbox' id='ignoreResImm' name='ignoreResImm'></td>";
 
 		queryHTML += "<td><input type='radio' name='hpChangeType' value='lethal' checked='checked'>Lethal Damage<br /><input type='radio' name='hpChangeType' value='nonlethal' >Nonlethal Damage<br /><input type='radio' name='hpChangeType' value='healing'>Healing<br /><input type='radio' name='hpChangeType' value='tempHP'>Temp HP</td></tr>";
 
@@ -133,6 +137,9 @@ function change_hp(tokenID, changeHPData = null) {
 				if (changeHPData.damageType in tokenResistances && !changeHPData.ignoreResImm) {
 					actualChangeVal = Math.max(0, actualChangeVal - Number(tokenResistances[changeHPData.damageType]));
 				}
+				if (tokenHardness > 0 && !changeHPData.ignoreResImm) {
+					actualChangeVal = Math.max(0, actualChangeVal - Number(tokenHardness));
+				}
 				if (tokenImmunities.includes(changeHPData.damageType) && !changeHPData.ignoreResImm) {
 					actualChangeVal = 0;
 				}
@@ -173,6 +180,9 @@ function change_hp(tokenID, changeHPData = null) {
 				}
 				if (changeHPData.damageType in tokenResistances && !changeHPData.ignoreResImm) {
 					actualChangeVal = Math.max(0, actualChangeVal - Number(tokenResistances[changeHPData.damageType]));
+				}
+				if (tokenHardness > 0 && !changeHPData.ignoreResImm) {
+					actualChangeVal = Math.max(0, actualChangeVal - Number(tokenHardness));
 				}
 				if (tokenImmunities.includes(changeHPData.damageType) && !changeHPData.ignoreResImm) {
 					actualChangeVal = 0;

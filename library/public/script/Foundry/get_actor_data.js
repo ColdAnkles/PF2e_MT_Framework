@@ -7,7 +7,6 @@ function get_actor_data(actor, varName) {
     let actorData = JSON.parse(actor.getProperty("foundryActor"));
     let result = null;
     //MapTool.chat.broadcast(JSON.stringify(actorData));
-    //MapTool.chat.broadcast(varName);
     try {
         result = eval("actorData." + varName);
     } catch {
@@ -48,7 +47,7 @@ function get_actor_data(actor, varName) {
                     result = ruleData.value;
                 } else if ("key" in ruleData && "mode" in ruleData && ruleData.key == "ActiveEffectLike" && ruleData.mode == "upgrade") {
                     result = ruleData.value;
-                } else {
+                } else if ("mode" in ruleData && ruleData.mode != "override") {
                     result = ruleData.value;
                 }
             }

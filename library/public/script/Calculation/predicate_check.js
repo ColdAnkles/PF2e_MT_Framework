@@ -47,24 +47,22 @@ function predicate_check(predicate, predicateScopes, actor, item) {
         let partA = contents[0];
         let partB = contents[1];
         if (isNaN(partA)) {
-            partA = predicate_check(partA, predicateScopes, actor, item);
+            partA = Number(predicate_check(partA, predicateScopes, actor, item));
         }
         if (isNaN(partB)) {
-            partB = predicate_check(partB, predicateScopes, actor, item);
+            partB = Number(predicate_check(partB, predicateScopes, actor, item));
         }
         return partA >= partB;
     }
-
-
 
     function predicate_gt(contents, predicateScopes, actor) {
         let partA = contents[0];
         let partB = contents[1];
         if (isNaN(partA)) {
-            partA = predicate_check(partA, predicateScopes, actor, item);
+            partA = Number(predicate_check(partA, predicateScopes, actor, item));
         }
         if (isNaN(partB)) {
-            partB = predicate_check(partB, predicateScopes, actor, item);
+            partB = Number(predicate_check(partB, predicateScopes, actor, item));
         }
         return partA > partB;
     }
@@ -73,10 +71,10 @@ function predicate_check(predicate, predicateScopes, actor, item) {
         let partA = contents[0];
         let partB = contents[1];
         if (isNaN(partA)) {
-            partA = predicate_check(partA, predicateScopes, actor, item);
+            partA = Number(predicate_check(partA, predicateScopes, actor, item));
         }
         if (isNaN(partB)) {
-            partB = predicate_check(partB, predicateScopes, actor, item);
+            partB = Number(predicate_check(partB, predicateScopes, actor, item));
         }
         return partA < partB;
     }
@@ -85,10 +83,10 @@ function predicate_check(predicate, predicateScopes, actor, item) {
         let partA = contents[0];
         let partB = contents[1];
         if (isNaN(partA)) {
-            partA = predicate_check(partA, predicateScopes, actor, item);
+            partA = Number(predicate_check(partA, predicateScopes, actor, item));
         }
         if (isNaN(partB)) {
-            partB = predicate_check(partB, predicateScopes, actor, item);
+            partB = Number(predicate_check(partB, predicateScopes, actor, item));
         }
         return partA <= partB;
     }
@@ -102,6 +100,9 @@ function predicate_check(predicate, predicateScopes, actor, item) {
 
     //MapTool.chat.broadcast(JSON.stringify(predicateScopes));
     //MapTool.chat.broadcast(JSON.stringify(predicate));
+    if (!Array.isArray(predicate)){
+        predicate = [predicate];
+    }
 
     let predicate_resolution = true;
     for (var pK in predicate) {
@@ -188,33 +189,38 @@ function predicate_check(predicate, predicateScopes, actor, item) {
                 predicate_resolution = predicate_resolution && predicateScopes.includes(actionSlug);
             } else if (pText.match(/^origin:/)) {
                 predicate_resolution = false;
+            } else if (pText == "hp-percent" && actor != null) {
+                predicate_resolution = Number(Number(actor.getProperty("HP")) / Number(actor.getProperty("MaxHP"))) * 100;
             } else {
                 predicate_resolution = predicateScopes.includes(pText);
             }
         } else {
-            //MapTool.chat.broadcast("predicate[pK]: " + JSON.stringify(predicate[pK]));
+            let testPredicate = predicate[pK];
+            //MapTool.chat.broadcast("testPredicate: " + JSON.stringify(testPredicate));
             //MapTool.chat.broadcast("pK: " + pK);
-            for (var k in predicate[pK]) {
-                //MapTool.chat.broadcast("predicate[pK][k]: " + JSON.stringify(predicate[pK][k]));
+            //MapTool.chat.broadcast(String(Array.isArray(testPredicate)))
+            for (var k in testPredicate) {
+                //MapTool.chat.broadcast("testPredicate[k]: " + JSON.stringify(testPredicate[k]));
                 //MapTool.chat.broadcast("k: " + k);
                 if (k == "and") {
-                    predicate_resolution = predicate_resolution && predicate_and([predicate[pK][k]], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_and(testPredicate[k], predicateScopes, actor);
                 } else if (k == "nand") {
-                    predicate_resolution = predicate_resolution && predicate_nand([predicate[pK][k]], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_nand(testPredicate[k], predicateScopes, actor);
                 } else if (k == "or") {
-                    predicate_resolution = predicate_resolution && predicate_or([predicate[pK][k]], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_or(testPredicate[k], predicateScopes, actor);
                 } else if (k == "nor") {
-                    predicate_resolution = predicate_resolution && predicate_nor([predicate[pK][k]], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_nor(testPredicate[k], predicateScopes, actor);
                 } else if (k == "gte") {
-                    predicate_resolution = predicate_resolution && predicate_gte([predicate[pK][k]], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_gte(testPredicate[k], predicateScopes, actor);
                 } else if (k == "gt") {
-                    predicate_resolution = predicate_resolution && predicate_gt([predicate[pK][k]], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_gt(testPredicate[k], predicateScopes, actor);
                 } else if (k == "lt") {
-                    predicate_resolution = predicate_resolution && predicate_lt([predicate[pK][k]], predicateScopes, actor);
+                    let result = predicate_lt(testPredicate[k], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && result;
                 } else if (k == "lte") {
-                    predicate_resolution = predicate_resolution && predicate_lte([predicate[pK][k]], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_lte(testPredicate[k], predicateScopes, actor);
                 } else if (k == "not") {
-                    predicate_resolution = predicate_resolution && predicate_not([predicate[pK][k]], predicateScopes, actor);
+                    predicate_resolution = predicate_resolution && predicate_not(testPredicate[k], predicateScopes, actor);
                 } else {
                 }
             }

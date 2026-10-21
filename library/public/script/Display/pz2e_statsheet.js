@@ -52,10 +52,19 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                 overlayHTML += "</div>";
                 try {
                     if (tokenPropType == "PZ2E_Character") {
+                        let tokenHardness = get_actor_data(token, "system.attributes.hardness.value");
+                        if (tokenHardness == null) {
+                            tokenHardness = "";
+                        } else if (tokenHardness == 0) {
+                            tokenHardness = "";
+                        } else {
+                            tokenHardness = String(tokenHardness);
+                        }
                         statEntries = [
                             { "text": capitalise(token.getProperty("size")) + " | " + array_to_string(JSON.parse(token.getProperty("traits"))) + " | " + token.getProperty("level"), "label": "Creature" },
                             { "text": display_hp(tokenID) + " | " + display_speeds(tokenID), "label": "" },
                             { "text": "AC: " + calculate_ac(tokenID) + " | " + display_save_bonuses(tokenID), "label": "Defenses" },
+                            { "text": tokenHardness, "label": "Hardness" },
                             { "text": typeArray_to_string(JSON.parse(token.getProperty("immunities"))), "label": "Immunities" },
                             { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
                             { "text": display_weaknesses(tokenID), "label": "Weaknesses" },

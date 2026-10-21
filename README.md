@@ -4,7 +4,7 @@ Does:
 - Fancy PC Importing from Pathbuilder (works okay)
 - Simpler PC Setup
 - HP Tracking including correct handling for temp HP
-- Resistance, Weakness, Immunity Handling
+- Resistance, Weakness, Immunity, and Hardness Handling
 - Persistent Damage Automation
 - Automated Regeneration
 - Ammo Tracking (Basic, Needs More Testing)
