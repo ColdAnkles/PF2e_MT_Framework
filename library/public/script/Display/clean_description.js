@@ -539,7 +539,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		cleanDescription = cleanDescription.replaceAll(template_matches[m], replaceString);
 	}
 
-	let damage_matches = cleanDescription.match(/(@Damage\[[^@]*\]?\])({.*?})?/gm);
+	let damage_matches = cleanDescription.match(/(@Damage\[[^@ ]*\]?\])({.*?})?/gm);
 	for (var m in damage_matches) {
 		let replaceString = parse_damage(damage_matches[m], additionalData);
 		cleanDescription = cleanDescription.replaceAll(damage_matches[m], replaceString);
