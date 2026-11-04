@@ -16,6 +16,7 @@ function add_persistent_damage() {
     MTScript.evalMacro("[h: ans=input(\"damageKey|" + damageSource + "|Damage Source\",\
     \"damageDice|1d4|Damage\",\
     \"damageType|bludgeoning,piercing,slashing,acid,cold,electricity,fire,sonic,vitality,void,force,spirit,mental,poison,bleed,holy,unholy|Damage Type|LIST|VALUE=STRING\",\
+    \"isCrit|0|Critical Hit|CHECK\",\
     \"damageDC|15|Recovery DC\",\
     \"ignoreResImm|0|Ignore Immunity/Resistance etc.|CHECK\")]");
     if (Number(MTScript.getVariable("ans")) == 0) {
@@ -25,18 +26,16 @@ function add_persistent_damage() {
     let damageKey = MTScript.getVariable("damageKey");
     let damageDice = MTScript.getVariable("damageDice");
     let damageType = MTScript.getVariable("damageType");
-    let damageDC = MTScript.getVariable("damageDC");
+    let damageDC = Number(MTScript.getVariable("damageDC"));
+    let isCrit = (Number(MTScript.getVariable("isCrit")) == 1);
     let ignoreResImm = (Number(MTScript.getVariable("ignoreResImm")) == 1);
 
     persistentDamageData.type = "effect";
-
     persistentDamageData.name = "Persistent " + capitalise(damageType) + " (" + damageKey + ")";
-
     persistentDamageData.damage = { "key": damageKey, "dice": damageDice, "type": damageType };
-
     persistentDamageData.ignoreResImm = ignoreResImm;
-
-    persistentDamageData.dc = Number(damageDC);
+    persistentDamageData.isCrit = isCrit;
+    persistentDamageData.dc = damageDC;
 
     //MapTool.chat.broadcast(JSON.stringify(persistentDamageData));
 

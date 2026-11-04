@@ -66,6 +66,9 @@ function end_turn(turnToken, forwards = true) {
 				let recoveryRoll = roll_dice("1d20");
 
 				let damageValue = Number(roll_dice(effectData.damage.dice));
+				if (effectData.isCrit) {
+					damageValue *= 2;
+				}
 				let damageType = effectData.damage.type;
 
 				let damageNote = "";
