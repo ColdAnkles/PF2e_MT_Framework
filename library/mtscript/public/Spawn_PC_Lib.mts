@@ -35,3 +35,4 @@
 [h: playerData = player.getInfo()]
 [h: setOwner(json.get(playerData,"name"), newToken, "Player Characters")]
 [h: setProperty("myID", newToken, newToken, "Player Characters")]
+[h: setProperty("pcTokens", "[]", newToken, "Player Characters")]
