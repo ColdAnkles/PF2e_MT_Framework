@@ -442,7 +442,7 @@ function attack_action(actionData, actingToken) {
 		displayData.system.materials = actionData.system.materials;
 
 		if (!(isNaN(initiative)) && "increaseMAP" in actionData && actionData.increaseMAP) {
-			actingToken.setProperty("attacksThisRound", String((currentAttackCount + 1)));
+			increase_map(actingToken);
 		}
 	} catch (e) {
 		MapTool.chat.broadcast("Error in attack_action during description-setup");

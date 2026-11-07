@@ -23,4 +23,10 @@ function update_action_bank(token) {
 	}
 
 
+	let attacksThisRound = Number(token.getProperty("attacksThisRound"));
+	let MAPState = "MAP_" + String((attacksThisRound > 3) ? "3" : attacksThisRound);
+	set_state("MAP_1", false, token.getId());
+	set_state("MAP_2", false, token.getId());
+	set_state("MAP_3", false, token.getId());
+	set_state(MAPState, true, token.getId());
 }

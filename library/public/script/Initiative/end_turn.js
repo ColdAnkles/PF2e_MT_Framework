@@ -136,6 +136,10 @@ function end_turn(turnToken, forwards = true) {
 		return;
 	}
 
+	set_state("MAP_1", false, turnToken.getId());
+	set_state("MAP_2", false, turnToken.getId());
+	set_state("MAP_3", false, turnToken.getId());
+
 	if (forwards) {
 		MTScript.evalMacro("[h: nextInitiative()]");
 	} else {

@@ -32,6 +32,8 @@ function increase_map(token) {
         MapTool.chat.broadcast("" + e + "\n" + e.stack);
         throw new Error("PZ2E: Error in increase_map");
     }
+
+    update_action_bank(token);
 }
 
 MTScript.registerMacro("ca.pz2e.increase_map", increase_map);
