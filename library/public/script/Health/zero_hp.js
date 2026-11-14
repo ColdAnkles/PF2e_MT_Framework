@@ -25,6 +25,7 @@ function zero_hp(tokenID) {
 
 	let tokenDisplayName = token.getName().replace("Lib:", "");
 
+	token.setProperty("attacksThisRound", 0);
 	token.setProperty("actionsLeft", 0);
 	token.setProperty("reactionsLeft", 0);
 	update_action_bank(token);
