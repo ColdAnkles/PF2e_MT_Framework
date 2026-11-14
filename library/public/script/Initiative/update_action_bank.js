@@ -28,5 +28,7 @@ function update_action_bank(token) {
 	set_state("MAP_1", false, token.getId());
 	set_state("MAP_2", false, token.getId());
 	set_state("MAP_3", false, token.getId());
-	set_state(MAPState, true, token.getId());
+	if (MAPState != "MAP_0") {
+		set_state(MAPState, true, token.getId());
+	}
 }

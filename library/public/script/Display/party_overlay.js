@@ -32,8 +32,10 @@ function party_overlay() {
                 continue;
             }
             displayTokenStates = true;
-            let stateImage = get_state_image(stateName, 20);
-            tokenStateHTML += "<img height=20px width=20px src='" + stateImage + "' title='" + display_conditions(pc, stateName) + "'/>";
+            if (!(stateName.includes("MAP_"))) {
+                let stateImage = get_state_image(stateName, 20);
+                tokenStateHTML += "<img height=20px width=20px src='" + stateImage + "' title='" + display_conditions(pc, stateName) + "'/>";
+            }
         }
         tokenStateHTML += "</div>";
         if (displayTokenStates) {

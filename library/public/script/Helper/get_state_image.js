@@ -6,5 +6,4 @@ function get_state_image(stateName, imageSize = 100) {
 
     MTScript.evalMacro("[h: imageData = getStateImage(stateName, imageSize)]");
     return MTScript.getVariable("imageData");
-
 }
