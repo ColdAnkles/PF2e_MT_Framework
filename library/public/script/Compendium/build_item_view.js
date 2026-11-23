@@ -174,7 +174,7 @@ function build_item_view(itemType, itemName, itemData = null) {
 		if (itemData.system.description.value == "") {
 			itemData.system.description.value = "<i>No description provided for this item.</i>";
 		}
-		HTMLString += clean_description(itemData.system.description.value, false, false, false);
+		HTMLString += clean_description(itemData.system.description.value, false, false, false).gm;
 	} catch (e) {
 		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;

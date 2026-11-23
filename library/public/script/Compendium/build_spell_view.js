@@ -247,7 +247,7 @@ function build_spell_view(spellName) {
 	HTMLString += "<hr /></body>";
 
 	try {
-		HTMLString += clean_description(spellData.system.description.value, false, false, false, { "rollDice": false, "level": spellData.system.level.value, "item": spellData, "action": spellData });
+		HTMLString += clean_description(spellData.system.description.value, false, false, false, { "rollDice": false, "level": spellData.system.level.value, "item": spellData, "action": spellData }).gm;
 	} catch (e) {
 		MapTool.chat.broadcast("Error in build_spell_view during description-step");
 		MapTool.chat.broadcast("spellData: " + JSON.stringify(spellData));

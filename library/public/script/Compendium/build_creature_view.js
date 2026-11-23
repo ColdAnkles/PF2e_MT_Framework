@@ -177,7 +177,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 			for (var d in creatureData.passiveDefenses) {
 				HTMLString += " " + creatureData.passiveDefenses[d].name;
 				if (creatureData.passiveDefenses[d].system.description.value.length > 0) {
-					HTMLString += " (" + clean_description(creatureData.passiveDefenses[d].system.description.value, true, true, true, additionalData) + ")";
+					HTMLString += " (" + clean_description(creatureData.passiveDefenses[d].system.description.value, true, true, true, additionalData).gm + ")";
 				}
 			}
 		}
@@ -266,7 +266,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 		for (var feat in creatureData.passiveSkills) {
 			featData = creatureData.passiveSkills[feat];
 			additionalData.action = featData;
-			let featString = "<b>" + featData.name + "</b> " + clean_description(featData.system.description.value, true, true, true, additionalData);
+			let featString = "<b>" + featData.name + "</b> " + clean_description(featData.system.description.value, true, true, true, additionalData).gm;
 			HTMLString += featString + "<br />";
 		}
 	} catch (e) {
@@ -353,7 +353,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 			additionalData.action = attackData;
 
 			if (attackData.system.description.value.length > 0) {
-				attackString = attackString + " " + clean_description(attackData.system.description.value, true, true, true, additionalData);
+				attackString = attackString + " " + clean_description(attackData.system.description.value, true, true, true, additionalData).gm;
 			}
 
 			//MapTool.chat.broadcast(attackString);
@@ -454,7 +454,7 @@ function build_creature_view(creatureName, tokenID = null, creatureData = null) 
 				HTMLString += "(" + actionData.traits.join(", ") + ") ";
 			}
 			additionalData.action = actionData;
-			HTMLString += clean_description(actionData.system.description.value, true, true, true, additionalData);
+			HTMLString += clean_description(actionData.system.description.value, true, true, true, additionalData).gm;
 			HTMLString += "<br />";
 		}
 	} catch (e) {

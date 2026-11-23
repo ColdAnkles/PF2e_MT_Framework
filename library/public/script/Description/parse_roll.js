@@ -1,6 +1,6 @@
 "use strict";
 
-function parse_roll(rollString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
+function parse_roll(rollString, additionalData = { "rollDice": false, "isPC": false }) {
 	//MapTool.chat.broadcast(rollString);
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 	if (rollString.includes("/br") || rollString.includes("/gmr") || (!(rollString.substring(1, 4).includes("(")) || !(rollString.includes(")")))) {
@@ -13,28 +13,26 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 					let diceMatch = parsed.braceContents.match(/([0-9+ d-]*)/g);
 					//MapTool.chat.broadcast(JSON.stringify(diceMatch));
 					if (diceMatch.length > 0) {
-						diceMatch = diceMatch[0].replaceAll("/r ", "").replaceAll("/r", "");
+						diceMatch = diceMatch[0].replaceAll("/r ", "").replaceAll("/r", "").trim();
 						let rolledDice = roll_dice(diceMatch);
-						let replaceString = "";
+						let gmString = "";
+						let pcString = "";
 						if (diceMatch.includes("d") && rollString.includes("/r")) {
-							replaceString = diceMatch + " (" + String(rolledDice) + ") ";
-						} else if (diceMatch.includes("d") && (rollString.includes("/br") || rollString.includes("/gmr")) && !additionalData.gm) {
-							if (additionalData.replaceGMRolls) {
-								replaceString = diceMatch;
-							} else {
-								return rollString;
-							}
-						} else if (diceMatch.includes("d") && (rollString.includes("/br") || rollString.includes("/gmr")) && additionalData.gm) {
-							replaceString = diceMatch + " (" + String(rolledDice) + ") ";
+							gmString = diceMatch + " (" + String(rolledDice) + ") ";
+							pcString = gmString;
+						} else if (diceMatch.includes("d") && (rollString.includes("/br") || rollString.includes("/gmr"))) {
+							gmString = diceMatch;
+							pcString = diceMatch;
 						} else {
-							replaceString = diceMatch;
+							gmString = diceMatch;
+							pcString = gmString;
 						}
-						return parsed.braceContents.replace(diceMatch, replaceString);
+						return { "pc": parsed.braceContents.replace(diceMatch, pcString), "gm": parsed.braceContents.replace(diceMatch, gmString) };
 					} else {
-						return parsed.braceContents;
+						return { "pc": parsed.braceContents, "gm": parsed.braceContents };
 					}
 				} else {
-					return parsed.braceContents;
+					return { "pc": parsed.braceContents, "gm": parsed.braceContents };
 				}
 			} catch (e) {
 				MapTool.chat.broadcast("Error in parse_roll during case one - brace contents");
@@ -63,11 +61,11 @@ function parse_roll(rollString, additionalData = { "rollDice": false, "gm": fals
 							replaceString = dice;
 						}
 						if (rollString.includes("#")) {
-							return replaceString;
+							return { "pc": replaceString, "gm": replaceString };
 						}
-						return parsed.bracketContents.replace(diceMatch, replaceString);
+						return { "pc": parsed.bracketContents.replace(diceMatch, replaceString), "gm": parsed.bracketContents.replace(diceMatch, replaceString) };
 					} else {
-						return parsed.bracketContents;
+						return { "pc": parsed.bracketContents, "gm": parsed.bracketContents };
 					}
 				} else {
 					return parsed.bracketContents.replace(/\/r ([0-9+ d-]*).*/g, "$1");

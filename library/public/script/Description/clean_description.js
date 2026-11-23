@@ -1,6 +1,6 @@
 "use strict";
 
-function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true, "invertImages": true, "isPC": false }) {
+function clean_description(description, removeLineBreaks = true, removeHR = true, removeP = true, additionalData = { "rollDice": false, "invertImages": true, "isPC": false }) {
 	//MapTool.chat.broadcast(description.replaceAll("<","&lt;"));
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 
@@ -81,29 +81,28 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 		{ "regex": /(@UUID\[[^\[\]]*\])({[^\[\]]*})?/gm, "ident": "UUID" },
 		{ "regex": /@Localize\[.*\]/gm, "ident": "localize" },
 		{ "regex": /(\[\[+\/g?m?b?r.*?\]\]+)(\{.*?\})?/gm, "ident": "roll" },
-		{ "regex": /(\[+\/g?m?b?r.*?\]+)(\{.*?\})?/gm, "ident": "roll" },
+		{ "regex": /(\[\[\/g?m?b?r.*?\]\]\?)(\{.*?\})?/gm, "ident": "roll" },
 		{ "regex": /@Embed\[.*\]/gm, "ident": "embed" },
 		{ "regex": /\[\[\/act.*\]\]{(.*)}/g, "ident": "act" },
 		{ "regex": /\[\[\/act (.*) dc=([0-9]+).*\]\]({.*})?/g, "ident": "act" },
-		{ "regex": /\[\[\/act ([^=]*)[\s\]]+.*\]/g, "ident": "act" }]
+		{ "regex": /\[\[\/act ([^=]*)[\s\]]+.*\]/g, "ident": "act" }];
 
 	var idx = 0;
 	for (var r in regexes) {
 		var reg = regexes[r];
 		while (idx < descriptionTokens.length) {
-			let matches = descriptionTokens[idx].match(reg.regex)
+			let matches = descriptionTokens[idx].match(reg.regex);
 			var tidx = 0;
-			while (matches != null && matches.length > 0) {
+			while (matches != null && matches.length > 0 && tidx < matches.length) {
 				if (matches[tidx] != descriptionTokens[idx]) {
 					var split = descriptionTokens[idx].split(matches[tidx]);
-					descriptionTokens.splice(idx, 1, split[0], matches[0], split[1])
+					descriptionTokens.splice(idx, 1, split[0], matches[0], split[1]);
 					identities.splice(idx, 1, "text", reg.ident, "text");
 					matches = descriptionTokens[idx].match(reg.regex);
 					tidx = 0;
 				} else {
 					tidx += 1;
 				}
-				break;
 			}
 			idx += 1;
 		}
@@ -130,8 +129,8 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 			finalDescription.gm.push(clean);
 		} else if (identities[t] == "damage") {
 			let clean = parse_damage(descriptionTokens[t], additionalData);
-			finalDescription.pc.push(clean);
-			finalDescription.gm.push(clean);
+			finalDescription.pc.push(clean.pc);
+			finalDescription.gm.push(clean.gm);
 		} else if (identities[t] == "check") {
 			let clean = parse_check(descriptionTokens[t], additionalData);
 			finalDescription.pc.push(clean);
@@ -141,13 +140,13 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 			finalDescription.pc.push(clean);
 			finalDescription.gm.push(clean);
 		} else if (identities[t] == "localize") {
-			let clean = clean_description(parse_localize(descriptionTokens[t], additionalData), false, removeHR, false, additionalData);
+			let clean = clean_description(parse_localize(descriptionTokens[t], additionalData), false, removeHR, false, additionalData).gm;
 			finalDescription.pc.push(clean);
 			finalDescription.gm.push(clean);
 		} else if (identities[t] == "roll") {
 			let clean = parse_roll(descriptionTokens[t], additionalData);
-			finalDescription.pc.push(clean);
-			finalDescription.gm.push(clean);
+			finalDescription.pc.push(clean.pc);
+			finalDescription.gm.push(clean.gm);
 		} else if (identities[t] == "embed") {
 			finalDescription.pc.push("");
 			finalDescription.gm.push("");
@@ -157,6 +156,7 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 			finalDescription.gm.push(clean);
 		}
 	}
+
 	finalDescription.pc = finalDescription.pc.join("");
 	finalDescription.gm = finalDescription.gm.join("");
 
@@ -165,16 +165,16 @@ function clean_description(description, removeLineBreaks = true, removeHR = true
 	finalDescription.pc = finalDescription.pc.replaceAll("<span class=\"pf2-icon\">1</span>", icon_img("1action"));
 	finalDescription.pc = finalDescription.pc.replaceAll("<span class=\"pf2-icon\">2</span>", icon_img("2action"));
 	finalDescription.pc = finalDescription.pc.replaceAll("<span class=\"pf2-icon\">3</span>", icon_img("3action"));
-	
-	finalDescription.gm = finalDescription.pc.replaceAll(/\[(.*)\|.*\]/g, " $1 ");
-	finalDescription.gm = finalDescription.pc.replaceAll("emanation Aura", "Aura");
-	finalDescription.gm = finalDescription.pc.replaceAll("<span class=\"pf2-icon\">1</span>", icon_img("1action"));
-	finalDescription.gm = finalDescription.pc.replaceAll("<span class=\"pf2-icon\">2</span>", icon_img("2action"));
-	finalDescription.gm = finalDescription.pc.replaceAll("<span class=\"pf2-icon\">3</span>", icon_img("3action"));
+
+	finalDescription.gm = finalDescription.gm.replaceAll(/\[(.*)\|.*\]/g, " $1 ");
+	finalDescription.gm = finalDescription.gm.replaceAll("emanation Aura", "Aura");
+	finalDescription.gm = finalDescription.gm.replaceAll("<span class=\"pf2-icon\">1</span>", icon_img("1action"));
+	finalDescription.gm = finalDescription.gm.replaceAll("<span class=\"pf2-icon\">2</span>", icon_img("2action"));
+	finalDescription.gm = finalDescription.gm.replaceAll("<span class=\"pf2-icon\">3</span>", icon_img("3action"));
 
 	//MapTool.chat.broadcast(cleanDescription.replaceAll("<","&lt;"));
 
-	return finalDescription.pc;
+	return finalDescription;
 }
 
 

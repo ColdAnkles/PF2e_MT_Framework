@@ -1,6 +1,6 @@
 "use strict";
 
-function clean_calculations(calculationString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true }) {
+function clean_calculations(calculationString, additionalData) {
 	//MapTool.chat.broadcast(calculationString);
 	//MapTool.chat.broadcast(JSON.stringify(additionalData));
 	if (calculationString.includes("@level") && "level" in additionalData) {

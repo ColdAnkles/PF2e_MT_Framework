@@ -59,12 +59,12 @@ function build_hazard_view(itemName, tokenID = null) {
 		}
 
 		HTMLString += "<b>Complexity</b> " + ((itemData.isComplex) ? "Complex" : "Simple") + "<br />";
-		HTMLString += "<b>Stealth</b> DC " + String(itemData.stealth.dc) + " " + clean_description(itemData.stealth.details, true, true, true, additionalData) + "<br />";
+		HTMLString += "<b>Stealth</b> DC " + String(itemData.stealth.dc) + " " + clean_description(itemData.stealth.details, true, true, true, additionalData).gm + "<br />";
 
-		HTMLString += "<b>Description</b> " + clean_description(itemData.description, true, true, true, additionalData) + "<br />";
+		HTMLString += "<b>Description</b> " + clean_description(itemData.description, true, true, true, additionalData).gm + "<br />";
 		HTMLString += "<hr />";
 
-		HTMLString += "<b>Disable</b> " + clean_description(itemData.disable, true, true, true, additionalData) + "<br />";
+		HTMLString += "<b>Disable</b> " + clean_description(itemData.disable, true, true, true, additionalData).gm + "<br />";
 	} catch (e) {
 		if (String(e).startsWith("Error: PZ2E")) {
 			throw e;
@@ -151,7 +151,7 @@ function build_hazard_view(itemName, tokenID = null) {
 				if (featData.system.traits.value.length > 0) {
 					traitText = " (" + featData.system.traits.value.join(", ") + ")";
 				}
-				let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup, true) + " " + clean_description(featData.system.description.value);
+				let featString = "<b>" + featData.name + "</b>" + traitText + " " + icon_img(iconLookup, true) + " " + clean_description(featData.system.description.value).gm;
 				//MapTool.chat.broadcast(featString.replace("<","&lt;"));
 				HTMLString += featString;
 				const testPattern = /<\/ul>$/
@@ -171,11 +171,11 @@ function build_hazard_view(itemName, tokenID = null) {
 	}
 	HTMLString += "<hr/>";
 	if (itemData.routine != "") {
-		HTMLString += "<b>Routine</b> " + clean_description(itemData.routine, true, true, true);
+		HTMLString += "<b>Routine</b> " + clean_description(itemData.routine, true, true, true).gm;
 		HTMLString += "<hr />"
 	}
 	if (itemData.reset != "") {
-		HTMLString += "<b>Reset</b> " + clean_description(itemData.reset, true, true, true);
+		HTMLString += "<b>Reset</b> " + clean_description(itemData.reset, true, true, true).gm;
 	}
 
 	HTMLString += "</body>";

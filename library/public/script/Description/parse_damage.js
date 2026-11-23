@@ -1,10 +1,10 @@
 "use strict";
 
-function parse_damage(damageString, additionalData = { "rollDice": false, "gm": false, "replaceGMRolls": true, "isPC": false }) {
+function parse_damage(damageString, additionalData = { "rollDice": false, "isPC": false }) {
 	let damageData = damageString.match(/@Damage\[(.*)\]/)[1].split(/,(?![^\[]*\])/);
-	let parsed = parse_foundry_strings(damageString);
 	let addDamage = 0;
-	let returnStrings = [];
+	let pcReturnStrings = [];
+	let gmReturnStrings = [];
 
 	if (additionalData.variant == "elite" && "action" in additionalData && (additionalData.action.system.category == "offensive" || additionalData.action.type == "spell")) {
 		addDamage = 2;
@@ -16,33 +16,46 @@ function parse_damage(damageString, additionalData = { "rollDice": false, "gm": 
 	}
 	for (var d in damageData) {
 		var damage = damageData[d];
-		var dice = damage.match(/([^[\]]*)\[(.*)\]/)[1];
-		var types = damage.match(/([^[\]]*)\[(.*)\]/)[2].split(",");
+		var matchDamage = damage.match(/([^[\]]*)\[(.*)\](\|options:)?(.*)?/)
+		var dice = matchDamage[1];
+		var types = matchDamage[2].split(",");
+		var options = null;
+		if (matchDamage.length >= 4 && matchDamage[4] != null) {
+			options = matchDamage[4];
+			options = options.replaceAll("-damage", "");
+		}
 		if ((additionalData.rollDice && !types.includes("persistent")) || !dice.includes("d")) {
 			if (dice.length > 0) {
 				let finalDice = group_dice(dice + "+" + String(addDamage));
 				let rolledDice = roll_dice(finalDice);
 				if (!dice.includes("d")) {
 					dice = dice.replace(dice, String(rolledDice));
+					pcReturnStrings.push(dice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
+					gmReturnStrings.push(dice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
 				} else {
-					if (additionalData.gm || additionalData.isPC) {
+					if (!additionalData.isPC) {
+						var temp = dice.replace(dice, finalDice + " (" + String(rolledDice) + ")");
+						pcReturnStrings.push(finalDice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
+						gmReturnStrings.push(temp + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
+					} else if (additionalData.isPC) {
 						dice = dice.replace(dice, finalDice + " (" + String(rolledDice) + ")");
+						pcReturnStrings.push(dice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
+						gmReturnStrings.push(dice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
 					} else {
-						dice = dice.replace(dice, finalDice);
+						pcReturnStrings.push(finalDice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
+						gmReturnStrings.push(finalDice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
 					}
 				}
-				if (parsed.braceContents == null) {
-					parsed.braceContents = "";
-				}
-				returnStrings.push(dice + " " + types.join(", "));
 			} else {
 				dice = group_dice(dice + "+" + String(addDamage));
-				returnStrings.push(dice + " " + types.join(", "));
+				pcReturnStrings.push(dice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
+				gmReturnStrings.push(dice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
 			}
 		} else {
 			dice = group_dice(dice + "+" + String(addDamage));
-			returnStrings.push(dice + " " + types.join(", "));
+			pcReturnStrings.push(dice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
+			gmReturnStrings.push(dice + " " + types.join(", ") + ((options != null) ? " (" + options + ")" : ""));
 		}
 	}
-	return returnStrings.join(" and ");
+	return { "pc": pcReturnStrings.join(" and "), "gm": gmReturnStrings.join(" and ") };
 }

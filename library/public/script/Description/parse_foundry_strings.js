@@ -21,13 +21,15 @@ function parse_foundry_strings(foundryString, altBracketRegexp = false) {
 	}
 	let returnData = { "bracketContents": bracketContents, "braceContents": braceContents, "bracketDetail": {} }
 	//MapTool.chat.broadcast(JSON.stringify(returnData));
-	for (var d in bracketContents.split("|")) {
-		let tempString = bracketContents.split("|")[d];
+
+	var bcSplit = bracketContents.split("|");
+	for (var d in bcSplit) {
+		let tempString = bcSplit[d];
 		let splitString = tempString.split(":")
 		let key = splitString[0];
 		let value = "";
 		if (splitString.length > 1) {
-			value = splitString.slice(1).join(":").split(',');
+			value = splitString.slice(1).join(":").trim().split(',');
 		} else {
 
 		}

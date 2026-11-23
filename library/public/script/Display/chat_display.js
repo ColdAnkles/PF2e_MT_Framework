@@ -128,14 +128,9 @@ function chat_display(displayData, broadcast = true, additionalData = { "rollDic
 
 	try {
 		if (displayData.system.description.value != null && displayData.system.description.value != "") {
-			additionalData.gm = false;
-			additionalData.replaceGMRolls = false;
-			let normalDesc = clean_description(displayData.system.description.value, false, false, false, additionalData);
-			additionalData.gm = true;
-			let gmDesc = clean_description(displayData.system.description.value, false, false, false, additionalData)
-			additionalData.gm = false;
-			additionalData.replaceGMRolls = true;
-			normalDesc = clean_description(normalDesc, false, false, false, additionalData);
+			let cleanedDescription = clean_description(displayData.system.description.value, false, false, false, additionalData);
+			let normalDesc = cleanedDescription.pc;
+			let gmDesc = cleanedDescription.gm;
 			outputText += "<div style='margin:0px;padding:3px; background-color:" + themeData.colours.standardBackground + "; color:" + themeData.colours.standardText + "'>" + normalDesc + "</div>";
 			gmOutputText += "<div style='margin:0px;padding:3px; background-color:" + themeData.colours.standardBackground + "; color:" + themeData.colours.standardText + "'>" + gmDesc + "</div>";
 		}
