@@ -66,68 +66,7 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
             overlayHTML += "<div class='statsheet_title'><img src='" + tokenImage + "' height=150 width=150></img>";
             overlayHTML += "<div><b>" + token.getName().replace("Lib:", "") + "</b></div>";
 
-            let statEntries = [];
-
-            if (isGM || tokenOwners.includes(playerName)) {
-                overlayHTML += "</div>";
-                try {
-                    if (tokenPropType == "PZ2E_Character") {
-                        let tokenHardness = get_actor_data(token, "system.attributes.hardness.value");
-                        if (tokenHardness == null) {
-                            tokenHardness = "";
-                        } else if (tokenHardness == 0) {
-                            tokenHardness = "";
-                        } else {
-                            tokenHardness = String(tokenHardness);
-                        }
-                        statEntries = [
-                            { "text": capitalise(token.getProperty("size")) + " | " + array_to_string(JSON.parse(token.getProperty("traits"))) + " | " + token.getProperty("level"), "label": "Creature" },
-                            { "text": display_hp(tokenID) + " | " + display_speeds(tokenID), "label": "" },
-                            { "text": "AC: " + calculate_ac(tokenID) + " | " + display_save_bonuses(tokenID), "label": "Defenses" },
-                            { "text": tokenHardness, "label": "Hardness" },
-                            { "text": typeArray_to_string(JSON.parse(token.getProperty("immunities"))), "label": "Immunities" },
-                            { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
-                            { "text": display_weaknesses(tokenID), "label": "Weaknesses" },
-                            { "text": "+" + String(Number(token.getProperty("perception")) + Number(display_bonus(tokenID, "perception"))) + " | " + array_to_string(JSON.parse(token.getProperty("senses"))), "label": "Perception" },
-                            { "text": array_to_string(JSON.parse(token.getProperty("languages"))), "label": "Languages" },
-                            { "text": display_conditions(tokenID), "label": "Conditions" },
-                            { "text": display_spell_slots(tokenID), "label": "Spell Slots" },
-                            { "text": display_active_effects(tokenID), "label": "Effects" }];
-                    } else if (tokenPropType == "PZ2E_Hazard") {
-                        statEntries = [
-                            { "text": array_to_string(JSON.parse(token.getProperty("traits"))) + " | " + token.getProperty("level"), "label": "Hazard" },
-                            { "text": display_hp(tokenID) + " | " + "Hardness: " + token.getProperty("hardness"), "label": "HP" },
-                            { "text": "AC: " + calculate_ac(tokenID) + " | " + display_save_bonuses(tokenID), "label": "Defense" },
-                            { "text": display_hazard_stealth(tokenID), "label": "Stealth" },
-                            { "text": typeArray_to_string(JSON.parse(token.getProperty("immunities"))), "label": "Immunities" },
-                            { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
-                            { "text": display_weaknesses(tokenID), "label": "Weaknesses" }
-                        ];
-                    }
-                } catch (e) {
-                    if (String(e).startsWith("Error: PZ2E")) {
-                        throw e;
-                    }
-                    MapTool.chat.broadcast("Error in pz2e_statsheet - setup stats");
-                    MapTool.chat.broadcast("token.getName(): " + token.getName());
-                    MapTool.chat.broadcast("isGM: " + String(isGM));
-                    MapTool.chat.broadcast("tokenOwners: " + JSON.stringify(tokenOwners));
-                    MapTool.chat.broadcast("" + e + "\n" + e.stack);
-                    throw new Error("PZ2E: pz2e_statsheet - setup stats");
-                }
-
-                if (statEntries.length > 0) {
-                    MTScript.setVariable("tokenID", tokenID);
-                    overlayHTML += "<div class='statsheet_content'><table>";
-                    for (var s in statEntries) {
-                        let statData = statEntries[s];
-                        if (statData.text != "") {
-                            overlayHTML += "<tr><th><b>" + statData.label + "</b></th><td style='max-width:250;'>" + statData.text + "</td></tr>";
-                        }
-                    }
-                    overlayHTML += "</table></div>";
-                }
-            } else if (tokenVisible) {
+            if (tokenVisible || isGM) {
                 if (tokenPropType != "PZ2E_Hazard") {
                     let tokenHP = Number(token.getProperty("HP"));
                     if (tokenPropType == "PZ2E_Character" && tokenHP != 0) {
@@ -195,9 +134,71 @@ function pz2e_statsheet(tokenID, action, shiftState, controlState) {
                         overlayHTML += "<div>" + display_conditions(tokenID) + "</div>";
                     }
                 }
+            }
+
+            let statEntries = [];
+
+            if (isGM || tokenOwners.includes(playerName)) {
                 overlayHTML += "</div>";
+                try {
+                    if (tokenPropType == "PZ2E_Character") {
+                        let tokenHardness = get_actor_data(token, "system.attributes.hardness.value");
+                        if (tokenHardness == null) {
+                            tokenHardness = "";
+                        } else if (tokenHardness == 0) {
+                            tokenHardness = "";
+                        } else {
+                            tokenHardness = String(tokenHardness);
+                        }
+                        statEntries = [
+                            { "text": capitalise(token.getProperty("size")) + " | " + array_to_string(JSON.parse(token.getProperty("traits"))) + " | " + token.getProperty("level"), "label": "Creature" },
+                            { "text": display_hp(tokenID) + " | " + display_speeds(tokenID), "label": "" },
+                            { "text": "AC: " + calculate_ac(tokenID) + " | " + display_save_bonuses(tokenID), "label": "Defenses" },
+                            { "text": tokenHardness, "label": "Hardness" },
+                            { "text": typeArray_to_string(JSON.parse(token.getProperty("immunities"))), "label": "Immunities" },
+                            { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
+                            { "text": display_weaknesses(tokenID), "label": "Weaknesses" },
+                            { "text": "+" + String(Number(token.getProperty("perception")) + Number(display_bonus(tokenID, "perception"))) + " | " + array_to_string(JSON.parse(token.getProperty("senses"))), "label": "Perception" },
+                            { "text": array_to_string(JSON.parse(token.getProperty("languages"))), "label": "Languages" },
+                            { "text": display_conditions(tokenID), "label": "Conditions" },
+                            { "text": display_spell_slots(tokenID), "label": "Spell Slots" },
+                            { "text": display_active_effects(tokenID), "label": "Effects" }];
+                    } else if (tokenPropType == "PZ2E_Hazard") {
+                        statEntries = [
+                            { "text": array_to_string(JSON.parse(token.getProperty("traits"))) + " | " + token.getProperty("level"), "label": "Hazard" },
+                            { "text": display_hp(tokenID) + " | " + "Hardness: " + token.getProperty("hardness"), "label": "HP" },
+                            { "text": "AC: " + calculate_ac(tokenID) + " | " + display_save_bonuses(tokenID), "label": "Defense" },
+                            { "text": display_hazard_stealth(tokenID), "label": "Stealth" },
+                            { "text": typeArray_to_string(JSON.parse(token.getProperty("immunities"))), "label": "Immunities" },
+                            { "text": resistances_to_string(JSON.parse(token.getProperty("resistances"))), "label": "Resistances" },
+                            { "text": display_weaknesses(tokenID), "label": "Weaknesses" }
+                        ];
+                    }
+                } catch (e) {
+                    if (String(e).startsWith("Error: PZ2E")) {
+                        throw e;
+                    }
+                    MapTool.chat.broadcast("Error in pz2e_statsheet - setup stats");
+                    MapTool.chat.broadcast("token.getName(): " + token.getName());
+                    MapTool.chat.broadcast("isGM: " + String(isGM));
+                    MapTool.chat.broadcast("tokenOwners: " + JSON.stringify(tokenOwners));
+                    MapTool.chat.broadcast("" + e + "\n" + e.stack);
+                    throw new Error("PZ2E: pz2e_statsheet - setup stats");
+                }
+
+                if (statEntries.length > 0) {
+                    MTScript.setVariable("tokenID", tokenID);
+                    overlayHTML += "<div class='statsheet_content'><table>";
+                    for (var s in statEntries) {
+                        let statData = statEntries[s];
+                        if (statData.text != "") {
+                            overlayHTML += "<tr><th><b>" + statData.label + "</b></th><td style='max-width:250;'>" + statData.text + "</td></tr>";
+                        }
+                    }
+                    overlayHTML += "</table></div>";
+                }
             } else {
-                overlayHTML = "<html><body>";
+                overlayHTML += "</div><html><body>";
             }
 
             overlayHTML += "</body></html>";
