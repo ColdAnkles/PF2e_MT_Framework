@@ -2,12 +2,11 @@
 
 function resistances_to_string(resistancesList) {
 	//MapTool.chat.broadcast(JSON.stringify(resistancesList));
-	let resistancesString = "";
+	let resistancesStringList = [];
 	for (var t in resistancesList) {
-		resistancesString = resistancesString + capitalise(resistancesList[t].type) + " " + resistancesList[t].value + ", ";
+		resistancesStringList.push(capitalise(resistancesList[t].type) + " " + resistancesList[t].value + (("exceptions" in resistancesList[t] && resistancesList[t].exceptions.length > 0) ? " (Except " + capitalise(resistancesList[t].exceptions.join(", ")) + ")" : ""));
 	}
-	resistancesString = resistancesString.substring(0, resistancesString.length - 2);
-	return resistancesString;
+	return resistancesStringList.join(", ");
 }
 
 
