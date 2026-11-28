@@ -109,7 +109,7 @@ function core_action(actionData, actingToken) {
 					let inputText = inputTexts.join(",");
 					MTScript.evalMacro("[h: abrt = input(" + inputText + ")]");
 					let abort = (Number(MTScript.getVariable("abrt")) == 0);
-					if (abort){
+					if (abort) {
 						return;
 					}
 				}
@@ -161,7 +161,7 @@ function core_action(actionData, actingToken) {
 								saveData[ruleData.type.substring(0, 1) + ((ruleData.value > 0) ? "Bonus" : "Malus")] = Math.abs(ruleData.value);
 							}
 						} else if (ruleData.key == "DamageDice") {
-							actionData.system.description.value += "<br />@Damage[" + String(ruleData.diceNumber) + ruleData.dieSize + "[" + ruleData.damageType + "]]";
+							actionData.system.description.value += "<br />@Damage[" + String(ruleData.diceNumber) + ruleData.dieSize + (("damageType" in ruleData) ? "[" + ruleData.damageType + "]" : (("category" in ruleData) ? "[" + ruleData.category + "]" : "")) + "]";
 						}
 					}
 
