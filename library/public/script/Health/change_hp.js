@@ -99,9 +99,6 @@ function change_hp(tokenID, changeHPData = null) {
 				spellDamage = true;
 			} else if (changeHPData.damageSpecial == "Area") {
 				areaDamage = true;
-			} else if (changeHPData.damageSpecial == "Spell and Area") {
-				areaDamage = true;
-				spellDamage = true;
 			}
 		}
 
